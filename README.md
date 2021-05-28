@@ -1,6 +1,6 @@
 # IQR_LIT
 
-All about robots for NICA
+Intelligent Quantum Robotics (IQR)
 
 Проект в pm
 https://pm.jinr.ru/projects/iqr_lit/issues
