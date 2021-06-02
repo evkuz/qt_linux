@@ -108,13 +108,31 @@ void MainWindow::on_openButton_clicked()
 
 void MainWindow::on_sitButton_clicked()
 {
-    QByteArray dd = QByteArray::fromRawData(hwr_Start_position, 6);
-    serial.write(dd, 6);
-    serial.flush();
+    QByteArray dd = QByteArray::fromRawData(sit_down_position, 6);
+    for (int i = 0; i<= 57; i++)
+    {
+        dd.append("A");
+    }
+    serial.write(dd);
+    //serial.flush();
+    //serial.waitForBytesWritten(50);
 }
 //+++++++++++++++++++++++++++++++
 void MainWindow::Log_File_Open(QString lname)
 {
     LogFile.setFileName(lname);
     LogFile.open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text);
+}
+
+void MainWindow::on_stand_upButton_clicked()
+{
+    QByteArray dd = QByteArray::fromRawData(hwr_Start_position, 6);
+    for (int i = 0; i<= 57; i++)
+    {
+        dd.append("A");
+    }
+    serial.write(dd);
+    //serial.flush();
+    //serial.waitForBytesWritten(50);
+
 }
