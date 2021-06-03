@@ -37,6 +37,9 @@ private slots:
 
     void on_stand_upButton_clicked();
 
+signals:
+    void Open_Port_Signal(QString portname); // Сигнал даем по нажатию кнопки "OPEN"
+
 private:
     Ui::MainWindow *ui;
 };

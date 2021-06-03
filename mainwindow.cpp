@@ -22,11 +22,14 @@ MainWindow::MainWindow(QWidget *parent)
     QByteArray ba = target_name.toLocal8Bit();
     const char *c_str = ba.data();
     printf("Appname : %s", c_str);
-    Robot = new HiWonder(); // Без этого будет "The program has unexpectedly finished", хотя в начале писала, что это ambigous
+    Robot = new HiWonder(); // Без этого будет "The program has unexpectedly finished", хотя в начале писала, что это ambiguous
     Robot->Log_File_Open(Log_File_Name);
 
     QString str = "The application \"";  str +=target_name; str += "\"";
     Robot->Write_To_Log(0xf000, str.append(" is started successfully!!!\n"));
+
+    connect( this, SIGNAL (Open_Port_Signal(QString)), Robot, SLOT(Open_Port_Slot(QString)));
+
 
 
 }
@@ -59,15 +62,15 @@ void MainWindow::GUI_Write_To_Log (int value, QString log_message)
 //+++++++++++++++++++++++++++++++++++++++
 void MainWindow::on_openButton_clicked()
 {
-
-
-    serial.setPortName(ui->comL->currentText());
-    serial.open(QIODevice::ReadWrite);
-    serial.setBaudRate(QSerialPort::Baud115200);
-    serial.setDataBits(QSerialPort::Data8);
-    serial.setParity(QSerialPort::NoParity);
-    serial.setStopBits(QSerialPort::OneStop);
-    serial.setFlowControl(QSerialPort::NoFlowControl);
+QString portname = ui->comL->currentText();
+emit Open_Port_Signal(portname);
+//    serial.setPortName(ui->comL->currentText());
+//    serial.open(QIODevice::ReadWrite);
+//    serial.setBaudRate(QSerialPort::Baud115200);
+//    serial.setDataBits(QSerialPort::Data8);
+//    serial.setParity(QSerialPort::NoParity);
+//    serial.setStopBits(QSerialPort::OneStop);
+//    serial.setFlowControl(QSerialPort::NoFlowControl);
 
 
 
@@ -113,11 +116,14 @@ void MainWindow::on_openButton_clicked()
 void MainWindow::on_sitButton_clicked()
 {
     QByteArray dd = QByteArray::fromRawData(sit_down_position, 6);
-    for (int i = 0; i<= 57; i++)
-    {
-        dd.append("A");
-    }
-    serial.write(dd);
+    Robot->GoToPosition(dd);
+//    for (int i = 0; i<= 57; i++)
+//    {
+//        dd.append("A");
+//    }
+//    serial.write(dd);
+
+
     //serial.flush();
     //serial.waitForBytesWritten(50);
 }
@@ -126,11 +132,12 @@ void MainWindow::on_sitButton_clicked()
 void MainWindow::on_stand_upButton_clicked()
 {
     QByteArray dd = QByteArray::fromRawData(hwr_Start_position, 6);
-    for (int i = 0; i<= 57; i++)
-    {
-        dd.append("A");
-    }
-    serial.write(dd);
+    Robot->GoToPosition(dd);
+//    for (int i = 0; i<= 57; i++)
+//    {
+//        dd.append("A");
+//    }
+//    serial.write(dd);
     //serial.flush();
     //serial.waitForBytesWritten(50);
 

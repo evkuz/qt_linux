@@ -5,6 +5,8 @@
 #include <QString>
 #include <QFile>
 #include <QDateTime>
+#include <QSerialPort>
+#include <QSerialPortInfo>
 
 
 class HiWonder : public QObject
@@ -16,10 +18,12 @@ public:
     ~HiWonder();
 
 #define serial_speed Baud115200
-#define accum_buffer_SIZE 64
+#define robot_buffer_SIZE 64
 #define Log_File_Name        "./hiwonder.log"
 
-    char byInputBuffer[accum_buffer_SIZE];
+    QSerialPort serial;
+    char byInputBuffer[robot_buffer_SIZE];
+    char byOutputBuffer[robot_buffer_SIZE];
     QFile       LogFile;
 
 
@@ -30,10 +34,14 @@ public:
     void Log_File_Open(QString lname);
     void Write_To_Log (int value, QString log_message);
 
+    void GoToPosition(QByteArray &position); //Оправляет данные для новой позиции приводов в порт (Роботу)
+
+
 
 signals:
 
 public slots:
+    void Open_Port_Slot(QString portname);
 };
 
 #endif // HIWONDER_H
