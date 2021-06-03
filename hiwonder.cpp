@@ -60,15 +60,28 @@ void HiWonder::Open_Port_Slot(QString portname)
 //++++++++++++++++++++++
 void HiWonder::GoToPosition(QByteArray &position)
 {
+    QString str, str2;
     int sz = position.size();
     if (sz > robot_buffer_SIZE) sz = robot_buffer_SIZE;
 
     serial.write(position);
     serial.waitForBytesWritten();
-    QString str = "To Robot ";
-    str += QString(position);
+    str = "To Robot ";
+    str += QString(position.toHex());
+    //str = str + str2;
+
+
+
     this->Write_To_Log(0xF001, str);
 
     serial.waitForReadyRead();
+
+    str = "Ready to read data from robot";
+    this->Write_To_Log(0xF001, str);
+    qbuf = serial.readAll();
+
+    str = "From Robot ";
+    str += QString(qbuf);
+    this->Write_To_Log(0xF001, str);
 
 }

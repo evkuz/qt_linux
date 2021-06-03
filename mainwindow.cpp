@@ -14,6 +14,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     //QList ports = QSerialPortInfo
 
+
+
     foreach (const QSerialPortInfo &info, QSerialPortInfo::availablePorts()){
         ui->comL->addItem(info.portName(),info.portName());
     }
@@ -53,7 +55,7 @@ void MainWindow::GUI_Write_To_Log (int value, QString log_message)
     str = curdate.toString("yyyy-MM-dd__hh:mm:ss:z").toLocal8Bit(); str.append(" > ");
     str2 = QString("0x%1: ").arg(value, 4, 16, QChar('0'));
 
-    uin << str << str2 << log_message;
+    uin << str << str2 << log_message << "\n";
 
 
 }
@@ -133,12 +135,35 @@ void MainWindow::on_stand_upButton_clicked()
 {
     QByteArray dd = QByteArray::fromRawData(hwr_Start_position, 6);
     Robot->GoToPosition(dd);
-//    for (int i = 0; i<= 57; i++)
-//    {
-//        dd.append("A");
-//    }
-//    serial.write(dd);
-    //serial.flush();
-    //serial.waitForBytesWritten(50);
+    dd = QByteArray(reinterpret_cast<const char*>(hwr_Start_position), 10);
+    QString str = QString(dd);
+
+    QByteArray cc;
+    //cc.replace(hwr_Start_position, dd);
+
+    str = "Data : ";
+    for (int i =0; i<= DOF-1; i++)
+    {
+        str += QString::number(Servos[i]);
+        str += ", ";
+    }
+
+
+    //str += QString(cc);
+    str += " From standup";
+
+
+
+    GUI_Write_To_Log(0xff10, str);
+}
+
+void MainWindow::on_S1_verSlider_valueChanged(int value)
+{
+    Servos[0]   = value;
+    const char *   pchar;
+    pchar = static_cast<const char *>(static_cast<void *>(Servos));
+    QByteArray dd = QByteArray::fromRawData(pchar, 6);
+    Robot->GoToPosition(dd);
+
 
 }

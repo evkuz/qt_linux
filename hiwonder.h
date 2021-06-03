@@ -22,9 +22,11 @@ public:
 #define Log_File_Name        "./hiwonder.log"
 
     QSerialPort serial;
-    char byInputBuffer[robot_buffer_SIZE];
+    QByteArray byInputBuffer[robot_buffer_SIZE];
     char byOutputBuffer[robot_buffer_SIZE];
     QFile       LogFile;
+
+    QByteArray qbuf;
 
 
 
