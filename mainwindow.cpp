@@ -1,11 +1,10 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "positions.h"
+#include "hiwonder.h"
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <QDataStream>
-#include <QTextStream>
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -23,27 +22,29 @@ MainWindow::MainWindow(QWidget *parent)
     QByteArray ba = target_name.toLocal8Bit();
     const char *c_str = ba.data();
     printf("Appname : %s", c_str);
-    Log_File_Open(Log_File_Name);
+    Robot = new HiWonder(); // Без этого будет "The program has unexpectedly finished", хотя в начале писала, что это ambigous
+    Robot->Log_File_Open(Log_File_Name);
 
-    QString str = "The application \"";  str +=target_name; str += "\""; Write_To_Log(str.append(" is started successfully!!!\n"));
+    QString str = "The application \"";  str +=target_name; str += "\"";
+    Robot->Write_To_Log(0xf000, str.append(" is started successfully!!!\n"));
 
 
 }
 
 MainWindow::~MainWindow()
 {
+    GUI_Write_To_Log(0xffff, "Program is going to be closed");
     delete ui;
-    LogFile.close();
+    delete Robot;
+
 }
 //+++++++++++++++++++++++++++++++++++++++
-
-void MainWindow::Write_To_Log (QString log_message)
+void MainWindow::GUI_Write_To_Log (int value, QString log_message)
 {
     QDateTime curdate ;
-    QTextStream uin(&LogFile);
+    QTextStream uin(&Robot->LogFile);
 
     QString str, str2;
-    int value = 0xf000;
     curdate = QDateTime::currentDateTime();
 
     str = curdate.toString("yyyy-MM-dd__hh:mm:ss:z").toLocal8Bit(); str.append(" > ");
@@ -51,7 +52,10 @@ void MainWindow::Write_To_Log (QString log_message)
 
     uin << str << str2 << log_message;
 
+
 }
+
+
 //+++++++++++++++++++++++++++++++++++++++
 void MainWindow::on_openButton_clicked()
 {
@@ -118,11 +122,6 @@ void MainWindow::on_sitButton_clicked()
     //serial.waitForBytesWritten(50);
 }
 //+++++++++++++++++++++++++++++++
-void MainWindow::Log_File_Open(QString lname)
-{
-    LogFile.setFileName(lname);
-    LogFile.open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text);
-}
 
 void MainWindow::on_stand_upButton_clicked()
 {

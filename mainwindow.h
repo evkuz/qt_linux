@@ -2,11 +2,11 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-//#include <QtSerialPort/QSerialPort>
 #include <QSerialPort>
 #include <QSerialPortInfo>
 #include <QByteArray>
 #include <QFile>
+#include "hiwonder.h"  // hiwonder class
 
 
 
@@ -23,12 +23,12 @@ public:
     ~MainWindow();
     QSerialPort serial;
     QByteArray *buff;
-    QFile       LogFile;
+
     QString     target_name;
 
-#define Log_File_Name        "./hiwonder.log"
-    void Log_File_Open(QString lname);
-    void Write_To_Log (QString log_message);
+    HiWonder *Robot;
+
+    void GUI_Write_To_Log (int value, QString log_message); //Пишет в лог-файл номер ошибки value и сообщение message
 
 private slots:
     void on_openButton_clicked();

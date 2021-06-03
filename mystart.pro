@@ -11,12 +11,14 @@ QT += serialport
 
 SOURCES += \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    hiwonder.cpp
 
 HEADERS += \
     evkuz.h \
     mainwindow.h \
-    positions.h
+    positions.h \
+    hiwonder.h
 
 FORMS += \
     mainwindow.ui
