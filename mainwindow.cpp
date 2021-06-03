@@ -27,7 +27,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     QString str = "The application \"";  str +=target_name; str += "\""; Write_To_Log(str.append(" is started successfully!!!\n"));
 
-
 }
 
 MainWindow::~MainWindow()
@@ -135,4 +134,67 @@ void MainWindow::on_stand_upButton_clicked()
     //serial.flush();
     //serial.waitForBytesWritten(50);
 
+}
+
+void MainWindow::on_closeButton_clicked()
+{
+    serial.close();
+}
+//+++++++++++++++++++++++++ update servos from LineEdits
+void MainWindow::on_servo_1_lineEdit_editingFinished()
+{
+    servos[0] = ui->servo_1_lineEdit->text().toInt();
+}
+
+
+void MainWindow::on_servo_2_lineEdit_editingFinished()
+{
+    servos[1] = ui->servo_2_lineEdit->text().toInt();
+}
+
+
+void MainWindow::on_servo_3_lineEdit_editingFinished()
+{
+    servos[2] = ui->servo_3_lineEdit->text().toInt();
+}
+
+void MainWindow::on_servo_4_lineEdit_editingFinished()
+{
+    servos[3] = ui->servo_4_lineEdit->text().toInt();
+}
+
+
+void MainWindow::on_servo_5_lineEdit_editingFinished()
+{
+    servos[4] = ui->servo_5_lineEdit->text().toInt();
+}
+
+
+void MainWindow::on_servo_6_lineEdit_editingFinished()
+{
+    servos[5] = ui->servo_6_lineEdit->text().toInt();
+}
+//+++++++++++++++++++++++++++++++++++++++++
+//Send data from linedits to robot
+void MainWindow::on_set_posButton_clicked()
+{// Преобразуем указатель на массив char в указатель на массив DWORD
+
+
+  //  mA = static_cast<DWORD *>(static_cast<void *>(ek_a));
+
+    //unsigned char *data;
+    //data = static_cast<unsigned char *>(static_cast<uint8_t *>(servos));
+    //QByteArray dd = QByteArray(reinterpret_cast<unsigned char *>(data));
+   // const char *dd = reinterpret_cast<const char *>(servos);
+  //  reinterpret_cast<const char*>(foo())
+   // QByteArray ba(dd);
+
+ //   QByteArray dd = QByteArray::fromRawData(data, 6);
+ /*
+    for (int i = 0; i<= 57; i++)
+    {
+        dd.append("A");
+    }
+ */
+ serial.write(reinterpret_cast<const char *>(servos));
 }
