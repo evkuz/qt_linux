@@ -20,6 +20,7 @@ public:
 #define serial_speed Baud115200
 #define robot_buffer_SIZE 64
 #define Log_File_Name        "./hiwonder.log"
+#define DOF 6
 
     QSerialPort serial;
     QByteArray byInputBuffer[robot_buffer_SIZE];
@@ -36,7 +37,7 @@ public:
     void Log_File_Open(QString lname);
     void Write_To_Log (int value, QString log_message);
 
-    void GoToPosition(QByteArray &position); //Оправляет данные для новой позиции приводов в порт (Роботу)
+    void GoToPosition(QByteArray &position, const char *servo); //Оправляет данные для новой позиции приводов в порт (Роботу)
 
 
 

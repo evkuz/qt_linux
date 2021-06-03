@@ -25,14 +25,14 @@ public:
     QByteArray *buff;
 
     QString     target_name;
-    uint8_t    *servos;    //unsigned char
+    //char       *servos;    //unsigned char
     QByteArray LineEdits[6];
 
     HiWonder *Robot;
 
-    int Servos [6] = {93,93,93,93,93,93};
-#define DOF 6
+    char Servos [6] = {93,93,93,93,93,93};
 
+    void update_data_from_sliders(int index, int value);
 
     void GUI_Write_To_Log (int value, QString log_message); //Пишет в лог-файл номер ошибки value и сообщение message
 
@@ -59,6 +59,16 @@ private slots:
 
     void on_set_posButton_clicked();
     void on_S1_verSlider_valueChanged(int value);
+
+    void on_S2_verSlider_valueChanged(int value);
+
+    void on_S3_verSlider_valueChanged(int value);
+
+    void on_S4_verSlider_valueChanged(int value);
+
+    void on_S5_verSlider_valueChanged(int value);
+
+    void on_S6_verSlider_valueChanged(int value);
 
 signals:
     void Open_Port_Signal(QString portname); // Сигнал даем по нажатию кнопки "OPEN"

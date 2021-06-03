@@ -117,7 +117,7 @@ emit Open_Port_Signal(portname);
 void MainWindow::on_sitButton_clicked()
 {
     QByteArray dd = QByteArray::fromRawData(sit_down_position, 6);
-    Robot->GoToPosition(dd);
+    Robot->GoToPosition(dd, sit_down_position);
 //    for (int i = 0; i<= 57; i++)
 //    {
 //        dd.append("A");
@@ -133,7 +133,7 @@ void MainWindow::on_sitButton_clicked()
 void MainWindow::on_stand_upButton_clicked()
 {
     QByteArray dd = QByteArray::fromRawData(hwr_Start_position, 6);
-    Robot->GoToPosition(dd);
+    Robot->GoToPosition(dd, hwr_Start_position);
     dd = QByteArray(reinterpret_cast<const char*>(hwr_Start_position), 10);
     QString str = QString(dd);
 
@@ -155,18 +155,31 @@ void MainWindow::on_stand_upButton_clicked()
 
     GUI_Write_To_Log(0xff10, str);
 }
-
+//+++++++++++++++++++++++++++++++
 void MainWindow::on_S1_verSlider_valueChanged(int value)
 {
-    Servos[0]   = value;
-    const char *   pchar;
-    pchar = static_cast<const char *>(static_cast<void *>(Servos));
-    QByteArray dd = QByteArray::fromRawData(pchar, 6);
-    Robot->GoToPosition(dd);
+    update_data_from_sliders(0, value);
+    ui->servo_1_lineEdit->setText(QString::number(value));
+}
+//++++++++++++++++++++++++++++++++++++++++++++++
+void MainWindow::update_data_from_sliders(int index, int value)
+{
+    Servos[index]   = value;
+    on_set_posButton_clicked();
+//    const char *   pchar;
+//    pchar = static_cast<const char *>(static_cast<char *>(Servos));
+//    QByteArray dd = QByteArray::fromRawData(pchar, 6);
+//    QString str = "Servos before write to serial ";
+//    for (int i=0; i<= DOF - 1; i++){
+//        str += QString::number(Servos[i]);
+//        str+= ", ";
+//    }
+//    GUI_Write_To_Log(0xf002,str);
+//    Robot->GoToPosition(dd, pchar);
 
 
 }
-
+//++++++++++++++++++++++++++++++++++++++++++++++
 void MainWindow::on_closeButton_clicked()
 {
     serial.close();
@@ -174,58 +187,89 @@ void MainWindow::on_closeButton_clicked()
 //+++++++++++++++++++++++++ update servos from LineEdits
 void MainWindow::on_servo_1_lineEdit_editingFinished()
 {
-    servos[0] = ui->servo_1_lineEdit->text().toInt();
+    Servos[0] = ui->servo_1_lineEdit->text().toInt();
 }
 
 
 void MainWindow::on_servo_2_lineEdit_editingFinished()
 {
-    servos[1] = ui->servo_2_lineEdit->text().toInt();
+    Servos[1] = ui->servo_2_lineEdit->text().toInt();
 }
 
 
 void MainWindow::on_servo_3_lineEdit_editingFinished()
 {
-    servos[2] = ui->servo_3_lineEdit->text().toInt();
+    Servos[2] = ui->servo_3_lineEdit->text().toInt();
 }
 
 void MainWindow::on_servo_4_lineEdit_editingFinished()
 {
-    servos[3] = ui->servo_4_lineEdit->text().toInt();
+    Servos[3] = ui->servo_4_lineEdit->text().toInt();
 }
 
 
 void MainWindow::on_servo_5_lineEdit_editingFinished()
 {
-    servos[4] = ui->servo_5_lineEdit->text().toInt();
+    Servos[4] = ui->servo_5_lineEdit->text().toInt();
 }
 
 
 void MainWindow::on_servo_6_lineEdit_editingFinished()
 {
-    servos[5] = ui->servo_6_lineEdit->text().toInt();
+    Servos[5] = ui->servo_6_lineEdit->text().toInt();
 }
 //+++++++++++++++++++++++++++++++++++++++++
 //Send data from linedits to robot
 void MainWindow::on_set_posButton_clicked()
-{// Преобразуем указатель на массив char в указатель на массив DWORD
+{
+    QString str;
+    const char *   pchar;
+    pchar = static_cast<const char *>(static_cast<char *>(Servos));
+    QByteArray dd = QByteArray::fromRawData(pchar, 6);
 
-
-  //  mA = static_cast<DWORD *>(static_cast<void *>(ek_a));
-
-    //unsigned char *data;
-    //data = static_cast<unsigned char *>(static_cast<uint8_t *>(servos));
-    //QByteArray dd = QByteArray(reinterpret_cast<unsigned char *>(data));
-   // const char *dd = reinterpret_cast<const char *>(servos);
-  //  reinterpret_cast<const char*>(foo())
-   // QByteArray ba(dd);
-
- //   QByteArray dd = QByteArray::fromRawData(data, 6);
- /*
-    for (int i = 0; i<= 57; i++)
-    {
-        dd.append("A");
+    Robot->GoToPosition(dd, pchar);
+    str = "Servos data written to serial ";
+    unsigned char* sData = reinterpret_cast<unsigned char*>(Servos);
+    for (int i=0; i<= DOF - 1; i++){
+        str += QString::number(sData[i]);
+        str+= ", ";
     }
- */
- serial.write(reinterpret_cast<const char *>(servos));
+    GUI_Write_To_Log(0xf003,str);
+
+
+
+ //serial.write(reinterpret_cast<const char *>(Servos));
+}
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++
+void MainWindow::on_S2_verSlider_valueChanged(int value)
+{
+    update_data_from_sliders(1, value);
+    ui->servo_2_lineEdit->setText(QString::number(value));
+}
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++
+void MainWindow::on_S3_verSlider_valueChanged(int value)
+{
+    update_data_from_sliders(2, value);
+    ui->servo_3_lineEdit->setText(QString::number(value));
+}
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+void MainWindow::on_S4_verSlider_valueChanged(int value)
+{
+    update_data_from_sliders(3, value);
+    ui->servo_4_lineEdit->setText(QString::number(value));
+}
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++
+void MainWindow::on_S5_verSlider_valueChanged(int value)
+{
+    update_data_from_sliders(4, value);
+    ui->servo_5_lineEdit->setText(QString::number(value));
+}
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+void MainWindow::on_S6_verSlider_valueChanged(int value)
+{
+    update_data_from_sliders(5, value);
+    ui->servo_6_lineEdit->setText(QString::number(value));
 }
