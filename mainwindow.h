@@ -2,13 +2,12 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-//#include <QtSerialPort/QSerialPort>
 #include <QSerialPort>
 #include <QSerialPortInfo>
 #include <QByteArray>
 #include <QFile>
 #include <QList>
-
+#include "hiwonder.h"  // hiwonder class
 
 
 QT_BEGIN_NAMESPACE
@@ -24,14 +23,18 @@ public:
     ~MainWindow();
     QSerialPort serial;
     QByteArray *buff;
-    QFile       LogFile;
+
     QString     target_name;
     uint8_t    *servos;    //unsigned char
     QByteArray LineEdits[6];
 
-#define Log_File_Name        "./hiwonder.log"
-    void Log_File_Open(QString lname);
-    void Write_To_Log (QString log_message);
+    HiWonder *Robot;
+
+    int Servos [6] = {93,93,93,93,93,93};
+#define DOF 6
+
+
+    void GUI_Write_To_Log (int value, QString log_message); //Пишет в лог-файл номер ошибки value и сообщение message
 
 private slots:
     void on_openButton_clicked();
@@ -55,6 +58,10 @@ private slots:
     void on_servo_6_lineEdit_editingFinished();
 
     void on_set_posButton_clicked();
+    void on_S1_verSlider_valueChanged(int value);
+
+signals:
+    void Open_Port_Signal(QString portname); // Сигнал даем по нажатию кнопки "OPEN"
 
 private:
     Ui::MainWindow *ui;
