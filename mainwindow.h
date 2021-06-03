@@ -7,6 +7,7 @@
 #include <QSerialPortInfo>
 #include <QByteArray>
 #include <QFile>
+#include <QList>
 
 
 
@@ -25,6 +26,8 @@ public:
     QByteArray *buff;
     QFile       LogFile;
     QString     target_name;
+    uint8_t    *servos;    //unsigned char
+    QByteArray LineEdits[6];
 
 #define Log_File_Name        "./hiwonder.log"
     void Log_File_Open(QString lname);
@@ -36,6 +39,22 @@ private slots:
     void on_sitButton_clicked();
 
     void on_stand_upButton_clicked();
+
+    void on_closeButton_clicked();
+
+    void on_servo_1_lineEdit_editingFinished();
+
+    void on_servo_2_lineEdit_editingFinished();
+
+    void on_servo_3_lineEdit_editingFinished();
+
+    void on_servo_4_lineEdit_editingFinished();
+
+    void on_servo_5_lineEdit_editingFinished();
+
+    void on_servo_6_lineEdit_editingFinished();
+
+    void on_set_posButton_clicked();
 
 private:
     Ui::MainWindow *ui;
