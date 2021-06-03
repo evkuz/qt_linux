@@ -35,6 +35,8 @@ private slots:
 
     void on_sitButton_clicked();
 
+    void on_stand_upButton_clicked();
+
 private:
     Ui::MainWindow *ui;
 };
