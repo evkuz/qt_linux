@@ -4,7 +4,7 @@
 #include <QtCore>
 
 const char hwr_Start_position [6] = {93, 93, 93, 93, 93, 93}; // servo1,,,servo6
-quint8 sit_down_position [6] = {93, 93, 93, 48, 48, 93} ; // Поза сидя. Сдвинуты 4,5 приводы (относительно 93)
+const char sit_down_position [6] = {93, 93, 93, 48, 48, 93} ; // Поза сидя. Сдвинуты 4,5 приводы (относительно 93)
 /*
 quint8 horse_position [6] = [93, 93, 0, 48, 48, 93];
 quint8 horse_mirror_position [6]= [45, 93, 180, 135, 135, 93]  # ;
