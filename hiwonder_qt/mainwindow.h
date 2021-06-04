@@ -8,6 +8,9 @@
 #include <QFile>
 #include <QList>
 #include "hiwonder.h"  // hiwonder class
+#include "mcinfer.h"
+
+
 
 
 QT_BEGIN_NAMESPACE
