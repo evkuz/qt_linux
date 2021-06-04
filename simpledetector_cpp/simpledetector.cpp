@@ -21,7 +21,7 @@ Rect detector(const Mat& frame, Mat& out, const byte* color_l, const byte* color
 	Rect res = Rect(0, 0, 0, 0);
 	
 	Mat mask;
-
+	
 	medianBlur(frame, out, 11);
 	inRange(
 		out, 
@@ -51,13 +51,8 @@ Rect detector(const Mat& frame, Mat& out, const byte* color_l, const byte* color
         }
     }
     res = boundingRect(contours[largestComp]);
-	Scalar color( 0, 0, 255 );
-    //drawContours( out, contours, largestComp, color, FILLED, LINE_8, hierarchy );
-	rectangle(out, res, Scalar(0,255, 0));
-    // GaussianBlur(frame, out, Size(51, 51), 3.5, 3.5);
-    // threshold(foregroundMask, foregroundMask, 10, 255, THRESH_BINARY);
-
-    return res;
+	
+	return res;
 }
 
 int main(int argc, char* argv[])
@@ -93,8 +88,10 @@ int main(int argc, char* argv[])
 					static_cast<int>(pos.x + pos.width/2),
 					static_cast<int>(pos.y + pos.height/2)
 				);
+				rectangle(frame, pos, Scalar(0,255, 0));
 			}
-			imshow("Image View", image);
+
+			imshow("Image View", frame);
 
 			char key = (char)waitKey(capture.isOpened() ? 50 : 500);
 			if( key == 27 )
