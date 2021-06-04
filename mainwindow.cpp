@@ -182,7 +182,7 @@ void MainWindow::update_data_from_sliders(int index, int value)
 //++++++++++++++++++++++++++++++++++++++++++++++
 void MainWindow::on_closeButton_clicked()
 {
-    serial.close();
+    Robot->serial.close();
 }
 //+++++++++++++++++++++++++ update servos from LineEdits
 void MainWindow::on_servo_1_lineEdit_editingFinished()

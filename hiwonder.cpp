@@ -64,8 +64,8 @@ void HiWonder::GoToPosition(QByteArray &position, const char *servo)
     int sz = position.size();
     if (sz > robot_buffer_SIZE) sz = robot_buffer_SIZE;
 
-   // serial.write(position);
-  //  serial.waitForBytesWritten();
+   serial.write(position);
+   serial.waitForBytesWritten();
 
     // Для проверки
 //    str = "To Robot in hex: ";
@@ -82,12 +82,12 @@ void HiWonder::GoToPosition(QByteArray &position, const char *servo)
         str+= ", ";
     }
     this->Write_To_Log(0xF001, str);
-   // serial.waitForReadyRead();
+    serial.waitForReadyRead();
 
     str = "Ready to read data from robot";
     this->Write_To_Log(0xF001, str);
-   // qbuf = serial.readAll();
-    qbuf = "askdjhfakjhfak";
+    qbuf = serial.readAll();
+    //qbuf = "askdjhfakjhfak";
     str = "From Robot ";
     str += QString(qbuf);
     this->Write_To_Log(0xF001, str);
