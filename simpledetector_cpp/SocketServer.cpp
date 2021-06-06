@@ -18,6 +18,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <thread> // std::thread
+#include <chrono>
+#include <utility>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -26,10 +28,11 @@
 #include <sys/types.h>
 #include <sys/un.h>
 #include <unistd.h>
+#include <fcntl.h>
+
 
 using namespace std;
 
-void error(const char *msg) { perror(msg); }
 
 bool ParseCommand(char *str, ServerCommand &command) {
   bool result = false;
@@ -51,11 +54,8 @@ SocketServer::SocketServer(const char *socketPath) {
   int pathLength = strlen(socketPath);
   _serverPath = new char[pathLength];
   strncpy(_serverPath, socketPath, pathLength);
-  cout << "!!!!!" << _serverPath << endl;
-
-  _isBusy = false;
+  
   _isStoped = true;
-  _haveWork = false;
   _thread = NULL; //
 
   _detectorState = false;
@@ -70,18 +70,18 @@ SocketServer::~SocketServer() {
 
 int SocketServer::Start() {
   if (_isStoped) {
-    std::lock_guard<std::mutex> lg(_locker);
     this->_serverSock = socket(AF_UNIX, SOCK_STREAM, 0);
     if (_serverSock < 0) {
       return -1;
     }
+    fcntl(this->_serverSock, F_SETFL, O_NONBLOCK);
 
     struct sockaddr_un serverAddr;
     memset(&serverAddr, 0, sizeof(serverAddr));
     serverAddr.sun_family = AF_UNIX;
 
     strncpy(serverAddr.sun_path, _serverPath, sizeof(serverAddr.sun_path) - 1);
-    // unlink(_serverPath);
+    unlink(_serverPath);
 
     if (bind(_serverSock, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) <
         0) {
@@ -95,8 +95,6 @@ int SocketServer::Start() {
     };
 
     _isStoped = false;
-
-    printf("We're ready to listen\n");
     _thread = new std::thread(&SocketServer::DoWork, this);
   }
 
@@ -113,24 +111,24 @@ void SocketServer::Stop() {
       this->_thread = NULL;
     }
   }
+  unlink(this->_serverPath);
 }
 
 void SocketServer::DoWork() {
-  int client;
-  char msg[20];
+  int client, n;
   struct sockaddr_un cli_addr;
   int newsockfd;
-
   ServerCommand command;
   char buf[80];
 
-  snprintf(msg, 20, "SocketServer started ");
+  printf("SocketServer started!");
   while (!this->_isStoped) {
     client = sizeof(cli_addr);
     newsockfd =
-        accept(this->_serverSock, (struct sockaddr *)&cli_addr, &client);
+        accept(this->_serverSock, (struct sockaddr *)&cli_addr, (socklen_t*)&client);
     if (newsockfd < 0) {
-      perror("accept error");
+      //perror("accept error");
+      std::this_thread::sleep_for(std::chrono::milliseconds(50));
       continue;
     }
     n = read(newsockfd, buf, 80);
@@ -153,12 +151,8 @@ void SocketServer::DoWork() {
 }
 
 void SocketServer::SetDetectorState(bool detected, int x, int y) {
-  if (_isListening) {
     std::lock_guard<std::mutex> lk(_locker);
     this->_detectorState = detected;
     this->_objectX = x;
     this->_objectY = y;
-  } else {
-    Stop();
-  }
 }

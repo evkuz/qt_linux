@@ -1,4 +1,10 @@
-#include "constants.h"
+#include "opencv2/core.hpp"
+#include <opencv2/core/utility.hpp>
+#include "opencv2/imgproc.hpp"
+#include "opencv2/imgcodecs.hpp"
+#include "opencv2/videoio.hpp"
+#include "opencv2/highgui.hpp"
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
@@ -54,7 +60,7 @@ Rect detector(const Mat& frame, Mat& out, const byte* color_l, const byte* color
 
 int main(int argc, char* argv[])
 {
-	int cameraId = 2;
+	int cameraId = 0;
 	
 	VideoCapture capture;
 	capture.open(cameraId);
@@ -62,10 +68,10 @@ int main(int argc, char* argv[])
     if(!capture.isOpened())
         return fprintf( stderr, "Could not initialize video (%d) capture\n", cameraId), -2;
 
-	if (!capture.set(CAP_PROP_FRAME_WIDTH, 1024))
-	{
-		std::cerr << "ERROR: seekeing is not supported" << endl;
-	}
+	//if (!capture.set(CAP_PROP_FRAME_WIDTH, 1024))
+	//{
+	//	std::cerr << "ERROR: seekeing is not supported" << endl;
+	//}
 //CAP_PROP_FRAME_HEIGHT
 
 	Mat frame, image;
@@ -77,9 +83,8 @@ int main(int argc, char* argv[])
 		std::cerr << "Can't start socket server!" << endl;
 		return -3;
 	}
-
 	while(true) {
-		if(capture.isOpened() )
+		if(capture.isOpened())
 		{
 			Mat view0;
 			capture >> view0;
@@ -89,12 +94,12 @@ int main(int argc, char* argv[])
 			if(pos.width*pos.height > 0) {
 				int ox = static_cast<int>(pos.x + pos.width/2);
 				int oy = static_cast<int>(pos.y + pos.height/2);
-				//printf("%i,%i\n", ox, oy);
+				printf("%i,%i\n", ox, oy);
 				rectangle(frame, pos, Scalar(0,255, 0));
 
-				server.Set(true, ox, oy);
+				server.SetDetectorState(true, ox, oy);
 			} else {
-				server.Set(false, 0, 0);
+				server.SetDetectorState(false, 0, 0);
 			}
 
 			imshow("Image View", frame);

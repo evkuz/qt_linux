@@ -71,7 +71,10 @@ Thumbs.db
 *.dll
 *.exe
 
-simpledetector_cpp/build/**
+**/build/**
+**/release/**
+**/debug/**
+.vscode/**
 
 !hiwonder_qt*
 !hiwonder_qt/*.*

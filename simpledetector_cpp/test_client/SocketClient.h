@@ -11,8 +11,8 @@
  * Created on August 16, 2017, 4:04 PM
  */
 
-#ifndef SOCKETSERVER_H
-#define SOCKETSERVER_H
+#ifndef SOCKETClient_H
+#define SOCKETClient_H
 
 #include <iostream>       // std::cout
 #include <thread>         // std::thread
@@ -27,30 +27,21 @@ typedef enum ServerCommand {
 } ServerCommand;
 
 
-class SocketServer {
+typedef struct DetectorState {
+    bool isDetected;
+    int objectX;
+    int objectY;
+} DetectorState;
+
+
+class SocketClient {
 public:
-    SocketServer(const char* socketPath);
-    virtual ~SocketServer();
+    SocketClient(const char* socketPath);
+    virtual ~SocketClient();
 
-	int Start();
-    void Stop();
-    bool IsRunning() { std::lock_guard<std::mutex> lg(_locker); return !_isStoped;}
-    void SetDetectorState(bool detected, int x, int y);
-
-private:
-    void DoWork();
-
-	bool _isStoped = true;
-
-	std::thread *_thread;
-	std::mutex _locker;
-    bool _detectorState;
-    int _objectX;
-    int _objectY;
-
+	int GetState(DetectorState *state);
 private:
     char* _serverPath;
-    int _serverSock;
 };
 
-#endif /* SOCKETSERVER_H */
+#endif /* SOCKETClient_H */
