@@ -1,13 +1,10 @@
-#include "opencv2/core.hpp"
-#include <opencv2/core/utility.hpp>
-#include "opencv2/imgproc.hpp"
-#include "opencv2/imgcodecs.hpp"
-#include "opencv2/videoio.hpp"
-#include "opencv2/highgui.hpp"
+#include "constants.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
 #include <vector>
+
+#include "SocketServer.h"
 
 using namespace cv;
 using namespace std;
@@ -58,7 +55,7 @@ Rect detector(const Mat& frame, Mat& out, const byte* color_l, const byte* color
 int main(int argc, char* argv[])
 {
 	int cameraId = 2;
-
+	
 	VideoCapture capture;
 	capture.open(cameraId);
 
@@ -75,7 +72,13 @@ int main(int argc, char* argv[])
 	printf("[i] press Enter for capture image and Esc for quit!\n\n");
 	namedWindow( "Image View", 1 );
 
-	while(true){
+	SocketServer server("iqr.socket");
+	if(server.Start() != 0){
+		std::cerr << "Can't start socket server!" << endl;
+		return -3;
+	}
+
+	while(true) {
 		if(capture.isOpened() )
 		{
 			Mat view0;
@@ -84,11 +87,14 @@ int main(int argc, char* argv[])
 
 			Rect pos = detector(frame, image, color_lower, color_upper);
 			if(pos.width*pos.height > 0) {
-				printf("%i,%i\n", 
-					static_cast<int>(pos.x + pos.width/2),
-					static_cast<int>(pos.y + pos.height/2)
-				);
+				int ox = static_cast<int>(pos.x + pos.width/2);
+				int oy = static_cast<int>(pos.y + pos.height/2);
+				//printf("%i,%i\n", ox, oy);
 				rectangle(frame, pos, Scalar(0,255, 0));
+
+				server.Set(true, ox, oy);
+			} else {
+				server.Set(false, 0, 0);
 			}
 
 			imshow("Image View", frame);
@@ -99,6 +105,6 @@ int main(int argc, char* argv[])
 		}
 	}
 	
-	
+	server.Stop();
 	return 0;
 }

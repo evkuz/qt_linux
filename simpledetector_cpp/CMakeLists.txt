@@ -19,8 +19,10 @@ message(STATUS "    version: ${OpenCV_VERSION}")
 message(STATUS "    libraries: ${OpenCV_LIBS}")
 message(STATUS "    include path: ${OpenCV_INCLUDE_DIRS}")
 
+set(SOURCE SocketServer.cpp simpledetector.cpp)
+set(HEADERS SocketServer.h)
 # Declare the executable target built from your sources
-add_executable(simpledetector simpledetector.cpp)
+add_executable(simpledetector ${SOURCE})
 
 # Link your application with OpenCV libraries
 target_link_libraries(simpledetector PRIVATE ${OpenCV_LIBS})

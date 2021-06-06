@@ -1,6 +1,11 @@
 #!/bin/bash
 
-mkdir build
-cd build
+__build_dir="build"
+
+if [ ! -d $__build_dir ]; then
+    mkdir -p $__build_dir
+fi
+
+cd __build_dir
 cmake .. && make
 
