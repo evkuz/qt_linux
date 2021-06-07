@@ -1,5 +1,9 @@
-﻿# qt_hiwonder
-Project on qt for HiWonder robot
+# IQR_LIT
 
-- hiwonder_qt
-  Qt project for HiWonder robot control
+Intelligent Quantum Robotics (IQR)
+
+Проект в pm
+https://pm.jinr.ru/projects/iqr_lit/issues
+
+wiki для этого проекта
+https://pm.jinr.ru/projects/iqr_lit/wiki
