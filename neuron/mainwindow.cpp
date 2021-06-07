@@ -29,8 +29,10 @@ MainWindow::MainWindow(QWidget *parent)
 
     QString str = "The application \"";  str +=target_name; str += "\"";
     Robot->Write_To_Log(0xf000, str.append(" is started successfully!!!\n"));
+     try_mcinfer();
 
-    connect( this, SIGNAL (Open_Port_Signal(QString)), Robot, SLOT(Open_Port_Slot(QString)));
+    //connect( this, SIGNAL (Open_Port_Signal(QString)), Robot, SLOT(Open_Port_Slot(QString)));
+
 
 
 }

@@ -2,6 +2,7 @@
 #define NEURON_H
 
 #include "mcinfer.h"
+#include "mainwindow.h"
 
 
 //+++++++++++++++++ Вспомогательные переменные
@@ -97,6 +98,6 @@ float de=0.1;
         }; /* done */
 
         //void try_mcinfer(float *data);
-        void try_mcinfer(void);
+
 
 #endif // NEURON_H

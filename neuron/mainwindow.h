@@ -8,7 +8,7 @@
 #include <QFile>
 #include <QList>
 #include "hiwonder.h"  // hiwonder class
-#include "mcinfer.h"
+//#include "mcinfer.h"
 
 
 
@@ -38,6 +38,7 @@ public:
     void update_data_from_sliders(int index, int value);
 
     void GUI_Write_To_Log (int value, QString log_message); //Пишет в лог-файл номер ошибки value и сообщение message
+    void try_mcinfer(void);
 
 private slots:
     void on_openButton_clicked();
