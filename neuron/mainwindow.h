@@ -8,6 +8,8 @@
 #include <QFile>
 #include <QList>
 #include "hiwonder.h"  // hiwonder class
+#include "SocketClient.h"
+
 //#include "mcinfer.h"
 
 
@@ -38,7 +40,10 @@ public:
     void update_data_from_sliders(int index, int value);
 
     void GUI_Write_To_Log (int value, QString log_message); //Пишет в лог-файл номер ошибки value и сообщение message
-    void try_mcinfer(void);
+    void try_mcinfer(int x, int y);
+
+private:
+    SocketClient readSocket;
 
 private slots:
     void on_openButton_clicked();
@@ -73,6 +78,8 @@ private slots:
     void on_S5_verSlider_valueChanged(int value);
 
     void on_S6_verSlider_valueChanged(int value);
+
+    void on_socketButton_clicked();
 
 signals:
     void Open_Port_Signal(QString portname); // Сигнал даем по нажатию кнопки "OPEN"

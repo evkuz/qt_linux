@@ -5,10 +5,12 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <iostream>
 
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
+    , readSocket("/home/evkuz/qt-projects/iqr_lit/simpledetector_cpp/iqr.socket")
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
@@ -24,15 +26,13 @@ MainWindow::MainWindow(QWidget *parent)
     QByteArray ba = target_name.toLocal8Bit();
     const char *c_str = ba.data();
     printf("Appname : %s", c_str);
-    Robot = new HiWonder(); // Без этого будет "The program has unexpectedly finished", хотя в начале писала, что это ambiguous
+    Robot = new HiWonder(); // Без этого будет "The program has unexpectedly finished", хотя в начале нговорила, что это ambiguous
     Robot->Log_File_Open(Log_File_Name);
 
     QString str = "The application \"";  str +=target_name; str += "\"";
     Robot->Write_To_Log(0xf000, str.append(" is started successfully!!!\n"));
-     try_mcinfer();
 
-    //connect( this, SIGNAL (Open_Port_Signal(QString)), Robot, SLOT(Open_Port_Slot(QString)));
-
+    connect( this, SIGNAL (Open_Port_Signal(QString)), Robot, SLOT(Open_Port_Slot(QString)));
 
 
 }
@@ -274,4 +274,30 @@ void MainWindow::on_S6_verSlider_valueChanged(int value)
 {
     update_data_from_sliders(5, value);
     ui->servo_6_lineEdit->setText(QString::number(value));
+}
+
+void MainWindow::on_socketButton_clicked()
+{
+    DetectorState state;
+    QString str;
+    str = "";
+
+    if (readSocket.GetState(&state) == 0)
+      {
+        if (state.isDetected){
+            try_mcinfer(state.objectX, state.objectY);
+            str+="DETECTED: ";
+            str += QString::number(state.objectX);
+            str += " ";
+            str += QString::number(state.objectY);
+
+
+        } else {
+            str += "NOT DETECTED";
+        }
+
+       std::cout <<  str.toStdString() << std::endl;
+       Robot->Write_To_Log(0xf010, str);
+       GUI_Write_To_Log(0xf010, str);
+    }
 }

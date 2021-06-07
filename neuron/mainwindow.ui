@@ -429,6 +429,19 @@
     <string>SIT + Stand UP</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="socketButton">
+   <property name="geometry">
+    <rect>
+     <x>570</x>
+     <y>430</y>
+     <width>151</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Read Detetor</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>
