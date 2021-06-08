@@ -7,6 +7,7 @@
 #include <QByteArray>
 #include <QFile>
 #include <QList>
+#include <QLineEdit>
 #include "hiwonder.h"  // hiwonder class
 #include "SocketClient.h"
 
@@ -32,6 +33,8 @@ public:
     QString     target_name;
     //char       *servos;    //unsigned char
     QByteArray LineEdits[6];
+
+    QList<QLineEdit*> qle_list;
 
     HiWonder *Robot;
 

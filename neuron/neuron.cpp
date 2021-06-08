@@ -22,7 +22,12 @@ void MainWindow::try_mcinfer(int x, int y){
             Servos[4] = outKB[2];
             Servos[5] = outKB[3];
 
-    //on_set_posButton_clicked();
+            for (int i =0; i<= DOF -1; i++)
+            {
+                qle_list[i]->setText(QString::number(Servos[i]));
+            }
+
+    on_set_posButton_clicked();
 
     QString str = "Mcinfer Data : ";
     unsigned char* sData = reinterpret_cast<unsigned char*>(Servos);

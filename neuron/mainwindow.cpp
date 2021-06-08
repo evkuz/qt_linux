@@ -10,13 +10,15 @@
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , readSocket("/home/evkuz/qt-projects/iqr_lit/simpledetector_cpp/iqr.socket")
+    , readSocket("../../simpledetector_cpp/iqr.socket")
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     //QList ports = QSerialPortInfo
 
 
+    qle_list = {ui->servo_1_lineEdit, ui->servo_2_lineEdit, ui->servo_3_lineEdit,
+                                 ui->servo_4_lineEdit, ui->servo_5_lineEdit, ui->servo_6_lineEdit};
 
     foreach (const QSerialPortInfo &info, QSerialPortInfo::availablePorts()){
         ui->comL->addItem(info.portName(),info.portName());
