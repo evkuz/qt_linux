@@ -24,8 +24,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     target_name = QFileInfo(QCoreApplication::applicationFilePath()).fileName();
     QByteArray ba = target_name.toLocal8Bit();
-    const char *c_str = ba.data();
-    printf("Appname : %s", c_str);
+    //g/const char *c_str = ba.data();
+    //printf("Appname : %s", c_str);
     Robot = new HiWonder(); // Без этого будет "The program has unexpectedly finished", хотя в начале нговорила, что это ambiguous
     Robot->Log_File_Open(Log_File_Name);
 
@@ -300,4 +300,10 @@ void MainWindow::on_socketButton_clicked()
        Robot->Write_To_Log(0xf010, str);
        GUI_Write_To_Log(0xf010, str);
     }
+}
+
+void MainWindow::on_clampButton_clicked()
+{
+    if (ui->servo_1_lineEdit->text().toInt() > 0) ui->servo_1_lineEdit->setText("0");
+    if (ui->servo_1_lineEdit->text().toInt() == 0) ui->servo_1_lineEdit->setText("160");
 }

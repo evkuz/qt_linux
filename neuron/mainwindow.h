@@ -81,6 +81,8 @@ private slots:
 
     void on_socketButton_clicked();
 
+    void on_clampButton_clicked();
+
 signals:
     void Open_Port_Signal(QString portname); // Сигнал даем по нажатию кнопки "OPEN"
 
