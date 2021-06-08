@@ -121,7 +121,7 @@ emit Open_Port_Signal(portname);
 void MainWindow::on_sitButton_clicked()
 {
     QByteArray dd = QByteArray::fromRawData(sit_down_position, 6);
-    Robot->GoToPosition(dd, sit_down_position);
+    Robot->GoToPosition(dd);//, sit_down_position
 //    for (int i = 0; i<= 57; i++)
 //    {
 //        dd.append("A");
@@ -137,7 +137,7 @@ void MainWindow::on_sitButton_clicked()
 void MainWindow::on_stand_upButton_clicked()
 {
     QByteArray dd = QByteArray::fromRawData(hwr_Start_position, 6);
-    Robot->GoToPosition(dd, hwr_Start_position);
+    Robot->GoToPosition(dd);//, hwr_Start_position
     dd = QByteArray(reinterpret_cast<const char*>(hwr_Start_position), 10);
     QString str = QString(dd);
 
@@ -227,11 +227,14 @@ void MainWindow::on_servo_6_lineEdit_editingFinished()
 void MainWindow::on_set_posButton_clicked()
 {
     QString str;
-    const char *   pchar;
-    pchar = static_cast<const char *>(static_cast<char *>(Servos));
-    QByteArray dd = QByteArray::fromRawData(pchar, 6);
-
-    Robot->GoToPosition(dd, pchar);
+   // const char *   pchar;
+    //pchar = static_cast<const char *>(static_cast<char *>(Servos));
+   // QByteArray dd = QByteArray::fromRawData(pchar, 6);
+    QByteArray dd ;
+    dd.resize(64);
+    memcpy(dd.data(), Servos, 6);
+    //QByteArray dd = QByteArray::fromRawData(Servos, 6);
+    Robot->GoToPosition(dd);//, pchar
     str = "Servos data written to serial ";
     unsigned char* sData = reinterpret_cast<unsigned char*>(Servos);
     for (int i=0; i<= DOF - 1; i++){
@@ -306,6 +309,7 @@ void MainWindow::on_socketButton_clicked()
 
 void MainWindow::on_clampButton_clicked()
 {
-    if (ui->servo_1_lineEdit->text().toInt() > 0) ui->servo_1_lineEdit->setText("0");
-    if (ui->servo_1_lineEdit->text().toInt() == 0) ui->servo_1_lineEdit->setText("160");
+    if (ui->servo_1_lineEdit->text().toInt() > 0){ ui->servo_1_lineEdit->setText("0"); Servos[0]=0;}
+    else {ui->servo_1_lineEdit->setText("160"); Servos[0]=160;}
+    on_set_posButton_clicked();
 }

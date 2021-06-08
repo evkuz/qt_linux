@@ -5,6 +5,7 @@
 #include <QSerialPort>
 #include <QSerialPortInfo>
 #include <QByteArray>
+#include <stdint.h>
 #include <QFile>
 #include <QList>
 #include <QLineEdit>
@@ -38,7 +39,7 @@ public:
 
     HiWonder *Robot;
 
-    char Servos [6] = {93,93,93,93,93,93};
+    unsigned char Servos [6] = {93,93,93,93,93,93};
 
     void update_data_from_sliders(int index, int value);
 

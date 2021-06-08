@@ -37,7 +37,7 @@ public:
     void Log_File_Open(QString lname);
     void Write_To_Log (int value, QString log_message);
 
-    void GoToPosition(QByteArray &position, const char *servo); //Оправляет данные для новой позиции приводов в порт (Роботу)
+    void GoToPosition(QByteArray &position); //, const char *servo Оправляет данные для новой позиции приводов в порт (Роботу)
 
 
 

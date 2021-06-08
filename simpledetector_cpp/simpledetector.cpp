@@ -60,7 +60,7 @@ Rect detector(const Mat& frame, Mat& out, const byte* color_l, const byte* color
 
 int main(int argc, char* argv[])
 {
-	int cameraId = 0;
+        int cameraId = 2;
 	
 	VideoCapture capture;
 	capture.open(cameraId);
@@ -68,10 +68,10 @@ int main(int argc, char* argv[])
     if(!capture.isOpened())
         return fprintf( stderr, "Could not initialize video (%d) capture\n", cameraId), -2;
 
-	//if (!capture.set(CAP_PROP_FRAME_WIDTH, 1024))
-	//{
-	//	std::cerr << "ERROR: seekeing is not supported" << endl;
-	//}
+        if (!capture.set(CAP_PROP_FRAME_WIDTH, 1024))
+        {
+                std::cerr << "ERROR: seekeing is not supported" << endl;
+        }
 //CAP_PROP_FRAME_HEIGHT
 
 	Mat frame, image;
