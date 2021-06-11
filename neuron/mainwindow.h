@@ -45,6 +45,9 @@ public:
 
     void GUI_Write_To_Log (int value, QString log_message); //Пишет в лог-файл номер ошибки value и сообщение message
     void try_mcinfer(int x, int y);
+    void update_LineDits_from_servos(void);
+    void update_LineDits_from_position(const char *pos);
+    void update_Servos_from_LineEdits(void);
 
 private:
     SocketClient readSocket;
@@ -86,6 +89,8 @@ private slots:
     void on_socketButton_clicked();
 
     void on_clampButton_clicked();
+
+
 
 signals:
     void Open_Port_Signal(QString portname); // Сигнал даем по нажатию кнопки "OPEN"

@@ -120,8 +120,12 @@ emit Open_Port_Signal(portname);
 
 void MainWindow::on_sitButton_clicked()
 {
+    this->update_LineDits_from_position(sit_down_position);
+    this->repaint();
+
     QByteArray dd = QByteArray::fromRawData(sit_down_position, 6);
     Robot->GoToPosition(dd);//, sit_down_position
+   // update_LineDits_from_servos();
 //    for (int i = 0; i<= 57; i++)
 //    {
 //        dd.append("A");
@@ -136,14 +140,16 @@ void MainWindow::on_sitButton_clicked()
 
 void MainWindow::on_stand_upButton_clicked()
 {
+    this->update_LineDits_from_position(hwr_Start_position);
+    this->repaint();
     QByteArray dd = QByteArray::fromRawData(hwr_Start_position, 6);
     Robot->GoToPosition(dd);//, hwr_Start_position
     dd = QByteArray(reinterpret_cast<const char*>(hwr_Start_position), 10);
     QString str = QString(dd);
 
-    QByteArray cc;
+    //QByteArray cc;
     //cc.replace(hwr_Start_position, dd);
-
+    this->update_Servos_from_LineEdits();
     str = "Data : ";
     for (int i =0; i<= DOF-1; i++)
     {
@@ -306,10 +312,37 @@ void MainWindow::on_socketButton_clicked()
        GUI_Write_To_Log(0xf010, str);
     }
 }
-
+//+++++++++++++++++++++++++++++++++++++++
 void MainWindow::on_clampButton_clicked()
 {
     if (ui->servo_1_lineEdit->text().toInt() > 0){ ui->servo_1_lineEdit->setText("0"); Servos[0]=0;}
     else {ui->servo_1_lineEdit->setText("160"); Servos[0]=160;}
+    update_LineDits_from_servos();
     on_set_posButton_clicked();
 }
+//++++++++++++++++++++++++++++++++++++++
+void MainWindow::update_LineDits_from_servos(void)
+{
+    for (int i =0; i<= DOF -1; i++)
+    {
+        qle_list[i]->setText(QString::number(Servos[i]));
+    }
+}
+//+++++++++++++++++++++++++++++++++++++
+void MainWindow::update_LineDits_from_position(const char *pos)
+{
+    for (int i =0; i<= DOF -1; i++)
+    {
+        qle_list[i]->setText(QString::number(pos[i]));
+    }
+
+}
+//+++++++++++++++++++++++++++++++++++++
+void MainWindow::update_Servos_from_LineEdits(void)
+{
+    for (int i =0; i<= DOF -1; i++)
+    {
+        Servos[i] = qle_list[i]->text().toInt();
+    }
+}
+

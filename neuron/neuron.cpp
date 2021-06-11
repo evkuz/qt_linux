@@ -1,4 +1,5 @@
 #include "neuron.h"
+//#include "model/model1.h"
 
 
 //        Механизм запрос - ответ
@@ -13,6 +14,7 @@ void MainWindow::try_mcinfer(int x, int y){
             in[0] = x;
             in[1] = y;
             in[2] = 0;
+
             MCInfer(&model,in,outKB);
 
 //            Kp = outKB[0];
@@ -41,10 +43,8 @@ void MainWindow::try_mcinfer(int x, int y){
         Robot->Write_To_Log(0xf020, str.append(" \n"));
 
 
-            for (int i =0; i<= DOF -1; i++)
-            {
-                qle_list[i]->setText(QString::number(Servos[i]));
-            }
+    this->update_LineDits_from_servos();
+    this->repaint();
 
     on_set_posButton_clicked();
 
