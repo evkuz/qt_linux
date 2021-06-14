@@ -36,6 +36,27 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect( this, SIGNAL (Open_Port_Signal(QString)), Robot, SLOT(Open_Port_Slot(QString)));
 
+//    ui->spinBox->setStyleSheet("color: blue;"
+//                               "background-color: yellow;"
+//                               "padding-right: 65;"
+//                               "border-width: 3;"
+//                              // "margin-left: 2;"  /* make room for the arrows */
+//                              // "margin-right: 2;"  /* make room for the arrows */
+//                               //"width: 90px;"
+//                               "up-button {"
+//                                           "width: 64;"
+//                                           "subcontrol-origin: border; "
+//                                           "subcontrol-position: top right;"
+
+//                                            "image: url(:/images/up_arrow.png);"
+//                                           "border-image: url(:/images/spinup.png) 1;"
+//                                           "border-width: 2;}"
+//                               "down-button{\
+//                                            width: 64;}"
+
+//                                );
+
+
 
 }
 
@@ -240,7 +261,7 @@ void MainWindow::on_set_posButton_clicked()
     dd.resize(64);
     memcpy(dd.data(), Servos, 6);
     //QByteArray dd = QByteArray::fromRawData(Servos, 6);
-    Robot->GoToPosition(dd);//, pchar
+  //  Robot->GoToPosition(dd);//, pchar
     str = "Servos data written to serial ";
     unsigned char* sData = reinterpret_cast<unsigned char*>(Servos);
     for (int i=0; i<= DOF - 1; i++){
@@ -346,3 +367,34 @@ void MainWindow::update_Servos_from_LineEdits(void)
     }
 }
 
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+void MainWindow::on_servo_1_spinBox_valueChanged(int arg1)
+{
+    Servos[0] = arg1;
+}
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+void MainWindow::on_servo_2_spinBox_valueChanged(int arg1)
+{
+    Servos[1] = arg1;
+}
+
+void MainWindow::on_servo_3_spinBox_valueChanged(int arg1)
+{
+    Servos[2] = arg1;
+}
+
+void MainWindow::on_servo_4_spinBox_valueChanged(int arg1)
+{
+    Servos[3] = arg1;
+}
+
+void MainWindow::on_servo_5_spinBox_valueChanged(int arg1)
+{
+    Servos[4] = arg1;
+}
+
+void MainWindow::on_servo_6_spinBox_valueChanged(int arg1)
+{
+    Servos[5] = arg1;
+}

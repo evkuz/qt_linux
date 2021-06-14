@@ -1,7 +1,25 @@
 #ifndef EVKUZ_H
 #define EVKUZ_H
+
+
 /*
+ * 14.06.2021
  *
+ * Кажись заработало "Пробуем QSpinBox вместо QLineEdit"
+ * Т.к. большой размер шрифта, то и общее окно программы пришлось увеличить.
+ * Фиксируем.
+ * #######################
+ * 12.06.2021
+ * Пробуем QSpinBox вместо QLineEdit
+ *
+ * servo_1_lineEdit
+ * servo_1_spinBox
+ * servo_2_spinBox
+ * ...
+ * Очень много провозился.
+ * Оказывается, если в окне "Change StyleSheet" сначала поставить размер шрифта, то все остальные настройки не считываются.
+ * Поэтому размер шрифта меняем в самом окне QtDesigner, а далее через "Change StyleSheet"
+ * #######################################
  * 10.06.2021
  * Each QWidget has slots repaint() (forced immediate) and update() (queued deferred)
  *

@@ -92,6 +92,18 @@ private slots:
 
 
 
+    void on_servo_1_spinBox_valueChanged(int arg1);
+
+    void on_servo_2_spinBox_valueChanged(int arg1);
+
+    void on_servo_3_spinBox_valueChanged(int arg1);
+
+    void on_servo_4_spinBox_valueChanged(int arg1);
+
+    void on_servo_5_spinBox_valueChanged(int arg1);
+
+    void on_servo_6_spinBox_valueChanged(int arg1);
+
 signals:
     void Open_Port_Signal(QString portname); // Сигнал даем по нажатию кнопки "OPEN"
 
