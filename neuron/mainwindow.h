@@ -9,6 +9,7 @@
 #include <QFile>
 #include <QList>
 #include <QLineEdit>
+#include <QSpinBox>
 #include "hiwonder.h"  // hiwonder class
 #include "SocketClient.h"
 
@@ -36,6 +37,7 @@ public:
     QByteArray LineEdits[6];
 
     QList<QLineEdit*> qle_list;
+    QList<QSpinBox*> qspb_list;
 
     HiWonder *Robot;
 

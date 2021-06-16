@@ -18,7 +18,10 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     qle_list = {ui->servo_1_lineEdit, ui->servo_2_lineEdit, ui->servo_3_lineEdit,
-                                 ui->servo_4_lineEdit, ui->servo_5_lineEdit, ui->servo_6_lineEdit};
+                ui->servo_4_lineEdit, ui->servo_5_lineEdit, ui->servo_6_lineEdit};
+
+    qspb_list = {ui->servo_1_spinBox, ui->servo_2_spinBox, ui->servo_3_spinBox,
+                 ui->servo_4_spinBox, ui->servo_5_spinBox, ui->servo_6_spinBox};
 
     foreach (const QSerialPortInfo &info, QSerialPortInfo::availablePorts()){
         ui->comL->addItem(info.portName(),info.portName());
@@ -261,7 +264,7 @@ void MainWindow::on_set_posButton_clicked()
     dd.resize(64);
     memcpy(dd.data(), Servos, 6);
     //QByteArray dd = QByteArray::fromRawData(Servos, 6);
-  //  Robot->GoToPosition(dd);//, pchar
+    Robot->GoToPosition(dd);//, pchar
     str = "Servos data written to serial ";
     unsigned char* sData = reinterpret_cast<unsigned char*>(Servos);
     for (int i=0; i<= DOF - 1; i++){
@@ -347,6 +350,7 @@ void MainWindow::update_LineDits_from_servos(void)
     for (int i =0; i<= DOF -1; i++)
     {
         qle_list[i]->setText(QString::number(Servos[i]));
+        qspb_list[i]->setValue((Servos[i]));
     }
 }
 //+++++++++++++++++++++++++++++++++++++
@@ -355,6 +359,7 @@ void MainWindow::update_LineDits_from_position(const char *pos)
     for (int i =0; i<= DOF -1; i++)
     {
         qle_list[i]->setText(QString::number(pos[i]));
+        qspb_list[i]->setValue(pos[i]);
     }
 
 }
@@ -363,7 +368,8 @@ void MainWindow::update_Servos_from_LineEdits(void)
 {
     for (int i =0; i<= DOF -1; i++)
     {
-        Servos[i] = qle_list[i]->text().toInt();
+       // Servos[i] = qle_list[i]->text().toInt();
+        Servos[i] = qspb_list[i]->value();
     }
 }
 
