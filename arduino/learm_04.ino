@@ -19,7 +19,8 @@
 */
 
 #include <Servo.h>
-#include "/home/evkuz/0_arduino/include/hiwonder_byte.h"
+#include "/home/evkuz/lit/learm/include/hiwonder_byte.h"
+///home/evkuz/0_arduino/include/hiwonder_byte.h
 //lit/learm/
 
 // /home/evkuz/lit/learm/
@@ -41,8 +42,7 @@ byte delta [6];     // Разница (между текущим и целевы
 //String message, number;//, s_pos;
 char *s_pos;
 
-int inByte; // Данные, полученные по serial
-byte ints[64];
+byte ints[64]; // Данные, полученные по serial
 
 //++++++++++++++++++++++++ setup
 void setup() {
@@ -68,7 +68,7 @@ void setup() {
 //++++++++++++++++++++++++ loop 
 void loop() {
 
-int inByte;
+//int inByte;
 parse_command();
 
 /*
@@ -176,31 +176,36 @@ void move_servo_together (byte *pos, byte numBytes) // address of position array
   Serial.println(message);
   Serial.flush();
 */
+
+  byte cycle_num =0;
 while (maxdt != 100) // Перебираем дельты с наибольшим значением пока таковое не станет нулевым.
 {                    // см. get_max_delta()
     counter = delta[maxdt];
   for (byte dt=0; dt <= counter  -1; dt++) //Берем дельту по индексу из массива
    {
-/*     message = "Current Max delta value is ";
+/*   message = "Current Max delta value is ";
      message += String(delta[maxdt]);
      Serial.println(message);
      Serial.flush();
 */
-     for (byte i=0; i<=serv_number -1; i++) // ОБходим все приводы
-       {
+
+     //Сначала проходим приводы 6-4, пауза 1сек. затем отдельно привод 1, и в конце приводы 3-2
+     for (byte i=serv_number -1; i>=0; i--) // ОБходим все приводы, но в обратном порядке
+       {                                  // т.е. начинаем с 6-го и далее по убыванию номера привода.
         s_pos = servos[i].read();
-    if (delta[i] !=0)
-    {
-      s_pos = s_pos + DF[i];
-      servos[i].write(s_pos);
-      delta[i] -= 1;
-      delay(10);
-    }
+        if (delta[i] !=0)
+        {
+            s_pos = s_pos + DF[i];
+            servos[i].write(s_pos);
+            delta[i] -= 1;
+            delay(10);
+        }
     }//for int i=0 // все приводы
 
-  }//for int dt=0; // вся текущая макс. дельта
+  }//for byte dt=0; // вся текущая макс. дельта
     // Обошли все приводы. Определяем новое значение maxdt
     maxdt = get_max_delta(delta);
+    cycle_num++;
 
 }//while (maxdt != 100)
 
@@ -210,8 +215,9 @@ get_all_servos("after");
 И вот тут надо бы сравнить, что пришло и что сейчас.
 */
 // Сравниваем массивы
+message += "Main Cycle worked "; message += String(cycle_num); message += " times";
 
-for (byte i=0; i<=serv_number -1; i++){ // ОБходим все приводы
+for (byte i=0; i<=serv_number -1; i++){ // ОБходим все приводы, проверяем совпадение позиции с заданной
   if (current_s[i] != pos[i]){
       message = "Позиция не совпадает с заданной, привод ";
       message += String(i); message += "\n";
@@ -235,7 +241,99 @@ Serial.println(message);
 Serial.flush();
 
 }//move_servo_together
+//+++++++++++++++++++++++++++++++++++++++++++
+/*
+ * Перегружаем ф-цию move_servo_together
+ * Добавляем параметры byte start_servo, byte end_servo -
+ * т.е. выполняем движение не для всех приводов, а для заданных в диапазоне start_servo - end_servo
+*/
+void move_servo_together (byte *pos, byte start_servo, byte end_servo) // address of position array and direction flag array, текущую позицию вычисляем
+{
+  byte s_pos, maxdt, counter;
+  String message;
+  get_all_servos("before"); //Получаем массив current_s[]
+  get_curr_delta(pos);
+  maxdt = get_max_delta(delta); // индекс в массиве delta, а не абсолютное значение/
+/*  message = "Servo index with max delta is ";
+  message += String(maxdt);
+  Serial.println(message);
+  Serial.flush();
 
+  message = "Max delta value is ";
+  message += String(delta[maxdt]);
+
+  Serial.println(message);
+  Serial.flush();
+  message = "Delta values are : ";
+  for (byte i=0; i<= serv_number -1; i++){ message += String(DF[i]); message += ", ";}
+  Serial.println(message);
+  Serial.flush();
+*/
+
+  byte cycle_num =0;
+while (maxdt != 100) // Перебираем дельты с наибольшим значением пока таковое не станет нулевым.
+{                    // см. get_max_delta()
+    counter = delta[maxdt];
+  for (byte dt=0; dt <= counter  -1; dt++) //Берем дельту по индексу из массива
+   {
+/*   message = "Current Max delta value is ";
+     message += String(delta[maxdt]);
+     Serial.println(message);
+     Serial.flush();
+*/
+
+     //Сначала проходим приводы 6-4, пауза 1сек. затем отдельно привод 1, и в конце приводы 3-2
+     for (byte i= end_servo -1; i>=start_servo -1; i--) // ОБходим все приводы, но в обратном порядке
+       {                                  // т.е. начинаем с 6-го и далее по убыванию номера привода.
+        s_pos = servos[i].read();
+        if (delta[i] !=0)
+        {
+            s_pos = s_pos + DF[i];
+            servos[i].write(s_pos);
+            delta[i] -= 1;
+            delay(10);
+        }
+    }//for int i=0 // все приводы
+
+  }//for byte dt=0; // вся текущая макс. дельта
+    // Обошли все приводы. Определяем новое значение maxdt
+    maxdt = get_max_delta(delta);
+    cycle_num++;
+
+}//while (maxdt != 100)
+
+// Посылаем текущие позиции после завершения движений.
+get_all_servos("after");
+/*
+И вот тут надо бы сравнить, что пришло и что сейчас.
+*/
+// Сравниваем массивы
+message += "Main Cycle worked "; message += String(cycle_num); message += " times";
+
+for (byte i=0; i<=serv_number -1; i++){ // ОБходим все приводы, проверяем совпадение позиции с заданной
+  if (current_s[i] != pos[i]){
+      message = "Позиция не совпадает с заданной, привод ";
+      message += String(i); message += "\n";
+      message += "Задано      "; message += String(pos[i]);
+      message += "Фактическая "; message += String(current_s[i]);
+      Serial.println(message);
+
+  }
+
+}
+
+
+
+message = "Robot got ";  message += " bytes and movement DONE!"; //message += String(numBytes);
+byte mystrlen = message.length();
+while ( message.length() <=61){
+    message += " ";//String(9);
+    //byte a = 120;
+}
+Serial.println(message);
+Serial.flush();
+
+}//move_servo_together
 //++++++++++++++++++++
 /*Возвращает индекс макисмального элемента в массиве delta*/
 byte get_max_delta (byte *arr)
@@ -312,5 +410,15 @@ void parse_command ()
     }
 */
 }//parse_command
+//++++++++++++++++++++++
+void Go_To_Position(byte *pos, byte numBytes)
+{
+    move_servo_together (ints, 4, 6);
+    delay(1000);
+    move_servo_together (ints, 1, 1);
+    delay(1000);
+    move_servo_together (ints, 3, 3);
 
+    
+}
 //+++++++++++++++++++++++++++++
