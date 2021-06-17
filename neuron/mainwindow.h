@@ -5,8 +5,11 @@
 #include <QSerialPort>
 #include <QSerialPortInfo>
 #include <QByteArray>
+#include <stdint.h>
 #include <QFile>
 #include <QList>
+#include <QLineEdit>
+#include <QSpinBox>
 #include "hiwonder.h"  // hiwonder class
 #include "SocketClient.h"
 
@@ -33,14 +36,20 @@ public:
     //char       *servos;    //unsigned char
     QByteArray LineEdits[6];
 
+    QList<QLineEdit*> qle_list;
+    QList<QSpinBox*> qspb_list;
+
     HiWonder *Robot;
 
-    char Servos [6] = {93,93,93,93,93,93};
+    unsigned char Servos [6] = {93,93,93,93,93,93};
 
     void update_data_from_sliders(int index, int value);
 
     void GUI_Write_To_Log (int value, QString log_message); //Пишет в лог-файл номер ошибки value и сообщение message
     void try_mcinfer(int x, int y);
+    void update_LineDits_from_servos(void);
+    void update_LineDits_from_position(const char *pos);
+    void update_Servos_from_LineEdits(void);
 
 private:
     SocketClient readSocket;
@@ -80,6 +89,22 @@ private slots:
     void on_S6_verSlider_valueChanged(int value);
 
     void on_socketButton_clicked();
+
+    void on_clampButton_clicked();
+
+
+
+    void on_servo_1_spinBox_valueChanged(int arg1);
+
+    void on_servo_2_spinBox_valueChanged(int arg1);
+
+    void on_servo_3_spinBox_valueChanged(int arg1);
+
+    void on_servo_4_spinBox_valueChanged(int arg1);
+
+    void on_servo_5_spinBox_valueChanged(int arg1);
+
+    void on_servo_6_spinBox_valueChanged(int arg1);
 
 signals:
     void Open_Port_Signal(QString portname); // Сигнал даем по нажатию кнопки "OPEN"

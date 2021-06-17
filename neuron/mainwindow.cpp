@@ -10,13 +10,18 @@
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , readSocket("/home/evkuz/qt-projects/iqr_lit/simpledetector_cpp/iqr.socket")
+    , readSocket("../../simpledetector_cpp/iqr.socket")
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     //QList ports = QSerialPortInfo
 
 
+    qle_list = {ui->servo_1_lineEdit, ui->servo_2_lineEdit, ui->servo_3_lineEdit,
+                ui->servo_4_lineEdit, ui->servo_5_lineEdit, ui->servo_6_lineEdit};
+
+    qspb_list = {ui->servo_1_spinBox, ui->servo_2_spinBox, ui->servo_3_spinBox,
+                 ui->servo_4_spinBox, ui->servo_5_spinBox, ui->servo_6_spinBox};
 
     foreach (const QSerialPortInfo &info, QSerialPortInfo::availablePorts()){
         ui->comL->addItem(info.portName(),info.portName());
@@ -24,8 +29,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     target_name = QFileInfo(QCoreApplication::applicationFilePath()).fileName();
     QByteArray ba = target_name.toLocal8Bit();
-    const char *c_str = ba.data();
-    printf("Appname : %s", c_str);
+    //g/const char *c_str = ba.data();
+    //printf("Appname : %s", c_str);
     Robot = new HiWonder(); // Без этого будет "The program has unexpectedly finished", хотя в начале нговорила, что это ambiguous
     Robot->Log_File_Open(Log_File_Name);
 
@@ -33,6 +38,27 @@ MainWindow::MainWindow(QWidget *parent)
     Robot->Write_To_Log(0xf000, str.append(" is started successfully!!!\n"));
 
     connect( this, SIGNAL (Open_Port_Signal(QString)), Robot, SLOT(Open_Port_Slot(QString)));
+
+//    ui->spinBox->setStyleSheet("color: blue;"
+//                               "background-color: yellow;"
+//                               "padding-right: 65;"
+//                               "border-width: 3;"
+//                              // "margin-left: 2;"  /* make room for the arrows */
+//                              // "margin-right: 2;"  /* make room for the arrows */
+//                               //"width: 90px;"
+//                               "up-button {"
+//                                           "width: 64;"
+//                                           "subcontrol-origin: border; "
+//                                           "subcontrol-position: top right;"
+
+//                                            "image: url(:/images/up_arrow.png);"
+//                                           "border-image: url(:/images/spinup.png) 1;"
+//                                           "border-width: 2;}"
+//                               "down-button{\
+//                                            width: 64;}"
+
+//                                );
+
 
 
 }
@@ -118,8 +144,12 @@ emit Open_Port_Signal(portname);
 
 void MainWindow::on_sitButton_clicked()
 {
+    this->update_LineDits_from_position(sit_down_position);
+    this->repaint();
+
     QByteArray dd = QByteArray::fromRawData(sit_down_position, 6);
-    Robot->GoToPosition(dd, sit_down_position);
+    Robot->GoToPosition(dd);//, sit_down_position
+   // update_LineDits_from_servos();
 //    for (int i = 0; i<= 57; i++)
 //    {
 //        dd.append("A");
@@ -134,14 +164,16 @@ void MainWindow::on_sitButton_clicked()
 
 void MainWindow::on_stand_upButton_clicked()
 {
+    this->update_LineDits_from_position(hwr_Start_position);
+    this->repaint();
     QByteArray dd = QByteArray::fromRawData(hwr_Start_position, 6);
-    Robot->GoToPosition(dd, hwr_Start_position);
+    Robot->GoToPosition(dd);//, hwr_Start_position
     dd = QByteArray(reinterpret_cast<const char*>(hwr_Start_position), 10);
     QString str = QString(dd);
 
-    QByteArray cc;
+    //QByteArray cc;
     //cc.replace(hwr_Start_position, dd);
-
+    this->update_Servos_from_LineEdits();
     str = "Data : ";
     for (int i =0; i<= DOF-1; i++)
     {
@@ -225,11 +257,14 @@ void MainWindow::on_servo_6_lineEdit_editingFinished()
 void MainWindow::on_set_posButton_clicked()
 {
     QString str;
-    const char *   pchar;
-    pchar = static_cast<const char *>(static_cast<char *>(Servos));
-    QByteArray dd = QByteArray::fromRawData(pchar, 6);
-
-    Robot->GoToPosition(dd, pchar);
+   // const char *   pchar;
+    //pchar = static_cast<const char *>(static_cast<char *>(Servos));
+   // QByteArray dd = QByteArray::fromRawData(pchar, 6);
+    QByteArray dd ;
+    dd.resize(64);
+    memcpy(dd.data(), Servos, 6);
+    //QByteArray dd = QByteArray::fromRawData(Servos, 6);
+    Robot->GoToPosition(dd);//, pchar
     str = "Servos data written to serial ";
     unsigned char* sData = reinterpret_cast<unsigned char*>(Servos);
     for (int i=0; i<= DOF - 1; i++){
@@ -300,4 +335,72 @@ void MainWindow::on_socketButton_clicked()
        Robot->Write_To_Log(0xf010, str);
        GUI_Write_To_Log(0xf010, str);
     }
+}
+//+++++++++++++++++++++++++++++++++++++++
+void MainWindow::on_clampButton_clicked()
+{
+    if (ui->servo_1_lineEdit->text().toInt() > 0){ ui->servo_1_lineEdit->setText("0"); Servos[0]=0;}
+    else {ui->servo_1_lineEdit->setText("160"); Servos[0]=160;}
+    update_LineDits_from_servos();
+    on_set_posButton_clicked();
+}
+//++++++++++++++++++++++++++++++++++++++
+void MainWindow::update_LineDits_from_servos(void)
+{
+    for (int i =0; i<= DOF -1; i++)
+    {
+        qle_list[i]->setText(QString::number(Servos[i]));
+        qspb_list[i]->setValue((Servos[i]));
+    }
+}
+//+++++++++++++++++++++++++++++++++++++
+void MainWindow::update_LineDits_from_position(const char *pos)
+{
+    for (int i =0; i<= DOF -1; i++)
+    {
+        qle_list[i]->setText(QString::number(pos[i]));
+        qspb_list[i]->setValue(pos[i]);
+    }
+
+}
+//+++++++++++++++++++++++++++++++++++++
+void MainWindow::update_Servos_from_LineEdits(void)
+{
+    for (int i =0; i<= DOF -1; i++)
+    {
+       // Servos[i] = qle_list[i]->text().toInt();
+        Servos[i] = qspb_list[i]->value();
+    }
+}
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+void MainWindow::on_servo_1_spinBox_valueChanged(int arg1)
+{
+    Servos[0] = arg1;
+}
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+void MainWindow::on_servo_2_spinBox_valueChanged(int arg1)
+{
+    Servos[1] = arg1;
+}
+
+void MainWindow::on_servo_3_spinBox_valueChanged(int arg1)
+{
+    Servos[2] = arg1;
+}
+
+void MainWindow::on_servo_4_spinBox_valueChanged(int arg1)
+{
+    Servos[3] = arg1;
+}
+
+void MainWindow::on_servo_5_spinBox_valueChanged(int arg1)
+{
+    Servos[4] = arg1;
+}
+
+void MainWindow::on_servo_6_spinBox_valueChanged(int arg1)
+{
+    Servos[5] = arg1;
 }
