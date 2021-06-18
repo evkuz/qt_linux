@@ -1,10 +1,12 @@
+//#include "move_servos.h"
+
 void move_servo_together (byte *pos, byte start_servo, byte end_servo) // address of position array and direction flag array, текущую позицию вычисляем
 {
   byte s_pos, maxdt, counter;
   String message;
   get_all_servos("before"); //Получаем массив current_s[]
   get_curr_delta(pos);
-  maxdt = get_max_delta(delta); // индекс в массиве delta, а не абсолютное значение/
+  maxdt = get_max_delta(delta, start_servo, end_servo); // индекс в массиве delta, а не абсолютное значение/
 /*  message = "Servo index with max delta is ";
   message += String(maxdt);
   Serial.println(message);
@@ -78,7 +80,7 @@ message += "Main Cycle worked "; message += String(cycle_num); message += " time
 
 
 
-message = "Robot got "; message += String(numBytes); message += " bytes and movement DONE!";
+message = "Robot movement DONE!"; //message += String(numBytes); 
 byte mystrlen = message.length();
 while ( message.length() <=61){
     message += " ";//String(9);
@@ -88,9 +90,10 @@ Serial.println(message);
 Serial.flush();
 
 }//move_servo_together
+
 //+++++++++++++++++++++++++++++++++++++++++++++++++
 /*Возвращает индекс макисмального элемента в массиве delta*/
-byte get_max_delta (byte *arr, start_servo, end_servo)
+byte get_max_delta (byte *arr, byte start_servo, byte end_servo)
 {
   int maxdelta, index;
   maxdelta=0;

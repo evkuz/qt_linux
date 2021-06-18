@@ -93,7 +93,7 @@ void HiWonder::GoToPosition(QByteArray &position)//, const char *servo)
     this->Write_To_Log(0xF001, str);
     qbuf = serial.readAll();
     //qbuf = "askdjhfakjhfak";
-    str = "From Robot ";
+    str = "From Robot :";
     str += QString(qbuf);
     this->Write_To_Log(0xF001, str);
 

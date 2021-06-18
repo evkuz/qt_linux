@@ -23,12 +23,23 @@ MainWindow::MainWindow(QWidget *parent)
     qspb_list = {ui->servo_1_spinBox, ui->servo_2_spinBox, ui->servo_3_spinBox,
                  ui->servo_4_spinBox, ui->servo_5_spinBox, ui->servo_6_spinBox};
 
+    slider_list = {ui->S1_verSlider, ui->S2_verSlider, ui->S3_verSlider,
+                   ui->S4_verSlider, ui->S5_verSlider, ui->S6_verSlider};
+
     foreach (const QSerialPortInfo &info, QSerialPortInfo::availablePorts()){
         ui->comL->addItem(info.portName(),info.portName());
     }
 
+    // Прячем QlineEdit-ы и QSlider-ы
+    for (int i =0; i<= DOF -1; i++)
+    {
+        qle_list[i]->setVisible(false);
+        slider_list[i]->setVisible(false);
+    }
+
+
     target_name = QFileInfo(QCoreApplication::applicationFilePath()).fileName();
-    QByteArray ba = target_name.toLocal8Bit();
+    //QByteArray ba = target_name.toLocal8Bit();
     //g/const char *c_str = ba.data();
     //printf("Appname : %s", c_str);
     Robot = new HiWonder(); // Без этого будет "The program has unexpectedly finished", хотя в начале нговорила, что это ambiguous
@@ -39,25 +50,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect( this, SIGNAL (Open_Port_Signal(QString)), Robot, SLOT(Open_Port_Slot(QString)));
 
-//    ui->spinBox->setStyleSheet("color: blue;"
-//                               "background-color: yellow;"
-//                               "padding-right: 65;"
-//                               "border-width: 3;"
-//                              // "margin-left: 2;"  /* make room for the arrows */
-//                              // "margin-right: 2;"  /* make room for the arrows */
-//                               //"width: 90px;"
-//                               "up-button {"
-//                                           "width: 64;"
-//                                           "subcontrol-origin: border; "
-//                                           "subcontrol-position: top right;"
-
-//                                            "image: url(:/images/up_arrow.png);"
-//                                           "border-image: url(:/images/spinup.png) 1;"
-//                                           "border-width: 2;}"
-//                               "down-button{\
-//                                            width: 64;}"
-
-//                                );
 
 
 

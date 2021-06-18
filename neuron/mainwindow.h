@@ -10,6 +10,7 @@
 #include <QList>
 #include <QLineEdit>
 #include <QSpinBox>
+#include <QSlider>
 #include "hiwonder.h"  // hiwonder class
 #include "SocketClient.h"
 
@@ -38,6 +39,7 @@ public:
 
     QList<QLineEdit*> qle_list;
     QList<QSpinBox*> qspb_list;
+    QList<QSlider*>  slider_list;
 
     HiWonder *Robot;
 

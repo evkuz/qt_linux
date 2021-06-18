@@ -284,11 +284,23 @@
   <widget class="QSlider" name="S6_verSlider">
    <property name="geometry">
     <rect>
-     <x>860</x>
+     <x>820</x>
      <y>400</y>
-     <width>16</width>
+     <width>21</width>
      <height>251</height>
     </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="sizeIncrement">
+    <size>
+     <width>1</width>
+     <height>1</height>
+    </size>
    </property>
    <property name="maximum">
     <number>180</number>
@@ -298,6 +310,12 @@
    </property>
    <property name="orientation">
     <enum>Qt::Vertical</enum>
+   </property>
+   <property name="tickPosition">
+    <enum>QSlider::TicksBelow</enum>
+   </property>
+   <property name="tickInterval">
+    <number>2</number>
    </property>
   </widget>
   <widget class="QSlider" name="S5_verSlider">
@@ -586,6 +604,42 @@ QSpinBox::up-button{
    </property>
    <property name="value">
     <number>93</number>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="All_Aervos_lineEdit">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>340</y>
+     <width>441</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>24</pointsize>
+    </font>
+   </property>
+   <property name="maxLength">
+    <number>28</number>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton">
+   <property name="geometry">
+    <rect>
+     <x>460</x>
+     <y>340</y>
+     <width>121</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>18</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>Submit</string>
    </property>
   </widget>
  </widget>

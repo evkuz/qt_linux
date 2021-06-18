@@ -22,6 +22,7 @@ HEADERS += \
     evkuz.h \
     mainwindow.h \
     mcinfer.h \
+    move_servos.h \
     neuron.h \
     positions.h \
     hiwonder.h
