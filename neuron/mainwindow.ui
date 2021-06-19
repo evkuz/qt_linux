@@ -606,7 +606,7 @@ QSpinBox::up-button{
     <number>93</number>
    </property>
   </widget>
-  <widget class="QLineEdit" name="All_Aervos_lineEdit">
+  <widget class="QLineEdit" name="All_Servos_lineEdit">
    <property name="geometry">
     <rect>
      <x>10</x>

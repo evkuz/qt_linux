@@ -396,3 +396,27 @@ void MainWindow::on_servo_6_spinBox_valueChanged(int arg1)
 {
     Servos[5] = arg1;
 }
+
+void MainWindow::on_pushButton_clicked()
+{
+    QString str;
+    QString data = ui->All_Servos_lineEdit->text();
+    GUI_Write_To_Log(0xf010, data);
+
+    QRegExp rx("[, ]");// match a comma or a space
+  //  QStringList list = {"100", "100", "100", "100", "100", "100" };
+    QStringList list = data.split(rx, Qt::SkipEmptyParts);
+    GUI_Write_To_Log(0xf010, QString::number(list.size()));
+    for (int i=0; i< list.size(); ++i ) {
+        GUI_Write_To_Log(0xf010, list.at(i).toLocal8Bit().constData());
+    }
+
+    // А теперь все это в qle_list
+    for (int i =0; i<= DOF -1; i++)
+    {
+        //qle_list[i]->setText(QString::number(Servos[i]));
+        qspb_list[i]->setValue(list.at(i).toInt());
+
+    }
+this->repaint();
+}
