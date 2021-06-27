@@ -140,6 +140,7 @@ void MainWindow::on_sitButton_clicked()
     this->repaint();
 
     QByteArray dd = QByteArray::fromRawData(sit_down_position, 6);
+    dd.append(0x31); // Движение "Туда"
     Robot->GoToPosition(dd);//, sit_down_position
    // update_LineDits_from_servos();
 //    for (int i = 0; i<= 57; i++)
@@ -159,6 +160,8 @@ void MainWindow::on_stand_upButton_clicked()
     this->update_LineDits_from_position(hwr_Start_position);
     this->repaint();
     QByteArray dd = QByteArray::fromRawData(hwr_Start_position, 6);
+   // dd.resize(7);
+    dd.append(0x30); // Движение "Обратно"
     Robot->GoToPosition(dd);//, hwr_Start_position
     dd = QByteArray(reinterpret_cast<const char*>(hwr_Start_position), 10);
     QString str = QString(dd);
@@ -167,9 +170,11 @@ void MainWindow::on_stand_upButton_clicked()
     //cc.replace(hwr_Start_position, dd);
     this->update_Servos_from_LineEdits();
     str = "Data : ";
-    for (int i =0; i<= DOF-1; i++)
+    for (int i =0; i<= szData -1; i++)
     {
-        str += QString::number(Servos[i]);
+       // str += QString::number(Servos[i]);
+
+        str += QString::number(dd.at(i));
         str += ", ";
     }
 
@@ -249,17 +254,50 @@ void MainWindow::on_servo_6_lineEdit_editingFinished()
 void MainWindow::on_set_posButton_clicked()
 {
     QString str;
-   // const char *   pchar;
+    DetectorState state;
+    if (readSocket.GetState(&state) == 0)
+      {
+        if (state.isDetected){
+            //try_mcinfer(state.objectX, state.objectY);
+            X = state.objectX;
+            Y = state.objectY;
+            str+="DETECTED: ";
+            str += QString::number(state.objectX);
+            str += ", ";
+            str += QString::number(state.objectY);
+
+
+        } else {
+            str += "NOT DETECTED";
+        }
+      }//if (readSocket.GetState(&state) == 0)
+    // const char *   pchar;
     //pchar = static_cast<const char *>(static_cast<char *>(Servos));
    // QByteArray dd = QByteArray::fromRawData(pchar, 6);
     QByteArray dd ;
     dd.resize(64);
     memcpy(dd.data(), Servos, 6);
+    dd.insert(6, 0x31);
+    //dd.append(0x31); // Движение "Туда"
+    //dd.resize(64);
     //QByteArray dd = QByteArray::fromRawData(Servos, 6);
     Robot->GoToPosition(dd);//, pchar
+    //########### данные пользователя
+    str = "Training data : ";
+    str += QString::number(X);str+= ", ";
+    str += QString::number(Y);str+= ", ";
+unsigned char* sData = reinterpret_cast<unsigned char*>(Servos);
+sData[szData-1] = dd.at(szData-1);
+for (int i=0; i<= szData - 1; i++){
+    str += QString::number(sData[i]);
+    str+= ", ";
+}
+//########## данные серво
+GUI_Write_To_Log(0xf003,str);
+
     str = "Servos data written to serial ";
-    unsigned char* sData = reinterpret_cast<unsigned char*>(Servos);
-    for (int i=0; i<= DOF - 1; i++){
+
+    for (int i=0; i<= szData - 1; i++){
         str += QString::number(sData[i]);
         str+= ", ";
     }
@@ -308,14 +346,20 @@ void MainWindow::on_socketButton_clicked()
     DetectorState state;
     QString str;
     str = "";
+//Сразу открываем захват
+    if (ui->servo_1_lineEdit->text().toInt() > 0){ ui->servo_1_lineEdit->setText("0"); Servos[0]=0;}
+    else {ui->servo_1_lineEdit->setText("160"); Servos[0]=160;}
+    update_LineDits_from_servos();
 
     if (readSocket.GetState(&state) == 0)
       {
         if (state.isDetected){
             try_mcinfer(state.objectX, state.objectY);
+            X = state.objectX;
+            Y = state.objectY;
             str+="DETECTED: ";
             str += QString::number(state.objectX);
-            str += " ";
+            str += ", ";
             str += QString::number(state.objectY);
 
 
@@ -419,4 +463,9 @@ void MainWindow::on_pushButton_clicked()
 
     }
 this->repaint();
+}
+
+void MainWindow::on_MainWindow_customContextMenuRequested(const QPoint &pos)
+{
+
 }

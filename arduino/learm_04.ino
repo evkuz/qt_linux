@@ -384,16 +384,16 @@ void parse_command ()
       //byte ints[64];           // массив для численных данных, у нас 6 приводов
       byte numReaded;
       
-      numReaded=Serial.readBytes(ints, 64);
+      numReaded=Serial.readBytes(ints, 65);
 
       message = "Robot just got data : ";
-      for (int i=0; i<=63; i++)
+      for (int i=0; i<=64; i++)
       {          message += String(ints[i]); message += ", ";
 
       }
       message.remove(message.length()-2);
-    //  Serial.println(message);
-      // Serial.flush();
+      Serial.println(message);
+      Serial.flush();
 
       //move_servo_together(ints, numReaded);
       Go_To_Position(ints);
@@ -418,11 +418,39 @@ void parse_command ()
 //++++++++++++++++++++++
 void Go_To_Position(byte *pos)
 {
-    move_servo_together (ints, 4, 6);
-    delay(1000);
-    move_servo_together (ints, 1, 1);
-    delay(1000);
-    move_servo_together (ints, 3, 3);
+  String message;
+
+ /*
+  * Для позиций у дальнего края надо вводить поправку.
+  * Если серво 5 больше 135, то привод 4 двигаем сначала на половину,
+  * потом открываем захват, и потом уже 4 и 3 приводы до конца.
+
+*/
+    switch (pos[6]) {
+
+    case 0x31: // Движение "Туда"
+        move_servo_together (ints, 4, 6);
+        delay(1000);
+        move_servo_together (ints, 1, 1);
+        delay(1000);
+        move_servo_together (ints, 3, 3);
+        break;
+        
+    case 0x30: // Движение "Обратно"
+        move_servo_together (ints, 3, 3);
+        delay(1000);
+        move_servo_together (ints, 1, 1);
+        delay(1000);
+        move_servo_together (ints, 4, 6);
+        break;
+
+
+    default:
+        message = "Wrong data !!!";
+        Serial.println(message);
+        Serial.flush();
+    }
+
 
     
 }

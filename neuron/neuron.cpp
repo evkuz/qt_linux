@@ -29,7 +29,7 @@ void MainWindow::try_mcinfer(int x, int y){
             for (int i =0; i<= DOF -3; i++)
             {
                 if (Servos[i+2] > 180) {Servos[i+2]= 180;}
-                else if (Servos[i+2] < 0) {Servos[i+2]= 0;}
+                //else if (Servos[i+2] < 0) {Servos[i+2]= 0;}
             }
 
         str = "NEURON data : ";
@@ -49,6 +49,9 @@ void MainWindow::try_mcinfer(int x, int y){
     on_set_posButton_clicked();
 
     str = "Mcinfer Data : ";
+    str += QString::number(x); str+= ", ";
+    str += QString::number(y); str+= ", ";
+
 
     for (int i=0; i<= DOF - 1; i++){
         str += QString::number(Servos[i]);

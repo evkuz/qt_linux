@@ -42,6 +42,7 @@ public:
     QList<QSlider*>  slider_list;
 
     HiWonder *Robot;
+    int X, Y;//Координаты x,y
 
     unsigned char Servos [6] = {93,93,93,93,93,93};
 
@@ -109,6 +110,8 @@ private slots:
     void on_servo_6_spinBox_valueChanged(int arg1);
 
     void on_pushButton_clicked();
+
+    void on_MainWindow_customContextMenuRequested(const QPoint &pos);
 
 signals:
     void Open_Port_Signal(QString portname); // Сигнал даем по нажатию кнопки "OPEN"
