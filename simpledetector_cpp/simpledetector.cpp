@@ -100,10 +100,10 @@ int main(int argc, char* argv[])
     if(!capture.isOpened())
         return fprintf( stderr, "Could not initialize video (%d) capture\n", cameraId), -2;
 
-	if (!capture.set(CAP_PROP_FRAME_WIDTH, 1024))
-	{
-		std::cerr << "ERROR: seekeing is not supported" << endl;
-	}
+//	if (!capture.set(CAP_PROP_FRAME_WIDTH, 1024))
+//	{
+//		std::cerr << "ERROR: seekeing is not supported" << endl;
+//	}
 //CAP_PROP_FRAME_HEIGHT
 
 	Mat frame, image;
