@@ -50,6 +50,11 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect( this, SIGNAL (Open_Port_Signal(QString)), Robot, SLOT(Open_Port_Slot(QString)));
 
+    RMath = new Robo_Math();
+    //Robo_Math
+    connect( this, SIGNAL (Pass_XY_Signal(int, int)), RMath, SLOT(Pass_XY_Slot(int, int)));
+    connect(RMath, SIGNAL (Return_EL_Signal(float)), this, SLOT(Return_EL_Slot(float)));
+
 
 
 
@@ -274,6 +279,7 @@ void MainWindow::on_set_posButton_clicked()
     // const char *   pchar;
     //pchar = static_cast<const char *>(static_cast<char *>(Servos));
    // QByteArray dd = QByteArray::fromRawData(pchar, 6);
+    GUI_Write_To_Log(0xf003,str);
     QByteArray dd ;
     dd.resize(64);
     memcpy(dd.data(), Servos, 6);
@@ -440,11 +446,12 @@ void MainWindow::on_servo_6_spinBox_valueChanged(int arg1)
 {
     Servos[5] = arg1;
 }
-
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 void MainWindow::on_pushButton_clicked()
 {
     QString str;
     QString data = ui->All_Servos_lineEdit->text();
+
     GUI_Write_To_Log(0xf010, data);
 
     QRegExp rx("[, ]");// match a comma or a space
@@ -463,9 +470,40 @@ void MainWindow::on_pushButton_clicked()
 
     }
 this->repaint();
-}
+}//on_pushButton_clicked
 
-void MainWindow::on_MainWindow_customContextMenuRequested(const QPoint &pos)
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Делаем запрос в simpledetecor, XY, вычисляем длину в мм L от основания робота до XY
+void MainWindow::on_getXYButton_clicked()
 {
+    QString str;
+//    DetectorState state;
+//    if (readSocket.GetState(&state) == 0)
+//      {
+//        if (state.isDetected){
+//            X = state.objectX;
+//            Y = state.objectY;
+//            str+="DETECTED: ";
+//            str += QString::number(state.objectX);
+//            str += ", ";
+//            str += QString::number(state.objectY);
 
+
+//        } else {
+//            str += "NOT DETECTED";
+//        }
+//      }//if (readSocket.GetState(&state) == 0)
+      GUI_Write_To_Log(0xf233, "Have got X,Y ");
+      X = 500; Y=500;
+      str += QString::number(X); str += ", ";
+      str += QString::number(Y);
+      GUI_Write_To_Log(0xf233, str);
+      emit Pass_XY_Signal(X,Y);
+}
+//++++++++++++++++++++++void Return_XY_Slot(float EL)
+void MainWindow::Return_EL_Slot(float EL)
+{
+    QString str = "Distance value : ";
+    str += QString::number(EL);
+    GUI_Write_To_Log(0xf1122, str);
 }

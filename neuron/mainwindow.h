@@ -13,6 +13,7 @@
 #include <QSlider>
 #include "hiwonder.h"  // hiwonder class
 #include "SocketClient.h"
+#include"robo_math.h" //Robo_Math class
 
 //#include "mcinfer.h"
 
@@ -42,6 +43,8 @@ public:
     QList<QSlider*>  slider_list;
 
     HiWonder *Robot;
+    Robo_Math * RMath;
+
     int X, Y;//Координаты x,y
 
     unsigned char Servos [6] = {93,93,93,93,93,93};
@@ -111,10 +114,14 @@ private slots:
 
     void on_pushButton_clicked();
 
-    void on_MainWindow_customContextMenuRequested(const QPoint &pos);
+
+
+    void on_getXYButton_clicked();
+    void Return_EL_Slot(float EL);
 
 signals:
     void Open_Port_Signal(QString portname); // Сигнал даем по нажатию кнопки "OPEN"
+    void Pass_XY_Signal(int x_pix, int y_pix); //Сигнал по нажатию кнопки "Get_XY"
 
 private:
     Ui::MainWindow *ui;
