@@ -3,6 +3,17 @@
 
 
 /*
+ * 01.07.2021
+ *
+ * Сделал проверку вычисления прямой кинематичесой задачи.
+ * По нажатию кнопки "Get XY" внутри соответствующего слота запускаем сигнал
+ * FW_Kinemaic_Signal(int S3, int S4, int S5, int l1, int l2, int l3)
+ * На это внутри класса Robo_Math срабатывает слот FW_Kinemaic_Slot(int S3, int S4, int S5, int l1, int l2, int l3),
+ * Который проводит вычисления x,y,z для всех 3 звеньев l1, l2, l3. И полученные конечные значения x3, y3, z3 отправляет
+ * сигналом Return_FW_Kinematic_XYZ_Signal(x3, y3, z3) в класс MainWindow, где соответствующий слот
+ * Return_FW_Kinematic_XYZ_Slot(int X, int Y, int Z) записывает эти данные в лог.
+ *
+ * #################################3
  * 29.06.2021
  *
  * Создал класс class Robo_Math : public QObject

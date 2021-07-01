@@ -118,10 +118,13 @@ private slots:
 
     void on_getXYButton_clicked();
     void Return_EL_Slot(float EL);
+    void Return_FW_Kinematic_XYZ_Slot(int X, int Y, int Z);
 
 signals:
     void Open_Port_Signal(QString portname); // Сигнал даем по нажатию кнопки "OPEN"
     void Pass_XY_Signal(int x_pix, int y_pix); //Сигнал по нажатию кнопки "Get_XY"
+    void FW_Kinemaic_Signal(int S3, int S4, int S5, int l1, int l2, int l3); // Углы приводов, длины соответствующих звеньев.
+
 
 private:
     Ui::MainWindow *ui;

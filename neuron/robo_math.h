@@ -27,16 +27,20 @@ public:
 uint16_t L; // Полная длина робота = расстояние до кубика
 uint8_t  S54, S43, S30;
 
-float el1, el2, el3, EL;
+int el1, el2, el3, EL;
 
 
 float Get_EL(int X, int Y); // Вычисляем длину до кубика в мм по координатам его центра X,Y
 
+
 signals:
 void Return_EL_Signal(float el);
+void Return_FW_Kinematic_XYZ_Signal(int X, int Y, int Z);
 
 public slots:
 void Pass_XY_Slot(int x_pix, int y_pix);
+void FW_Kinemaic_Slot(int S3, int S4, int S5, int l1, int l2, int l3); // Углы приводов.
+
 };
 
 #endif // ROBO_MATH_H

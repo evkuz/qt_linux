@@ -54,7 +54,8 @@ MainWindow::MainWindow(QWidget *parent)
     //Robo_Math
     connect( this, SIGNAL (Pass_XY_Signal(int, int)), RMath, SLOT(Pass_XY_Slot(int, int)));
     connect(RMath, SIGNAL (Return_EL_Signal(float)), this, SLOT(Return_EL_Slot(float)));
-
+    connect( this, SIGNAL (FW_Kinemaic_Signal(int, int, int, int, int, int)), RMath, SLOT(FW_Kinemaic_Slot(int, int, int, int, int, int)));
+    connect( RMath, SIGNAL(Return_FW_Kinematic_XYZ_Signal(int, int, int)), this, SLOT(Return_FW_Kinematic_XYZ_Slot(int, int, int)));
 
 
 
@@ -499,6 +500,9 @@ void MainWindow::on_getXYButton_clicked()
       str += QString::number(Y);
       GUI_Write_To_Log(0xf233, str);
       emit Pass_XY_Signal(X,Y);
+
+      GUI_Write_To_Log(0xf233, "No go to Kinematic !");
+      emit FW_Kinemaic_Signal(48, 25, 133, RMath->el1, RMath->el2, RMath->el3 );
 }
 //++++++++++++++++++++++void Return_XY_Slot(float EL)
 void MainWindow::Return_EL_Slot(float EL)
@@ -506,4 +510,14 @@ void MainWindow::Return_EL_Slot(float EL)
     QString str = "Distance value : ";
     str += QString::number(EL);
     GUI_Write_To_Log(0xf1122, str);
+}
+//++++++++++++++++++++++++++++++++++
+void MainWindow::Return_FW_Kinematic_XYZ_Slot(int X, int Y, int Z)
+{
+    QString str = "Cube coordinates X, Y, Z : ";
+    str += QString::number(X); str += ", ";
+    str += QString::number(Y); str += ", ";
+    str += QString::number(Z);
+    GUI_Write_To_Log(0xf1122, str);
+
 }
