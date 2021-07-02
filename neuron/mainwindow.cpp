@@ -55,7 +55,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect( this, SIGNAL (Pass_XY_Signal(int, int)), RMath, SLOT(Pass_XY_Slot(int, int)));
     connect(RMath, SIGNAL (Return_EL_Signal(float)), this, SLOT(Return_EL_Slot(float)));
     connect( this, SIGNAL (FW_Kinemaic_Signal(int, int, int, int, int, int)), RMath, SLOT(FW_Kinemaic_Slot(int, int, int, int, int, int)));
-    connect( RMath, SIGNAL(Return_FW_Kinematic_XYZ_Signal(int, int, int)), this, SLOT(Return_FW_Kinematic_XYZ_Slot(int, int, int)));
+    connect( RMath, SIGNAL(Return_FW_Kinematic_XYZ_Signal(int, int, int, float)), this, SLOT(Return_FW_Kinematic_XYZ_Slot(int, int, int, float)));
 
 
 
@@ -501,23 +501,31 @@ void MainWindow::on_getXYButton_clicked()
       GUI_Write_To_Log(0xf233, str);
       emit Pass_XY_Signal(X,Y);
 
+      float dl1 = abs(qSin(115));
+      str = "sin(115) = ";
+      GUI_Write_To_Log(0xf233, str);
+      str += QString::number(dl1);
+      ui->All_Servos_lineEdit->setText(str);
       GUI_Write_To_Log(0xf233, "No go to Kinematic !");
-      emit FW_Kinemaic_Signal(48, 25, 133, RMath->el1, RMath->el2, RMath->el3 );
+      emit FW_Kinemaic_Signal(48, 25, 133, RMath->el1, RMath->el2, RMath->el3 ); //1190, 356
 }
 //++++++++++++++++++++++void Return_XY_Slot(float EL)
 void MainWindow::Return_EL_Slot(float EL)
 {
     QString str = "Distance value : ";
     str += QString::number(EL);
-    GUI_Write_To_Log(0xf1122, str);
+    GUI_Write_To_Log(0xf112, str);
 }
 //++++++++++++++++++++++++++++++++++
-void MainWindow::Return_FW_Kinematic_XYZ_Slot(int X, int Y, int Z)
-{
-    QString str = "Cube coordinates X, Y, Z : ";
+void MainWindow::Return_FW_Kinematic_XYZ_Slot(int X, int Y, int Z, float EL)
+{                //But should be as follows :
+    QString str = "Cube coordinates X, Y, L : ";
     str += QString::number(X); str += ", ";
     str += QString::number(Y); str += ", ";
-    str += QString::number(Z);
+    //str += QString::number(Z); str += ", ";
+    str += QString::number(EL);
     GUI_Write_To_Log(0xf1122, str);
-
+    str = "But should be as follows : ";
+    str += "1190, 356, 230";// str += ", ";
+    GUI_Write_To_Log(0xf1122, str);
 }

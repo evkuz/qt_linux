@@ -453,7 +453,7 @@ QSpinBox::up-button{
     <number>180</number>
    </property>
    <property name="value">
-    <number>93</number>
+    <number>90</number>
    </property>
   </widget>
   <widget class="QSpinBox" name="servo_2_spinBox">
@@ -483,7 +483,7 @@ QSpinBox::up-button{
     <number>180</number>
    </property>
    <property name="value">
-    <number>93</number>
+    <number>90</number>
    </property>
   </widget>
   <widget class="QSpinBox" name="servo_3_spinBox">
@@ -513,7 +513,7 @@ QSpinBox::up-button{
     <number>180</number>
    </property>
    <property name="value">
-    <number>93</number>
+    <number>90</number>
    </property>
   </widget>
   <widget class="QSpinBox" name="servo_4_spinBox">
@@ -543,7 +543,7 @@ QSpinBox::up-button{
     <number>180</number>
    </property>
    <property name="value">
-    <number>93</number>
+    <number>90</number>
    </property>
   </widget>
   <widget class="QSpinBox" name="servo_5_spinBox">
@@ -573,7 +573,7 @@ QSpinBox::up-button{
     <number>180</number>
    </property>
    <property name="value">
-    <number>93</number>
+    <number>90</number>
    </property>
   </widget>
   <widget class="QSpinBox" name="servo_6_spinBox">
@@ -603,7 +603,7 @@ QSpinBox::up-button{
     <number>180</number>
    </property>
    <property name="value">
-    <number>93</number>
+    <number>90</number>
    </property>
   </widget>
   <widget class="QLineEdit" name="All_Servos_lineEdit">
