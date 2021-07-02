@@ -82,9 +82,43 @@ void Robo_Math::FW_Kinemaic_Slot(int S3, int S4, int S5, int l1, int l2, int l3)
    // dEL /=3.5; // Вот теперь в мм
     //А x,y, надо обратно в пиксели
     emit Return_FW_Kinematic_XYZ_Signal(x3*pixel2mm, y3, z3, dEL);
+    this->FW_Kinemaic_Slot_02(S3, S4, S5, l1, l2, l3);
+
+}
+//+++++++++++++++++++++++++++++++++++++++
+void Robo_Math::FW_Kinemaic_Slot_02(int S3, int S4, int S5, int l1, int l2, int l3)
+{
+    float EL1, dEL1, EL2, dEL2, EL3, dEL3, dEL;
+    float x1, y1, x2, y2, x3, y3, z1, z2, z3;
+    float fi1, fi2, fi3, alpha1, alpha2, alpha3, beta, psi1, deltaS4;
+
+    deltaS4 = 6.850;
+    alpha1 = 180-S5;
+    fi1 = 90-alpha1;
+    beta = 3.0; // (96 = 93 +3) Угол поворота привода 6. ПОка не меняем.
+    alpha2 = S4 + deltaS4;
+    alpha3 = S3;
+
+    EL1 = l1; EL2 = l2; EL3 = l3;
+
+    //Вычитаем, т.к. координаты меняются в другую сторону  - от робота уменьшаются.
+    float xBase = X_base / pixel2mm;
+    float yBase = Y_base / pixel2mm;
 
 
+    dEL1 = abs(EL1*qCos(alpha1));
+    x1 = xBase - abs(dEL1*qCos(beta));
+    y1 = yBase - dEL1*qSin(beta);
 
+    fi2 = 90 - alpha2 -alpha1;
+    dEL2 = abs(EL2*qCos(fi2));
+    x2 = x1 - dEL2*qCos(beta);
+    y2 = y1 -  dEL2*qSin(beta);
 
+    fi3 = 90 - alpha3;
+    dEL3 = abs(EL3*qCos(fi3 + fi2));
 
+    dEL = dEL1 + dEL2 + dEL3;
+    QString str = "Calculated dEL : "; str += QString::number(dEL);
+    emit Pass_String_Signal(str);
 }

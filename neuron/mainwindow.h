@@ -119,6 +119,7 @@ private slots:
     void on_getXYButton_clicked();
     void Return_EL_Slot(float EL);
     void Return_FW_Kinematic_XYZ_Slot(int X, int Y, int Z, float EL);
+    void Pass_String_Slot(QString str);
 
 signals:
     void Open_Port_Signal(QString portname); // Сигнал даем по нажатию кнопки "OPEN"

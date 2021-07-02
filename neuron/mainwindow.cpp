@@ -57,6 +57,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect( this, SIGNAL (FW_Kinemaic_Signal(int, int, int, int, int, int)), RMath, SLOT(FW_Kinemaic_Slot(int, int, int, int, int, int)));
     connect( RMath, SIGNAL(Return_FW_Kinematic_XYZ_Signal(int, int, int, float)), this, SLOT(Return_FW_Kinematic_XYZ_Slot(int, int, int, float)));
 
+    connect(RMath, SIGNAL (Pass_String_Signal(QString)), this, SLOT(Pass_String_Slot(QString)));
 
 
 }
@@ -508,6 +509,7 @@ void MainWindow::on_getXYButton_clicked()
       ui->All_Servos_lineEdit->setText(str);
       GUI_Write_To_Log(0xf233, "No go to Kinematic !");
       emit FW_Kinemaic_Signal(48, 25, 133, RMath->el1, RMath->el2, RMath->el3 ); //1190, 356
+
 }
 //++++++++++++++++++++++void Return_XY_Slot(float EL)
 void MainWindow::Return_EL_Slot(float EL)
@@ -528,4 +530,9 @@ void MainWindow::Return_FW_Kinematic_XYZ_Slot(int X, int Y, int Z, float EL)
     str = "But should be as follows : ";
     str += "1190, 356, 230";// str += ", ";
     GUI_Write_To_Log(0xf1122, str);
+}
+//+++++++++++++++++++++++++++++++++++++++
+void MainWindow::Pass_String_Slot(QString str)
+{
+    GUI_Write_To_Log(0xf114, str);
 }
