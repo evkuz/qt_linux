@@ -1,4 +1,7 @@
-dongguan
+wifi dongguan
+root iqrlit2021
+wheeltec iqrlit2021
+
 ssh wheeltec@192.168.0.100
 1. Дистанционное управление роботом.
 
