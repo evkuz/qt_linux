@@ -45,10 +45,10 @@
   <widget class="QPushButton" name="clampButton">
    <property name="geometry">
     <rect>
-     <x>450</x>
-     <y>110</y>
+     <x>520</x>
+     <y>90</y>
      <width>89</width>
-     <height>25</height>
+     <height>51</height>
     </rect>
    </property>
    <property name="text">
@@ -155,9 +155,9 @@
    <property name="geometry">
     <rect>
      <x>140</x>
-     <y>180</y>
+     <y>160</y>
      <width>341</width>
-     <height>25</height>
+     <height>61</height>
     </rect>
    </property>
    <property name="text">

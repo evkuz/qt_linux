@@ -19,8 +19,8 @@ using namespace std;
 
 typedef unsigned char byte;
 
-byte color_lower[3] = {80, 100, 190}; //{0, 20, 190};
-byte color_upper[3] = {180, 200, 255}; //{100, 140, 255};
+byte color_lower[3] = {16, 80, 240}; //{0, 20, 190};
+byte color_upper[3] = {239, 240, 255}; //{100, 140, 255};
 
 static int cameraId = 2;
 static int framesToCheck = 5;
@@ -99,13 +99,16 @@ int main(int argc, char* argv[])
 
     if(!capture.isOpened())
         return fprintf( stderr, "Could not initialize video (%d) capture\n", cameraId), -2;
-
-//	if (!capture.set(CAP_PROP_FRAME_WIDTH, 1024))
-//	{
-//		std::cerr << "ERROR: seekeing is not supported" << endl;
-//	}
+	
+	if (!capture.set(CAP_PROP_FRAME_WIDTH, 2304))
+	{
+		std::cerr << "ERROR: seekeing is not supported" << endl;
+	}
+	capture.set(CAP_PROP_FRAME_HEIGHT, 1536);
 //CAP_PROP_FRAME_HEIGHT
-
+	double frame_width = capture.get( CAP_PROP_FRAME_WIDTH );
+	double frame_height = capture.get( CAP_PROP_FRAME_HEIGHT );
+	
 	Mat frame, image;
 	printf("[i] press Enter for capture image and Esc for quit!\n\n");
 	namedWindow( "Image View", 1 );
@@ -129,14 +132,16 @@ int main(int argc, char* argv[])
 			Rect pos = detector(frame, image, color_lower, color_upper);
 			int area = pos.width*pos.height;
 			if(area > 0) {
-				double border_coef = pos.width/pos.height;
-				int max_size = max(pos.width, pos.height);
-				int min_size = min(pos.width, pos.height);
+				double border_coef = static_cast<double>(pos.width)/pos.height;
+				
+				double w = static_cast<double>(pos.width)/frame_width;
+				double h = static_cast<double>(pos.height)/frame_height;
+				
 				int ox = static_cast<int>(pos.x + pos.width/2);
 				int oy = static_cast<int>(pos.y + pos.height/2);
-				
-				if (border_coef > 0.7 && border_coef < 1.3 && max_size < 400 && min_size > 50){
-					printf("%i, %i (area: %i px^2)\n", ox, oy, area);
+				//printf("w: %0.3f, h: %0.3f, border_coef:%0.3f\n", w, h, border_coef);
+				if (border_coef > 0.6 && border_coef < 1.4 && w < 0.09 && w > 0.030 && h < 0.15 && h > 0.09){
+					printf("%i, %i (w: %i, h: %i, area: %i px^2)\n", ox, oy, pos.width, pos.height, area);
 					rectangle(frame, pos, Scalar(0,255, 0));
 					if( abs(pos.x - etalon.x) < 3 && abs(pos.y - etalon.y) < 3 ){
 						framesSinceDetection++;
@@ -162,7 +167,12 @@ int main(int argc, char* argv[])
 			imshow("Image View", frame);
 
 			char key = (char)waitKey(capture.isOpened() ? 50 : 500);
-			if( key == 27 )
+			if( key == 115 ) {
+				imwrite("frame.png", frame);
+				printf("Image was saved to file 'frame.png'");
+			}
+				
+			if( key == 27 || key == 113)
 				break;
 		}
 	}
