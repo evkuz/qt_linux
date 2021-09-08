@@ -23,12 +23,23 @@ MainWindow::MainWindow(QWidget *parent)
     qspb_list = {ui->servo_1_spinBox, ui->servo_2_spinBox, ui->servo_3_spinBox,
                  ui->servo_4_spinBox, ui->servo_5_spinBox, ui->servo_6_spinBox};
 
+    slider_list = {ui->S1_verSlider, ui->S2_verSlider, ui->S3_verSlider,
+                   ui->S4_verSlider, ui->S5_verSlider, ui->S6_verSlider};
+
     foreach (const QSerialPortInfo &info, QSerialPortInfo::availablePorts()){
         ui->comL->addItem(info.portName(),info.portName());
     }
 
+    // Прячем QlineEdit-ы и QSlider-ы
+    for (int i =0; i<= DOF -1; i++)
+    {
+        qle_list[i]->setVisible(false);
+        slider_list[i]->setVisible(false);
+    }
+
+
     target_name = QFileInfo(QCoreApplication::applicationFilePath()).fileName();
-    QByteArray ba = target_name.toLocal8Bit();
+    //QByteArray ba = target_name.toLocal8Bit();
     //g/const char *c_str = ba.data();
     //printf("Appname : %s", c_str);
     Robot = new HiWonder(); // Без этого будет "The program has unexpectedly finished", хотя в начале нговорила, что это ambiguous
@@ -39,26 +50,14 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect( this, SIGNAL (Open_Port_Signal(QString)), Robot, SLOT(Open_Port_Slot(QString)));
 
-//    ui->spinBox->setStyleSheet("color: blue;"
-//                               "background-color: yellow;"
-//                               "padding-right: 65;"
-//                               "border-width: 3;"
-//                              // "margin-left: 2;"  /* make room for the arrows */
-//                              // "margin-right: 2;"  /* make room for the arrows */
-//                               //"width: 90px;"
-//                               "up-button {"
-//                                           "width: 64;"
-//                                           "subcontrol-origin: border; "
-//                                           "subcontrol-position: top right;"
+    RMath = new Robo_Math();
+    //Robo_Math
+    connect( this, SIGNAL (Pass_XY_Signal(int, int)), RMath, SLOT(Pass_XY_Slot(int, int)));
+    connect(RMath, SIGNAL (Return_EL_Signal(float)), this, SLOT(Return_EL_Slot(float)));
+    connect( this, SIGNAL (FW_Kinemaic_Signal(int, int, int, int, int, int)), RMath, SLOT(FW_Kinemaic_Slot(int, int, int, int, int, int)));
+    connect( RMath, SIGNAL(Return_FW_Kinematic_XYZ_Signal(int, int, int, float)), this, SLOT(Return_FW_Kinematic_XYZ_Slot(int, int, int, float)));
 
-//                                            "image: url(:/images/up_arrow.png);"
-//                                           "border-image: url(:/images/spinup.png) 1;"
-//                                           "border-width: 2;}"
-//                               "down-button{\
-//                                            width: 64;}"
-
-//                                );
-
+    connect(RMath, SIGNAL (Pass_String_Signal(QString)), this, SLOT(Pass_String_Slot(QString)));
 
 
 }
@@ -148,6 +147,7 @@ void MainWindow::on_sitButton_clicked()
     this->repaint();
 
     QByteArray dd = QByteArray::fromRawData(sit_down_position, 6);
+    dd.append(0x31); // Движение "Туда"
     Robot->GoToPosition(dd);//, sit_down_position
    // update_LineDits_from_servos();
 //    for (int i = 0; i<= 57; i++)
@@ -167,6 +167,8 @@ void MainWindow::on_stand_upButton_clicked()
     this->update_LineDits_from_position(hwr_Start_position);
     this->repaint();
     QByteArray dd = QByteArray::fromRawData(hwr_Start_position, 6);
+   // dd.resize(7);
+    dd.append(0x30); // Движение "Обратно"
     Robot->GoToPosition(dd);//, hwr_Start_position
     dd = QByteArray(reinterpret_cast<const char*>(hwr_Start_position), 10);
     QString str = QString(dd);
@@ -175,9 +177,11 @@ void MainWindow::on_stand_upButton_clicked()
     //cc.replace(hwr_Start_position, dd);
     this->update_Servos_from_LineEdits();
     str = "Data : ";
-    for (int i =0; i<= DOF-1; i++)
+    for (int i =0; i<= szData -1; i++)
     {
-        str += QString::number(Servos[i]);
+       // str += QString::number(Servos[i]);
+
+        str += QString::number(dd.at(i));
         str += ", ";
     }
 
@@ -257,17 +261,51 @@ void MainWindow::on_servo_6_lineEdit_editingFinished()
 void MainWindow::on_set_posButton_clicked()
 {
     QString str;
-   // const char *   pchar;
+    DetectorState state;
+    if (readSocket.GetState(&state) == 0)
+      {
+        if (state.isDetected){
+            //try_mcinfer(state.objectX, state.objectY);
+            X = state.objectX;
+            Y = state.objectY;
+            str+="DETECTED: ";
+            str += QString::number(state.objectX);
+            str += ", ";
+            str += QString::number(state.objectY);
+
+
+        } else {
+            str += "NOT DETECTED";
+        }
+      }//if (readSocket.GetState(&state) == 0)
+    // const char *   pchar;
     //pchar = static_cast<const char *>(static_cast<char *>(Servos));
    // QByteArray dd = QByteArray::fromRawData(pchar, 6);
+    GUI_Write_To_Log(0xf003,str);
     QByteArray dd ;
     dd.resize(64);
     memcpy(dd.data(), Servos, 6);
+    dd.insert(6, 0x31);
+    //dd.append(0x31); // Движение "Туда"
+    //dd.resize(64);
     //QByteArray dd = QByteArray::fromRawData(Servos, 6);
     Robot->GoToPosition(dd);//, pchar
+    //########### данные пользователя
+    str = "Training data : ";
+    str += QString::number(X);str+= ", ";
+    str += QString::number(Y);str+= ", ";
+unsigned char* sData = reinterpret_cast<unsigned char*>(Servos);
+sData[szData-1] = dd.at(szData-1);
+for (int i=0; i<= szData - 1; i++){
+    str += QString::number(sData[i]);
+    str+= ", ";
+}
+//########## данные серво
+GUI_Write_To_Log(0xf003,str);
+
     str = "Servos data written to serial ";
-    unsigned char* sData = reinterpret_cast<unsigned char*>(Servos);
-    for (int i=0; i<= DOF - 1; i++){
+
+    for (int i=0; i<= szData - 1; i++){
         str += QString::number(sData[i]);
         str+= ", ";
     }
@@ -316,14 +354,20 @@ void MainWindow::on_socketButton_clicked()
     DetectorState state;
     QString str;
     str = "";
+//Сразу открываем захват
+    if (ui->servo_1_lineEdit->text().toInt() > 0){ ui->servo_1_lineEdit->setText("0"); Servos[0]=0;}
+    else {ui->servo_1_lineEdit->setText("160"); Servos[0]=160;}
+    update_LineDits_from_servos();
 
     if (readSocket.GetState(&state) == 0)
       {
         if (state.isDetected){
             try_mcinfer(state.objectX, state.objectY);
+            X = state.objectX;
+            Y = state.objectY;
             str+="DETECTED: ";
             str += QString::number(state.objectX);
-            str += " ";
+            str += ", ";
             str += QString::number(state.objectY);
 
 
@@ -403,4 +447,92 @@ void MainWindow::on_servo_5_spinBox_valueChanged(int arg1)
 void MainWindow::on_servo_6_spinBox_valueChanged(int arg1)
 {
     Servos[5] = arg1;
+}
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+void MainWindow::on_pushButton_clicked()
+{
+    QString str;
+    QString data = ui->All_Servos_lineEdit->text();
+
+    GUI_Write_To_Log(0xf010, data);
+
+    QRegExp rx("[, ]");// match a comma or a space
+  //  QStringList list = {"100", "100", "100", "100", "100", "100" };
+    QStringList list = data.split(rx, Qt::SkipEmptyParts);
+    GUI_Write_To_Log(0xf010, QString::number(list.size()));
+    for (int i=0; i< list.size(); ++i ) {
+        GUI_Write_To_Log(0xf010, list.at(i).toLocal8Bit().constData());
+    }
+
+    // А теперь все это в qle_list
+    for (int i =0; i<= DOF -1; i++)
+    {
+        //qle_list[i]->setText(QString::number(Servos[i]));
+        qspb_list[i]->setValue(list.at(i).toInt());
+
+    }
+this->repaint();
+}//on_pushButton_clicked
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Делаем запрос в simpledetecor, XY, вычисляем длину в мм L от основания робота до XY
+void MainWindow::on_getXYButton_clicked()
+{
+    QString str;
+//    DetectorState state;
+//    if (readSocket.GetState(&state) == 0)
+//      {
+//        if (state.isDetected){
+//            X = state.objectX;
+//            Y = state.objectY;
+//            str+="DETECTED: ";
+//            str += QString::number(state.objectX);
+//            str += ", ";
+//            str += QString::number(state.objectY);
+
+
+//        } else {
+//            str += "NOT DETECTED";
+//        }
+//      }//if (readSocket.GetState(&state) == 0)
+      GUI_Write_To_Log(0xf233, "Have got X,Y ");
+      X = 500; Y=500;
+      str += QString::number(X); str += ", ";
+      str += QString::number(Y);
+      GUI_Write_To_Log(0xf233, str);
+      emit Pass_XY_Signal(X,Y);
+
+      float dl1 = abs(qSin(115));
+      str = "sin(115) = ";
+      GUI_Write_To_Log(0xf233, str);
+      str += QString::number(dl1);
+      ui->All_Servos_lineEdit->setText(str);
+      GUI_Write_To_Log(0xf233, "No go to Kinematic !");
+      emit FW_Kinemaic_Signal(48, 25, 133, RMath->el1, RMath->el2, RMath->el3 ); //1190, 356
+
+}
+//++++++++++++++++++++++void Return_XY_Slot(float EL)
+void MainWindow::Return_EL_Slot(float EL)
+{
+    QString str = "Distance value : ";
+    str += QString::number(EL);
+    GUI_Write_To_Log(0xf112, str);
+}
+//++++++++++++++++++++++++++++++++++
+void MainWindow::Return_FW_Kinematic_XYZ_Slot(int X, int Y, int Z, float EL)
+{                //But should be as follows :
+    QString str = "Cube coordinates X, Y, L : ";
+    str += QString::number(X); str += ", ";
+    str += QString::number(Y); str += ", ";
+    //str += QString::number(Z); str += ", ";
+    str += QString::number(EL);
+    GUI_Write_To_Log(0xf1122, str);
+    str = "But should be as follows : ";
+    str += "1190, 356, 230";// str += ", ";
+    GUI_Write_To_Log(0xf1122, str);
+}
+//+++++++++++++++++++++++++++++++++++++++
+void MainWindow::Pass_String_Slot(QString str)
+{
+    GUI_Write_To_Log(0xf114, str);
 }

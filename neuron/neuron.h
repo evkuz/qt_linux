@@ -6,9 +6,12 @@
 //#include "model/model1.h"
 //#include "model/model2.h"
 //#include "model/model3.h"
-#include "model/model4.h"
+//#include "model/model4.h"
 
+//#include "model/SP_test_13_5.h"
+//#include "model/Test10.h"
 
+#include  "model/Test11.h"
 //+++++++++++++++++ Вспомогательные переменные
 
 float in[3] = {0,0,0}; //массив для ввода

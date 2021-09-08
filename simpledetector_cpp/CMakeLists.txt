@@ -25,7 +25,7 @@ find_package(Threads REQUIRED)
 
 set (CMAKE_CXX_STANDARD 11)
 
-set(HEADERS SocketServer.h)
+set(HEADERS SocketServer.h arg_parser.h)
 set(SOURCE SocketServer.cpp simpledetector.cpp)
 
 # Declare the executable target built from your sources

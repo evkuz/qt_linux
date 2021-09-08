@@ -75,11 +75,11 @@ void HiWonder::GoToPosition(QByteArray &position)//, const char *servo)
 
 //    void *const tmp = const_cast<char*>(servo);
 //    unsigned char* sData = static_cast<unsigned char*>(tmp);
-   unsigned char sData [6]= {0,0,0,0,0,0};
-   memcpy(&sData, position,6);
+   unsigned char sData [7]= {0,0,0,0,0,0,0};
+   memcpy(&sData, position,7);
 
     str = "To Robot: ";
-    for (int i=0; i<= DOF - 1; i++){
+    for (int i=0; i<= szData - 1; i++){
     //    str += QString::number(sData[i]);
         //str+= QString::number(position.at(i));
         str+= QString::number(sData[i]);
@@ -93,7 +93,7 @@ void HiWonder::GoToPosition(QByteArray &position)//, const char *servo)
     this->Write_To_Log(0xF001, str);
     qbuf = serial.readAll();
     //qbuf = "askdjhfakjhfak";
-    str = "From Robot ";
+    str = "From Robot :";
     str += QString(qbuf);
     this->Write_To_Log(0xF001, str);
 

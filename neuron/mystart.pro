@@ -15,16 +15,19 @@ SOURCES += \
     mainwindow.cpp \
     hiwonder.cpp \
     mcinfer.cpp \
-    neuron.cpp
+    neuron.cpp \
+    robo_math.cpp
 
 HEADERS += \
     SocketClient.h \
     evkuz.h \
     mainwindow.h \
     mcinfer.h \
+    move_servos.h \
     neuron.h \
     positions.h \
-    hiwonder.h
+    hiwonder.h \
+    robo_math.h
 
 FORMS += \
     mainwindow.ui

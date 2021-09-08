@@ -10,8 +10,10 @@
 #include <QList>
 #include <QLineEdit>
 #include <QSpinBox>
+#include <QSlider>
 #include "hiwonder.h"  // hiwonder class
 #include "SocketClient.h"
+#include"robo_math.h" //Robo_Math class
 
 //#include "mcinfer.h"
 
@@ -38,8 +40,12 @@ public:
 
     QList<QLineEdit*> qle_list;
     QList<QSpinBox*> qspb_list;
+    QList<QSlider*>  slider_list;
 
     HiWonder *Robot;
+    Robo_Math * RMath;
+
+    int X, Y;//Координаты x,y
 
     unsigned char Servos [6] = {93,93,93,93,93,93};
 
@@ -106,8 +112,20 @@ private slots:
 
     void on_servo_6_spinBox_valueChanged(int arg1);
 
+    void on_pushButton_clicked();
+
+
+
+    void on_getXYButton_clicked();
+    void Return_EL_Slot(float EL);
+    void Return_FW_Kinematic_XYZ_Slot(int X, int Y, int Z, float EL);
+    void Pass_String_Slot(QString str);
+
 signals:
     void Open_Port_Signal(QString portname); // Сигнал даем по нажатию кнопки "OPEN"
+    void Pass_XY_Signal(int x_pix, int y_pix); //Сигнал по нажатию кнопки "Get_XY"
+    void FW_Kinemaic_Signal(int S3, int S4, int S5, int l1, int l2, int l3); // Углы приводов, длины соответствующих звеньев.
+
 
 private:
     Ui::MainWindow *ui;

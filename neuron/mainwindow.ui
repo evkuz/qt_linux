@@ -45,10 +45,10 @@
   <widget class="QPushButton" name="clampButton">
    <property name="geometry">
     <rect>
-     <x>450</x>
-     <y>110</y>
+     <x>520</x>
+     <y>90</y>
      <width>89</width>
-     <height>25</height>
+     <height>51</height>
     </rect>
    </property>
    <property name="text">
@@ -155,9 +155,9 @@
    <property name="geometry">
     <rect>
      <x>140</x>
-     <y>180</y>
+     <y>160</y>
      <width>341</width>
-     <height>25</height>
+     <height>61</height>
     </rect>
    </property>
    <property name="text">
@@ -268,27 +268,39 @@
     <string>SIT</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="getBoxButton">
+  <widget class="QPushButton" name="getXYButton">
    <property name="geometry">
     <rect>
-     <x>340</x>
-     <y>110</y>
-     <width>89</width>
+     <x>680</x>
+     <y>180</y>
+     <width>151</width>
      <height>25</height>
     </rect>
    </property>
    <property name="text">
-    <string>Get Box</string>
+    <string>Get XY</string>
    </property>
   </widget>
   <widget class="QSlider" name="S6_verSlider">
    <property name="geometry">
     <rect>
-     <x>860</x>
+     <x>820</x>
      <y>400</y>
-     <width>16</width>
+     <width>21</width>
      <height>251</height>
     </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="sizeIncrement">
+    <size>
+     <width>1</width>
+     <height>1</height>
+    </size>
    </property>
    <property name="maximum">
     <number>180</number>
@@ -298,6 +310,12 @@
    </property>
    <property name="orientation">
     <enum>Qt::Vertical</enum>
+   </property>
+   <property name="tickPosition">
+    <enum>QSlider::TicksBelow</enum>
+   </property>
+   <property name="tickInterval">
+    <number>2</number>
    </property>
   </widget>
   <widget class="QSlider" name="S5_verSlider">
@@ -435,7 +453,7 @@ QSpinBox::up-button{
     <number>180</number>
    </property>
    <property name="value">
-    <number>93</number>
+    <number>90</number>
    </property>
   </widget>
   <widget class="QSpinBox" name="servo_2_spinBox">
@@ -465,7 +483,7 @@ QSpinBox::up-button{
     <number>180</number>
    </property>
    <property name="value">
-    <number>93</number>
+    <number>90</number>
    </property>
   </widget>
   <widget class="QSpinBox" name="servo_3_spinBox">
@@ -495,7 +513,7 @@ QSpinBox::up-button{
     <number>180</number>
    </property>
    <property name="value">
-    <number>93</number>
+    <number>90</number>
    </property>
   </widget>
   <widget class="QSpinBox" name="servo_4_spinBox">
@@ -525,7 +543,7 @@ QSpinBox::up-button{
     <number>180</number>
    </property>
    <property name="value">
-    <number>93</number>
+    <number>90</number>
    </property>
   </widget>
   <widget class="QSpinBox" name="servo_5_spinBox">
@@ -555,7 +573,7 @@ QSpinBox::up-button{
     <number>180</number>
    </property>
    <property name="value">
-    <number>93</number>
+    <number>90</number>
    </property>
   </widget>
   <widget class="QSpinBox" name="servo_6_spinBox">
@@ -585,7 +603,43 @@ QSpinBox::up-button{
     <number>180</number>
    </property>
    <property name="value">
-    <number>93</number>
+    <number>90</number>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="All_Servos_lineEdit">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>340</y>
+     <width>441</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>24</pointsize>
+    </font>
+   </property>
+   <property name="maxLength">
+    <number>28</number>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton">
+   <property name="geometry">
+    <rect>
+     <x>460</x>
+     <y>340</y>
+     <width>121</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>18</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>Submit</string>
    </property>
   </widget>
  </widget>
