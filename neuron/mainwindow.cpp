@@ -449,30 +449,6 @@ void MainWindow::on_servo_6_spinBox_valueChanged(int arg1)
     Servos[5] = arg1;
 }
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-void MainWindow::on_pushButton_clicked()
-{
-    QString str;
-    QString data = ui->All_Servos_lineEdit->text();
-
-    GUI_Write_To_Log(0xf010, data);
-
-    QRegExp rx("[, ]");// match a comma or a space
-  //  QStringList list = {"100", "100", "100", "100", "100", "100" };
-    QStringList list = data.split(rx, Qt::SkipEmptyParts);
-    GUI_Write_To_Log(0xf010, QString::number(list.size()));
-    for (int i=0; i< list.size(); ++i ) {
-        GUI_Write_To_Log(0xf010, list.at(i).toLocal8Bit().constData());
-    }
-
-    // А теперь все это в qle_list
-    for (int i =0; i<= DOF -1; i++)
-    {
-        //qle_list[i]->setText(QString::number(Servos[i]));
-        qspb_list[i]->setValue(list.at(i).toInt());
-
-    }
-this->repaint();
-}//on_pushButton_clicked
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // Делаем запрос в simpledetecor, XY, вычисляем длину в мм L от основания робота до XY
@@ -535,4 +511,55 @@ void MainWindow::Return_FW_Kinematic_XYZ_Slot(int X, int Y, int Z, float EL)
 void MainWindow::Pass_String_Slot(QString str)
 {
     GUI_Write_To_Log(0xf114, str);
+}
+//+++++++++++++++++++++++++++++++++
+//background-color: rgb(26, 148, 255);
+
+void MainWindow::on_submitButton_clicked()
+{
+    int num;
+    QString str;
+    QString data = ui->All_Servos_lineEdit->text();
+    QStringList list;
+
+    str="The data from line edit are : ";
+    str.append(data);
+    GUI_Write_To_Log(0xf010, data);
+
+    QRegExp rx("[, ]");// match a comma or a space
+  //  QStringList list = {"100", "100", "100", "100", "100", "100" };
+    list = data.split(rx, Qt::SkipEmptyParts);
+    num = list.size (); //Число элементов, начиная с 1
+    if (num < DOF) {
+        str = "Данных НЕДОСТАТОЧНО !!! Передано всего "; str.append (QString::number(list.size()));
+        //Если данных недостаточно, то меняем цвет кнопки и строки ввода, для подсказки
+        GUI_Write_To_Log(0xf010, str);
+        str = "background-color: rgb(26, 148, 255)";
+        ui->submitButton->setStyleSheet (str);
+        str = "background-color: rgb(255, 235, 11)";
+        ui->All_Servos_lineEdit->setStyleSheet (str);
+
+    }
+    if (num == DOF)
+      {
+        // А теперь все это в qle_list
+        for (int i =0; i<= DOF -1; i++)
+        {
+            //qle_list[i]->setText(QString::number(Servos[i]));
+            qspb_list[i]->setValue(list.at(i).toInt());
+
+        }
+        // Если данные введены верно, то возвращаем цвета кнопки и строки ввода к значениям по умолчанию.
+        ui->submitButton->setStyleSheet ("");
+        ui->All_Servos_lineEdit->setStyleSheet ("");
+        GUI_Write_To_Log(0xf010, "Данные переданы корректно");
+     }//(num == DOF -1)
+
+//    GUI_Write_To_Log(0xf010, str); //QString::number(list.size())
+//    for (int i=0; i< list.size(); ++i ) {
+//        GUI_Write_To_Log(0xf010, list.at(i).toLocal8Bit().constData());
+//    }
+
+
+this->repaint();
 }

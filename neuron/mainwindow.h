@@ -112,7 +112,7 @@ private slots:
 
     void on_servo_6_spinBox_valueChanged(int arg1);
 
-    void on_pushButton_clicked();
+
 
 
 
@@ -120,6 +120,8 @@ private slots:
     void Return_EL_Slot(float EL);
     void Return_FW_Kinematic_XYZ_Slot(int X, int Y, int Z, float EL);
     void Pass_String_Slot(QString str);
+
+    void on_submitButton_clicked();
 
 signals:
     void Open_Port_Signal(QString portname); // Сигнал даем по нажатию кнопки "OPEN"

@@ -43,18 +43,38 @@ void HiWonder::Write_To_Log (int value, QString log_message)
     uin << str << str2 << log_message << "\n";
 
 }
-//++++++++++++++++
+//++++++++++++++++ REMEMBER WHILE OPENING PORT !!!!!
+/*
+ * sudo usermod -a -G dialout <username>
+
+where <username> is your Linux user name. You will need to log out and log in again for this change to take effect.
+
+*/
 void HiWonder::Open_Port_Slot(QString portname)
+
 {
+    bool OK;
+    int serial_error;
+    QString stt;
+
     serial.setPortName(portname);
-    serial.open(QIODevice::ReadWrite);
+    OK = true;
+   // OK = serial.open(QIODevice::ReadWrite);
+    if (!serial.open(QIODevice::ReadWrite)) { OK = false; serial_error = serial.error(); this->Write_To_Log(0xFF00, "Error opening Serial port !!!");} //"Error opening Serial port !!!");}
+    stt = QString::number (serial_error);
+    this->Write_To_Log(0xFF00,stt);
+//    if (!serial.open(QIODevice::ReadWrite)) {
+//        processError(tr("Can't open %1, error code %2")
+//                     .arg(serial.portName()).arg()));
+
+
     serial.setBaudRate(QSerialPort::Baud115200);
     serial.setDataBits(QSerialPort::Data8);
     serial.setParity(QSerialPort::NoParity);
     serial.setStopBits(QSerialPort::OneStop);
     serial.setFlowControl(QSerialPort::NoFlowControl);
     QString str = "Serial port is opened";
-    this->Write_To_Log(0xFF00, str);
+    if (OK) this->Write_To_Log(0xFF00, str);
 
 }
 //++++++++++++++++++++++
