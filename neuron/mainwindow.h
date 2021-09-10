@@ -69,30 +69,9 @@ private slots:
 
     void on_closeButton_clicked();
 
-    void on_servo_1_lineEdit_editingFinished();
-
-    void on_servo_2_lineEdit_editingFinished();
-
-    void on_servo_3_lineEdit_editingFinished();
-
-    void on_servo_4_lineEdit_editingFinished();
-
-    void on_servo_5_lineEdit_editingFinished();
-
-    void on_servo_6_lineEdit_editingFinished();
 
     void on_set_posButton_clicked();
-    void on_S1_verSlider_valueChanged(int value);
 
-    void on_S2_verSlider_valueChanged(int value);
-
-    void on_S3_verSlider_valueChanged(int value);
-
-    void on_S4_verSlider_valueChanged(int value);
-
-    void on_S5_verSlider_valueChanged(int value);
-
-    void on_S6_verSlider_valueChanged(int value);
 
     void on_socketButton_clicked();
 

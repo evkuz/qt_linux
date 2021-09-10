@@ -17,25 +17,20 @@ MainWindow::MainWindow(QWidget *parent)
     //QList ports = QSerialPortInfo
 
 
-    qle_list = {ui->servo_1_lineEdit, ui->servo_2_lineEdit, ui->servo_3_lineEdit,
-                ui->servo_4_lineEdit, ui->servo_5_lineEdit, ui->servo_6_lineEdit};
 
     qspb_list = {ui->servo_1_spinBox, ui->servo_2_spinBox, ui->servo_3_spinBox,
                  ui->servo_4_spinBox, ui->servo_5_spinBox, ui->servo_6_spinBox};
-
-    slider_list = {ui->S1_verSlider, ui->S2_verSlider, ui->S3_verSlider,
-                   ui->S4_verSlider, ui->S5_verSlider, ui->S6_verSlider};
 
     foreach (const QSerialPortInfo &info, QSerialPortInfo::availablePorts()){
         ui->comL->addItem(info.portName(),info.portName());
     }
 
     // Прячем QlineEdit-ы и QSlider-ы
-    for (int i =0; i<= DOF -1; i++)
-    {
-        qle_list[i]->setVisible(false);
-        slider_list[i]->setVisible(false);
-    }
+//    for (int i =0; i<= DOF -1; i++)
+//    {
+//        qle_list[i]->setVisible(false);
+//        slider_list[i]->setVisible(false);
+//    }
 
 
     target_name = QFileInfo(QCoreApplication::applicationFilePath()).fileName();
@@ -194,11 +189,6 @@ void MainWindow::on_stand_upButton_clicked()
     GUI_Write_To_Log(0xff10, str);
 }
 //+++++++++++++++++++++++++++++++
-void MainWindow::on_S1_verSlider_valueChanged(int value)
-{
-    update_data_from_sliders(0, value);
-    ui->servo_1_lineEdit->setText(QString::number(value));
-}
 //++++++++++++++++++++++++++++++++++++++++++++++
 void MainWindow::update_data_from_sliders(int index, int value)
 {
@@ -223,39 +213,7 @@ void MainWindow::on_closeButton_clicked()
     Robot->serial.close();
 }
 //+++++++++++++++++++++++++ update servos from LineEdits
-void MainWindow::on_servo_1_lineEdit_editingFinished()
-{
-    Servos[0] = ui->servo_1_lineEdit->text().toInt();
-}
 
-
-void MainWindow::on_servo_2_lineEdit_editingFinished()
-{
-    Servos[1] = ui->servo_2_lineEdit->text().toInt();
-}
-
-
-void MainWindow::on_servo_3_lineEdit_editingFinished()
-{
-    Servos[2] = ui->servo_3_lineEdit->text().toInt();
-}
-
-void MainWindow::on_servo_4_lineEdit_editingFinished()
-{
-    Servos[3] = ui->servo_4_lineEdit->text().toInt();
-}
-
-
-void MainWindow::on_servo_5_lineEdit_editingFinished()
-{
-    Servos[4] = ui->servo_5_lineEdit->text().toInt();
-}
-
-
-void MainWindow::on_servo_6_lineEdit_editingFinished()
-{
-    Servos[5] = ui->servo_6_lineEdit->text().toInt();
-}
 //+++++++++++++++++++++++++++++++++++++++++
 //Send data from linedits to robot
 void MainWindow::on_set_posButton_clicked()
@@ -315,39 +273,7 @@ GUI_Write_To_Log(0xf003,str);
 
  //serial.write(reinterpret_cast<const char *>(Servos));
 }
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++
-void MainWindow::on_S2_verSlider_valueChanged(int value)
-{
-    update_data_from_sliders(1, value);
-    ui->servo_2_lineEdit->setText(QString::number(value));
-}
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++
-void MainWindow::on_S3_verSlider_valueChanged(int value)
-{
-    update_data_from_sliders(2, value);
-    ui->servo_3_lineEdit->setText(QString::number(value));
-}
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
-void MainWindow::on_S4_verSlider_valueChanged(int value)
-{
-    update_data_from_sliders(3, value);
-    ui->servo_4_lineEdit->setText(QString::number(value));
-}
-//+++++++++++++++++++++++++++++++++++++++++++++++++++++++
-void MainWindow::on_S5_verSlider_valueChanged(int value)
-{
-    update_data_from_sliders(4, value);
-    ui->servo_5_lineEdit->setText(QString::number(value));
-}
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-void MainWindow::on_S6_verSlider_valueChanged(int value)
-{
-    update_data_from_sliders(5, value);
-    ui->servo_6_lineEdit->setText(QString::number(value));
-}
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 void MainWindow::on_socketButton_clicked()
 {
@@ -355,8 +281,8 @@ void MainWindow::on_socketButton_clicked()
     QString str;
     str = "";
 //Сразу открываем захват
-    if (ui->servo_1_lineEdit->text().toInt() > 0){ ui->servo_1_lineEdit->setText("0"); Servos[0]=0;}
-    else {ui->servo_1_lineEdit->setText("160"); Servos[0]=160;}
+//    if (ui->servo_1_lineEdit->text().toInt() > 0){ ui->servo_1_lineEdit->setText("0"); Servos[0]=0;}
+//    else {ui->servo_1_lineEdit->setText("160"); Servos[0]=160;}
     update_LineDits_from_servos();
 
     if (readSocket.GetState(&state) == 0)
@@ -380,11 +306,13 @@ void MainWindow::on_socketButton_clicked()
        GUI_Write_To_Log(0xf010, str);
     }
 }
-//+++++++++++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++++++++++  ->text().toInt()
 void MainWindow::on_clampButton_clicked()
 {
-    if (ui->servo_1_lineEdit->text().toInt() > 0){ ui->servo_1_lineEdit->setText("0"); Servos[0]=0;}
-    else {ui->servo_1_lineEdit->setText("160"); Servos[0]=160;}
+    if (ui->servo_1_spinBox->value () > 0){ ui->servo_1_spinBox->setValue (0); Servos[0]=0;}
+    else {ui->servo_1_spinBox->setValue (90); Servos[0]=90;}
+
+
     update_LineDits_from_servos();
     on_set_posButton_clicked();
 }
@@ -393,7 +321,7 @@ void MainWindow::update_LineDits_from_servos(void)
 {
     for (int i =0; i<= DOF -1; i++)
     {
-        qle_list[i]->setText(QString::number(Servos[i]));
+       // qle_list[i]->setText(QString::number(Servos[i]));
         qspb_list[i]->setValue((Servos[i]));
     }
 }
@@ -402,7 +330,7 @@ void MainWindow::update_LineDits_from_position(const char *pos)
 {
     for (int i =0; i<= DOF -1; i++)
     {
-        qle_list[i]->setText(QString::number(pos[i]));
+        //qle_list[i]->setText(QString::number(pos[i]));
         qspb_list[i]->setValue(pos[i]);
     }
 
