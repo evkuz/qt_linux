@@ -19,8 +19,8 @@ using namespace std;
 
 typedef unsigned char byte;
 
-byte color_lower[3] = {16, 80, 240}; //{0, 20, 190};
-byte color_upper[3] = {239, 240, 255}; //{100, 140, 255};
+byte color_lower[3] = {135, 135, 245}; //{0, 20, 190};
+byte color_upper[3] = {250, 254, 255}; //{100, 140, 255};
 
 static int cameraId = 0;
 static int framesToCheck = 5;

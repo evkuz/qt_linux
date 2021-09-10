@@ -52,9 +52,10 @@ bool ParseCommand(char *str, ServerCommand &command) {
 
 SocketServer::SocketServer(const char *socketPath) {
   int pathLength = strlen(socketPath);
-  _serverPath = new char[pathLength];
+  _serverPath = new char[pathLength + 1];
   strncpy(_serverPath, socketPath, pathLength);
-  
+  _serverPath[pathLength] = '\0';
+
   _isStoped = true;
   _thread = NULL; //
 

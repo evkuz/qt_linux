@@ -323,6 +323,7 @@ void MainWindow::update_LineDits_from_servos(void)
     {
        // qle_list[i]->setText(QString::number(Servos[i]));
         qspb_list[i]->setValue((Servos[i]));
+        GUI_Write_To_Log(0xf010, QString::number (Servos[i]));
     }
 }
 //+++++++++++++++++++++++++++++++++++++
