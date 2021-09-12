@@ -22,8 +22,11 @@ typedef unsigned char byte;
 byte color_lower[3] = {135, 135, 245}; //{0, 20, 190};
 byte color_upper[3] = {250, 254, 255}; //{100, 140, 255};
 
+const char* windowName = "Cube Detector";  
+
 static int cameraId = 0;
 static int framesToCheck = 5;
+static bool changeFrameSize = true;
 static const struct Miksarus::ProgramOption options_list[]{
     {Miksarus::optVerbose, NOT_REQUIRED},
     { 
@@ -44,6 +47,17 @@ static const struct Miksarus::ProgramOption options_list[]{
             required_argument,  // is option value required
             "how many frames the object must be detected (default - 5)",
             [](char* argv) { framesToCheck = atoi(argv); }, 
+    		nullptr
+        },
+        NOT_REQUIRED                 // is option required (true or false)
+    },
+	{
+		{
+            "do-not-change-size", // long name
+            'd',                  // short name 
+            no_argument,    // is option value required
+            "if set, frame size will not be changed",
+            [](char* argv) { changeFrameSize = false; }, 
     		nullptr
         },
         NOT_REQUIRED                 // is option required (true or false)
@@ -90,6 +104,172 @@ Rect detector(const Mat& frame, Mat& out, const byte* color_l, const byte* color
 	return res;
 }
 
+
+bool calibrationInProgress = true;
+bool finishCalibration = false;
+int calibZoneX1 = -1;
+int calibZoneY1 = -1;
+int calibZoneX2 = -1;
+int calibZoneY2 = -1;
+
+void calibrate_colors(const Mat& frame, int x1, int y1, int x2, int y2){
+	color_lower[0] = 255;
+	color_lower[1] = 255;
+	color_lower[2] = 255;
+
+	color_upper[0] = 0;
+	color_upper[1] = 0;
+	color_upper[2] = 0;
+	
+	cv::Rect roi(x1, y1, x2 - x1, y2 - y1);
+	cv::Mat frame_roi;
+	frame(roi).copyTo(frame_roi);
+
+	int cn = frame_roi.channels();
+	uint8_t* pixelPtr = (uint8_t*)frame_roi.data;
+	uint8_t r, g, b;
+
+	for(int i = 0; i < frame_roi.rows; i++)
+	{
+		for(int j = 0; j < frame_roi.cols; j++)
+		{
+			b = pixelPtr[i*frame_roi.cols*cn + j*cn + 0]; // B
+			g = pixelPtr[i*frame_roi.cols*cn + j*cn + 1]; // G
+			r = pixelPtr[i*frame_roi.cols*cn + j*cn + 2]; // R
+			
+			if (b < color_lower[0])
+				color_lower[0] = b;
+			if (b > color_upper[0])
+				color_upper[0] = b;
+
+			if (g < color_lower[1])
+				color_lower[1] = g;
+			if (g > color_upper[1])
+				color_upper[1] = g;
+
+			if (r < color_lower[2])
+				color_lower[2] = r;
+			if (r > color_upper[2])
+				color_upper[2] = r;
+		}
+	}
+
+	uint8_t minValue = 3;
+	uint8_t maxValue = 255 - minValue;
+
+	if(color_lower[0] <= minValue)
+		color_lower[0] = 0;
+	else
+		color_lower[0] -= minValue;
+	
+	if(color_lower[1] <= minValue)
+		color_lower[1] = 0;
+	else
+		color_lower[1] -= minValue;
+
+	if(color_lower[2] <= minValue)
+		color_lower[2] = 0;
+	else
+		color_lower[2] -= minValue;
+
+
+	if(color_upper[0] >= maxValue)
+		color_upper[0] = 255;
+	else
+		color_upper[0] += minValue;
+	
+	if(color_upper[1] >= maxValue)
+		color_upper[1] = 255;
+	else
+		color_upper[1] += minValue;
+
+	if(color_upper[2] >= maxValue)
+		color_upper[2] = 255;
+	else
+		color_upper[2] += minValue;
+
+	printf(
+		"B: %d - %d\nG: %d - %d\nR: %d - %d\n",
+		color_lower[0], color_upper[0], 
+		color_lower[1], color_upper[1],
+		color_lower[2], color_upper[2]
+	);
+}
+
+void CallBackFunc(int event, int x, int y, int flags, void* userdata)
+{
+     if  ( event == EVENT_LBUTTONDOWN )
+     {
+        calibZoneX1 = x;
+		calibZoneY1 = y;
+		finishCalibration = false;
+     }
+     else if  ( event == EVENT_LBUTTONUP )
+     {
+		 if( (calibZoneX2 - calibZoneX1) > 0 && (calibZoneY2 - calibZoneY1) > 0 )
+		 	finishCalibration = true;
+     }
+     else if ( event == EVENT_MOUSEMOVE && !finishCalibration )
+     {
+		if(calibZoneX1 >=0 && calibZoneY1 >=0){
+			calibZoneX2 = x;
+			calibZoneY2 = y;
+		}
+     }
+}
+
+
+int calibEffectFrameCount=0;
+bool calibShowDone = false;
+
+void DrawCalibration(const Mat& frame){
+	if(calibrationInProgress){
+		if(finishCalibration){
+			calibrate_colors(
+				frame,
+				calibZoneX1, calibZoneY1,
+				calibZoneX2, calibZoneY2
+			);
+			calibrationInProgress = false;
+			finishCalibration = false;
+			calibShowDone = true;
+			calibEffectFrameCount = 0;
+			calibZoneX1 = -1;
+		 	calibZoneY1 = -1;
+		}
+		cv::putText(frame, //target image
+            "COLOR CALIBRATION", //text
+            cv::Point(10, 18), //top-left position
+            cv::FONT_HERSHEY_DUPLEX,
+            0.5,
+            CV_RGB(0, 255, 0), //font color
+            2
+		);
+		if (calibZoneX1 >= 0 && calibZoneX2 >= 0 && calibZoneY1 >= 0 && calibZoneY2 >= 0)
+		{
+			Rect rect(calibZoneX1, calibZoneY1, (calibZoneX2 - calibZoneX1), (calibZoneY2 - calibZoneY1));
+			rectangle(frame, rect, Scalar(255,0, 127), 2);
+		}
+	}
+	if(calibShowDone){
+		if(calibEffectFrameCount < 9){
+			cv::putText(frame, //target image
+				"CALIBRATION DONE!", //text
+				cv::Point(frame.cols/2-80, frame.rows/2-20), //top-left position
+				cv::FONT_HERSHEY_DUPLEX,
+				0.8,
+				CV_RGB(255, 0, 127), //font color
+				2
+			);
+			calibEffectFrameCount++;
+		} else {
+			calibEffectFrameCount = 0;
+			calibShowDone = false;
+		}
+	}
+}
+
+
 int main(int argc, char* argv[])
 {
     Miksarus::ParseProgramOptions(argc, argv, options_list);
@@ -100,18 +280,20 @@ int main(int argc, char* argv[])
     if(!capture.isOpened())
         return fprintf( stderr, "Could not initialize video (%d) capture\n", cameraId), -2;
 	
-	if (!capture.set(CAP_PROP_FRAME_WIDTH, 2304))
-	{
-		std::cerr << "ERROR: seekeing is not supported" << endl;
+	if (changeFrameSize) {
+		capture.set(CAP_PROP_FRAME_WIDTH, 2304);
+		capture.set(CAP_PROP_FRAME_HEIGHT, 1536);
 	}
-	capture.set(CAP_PROP_FRAME_HEIGHT, 1536);
-//CAP_PROP_FRAME_HEIGHT
+	
 	double frame_width = capture.get( CAP_PROP_FRAME_WIDTH );
 	double frame_height = capture.get( CAP_PROP_FRAME_HEIGHT );
 	
 	Mat frame, image;
-	printf("[i] press Enter for capture image and Esc for quit!\n\n");
-	namedWindow( "Image View", 1 );
+	printf("[i] press 's' for capture image and 'Esc' or 'q' for quit!\n\n");
+	namedWindow( windowName, 1 );
+
+    //set the callback function for any mouse event
+    setMouseCallback(windowName, CallBackFunc, NULL);
 
 	SocketServer server("iqr.socket");
 	if(server.Start() != 0){
@@ -132,6 +314,7 @@ int main(int argc, char* argv[])
 			Rect pos = detector(frame, image, color_lower, color_upper);
 			int area = pos.width*pos.height;
 			if(area > 0) {
+				rectangle(frame, pos, Scalar(10,10, 255),2);
 				double border_coef = static_cast<double>(pos.width)/pos.height;
 				
 				double w = static_cast<double>(pos.width)/frame_width;
@@ -142,7 +325,7 @@ int main(int argc, char* argv[])
 				//printf("w: %0.3f, h: %0.3f, border_coef:%0.3f\n", w, h, border_coef);
 				if (border_coef > 0.6 && border_coef < 1.4 && w < 0.09 && w > 0.030 && h < 0.15 && h > 0.09){
 					printf("%i, %i (w: %i, h: %i, area: %i px^2)\n", ox, oy, pos.width, pos.height, area);
-					rectangle(frame, pos, Scalar(0,255, 0));
+					rectangle(frame, pos, Scalar(0,255, 0),2);
 					if( abs(pos.x - etalon.x) < 3 && abs(pos.y - etalon.y) < 3 ){
 						framesSinceDetection++;
 					} else {
@@ -164,16 +347,25 @@ int main(int argc, char* argv[])
 				server.SetDetectorState(false, 0, 0);
 			}
 
-			imshow("Image View", frame);
+			DrawCalibration(frame);
+			imshow(windowName, frame);
 
 			char key = (char)waitKey(capture.isOpened() ? 50 : 500);
 			if( key == 115 ) {
 				imwrite("frame.png", frame);
 				printf("Image was saved to file 'frame.png'");
 			}
-				
-			if( key == 27 || key == 113)
-				break;
+			
+			if( key == 99 ) {
+				calibrationInProgress = true;
+			}
+			//printf("key: %d\n", key);
+			if( key == 27 || key == 113) {
+				if(calibrationInProgress)
+					calibrationInProgress = false;
+				else
+					break;
+			}
 		}
 	}
 	

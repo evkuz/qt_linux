@@ -122,7 +122,7 @@ void SocketServer::DoWork() {
   ServerCommand command;
   char buf[80];
 
-  printf("SocketServer started!");
+  printf("SocketServer started!\n");
   while (!this->_isStoped) {
     client = sizeof(cli_addr);
     newsockfd =
@@ -134,7 +134,7 @@ void SocketServer::DoWork() {
     }
     n = read(newsockfd, buf, 80);
     if (!ParseCommand(buf, command)) {
-      perror("Unknown command!");
+      perror("Unknown command!\n");
       close(newsockfd);
       continue;
     }
