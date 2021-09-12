@@ -76,6 +76,7 @@ Thumbs.db
 **/debug/**
 .vscode/**
 
+*.png
 .qt_for_python
 
 !hiwonder_qt*
