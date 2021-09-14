@@ -8,9 +8,17 @@
 //#include "model/model3.h"
 //#include "model/model4.h"
 
-#include "model/SP_test_13_5.h"
+//#include "model/SP_test_13_5.h"
+//#include "model/4.h"
+//include "model/2_BP.h"
+//#include "model/5.h" // хуже 2_ВР
+//#include "model/1.h"
+// Лучшая #include "model/3.h"
 
-
+//#include "model/2_1_BP.h" более-менее
+//#include "model/2_1_P_BP.h"
+#include "model/2_1_M.h" // ЛУчше всех
+//#include "model/2_1_P.h"
 //+++++++++++++++++ Вспомогательные переменные
 
 float in[3] = {0,0,0}; //массив для ввода

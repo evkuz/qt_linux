@@ -215,7 +215,7 @@ void MainWindow::on_closeButton_clicked()
 //+++++++++++++++++++++++++ update servos from LineEdits
 
 //+++++++++++++++++++++++++++++++++++++++++
-//Send data from linedits to robot
+//Send data from GUI to robot
 void MainWindow::on_set_posButton_clicked()
 {
     QString str;
@@ -243,8 +243,8 @@ void MainWindow::on_set_posButton_clicked()
     QByteArray dd ;
     dd.resize(64);
     memcpy(dd.data(), Servos, 6);
-    dd.insert(6, 0x31);
-    //dd.append(0x31); // Движение "Туда"
+    dd.insert(6, 0x31); // Движение "Туда"
+    //dd.append(0x31);
     //dd.resize(64);
     //QByteArray dd = QByteArray::fromRawData(Servos, 6);
     Robot->GoToPosition(dd);//, pchar
@@ -283,6 +283,7 @@ void MainWindow::on_socketButton_clicked()
 //Сразу открываем захват
 //    if (ui->servo_1_lineEdit->text().toInt() > 0){ ui->servo_1_lineEdit->setText("0"); Servos[0]=0;}
 //    else {ui->servo_1_lineEdit->setText("160"); Servos[0]=160;}
+    Servos[0]=0;
     update_LineDits_from_servos();
 
     if (readSocket.GetState(&state) == 0)
