@@ -44,6 +44,7 @@ public:
 
     HiWonder *Robot;
     Robo_Math * RMath;
+    int parcel_size; // размер посылки в байтах от ПК к роботу
 
     int X, Y;//Координаты x,y
 
@@ -55,6 +56,7 @@ public:
     void try_mcinfer(int x, int y);
     void update_LineDits_from_servos(void);
     void update_LineDits_from_position(const char *pos);
+    void update_LineDits_from_position(unsigned char *pos);
     void update_Servos_from_LineEdits(void);
 
 private:
@@ -95,12 +97,15 @@ private slots:
 
 
 
+
     void on_getXYButton_clicked();
     void Return_EL_Slot(float EL);
     void Return_FW_Kinematic_XYZ_Slot(int X, int Y, int Z, float EL);
     void Pass_String_Slot(QString str);
 
     void on_submitButton_clicked();
+
+    void on_trainButton_clicked();
 
 signals:
     void Open_Port_Signal(QString portname); // Сигнал даем по нажатию кнопки "OPEN"

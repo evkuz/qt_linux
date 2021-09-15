@@ -80,14 +80,14 @@ message += "Main Cycle worked "; message += String(cycle_num); message += " time
 
 
 
-message = "Robot movement DONE!"; //message += String(numBytes); 
-byte mystrlen = message.length();
-while ( message.length() <=61){
-    message += " ";//String(9);
-    //byte a = 120;
-}
-Serial.println(message);
-Serial.flush();
+//message = "Robot movement DONE!"; //message += String(numBytes);
+//byte mystrlen = message.length();
+//while ( message.length() <=61){
+//    message += " ";//String(9);
+//    //byte a = 120;
+//}
+//Serial.println(message);
+//Serial.flush();
 
 }//move_servo_together
 

@@ -29,6 +29,7 @@ public:
     QFile       LogFile;
 
     QByteArray qbuf;
+    bool MOVEMENT_DONE;  // Флаг показывает, что получено сообщение от робота о заврешении цикла движения
 
 
 
@@ -46,6 +47,7 @@ signals:
 
 public slots:
     void Open_Port_Slot(QString portname);
+    void ReadFromSerial_Slot();
 };
 
 #endif // HIWONDER_H

@@ -19,7 +19,7 @@
 */
 
 #include <Servo.h>
-#include "/home/evkuz/0_arduino/include/hiwonder_byte.h"
+//#include "/home/evkuz/0_arduino/include/hiwonder_byte.h"
 //#include "move_servos.h"
 
 ///home/evkuz/0_arduino/include/hiwonder_byte.h
@@ -45,6 +45,7 @@ byte delta [6];     // Разница (между текущим и целевы
 char *s_pos;
 
 byte ints[64]; // Данные, полученные по serial
+short DF [6] ={1, 1, 1, 1, 1, 1};
 
 //++++++++++++++++++++++++ setup
 void setup() {
@@ -58,7 +59,7 @@ void setup() {
 // attach servos to correspondent pin
   for (int i=0; i<= serv_number -1; i++)  { servos[i].attach(i+2), 500, 2500; }
 
-  move_servo_together(hwr_Start_position, 1, 6);
+//  move_servo_together(hwr_Start_position, 1, 6);
   delay(1000);
 
 
@@ -100,7 +101,7 @@ void to_fix_position(byte *pos) { for (int i=0; i<= serv_number -1; i++) { servo
 // А вообще, на будущее, надо чтобы сначала считывала текущую позицию и 
 // и на основании этого вычисляла количество шагов, чтобы было плавное 
 // позиционирование в начальную позицию.
-void start_pozition() { to_fix_position(hwr_Start_position); }//start_pozition
+//void start_pozition() { to_fix_position(hwr_Start_position); }//start_pozition
 //+++++++++++++++++++++++++++++++++++
 /*
 Получить значения углов для всех приводов
@@ -384,16 +385,19 @@ void parse_command ()
       //byte ints[64];           // массив для численных данных, у нас 6 приводов
       byte numReaded;
       
-      numReaded=Serial.readBytes(ints, 65);
-
-      message = "Robot just got data : ";
-      for (int i=0; i<=64; i++)
+      numReaded=Serial.readBytes(ints, 7);
+      //Serial.print(numReaded);
+     // Serial.write(numReaded);
+      //message = "Robot just got data : ";
+      message = "";
+      for (int i=0; i<=numReaded-1; i++)
       {          message += String(ints[i]); message += ", ";
 
       }
       message.remove(message.length()-2);
       Serial.println(message);
-      Serial.flush();
+      //Serial.println("Old macDonald have a farm 12345 very very well !!!!"); //51
+      //Serial.flush();
 
       //move_servo_together(ints, numReaded);
       Go_To_Position(ints);
@@ -429,29 +433,40 @@ void Go_To_Position(byte *pos)
     switch (pos[6]) {
 
     case 0x31: // Движение "Туда"
+
         move_servo_together (ints, 4, 6);
         delay(1000);
         move_servo_together (ints, 1, 1);
         delay(1000);
         move_servo_together (ints, 3, 3);
+        delay(1000);
         break;
         
     case 0x30: // Движение "Обратно"
+
         move_servo_together (ints, 3, 3);
         delay(1000);
         move_servo_together (ints, 1, 1);
         delay(1000);
         move_servo_together (ints, 4, 6);
+        delay(1000);
         break;
 
 
     default:
         message = "Wrong data !!!";
         Serial.println(message);
-        Serial.flush();
+        //Serial.flush();
     }
 
 
-    
+    message = "Robot movement DONE! at all"; //message += String(numBytes);
+    byte mystrlen = message.length();
+//    while ( message.length() <=61){
+//        message += " ";//String(9);
+//        //byte a = 120;
+//    }
+    Serial.println(message);
+   // Serial.flush();
 }
 //+++++++++++++++++++++++++++++

@@ -17,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
     //QList ports = QSerialPortInfo
 
 
-
+    parcel_size = 7;
     qspb_list = {ui->servo_1_spinBox, ui->servo_2_spinBox, ui->servo_3_spinBox,
                  ui->servo_4_spinBox, ui->servo_5_spinBox, ui->servo_6_spinBox};
 
@@ -43,12 +43,14 @@ MainWindow::MainWindow(QWidget *parent)
     QString str = "The application \"";  str +=target_name; str += "\"";
     Robot->Write_To_Log(0xf000, str.append(" is started successfully!!!\n"));
 
+    //################### SERIAL SIGNAL/SLOTS ############################
     connect( this, SIGNAL (Open_Port_Signal(QString)), Robot, SLOT(Open_Port_Slot(QString)));
+    connect( &Robot->serial, SIGNAL (readyRead()), Robot, SLOT(ReadFromSerial_Slot()));  //&QSerialPort::
 
     RMath = new Robo_Math();
-    //Robo_Math
+    //################### Robo_Math SIGNAL/SLOTS #########################
     connect( this, SIGNAL (Pass_XY_Signal(int, int)), RMath, SLOT(Pass_XY_Slot(int, int)));
-    connect(RMath, SIGNAL (Return_EL_Signal(float)), this, SLOT(Return_EL_Slot(float)));
+    connect( RMath, SIGNAL (Return_EL_Signal(float)), this, SLOT(Return_EL_Slot(float)));
     connect( this, SIGNAL (FW_Kinemaic_Signal(int, int, int, int, int, int)), RMath, SLOT(FW_Kinemaic_Slot(int, int, int, int, int, int)));
     connect( RMath, SIGNAL(Return_FW_Kinematic_XYZ_Signal(int, int, int, float)), this, SLOT(Return_FW_Kinematic_XYZ_Slot(int, int, int, float)));
 
@@ -56,7 +58,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 
 }
-
+//++++++++++++++++++++++++++++++++++++++++++++++
 MainWindow::~MainWindow()
 {
     GUI_Write_To_Log(0xffff, "Program is going to be closed");
@@ -165,28 +167,29 @@ void MainWindow::on_stand_upButton_clicked()
    // dd.resize(7);
     dd.append(0x30); // Движение "Обратно"
     Robot->GoToPosition(dd);//, hwr_Start_position
-    dd = QByteArray(reinterpret_cast<const char*>(hwr_Start_position), 10);
-    QString str = QString(dd);
 
-    //QByteArray cc;
-    //cc.replace(hwr_Start_position, dd);
-    this->update_Servos_from_LineEdits();
-    str = "Data : ";
-    for (int i =0; i<= szData -1; i++)
-    {
-       // str += QString::number(Servos[i]);
+//    dd = QByteArray(reinterpret_cast<const char*>(hwr_Start_position), 10);
+//    QString str = QString(dd);
 
-        str += QString::number(dd.at(i));
-        str += ", ";
-    }
+//    //QByteArray cc;
+//    //cc.replace(hwr_Start_position, dd);
+//    this->update_Servos_from_LineEdits();
+//    str = "Data : ";
+//    for (int i =0; i<= szData -1; i++)
+//    {
+//       // str += QString::number(Servos[i]);
 
-
-    //str += QString(cc);
-    str += " From standup";
+//        str += QString::number(dd.at(i));
+//        str += ", ";
+//    }
 
 
+//    //str += QString(cc);
+//    str += " From standup";
 
-    GUI_Write_To_Log(0xff10, str);
+
+
+//    GUI_Write_To_Log(0xff10, str);
 }
 //+++++++++++++++++++++++++++++++
 //++++++++++++++++++++++++++++++++++++++++++++++
@@ -219,29 +222,29 @@ void MainWindow::on_closeButton_clicked()
 void MainWindow::on_set_posButton_clicked()
 {
     QString str;
-    DetectorState state;
-    if (readSocket.GetState(&state) == 0)
-      {
-        if (state.isDetected){
-            //try_mcinfer(state.objectX, state.objectY);
-            X = state.objectX;
-            Y = state.objectY;
-            str+="DETECTED: ";
-            str += QString::number(state.objectX);
-            str += ", ";
-            str += QString::number(state.objectY);
+//    DetectorState state;
+//    if (readSocket.GetState(&state) == 0)
+//      {
+//        if (state.isDetected){
+//            //try_mcinfer(state.objectX, state.objectY);
+//            X = state.objectX;
+//            Y = state.objectY;
+//            str+="DETECTED: ";
+//            str += QString::number(state.objectX);
+//            str += ", ";
+//            str += QString::number(state.objectY);
 
 
-        } else {
-            str += "NOT DETECTED";
-        }
-      }//if (readSocket.GetState(&state) == 0)
+//        } else {
+//            str += "NOT DETECTED";
+//        }
+//      }//if (readSocket.GetState(&state) == 0)
     // const char *   pchar;
     //pchar = static_cast<const char *>(static_cast<char *>(Servos));
    // QByteArray dd = QByteArray::fromRawData(pchar, 6);
-    GUI_Write_To_Log(0xf003,str);
+    //GUI_Write_To_Log(0xf003,str);
     QByteArray dd ;
-    dd.resize(64);
+    dd.resize(parcel_size);
     memcpy(dd.data(), Servos, 6);
     dd.insert(6, 0x31); // Движение "Туда"
     //dd.append(0x31);
@@ -249,25 +252,27 @@ void MainWindow::on_set_posButton_clicked()
     //QByteArray dd = QByteArray::fromRawData(Servos, 6);
     Robot->GoToPosition(dd);//, pchar
     //########### данные пользователя
-    str = "Training data : ";
-    str += QString::number(X);str+= ", ";
-    str += QString::number(Y);str+= ", ";
-unsigned char* sData = reinterpret_cast<unsigned char*>(Servos);
-sData[szData-1] = dd.at(szData-1);
-for (int i=0; i<= szData - 1; i++){
-    str += QString::number(sData[i]);
-    str+= ", ";
-}
-//########## данные серво
-GUI_Write_To_Log(0xf003,str);
+//    str = "Training data : ";
+//    str += QString::number(X);str+= ", ";
+//    str += QString::number(Y);str+= ", ";
+// unsigned char* sData = reinterpret_cast<unsigned char*>(Servos);
+//sData[szData-1] = dd.at(szData-1);
+//for (int i=0; i<= szData - 1; i++){
+//    str += QString::number(sData[i]);
+//    str+= ", ";
+//}
+////########## данные серво
+//GUI_Write_To_Log(0xf003,str);
 
-    str = "Servos data written to serial ";
+// Ниже тоже лишнее, было сделано в целях отладки
 
-    for (int i=0; i<= szData - 1; i++){
-        str += QString::number(sData[i]);
-        str+= ", ";
-    }
-    GUI_Write_To_Log(0xf003,str);
+//    str = "Servos data written to serial ";
+
+//    for (int i=0; i<= szData - 1; i++){
+//        str += QString::number(sData[i]);
+//        str+= ", ";
+//    }
+//    GUI_Write_To_Log(0xf003,str);
 
 
 
@@ -303,8 +308,8 @@ void MainWindow::on_socketButton_clicked()
         }
 
        std::cout <<  str.toStdString() << std::endl;
-       Robot->Write_To_Log(0xf010, str);
-       GUI_Write_To_Log(0xf010, str);
+       Robot->Write_To_Log(0xf014, str);
+       GUI_Write_To_Log(0xf014, str);
     }
 }
 //+++++++++++++++++++++++++++++++++++++++  ->text().toInt()
@@ -324,11 +329,21 @@ void MainWindow::update_LineDits_from_servos(void)
     {
        // qle_list[i]->setText(QString::number(Servos[i]));
         qspb_list[i]->setValue((Servos[i]));
-        GUI_Write_To_Log(0xf010, QString::number (Servos[i]));
+       // GUI_Write_To_Log(0xf010, QString::number (Servos[i]));
     }
 }
 //+++++++++++++++++++++++++++++++++++++
 void MainWindow::update_LineDits_from_position(const char *pos)
+{
+    for (int i =0; i<= DOF -1; i++)
+    {
+        //qle_list[i]->setText(QString::number(pos[i]));
+        qspb_list[i]->setValue(pos[i]);
+    }
+
+}
+//+++++++++++++++++++++++++++++++++++++
+void MainWindow::update_LineDits_from_position(unsigned char *pos)
 {
     for (int i =0; i<= DOF -1; i++)
     {
@@ -493,3 +508,49 @@ void MainWindow::on_submitButton_clicked()
 
 this->repaint();
 }
+//++++++++++++++++++++++++++
+void MainWindow::on_trainButton_clicked()
+{
+    for (int i =0; i<= DOF -1; i++)
+    {
+       Servos[i] = train_position[i];
+    }
+    update_LineDits_from_servos ();
+
+
+    QByteArray dd ;
+    dd.resize(7);
+    memcpy(dd.data(), Servos, 6);
+    dd.insert(6, 0x31); // Движение "Туда"
+    Robot->GoToPosition(dd);
+//    while (!Robot->MOVEMENT_DONE) {;}
+    QString str = "Next movement to robot";
+    this->GUI_Write_To_Log (0xF055, str);
+   on_clampButton_clicked();
+   on_stand_upButton_clicked();
+   update_LineDits_from_position (put_position);
+   update_Servos_from_LineEdits ();
+   memcpy(dd.data(), Servos, 6);
+   dd.insert(6, 0x31); // Движение "Туда"
+   // ТУт пауза нужна
+   Robot->GoToPosition(dd);
+   on_clampButton_clicked();
+   on_stand_upButton_clicked();
+
+
+}
+//++++++++++++++++++++++++++++++++++++
+//void MainWindow::ReadFromSerial_Slot ()
+//{
+//    //serial.waitForReadyRead();
+
+//    str = "There are data from robot to read";
+//    this->GUI_Write_To_Log (0xF055, str);
+
+//    qbuf = serial.readAll();
+//    //qbuf = "askdjhfakjhfak";
+//    str = "From Robot :";
+//    str += QString(qbuf);
+//    this->Write_To_Log(0xF001, str);
+
+//}

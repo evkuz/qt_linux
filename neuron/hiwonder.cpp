@@ -14,7 +14,8 @@ HiWonder::HiWonder()
 {
     // Инициализируем буфер данными
     memset(byInputBuffer, 0xEE, robot_buffer_SIZE); //sizeof(byInputBuffer)
-
+    MOVEMENT_DONE = true;
+    qbuf.resize (robot_buffer_SIZE);
 }
 //+++++++++++++++++
 HiWonder::~HiWonder()
@@ -83,7 +84,8 @@ void HiWonder::GoToPosition(QByteArray &position)//, const char *servo)
     QString str;
 //    int sz = position.size();
 //    if (sz > robot_buffer_SIZE) sz = robot_buffer_SIZE;
-
+    this->MOVEMENT_DONE = false;
+   position.resize (7);
    serial.write(position);
    serial.waitForBytesWritten();
 
@@ -107,14 +109,43 @@ void HiWonder::GoToPosition(QByteArray &position)//, const char *servo)
 
     }
     this->Write_To_Log(0xF001, str);
-    serial.waitForReadyRead();
+//    serial.waitForReadyRead();
 
-    str = "Ready to read data from robot";
-    this->Write_To_Log(0xF001, str);
-    qbuf = serial.readAll();
-    //qbuf = "askdjhfakjhfak";
-    str = "From Robot :";
-    str += QString(qbuf);
-    this->Write_To_Log(0xF001, str);
+//    str = "Ready to read data from robot";
+//    this->Write_To_Log(0xF001, str);
+//    qbuf = serial.readAll();
+//    //qbuf = "askdjhfakjhfak";
+//    str = "From Robot :";
+//    str += QString(qbuf);
+//    this->Write_To_Log(0xF001, str);
+
+}
+//+++++++++++++++++++++++++++++++
+void HiWonder::ReadFromSerial_Slot ()
+{
+    QString str;
+        str = "There are data from robot to read";
+        this->Write_To_Log(0xF001, str);
+
+        qbuf = serial.readAll();
+    //    //qbuf = "askdjhfakjhfak";
+        str = "From Robot : ";
+        str += QString(qbuf);
+        this->Write_To_Log(0xF001, str);
+        // И вот теперь надо вводить флаг проверки текста сообщения на предмет наличия "DONE"
+        QStringList list_str = str.split(QLatin1Char(' '), Qt::SkipEmptyParts);
+//        for (int i=0; i< list_str.size (); i++){
+//            this->Write_To_Log(0xF001, list_str.at (i));
+//            str = list_str.at (i);
+//            if ( str == "DONE!"){this->MOVEMENT_DONE = true;}
+
+//        }
+        str="DONE!";
+        if (list_str.contains (str)) {this->MOVEMENT_DONE = true; this->Write_To_Log(0xF001, "Robot finished CONTAINS"); }
+
+
+
+//   if (this->MOVEMENT_DONE) this->Write_To_Log(0xF001, "Robot finished");
+//   else this->Write_To_Log(0xF001, "Robot still running");
 
 }
