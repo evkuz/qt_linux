@@ -2,7 +2,7 @@
 
 void move_servo_together (byte *pos, byte start_servo, byte end_servo) // address of position array and direction flag array, текущую позицию вычисляем
 {
-  byte s_pos, maxdt, counter;
+  byte s_pos, maxdt;
   String message;
   get_all_servos("before"); //Получаем массив current_s[]
   get_curr_delta(pos);
