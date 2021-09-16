@@ -31,7 +31,7 @@
 
 
 #define serv_number 6 // Количество приводов под управлением
-#define sBufSize 64   // Размер буфера компорта в плате NANO - 64 байта.
+#define sBufSize 7   // Размер буфера компорта в плате NANO - 64 байта.
 
 Servo servo1, servo2, servo3,servo4,servo5,servo6;
 Servo servos [6] = {servo1, servo2, servo3,servo4,servo5,servo6};
@@ -45,7 +45,7 @@ byte delta [6];     // Разница (между текущим и целевы
 char *s_pos;
 char yesss;
 
-byte ints[64]; // Данные, полученные по serial
+byte ints[sBufSize]; // Данные, полученные по serial
 short DF [6] ={1, 1, 1, 1, 1, 1};
 
 //++++++++++++++++++++++++ setup
@@ -396,7 +396,7 @@ void parse_command ()
 
       }
       message.remove(message.length()-1);
-      Serial.print(message);
+     // Serial.print(message);
       //Serial.println(message);
       //Serial.println("Old macDonald have a farm 12345 very very well !!!!"); //51
       //Serial.flush();
@@ -469,7 +469,8 @@ void Go_To_Position(byte *pos)
 //        message += " ";//String(9);
 //        //byte a = 120;
 //    }
-    Serial.println(message);
+    //Serial.println(message);
+    Serial.write(message, 26)
    // Serial.flush();
 }
 //+++++++++++++++++++++++++++++
