@@ -43,6 +43,7 @@ byte readed_pos[6];
 byte delta [6];     // Разница (между текущим и целевым положением) в угле для соответствующего привода 0 - 180
 //String message, number;//, s_pos;
 char *s_pos;
+char yesss;
 
 byte ints[64]; // Данные, полученные по serial
 short DF [6] ={1, 1, 1, 1, 1, 1};
@@ -57,7 +58,7 @@ void setup() {
 
     }
 // attach servos to correspondent pin
-  for (int i=0; i<= serv_number -1; i++)  { servos[i].attach(i+2), 500, 2500; }
+  for (int i=0; i<= serv_number -1; i++)  { servos[i].attach(i+2); } //, 500, 2500;
 
 //  move_servo_together(hwr_Start_position, 1, 6);
   delay(1000);
@@ -368,18 +369,18 @@ void parse_command ()
 {
     String message;
 
-    static byte prevAm = 0;
-    static uint32_t tmr = 0;
-    byte am = Serial.available();
-    if (am != prevAm){
-        prevAm = am;
-        tmr = millis();
-    }
-    if ((am & millis() - tmr >10) || am >60){
-        uint32_t us = micros();
+//    static byte prevAm = 0;
+//    static uint32_t tmr = 0;
+//    byte am = Serial.available();
+//    if (am != prevAm){
+//        prevAm = am;
+//        tmr = millis();
+//    }
+//    if ((((am & millis()) - tmr) >10) || am >60){
+//        uint32_t us = micros();
 
 
-    }
+//    }
 
     if (Serial.available()) {
       //byte ints[64];           // массив для численных данных, у нас 6 приводов
@@ -390,12 +391,13 @@ void parse_command ()
      // Serial.write(numReaded);
       //message = "Robot just got data : ";
       message = "";
-      for (int i=0; i<=numReaded-1; i++)
-      {          message += String(ints[i]); message += ", ";
+      for (int i=0; i<numReaded; i++)
+      {          message += String(ints[i]); message += " ";
 
       }
-      message.remove(message.length()-2);
-      Serial.println(message);
+      message.remove(message.length()-1);
+      Serial.print(message);
+      //Serial.println(message);
       //Serial.println("Old macDonald have a farm 12345 very very well !!!!"); //51
       //Serial.flush();
 
@@ -460,8 +462,9 @@ void Go_To_Position(byte *pos)
     }
 
 
-    message = "Robot movement DONE! at all"; //message += String(numBytes);
-    byte mystrlen = message.length();
+    message = "Robot movement DONE! Total"; //26 bytes  //message += String(numBytes);
+   // message = "Robot movement DONE! I like to move it move it";
+//    byte mystrlen = message.length();
 //    while ( message.length() <=61){
 //        message += " ";//String(9);
 //        //byte a = 120;

@@ -3,6 +3,17 @@
 
 https://ph0en1x.net/108-avr-c-source-modules-compilation-makefile-howto-linux.html
 
+//++++++++++++++
+16.09.2021
+
+https://forum.arduino.cc/t/serial-input-basics-updated/382007/3
+
+Занимаемся размером tx-буфера у ком-порта arduino nano, ибо мы на границе корректной работы.
+Если понадобится пересылать от робота большее количество байт, мы получим проблемы с логами от робота.
+Касаемо serial.flush()
+
+It is probably worth mentioning that the poorly named Serial.flush() function does not empty the input buffer.
+It is only relevant when the Arduino is sending data and its purpose is to block the Arduino until all outgoing the data has been sent.
 //++++++++++++++++++++
 15.09.2021
 НЕпонятно почему, но размер буфера TX у ардуино нано 32 байта

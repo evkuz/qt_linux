@@ -121,10 +121,16 @@ void HiWonder::GoToPosition(QByteArray &position)//, const char *servo)
 
 }
 //+++++++++++++++++++++++++++++++
+// code From Robot :
 void HiWonder::ReadFromSerial_Slot ()
 {
     QString str;
-        str = "There are data from robot to read";
+    int numBytes;
+        numBytes = serial.bytesAvailable ();
+
+        str = "There are "; //
+        str += QString::number (numBytes);
+        str += " bytes from robot to read";
         this->Write_To_Log(0xF001, str);
 
         qbuf = serial.readAll();
@@ -141,7 +147,7 @@ void HiWonder::ReadFromSerial_Slot ()
 
 //        }
         str="DONE!";
-        if (list_str.contains (str)) {this->MOVEMENT_DONE = true; this->Write_To_Log(0xF001, "Robot finished CONTAINS"); }
+        if (list_str.contains (str)) {this->MOVEMENT_DONE = true; this->Write_To_Log(0xF001, "Robot finished"); }
 
 
 

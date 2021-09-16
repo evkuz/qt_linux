@@ -18,6 +18,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     parcel_size = 7;
+    DETECTED = false;
     qspb_list = {ui->servo_1_spinBox, ui->servo_2_spinBox, ui->servo_3_spinBox,
                  ui->servo_4_spinBox, ui->servo_5_spinBox, ui->servo_6_spinBox};
 
@@ -511,21 +512,58 @@ this->repaint();
 //++++++++++++++++++++++++++
 void MainWindow::on_trainButton_clicked()
 {
-    for (int i =0; i<= DOF -1; i++)
-    {
-       Servos[i] = train_position[i];
-    }
-    update_LineDits_from_servos ();
+//    for (int i =0; i<= DOF -1; i++)
+//    {
+//       Servos[i] = train_position[i];
+//    }
+//    update_LineDits_from_servos ();
 
+
+    DetectorState state;
+    QString str;
+    str = "";
+//Сразу открываем захват
+//    if (ui->servo_1_lineEdit->text().toInt() > 0){ ui->servo_1_lineEdit->setText("0"); Servos[0]=0;}
+//    else {ui->servo_1_lineEdit->setText("160"); Servos[0]=160;}
+    Servos[0]=0;
+    update_LineDits_from_servos();
+
+    if (readSocket.GetState(&state) == 0)
+      {
+        if (state.isDetected){
+            try_mcinfer(state.objectX, state.objectY);
+            X = state.objectX;
+            Y = state.objectY;
+            str+="DETECTED: ";
+            str += QString::number(state.objectX);
+            str += ", ";
+            str += QString::number(state.objectY);
+            DETECTED = true;
+
+        } else {
+            str += "NOT DETECTED";
+        }
+
+       std::cout <<  str.toStdString() << std::endl;
+       Robot->Write_To_Log(0xf014, str);
+       GUI_Write_To_Log(0xf014, str);
+    }
+
+//В этой точке робот опустил захват, открыл захват.
+
+
+
+if (DETECTED)
+    {
 
     QByteArray dd ;
     dd.resize(7);
-    memcpy(dd.data(), Servos, 6);
-    dd.insert(6, 0x31); // Движение "Туда"
-    Robot->GoToPosition(dd);
-//    while (!Robot->MOVEMENT_DONE) {;}
-    QString str = "Next movement to robot";
-    this->GUI_Write_To_Log (0xF055, str);
+//    memcpy(dd.data(), Servos, 6);
+//    dd.insert(6, 0x31); // Движение "Туда"
+//    Robot->GoToPosition(dd);
+////    while (!Robot->MOVEMENT_DONE) {;}
+   str = "Next movement to robot";
+   this->GUI_Write_To_Log (0xF055, str);
    on_clampButton_clicked();
    on_stand_upButton_clicked();
    update_LineDits_from_position (put_position);
@@ -536,6 +574,10 @@ void MainWindow::on_trainButton_clicked()
    Robot->GoToPosition(dd);
    on_clampButton_clicked();
    on_stand_upButton_clicked();
+
+  }// if (DETECTED)
+
+   DETECTED = false;
 
 
 }
