@@ -5,19 +5,12 @@ class IQRCamera:
         self.port = camPort
         self.FrameWidth = width
         self.FrameHeight = height
-        self.cap = None
+        self.cap = cv2.VideoCapture()
     
 
-    @property
-    def is_opened(self):
-        if self.cap is None:
-            return False
-        return self.cap.isOpened()
-
-
-    def open(self, nTries=3):
-        self.close()
-        self.cap = cv2.VideoCapture()
+    def __open(self, nTries=3):
+        if self.cap.isOpened():
+            self.cap.release()
         
         for i in range(nTries):
             self.cap.open(self.port)
@@ -34,27 +27,20 @@ class IQRCamera:
             self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, self.FrameHeight)
 
 
-    def close(self):
-        if self.cap is not None:
-            self.cap.release()
-            self.cap = None
-
-
     def get_frame(self, nTries=5):
-        #if not self.is_opened:
-        if self.cap is None:
-            self.open()
+        self.__open(nTries)
         
         frame = None
-        self.cap.open(self.port)
         for i in range(nTries):
-            ret, frame = self.cap.read()
+            _, frame = self.cap.read()
             if frame is not None:
                 break
         else:
             print("Can't get frame!")
             raise RuntimeError("Can't read frame from camera!")
+        
         self.cap.release()
+
         return frame
 
     
