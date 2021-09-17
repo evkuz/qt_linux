@@ -21,7 +21,8 @@ class ImageClient:
 			part = s.recv(dataLength - len(data))
 			if not part: break
 			data.extend(bytearray(part))
-				
+		s.close()
+		
 		data = np.asarray(data, dtype="uint8")
 		frame = cv2.imdecode(data, cv2.IMREAD_ANYCOLOR)
 		return frame
