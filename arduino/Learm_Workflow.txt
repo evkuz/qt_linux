@@ -14,6 +14,8 @@ https://forum.arduino.cc/t/serial-input-basics-updated/382007/3
 
 It is probably worth mentioning that the poorly named Serial.flush() function does not empty the input buffer.
 It is only relevant when the Arduino is sending data and its purpose is to block the Arduino until all outgoing the data has been sent.
+
+Надо сделать фиксированное количество байт в посылках туда и обратно.
 //++++++++++++++++++++
 15.09.2021
 НЕпонятно почему, но размер буфера TX у ардуино нано 32 байта

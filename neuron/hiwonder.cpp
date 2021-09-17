@@ -86,7 +86,9 @@ void HiWonder::GoToPosition(QByteArray &position)//, const char *servo)
 //    if (sz > robot_buffer_SIZE) sz = robot_buffer_SIZE;
     this->MOVEMENT_DONE = false;
    position.resize (7);
+   serial.waitForBytesWritten();
    serial.write(position);
+   serial.flush(); // Пробуем очистить буфер совсем
    serial.waitForBytesWritten();
 
     // Для проверки
