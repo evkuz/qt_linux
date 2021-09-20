@@ -397,7 +397,11 @@ void parse_command ()
       {          message += String(ints[i]); message += " ";
 
       }
+
       message.remove(message.length()-1);
+      strcpy(buf, message.c_str());
+      Serial.print(buf);
+
     //  Serial.print(message);
       //Serial.println(message);
       //Serial.println("Old macDonald have a farm 12345 very very well !!!!"); //51
@@ -473,7 +477,7 @@ void Go_To_Position(byte *pos)
 //    }
 
     strcpy(buf, message.c_str());
-    Serial.println(buf);
+    Serial.print(buf);
    // Serial.flush();
 }
 //+++++++++++++++++++++++++++++
