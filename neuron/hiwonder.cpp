@@ -86,10 +86,11 @@ void HiWonder::GoToPosition(QByteArray &position)//, const char *servo)
 //    if (sz > robot_buffer_SIZE) sz = robot_buffer_SIZE;
     this->MOVEMENT_DONE = false;
    position.resize (7);
-   serial.waitForBytesWritten();
    serial.write(position);
-   serial.flush(); // Пробуем очистить буфер совсем
    serial.waitForBytesWritten();
+
+   //serial.flush(); // Пробуем очистить буфер совсем
+ //  serial.waitForBytesWritten();
 
     // Для проверки
 //    str = "To Robot in hex: ";
@@ -150,10 +151,10 @@ void HiWonder::ReadFromSerial_Slot ()
 //        }
         str="DONE!";
         if (list_str.contains (str)) {this->MOVEMENT_DONE = true; this->Write_To_Log(0xF001, "Robot finished"); }
-
+        else this->Write_To_Log(0xF001, "Robot still running");
 
 
 //   if (this->MOVEMENT_DONE) this->Write_To_Log(0xF001, "Robot finished");
-//   else this->Write_To_Log(0xF001, "Robot still running");
+//
 
 }
