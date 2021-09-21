@@ -16,6 +16,7 @@ HiWonder::HiWonder()
     memset(byInputBuffer, 0xEE, robot_buffer_SIZE); //sizeof(byInputBuffer)
     MOVEMENT_DONE = true;
     qbuf.resize (robot_buffer_SIZE);
+    memset(outputData, 0xDD, szData); //Инициализация массива с данными для отправки
 }
 //+++++++++++++++++
 HiWonder::~HiWonder()
@@ -85,7 +86,7 @@ void HiWonder::GoToPosition(QByteArray &position)//, const char *servo)
 //    int sz = position.size();
 //    if (sz > robot_buffer_SIZE) sz = robot_buffer_SIZE;
     this->MOVEMENT_DONE = false;
-   position.resize (7);
+   position.resize (szData);
    serial.write(position);
    serial.waitForBytesWritten();
 
@@ -100,14 +101,14 @@ void HiWonder::GoToPosition(QByteArray &position)//, const char *servo)
 
 //    void *const tmp = const_cast<char*>(servo);
 //    unsigned char* sData = static_cast<unsigned char*>(tmp);
-   unsigned char sData [7]= {0,0,0,0,0,0,0};
-   memcpy(&sData, position,7);
+   //unsigned char sData [7]= {0,0,0,0,0,0,0};
+   memcpy(&outputData, position,szData);
 
     str = "To Robot: ";
-    for (int i=0; i<= szData - 1; i++){
+    for (int i=0; i< szData; i++){
     //    str += QString::number(sData[i]);
         //str+= QString::number(position.at(i));
-        str+= QString::number(sData[i]);
+        str+= QString::number(outputData[i]);
         str+= ", ";
 
     }
@@ -153,6 +154,12 @@ void HiWonder::ReadFromSerial_Slot ()
         if (list_str.contains (str)) {this->MOVEMENT_DONE = true; this->Write_To_Log(0xF001, "Robot finished"); }
         else this->Write_To_Log(0xF001, "Robot still running");
 
+        str="LAST";
+        if (list_str.contains (str)) {
+            this->MOVEMENT_DONE = true;
+            this->Write_To_Log(0xF001, "Robot finished complex command");
+            emit this->Moving_Done_Signal();
+        }
 
 //   if (this->MOVEMENT_DONE) this->Write_To_Log(0xF001, "Robot finished");
 //

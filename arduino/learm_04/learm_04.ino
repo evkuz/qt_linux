@@ -20,7 +20,7 @@
 
 #include <Servo.h>
 //#include "/home/evkuz/0_arduino/include/hiwonder_byte.h"
-//#include "move_servos.h"
+//#include "move_servos.ino"
 
 ///home/evkuz/0_arduino/include/hiwonder_byte.h
 ///home/evkuz/lit/learm/include/hiwonder_byte.h
@@ -31,8 +31,8 @@
 
 
 #define serv_number 6 // Количество приводов под управлением
-#define sBufSize 7   // Размер буфера компорта в плате NANO - 64 байта.
-#define szParcel 7
+#define sBufSize 8   // Размер буфера компорта в плате NANO - 64 байта.
+#define szParcel 8
 
 Servo servo1, servo2, servo3,servo4,servo5,servo6;
 Servo servos [6] = {servo1, servo2, servo3,servo4,servo5,servo6};
@@ -399,14 +399,9 @@ void parse_command ()
       }
 
       message.remove(message.length()-1);
-<<<<<<< HEAD
-     // Serial.print(message);
-=======
       strcpy(buf, message.c_str());
       Serial.print(buf);
 
-    //  Serial.print(message);
->>>>>>> 3974a85aef0285708c5c8d252b265b1ea1142248
       //Serial.println(message);
       //Serial.println("Old macDonald have a farm 12345 very very well !!!!"); //51
       //Serial.flush();
@@ -470,9 +465,12 @@ void Go_To_Position(byte *pos)
         Serial.println(message);
         //Serial.flush();
     }
-
-
-    message = "Robot movement DONE! Total"; //26 bytes  //message += String(numBytes);
+if (pos[7]==0xDE) {
+   message = "Robot movement DONE! LAST !!"; 
+  }
+  else {
+   message = "Robot movement DONE! Total!!"; //28 bytes  //message += String(numBytes);}
+    
    // message = "Robot movement DONE! I like to move it move it";
 //    byte mystrlen = message.length();
 //    while ( message.length() <=61){
@@ -481,7 +479,7 @@ void Go_To_Position(byte *pos)
 //    }
 
     //Serial.println(message);
-    Serial.write(message, 26)
+    Serial.write(message, sizeof(message));
 
 //    strcpy(buf, message.c_str());
 //    Serial.print(buf);
