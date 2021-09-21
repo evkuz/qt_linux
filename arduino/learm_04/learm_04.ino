@@ -32,6 +32,7 @@
 
 #define serv_number 6 // Количество приводов под управлением
 #define sBufSize 7   // Размер буфера компорта в плате NANO - 64 байта.
+#define szParcel 7
 
 Servo servo1, servo2, servo3,servo4,servo5,servo6;
 Servo servos [6] = {servo1, servo2, servo3,servo4,servo5,servo6};
@@ -43,7 +44,7 @@ byte readed_pos[6];
 byte delta [6];     // Разница (между текущим и целевым положением) в угле для соответствующего привода 0 - 180
 //String message, number;//, s_pos;
 char *s_pos;
-char yesss;
+char buf[sBufSize];
 
 byte ints[sBufSize]; // Данные, полученные по serial
 short DF [6] ={1, 1, 1, 1, 1, 1};
@@ -64,8 +65,9 @@ void setup() {
   delay(1000);
 
 
-  for (byte i=0; i<= 63; i++){
+  for (byte i=0; i< sBufSize; i++){
       ints[i] = 93;
+      buf[i] = 255;
   }
 
 }
@@ -386,7 +388,7 @@ void parse_command ()
       //byte ints[64];           // массив для численных данных, у нас 6 приводов
       byte numReaded;
       
-      numReaded=Serial.readBytes(ints, 7);
+      numReaded=Serial.readBytes(ints, szParcel);
       //Serial.print(numReaded);
      // Serial.write(numReaded);
       //message = "Robot just got data : ";
@@ -395,8 +397,16 @@ void parse_command ()
       {          message += String(ints[i]); message += " ";
 
       }
+
       message.remove(message.length()-1);
+<<<<<<< HEAD
      // Serial.print(message);
+=======
+      strcpy(buf, message.c_str());
+      Serial.print(buf);
+
+    //  Serial.print(message);
+>>>>>>> 3974a85aef0285708c5c8d252b265b1ea1142248
       //Serial.println(message);
       //Serial.println("Old macDonald have a farm 12345 very very well !!!!"); //51
       //Serial.flush();
@@ -469,8 +479,12 @@ void Go_To_Position(byte *pos)
 //        message += " ";//String(9);
 //        //byte a = 120;
 //    }
+
     //Serial.println(message);
     Serial.write(message, 26)
+
+//    strcpy(buf, message.c_str());
+//    Serial.print(buf);
    // Serial.flush();
 }
 //+++++++++++++++++++++++++++++

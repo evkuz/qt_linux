@@ -57,7 +57,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(RMath, SIGNAL (Pass_String_Signal(QString)), this, SLOT(Pass_String_Slot(QString)));
 
-
+    //+++++++++++++++ ОТкрываем порт Open_Port_Signal(QString portname); ttyUSB0
+    emit Open_Port_Signal("ttyUSB0");
 }
 //++++++++++++++++++++++++++++++++++++++++++++++
 MainWindow::~MainWindow()

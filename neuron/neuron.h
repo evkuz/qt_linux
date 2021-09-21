@@ -17,8 +17,26 @@
 
 //#include "model/2_1_BP.h" более-менее
 //#include "model/2_1_P_BP.h"
-#include "model/2_1_M.h" // ЛУчше всех
+
+//#include "model/2_1_M.h" // ЛУчше всех
 //#include "model/2_1_P.h"
+
+//#include "model/new_min.h"
+
+//#include "model/new_min_bp.h"
+
+//#include "model/new_pr_bp.h"
+//#include "model/new__norm_min_bp.h"
+
+//#include "model/new_3_min_BP.h"
+//#include "model/new_3_min.h"
+//#include "model/new_4_min_BP.h"
+
+
+
+//#include "model/new_5_min.h"
+#include "model/new_5_min_BP.h"
+
 //+++++++++++++++++ Вспомогательные переменные
 
 float in[3] = {0,0,0}; //массив для ввода
