@@ -18,6 +18,7 @@
  * Роботу надо сообщать углы (конечное положение)+ для приводов, далее он сам передвигает ПЛАВНО двигатели в нужную позицию
 */
 
+#include <Arduino.h>
 #include <Servo.h>
 //#include "/home/evkuz/0_arduino/include/hiwonder_byte.h"
 //#include "move_servos.ino"
@@ -70,7 +71,7 @@ void setup() {
       buf[i] = 255;
   }
 
-}
+} //setup()
 //++++++++++++++++++++++++ loop 
 void loop() {
 
@@ -464,25 +465,24 @@ void Go_To_Position(byte *pos)
         message = "Wrong data !!!";
         Serial.println(message);
         //Serial.flush();
-    }
+        
+    }//switch
+    
 if (pos[7]==0xDE) {
    message = "Robot movement DONE! LAST !!"; 
   }
   else {
    message = "Robot movement DONE! Total!!"; //28 bytes  //message += String(numBytes);}
+  }
     
    // message = "Robot movement DONE! I like to move it move it";
 //    byte mystrlen = message.length();
-//    while ( message.length() <=61){
-//        message += " ";//String(9);
-//        //byte a = 120;
-//    }
 
     //Serial.println(message);
-    Serial.write(message, sizeof(message));
+    //Serial.write(message, 28); //sizeof(message)
 
-//    strcpy(buf, message.c_str());
-//    Serial.print(buf);
+    strcpy(buf, message.c_str());
+    Serial.print(buf);
    // Serial.flush();
-}
+}//Go_To_Position
 //+++++++++++++++++++++++++++++
