@@ -65,6 +65,8 @@ void HiWonder::Open_Port_Slot(QString portname)
     if (!serial.open(QIODevice::ReadWrite)) { OK = false; serial_error = serial.error(); this->Write_To_Log(0xFF00, "Error opening Serial port !!!");} //"Error opening Serial port !!!");}
     stt = QString::number (serial_error);
     this->Write_To_Log(0xFF00,stt);
+
+    // https://www.linuxhowtos.org/data/6/perror.txt
 //    if (!serial.open(QIODevice::ReadWrite)) {
 //        processError(tr("Can't open %1, error code %2")
 //                     .arg(serial.portName()).arg()));

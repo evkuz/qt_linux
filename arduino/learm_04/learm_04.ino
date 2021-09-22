@@ -32,9 +32,8 @@
 
 
 #define serv_number 6 // Количество приводов под управлением
-#define sBufSize 8   // Размер буфера компорта в плате NANO - 64 байта.
+#define sBufSize 32   // Размер буфера компорта в плате NANO - 64 байта.
 #define szParcel 8
-
 Servo servo1, servo2, servo3,servo4,servo5,servo6;
 Servo servos [6] = {servo1, servo2, servo3,servo4,servo5,servo6};
 
