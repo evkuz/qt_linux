@@ -67,15 +67,15 @@ class Camera(object):
         self.__waitForFrame.wait()
         self.__waitForFrame.clear()
         frame = self.__actualFrame.copy()
-        cv2.putText(
-            frame,
-            f"time={Camera.last_access}",
-         			(100, 20),
-            cv2.FONT_HERSHEY_COMPLEX,
-            0.5,
-            (0, 0, 0),
-            1
-        )
+        # cv2.putText(
+        #     frame,
+        #     f"time={Camera.last_access}",
+        #  			(100, 20),
+        #     cv2.FONT_HERSHEY_COMPLEX,
+        #     0.5,
+        #     (0, 0, 0),
+        #     1
+        # )
         Camera.last_access = time.time()
         return frame
 
@@ -87,8 +87,8 @@ class Camera(object):
             _, frame = self.__cap.read()
             self.__actualFrame = frame.copy()
             self.__waitForFrame.set()
-            #the last 10 seconds stop the thread
-            if time.time() - self.last_access > 20:
+            #the last 5 seconds stop the thread
+            if time.time() - self.last_access > 5:
                 break
 
         self.__close_device()
