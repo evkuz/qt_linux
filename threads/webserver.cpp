@@ -3,6 +3,18 @@
 //WebServer::WebServer(QObject *parent) : QObject(parent)
 WebServer::WebServer()
 {
+  memset(status_buffer, 0x41,sizeof (status_buffer));
+
+}
+//++++++++++++++++++++++++++++++++++++++++++++
+WebServer::~WebServer()
+{}
+//++++++++++++++++++++++++++++++++++++++++++++
+int WebServer::openSocket()
+{
+    str.sprintf("========== Openeing Socket : %d\n", this->port);
+    emit this->Data_TO_Log_Signal(str);
+
 
     sock = socket(AF_INET, SOCK_STREAM, 0);
     if (sock < 0)
@@ -24,13 +36,18 @@ WebServer::WebServer()
     uint16_t dsetval;
 
     listen(sock, 5);
+  //  printf("========== Socket listening on port %d:\n", port);
+    str.sprintf("========== Socket listening on port : %d\n", port);
 
+   // emit this->Data_TO_Log_Signal(logmessage);
 
+}//openSocket
+//+++++++++++++++++++++++++++++++++
+void WebServer::Write_To_Log(QString log_message)
+{
+  emit Data_TO_Log_Signal(log_message);
 }
-//++++++++++++++++++++++++++++++++++++++++++++
-WebServer::~WebServer()
-{}
-//++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++++++++++++ Тут и Read и Write
 
 void WebServer::Output_Data_From_Client_Slot ()
 {
@@ -49,7 +66,7 @@ else { // AF_INET6
 
 
 
-    printf("========== Connection from %s Request:\n",ipstr);
+  //  printf("========== Connection from %s Request:\n",ipstr);
 
     if (client_fd == -1) {
         perror("Can't accept");
@@ -75,9 +92,27 @@ else { // AF_INET6
         std::cout << "NOT === found!" << '\n';
     }
 */
-    strcpy(request,"Take the cube, pleae, bro");
 
-    printf("%s\n", request);
+    // Данные считали. Отправляем роботу команду, парсим GET запрос.
+
+    str.sprintf(request);
+    emit this->Data_TO_Log_Signal(str);
+
+
+    strcpy(request, this->status_buffer);
+    str.sprintf(request);
+    str+= " Status buffer";
+    emit this->Data_TO_Log_Signal(str);
+
+//    strcpy(request,"Take the cube, pleae, bro");
+//    str.sprintf(request);
+//    emit this->Data_TO_Log_Signal(str);
+
+
+   printf("%s\n", request);
+
+
+   // Вот тут обращаемся к роботу, берем у него данные.
 
     strpos = 0;
     // Answer for example        {"p13":"13.100000","t8":"8.100000","t10":"10.100000","t3":"3.100000","v9":"9.100000"}
@@ -87,6 +122,10 @@ else { // AF_INET6
     sprintf(resp1, response, strlen(nword));
     strcat(resp1,nword )  ;
     write(client_fd, resp1, strlen(resp1) ); /*-1:'\0'*/
+
+//    QString rresponse = "HTTP/1.1 200 OK\r\n\r\n%1";
+//    write(client_fd, rresponse.arg(QTime::currentTime().toString()).toUtf8(), 50);
+
     close(client_fd);
 
 }

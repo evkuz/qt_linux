@@ -41,7 +41,7 @@ public:
 
     void GoToPosition(QByteArray &position); //, const char *servo Оправляет данные для новой позиции приводов в порт (Роботу)
 
-
+    void Write_Status(QByteArray &status);
 
 signals:
     void Moving_Done_Signal();

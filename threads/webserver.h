@@ -16,6 +16,16 @@
 #include <err.h>
 #include <string.h>
 #include <string>
+//++++++++++++
+#include <QFile>
+#include <QDataStream>
+#include <QFileInfo>
+#include <QBuffer>
+#include <QElapsedTimer>
+#include <QDateTime>
+#include <QTextStream>
+#include <QTime>
+
 #define uint8_t unsigned char
 #define uint16_t unsigned short
 
@@ -27,7 +37,15 @@ public:
 //    explicit WebServer(QObject *parent = 0);
     WebServer();
     ~WebServer();
+//++++++++++++++++++++++++++++++++++
+    QFile       LogFile;
+    QString     filename;
+    QString     str;
+    QByteArray  mystatus[3] = {"ready", "work!", "done!"};
 
+#define STATUS_sz 5
+    char status_buffer[STATUS_sz];
+//++++++++++++++++++++++++++++++++++
 #define uint8_t unsigned char
 #define uint16_t unsigned short
 
@@ -72,9 +90,12 @@ char *pansw;
     struct tm *u;
     char *f;
     time_t timer;
-
+//+++++++++++++++++++++++
+int openSocket();
+void Write_To_Log(QString log_message);
 
 signals:
+void Data_TO_Log_Signal(QString log_message);
 
 public slots:
     void Output_Data_From_Client_Slot();

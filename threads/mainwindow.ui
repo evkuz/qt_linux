@@ -439,6 +439,19 @@ QSpinBox::up-button{
     <string>TRAIN</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="start_tcpButton">
+   <property name="geometry">
+    <rect>
+     <x>210</x>
+     <y>80</y>
+     <width>261</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>START SERVER</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

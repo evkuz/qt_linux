@@ -78,6 +78,8 @@ public:
 private:
     SocketClient readSocket;
 
+public slots:
+void Data_From_Web_SLot(QString message);
 private slots:
     void on_openButton_clicked();
 
@@ -123,6 +125,9 @@ private slots:
 
     void on_trainButton_clicked();
     void Moving_Done_Slot(); // ОБработка сигнала окончания движения
+
+    void on_start_tcpButton_clicked();
+
 
 signals:
     void Open_Port_Signal(QString portname); // Сигнал даем по нажатию кнопки "OPEN"

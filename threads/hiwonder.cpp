@@ -61,6 +61,7 @@ void HiWonder::Open_Port_Slot(QString portname)
 
     serial.setPortName(portname); //portname == "ttyUSB0"
     OK = true;
+    serial_error = 1;
    // OK = serial.open(QIODevice::ReadWrite);
     if (!serial.open(QIODevice::ReadWrite)) { OK = false; serial_error = serial.error(); this->Write_To_Log(0xFF00, "Error opening Serial port !!!");} //"Error opening Serial port !!!");}
     stt = QString::number (serial_error);
@@ -155,6 +156,7 @@ void HiWonder::ReadFromSerial_Slot ()
         str="DONE!";
         if (list_str.contains (str)) {this->MOVEMENT_DONE = true; this->Write_To_Log(0xF001, "Robot finished"); }
         else this->Write_To_Log(0xF001, "Robot still running");
+
 
         str="LAST";
         if (list_str.contains (str)) {

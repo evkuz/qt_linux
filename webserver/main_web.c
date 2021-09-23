@@ -85,6 +85,7 @@ int main(int argc, char** argv) {
     uint16_t dsetval;
 
     listen(sock, 5);
+    printf("========== Socket listening on port %d:\n", port);
     char ipstr[INET6_ADDRSTRLEN];
     while (1) {
         client_fd = accept(sock, (struct sockaddr *) &cli_addr, &sin_len);
@@ -127,7 +128,7 @@ int main(int argc, char** argv) {
             std::cout << "NOT === found!" << '\n';
         }
 */
-        strcpy(request,"Take the cube, pleae, bro");
+       strcpy(request,"Take the cube, pleae, bro");
 
         printf("%s\n", request);
         

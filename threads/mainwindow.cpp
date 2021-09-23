@@ -39,11 +39,17 @@ MainWindow::MainWindow(QWidget *parent)
     //g/const char *c_str = ba.data();
     //printf("Appname : %s", c_str);
     Robot = new HiWonder(); // Без этого будет "The program has unexpectedly finished", хотя в начале нговорила, что это ambiguous
-    TheWeb = new WebServer(); //
+
     Robot->Log_File_Open(Log_File_Name);
 
     QString str = "The application \"";  str +=target_name; str += "\"";
     Robot->Write_To_Log(0xf000, str.append(" is started successfully!!!\n"));
+
+    TheWeb = new WebServer(); //
+
+    connect( TheWeb, SIGNAL(Data_TO_Log_Signal(QString)), this, SLOT(Data_From_Web_SLot(QString))); // Работает
+
+    TheWeb->openSocket();
 
     //################### SERIAL SIGNAL/SLOTS ############################
     connect( this, SIGNAL (Open_Port_Signal(QString)), Robot, SLOT(Open_Port_Slot(QString)));
@@ -89,7 +95,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     //+++++++++++++++ ОТкрываем порт Open_Port_Signal(QString portname); ttyUSB0
-    emit Open_Port_Signal("ttyUSB0");
+ //   emit Open_Port_Signal("ttyUSB0");
 
 
 
@@ -101,6 +107,7 @@ MainWindow::~MainWindow()
     GUI_Write_To_Log(0xffff, "Program is going to be closed");
     delete ui;
     delete Robot;
+    delete TheWeb;
 
 }
 //+++++++++++++++++++++++++++++++++++++++
@@ -603,8 +610,21 @@ void MainWindow::send_Data(unsigned char thelast)
     //QByteArray dd = QByteArray::fromRawData(Servos, 6);
     Robot->GoToPosition(dd);
 }
+
+void MainWindow::Data_From_Web_SLot(QString message)
+{
+ GUI_Write_To_Log(0xf00f, message);
+}
 //++++++++++++++++++++++++++
 void MainWindow::Moving_Done_Slot()
 {
     GUI_Write_To_Log(0xFAAA, "Demo cycle finished !!!");
+    strcpy(TheWeb->status_buffer,"done");
+}
+
+void MainWindow::on_start_tcpButton_clicked()
+{
+    GUI_Write_To_Log(0xFAAA, "Thread Is ging to be Start Here !!!");
+    thread_A->start();
+    GUI_Write_To_Log(0xFAAA, "Thread Started Here !!!");
 }
