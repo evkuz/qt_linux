@@ -79,5 +79,7 @@ Thumbs.db
 *.png
 .qt_for_python
 
+**/.venv/**
+
 !hiwonder_qt*
 !hiwonder_qt/*.*
