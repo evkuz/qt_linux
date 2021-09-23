@@ -87,6 +87,7 @@ class Camera(object):
             _, frame = self.__cap.read()
             self.__actualFrame = frame.copy()
             self.__waitForFrame.set()
+            time.sleep(0)
             #the last 5 seconds stop the thread
             if time.time() - self.last_access > 5:
                 break
