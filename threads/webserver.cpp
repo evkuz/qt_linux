@@ -95,12 +95,13 @@ else { // AF_INET6
 
     // Данные считали. Отправляем роботу команду, парсим GET запрос.
 
-    str.sprintf(request);
+    str.asprintf("%s", request);
     emit this->Data_TO_Log_Signal(str);
 
 
     strcpy(request, this->status_buffer);
-    str.sprintf(request);
+    str.asprintf("%s", request);
+
     str+= " Status buffer";
     emit this->Data_TO_Log_Signal(str);
 
