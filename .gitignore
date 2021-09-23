@@ -27,7 +27,7 @@ Makefile*
 *.prl
 *.app
 moc_*.cpp
-ui_*.h
+!ui_*.h
 qrc_*.cpp
 Thumbs.db
 *.res
@@ -81,3 +81,6 @@ Thumbs.db
 
 !hiwonder_qt*
 !hiwonder_qt/*.*
+
+!threads*
+!threads/*.*

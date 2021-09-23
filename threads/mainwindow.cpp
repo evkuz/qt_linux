@@ -624,7 +624,7 @@ void MainWindow::Moving_Done_Slot()
 
 void MainWindow::on_start_tcpButton_clicked()
 {
-    GUI_Write_To_Log(0xFAAA, "Thread Is ging to be Start Here !!!");
+    GUI_Write_To_Log(0xFAAA, "Thread Is going to be Start Here !!!");
     thread_A->start();
     GUI_Write_To_Log(0xFAAA, "Thread Started Here !!!");
 }
