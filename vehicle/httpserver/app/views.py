@@ -6,6 +6,7 @@ from .camera import Camera
 from . import robot_api
 
 activeCamera = Camera(app.config['CAMERA_NUM'])
+robotApi = robot_api.RobotApi()
 
 def gen(camera):
     while True:
@@ -32,9 +33,12 @@ def video_feed():
 def api():
     args = request.args.to_dict()
     if args.get("start") is not None:
-        robot_api.move_robot()
-    reply_status = robot_api.get_status()
+        robotApi.move_robot()
+    if args.get("reset") is not None:
+        robotApi.reset()
+    reply_status = robotApi.status
 
     return jsonify(
-        status=reply_status
+        msg=reply_status[0],
+        msgcode=reply_status[1]        
     )
