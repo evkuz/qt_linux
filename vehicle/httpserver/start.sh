@@ -14,4 +14,4 @@ fi
 source .venv/bin/activate || {
       echo "can't activate virtual enviroment!"
       exit 3
-} && gunicorn --threads 5 --workers 1 --bind 0.0.0.0:5000 streaming:app
+} && gunicorn --threads 5 --workers 1 --bind 0.0.0.0:5000 runner:app
