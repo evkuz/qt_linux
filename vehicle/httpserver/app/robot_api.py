@@ -34,7 +34,7 @@ class RobotApi(object):
 
     def move_robot(self, cmdName):
         if self.__thread is None:
-            self.__status.status = "inprogress"
+            self.__status.status = "init"
             self.__status.lastCmd = cmdName
             self.__status.lastCmdResult = 0
             self.__thread = threading.Thread(target=self.__thread_work)
@@ -46,7 +46,8 @@ class RobotApi(object):
 
     def __thread_work(self):
         print("TEST MSG: MOVE ROBOT")
-
+        self.__status.status = "inprogress"
+        
         time.sleep(5)
 
         self.__status.status = "done"
