@@ -39,7 +39,7 @@ int WebServer::openSocket()
   //  printf("========== Socket listening on port %d:\n", port);
     str.sprintf("========== Socket listening on port : %d\n", port);
 
-   // emit this->Data_TO_Log_Signal(logmessage);
+   //emit this->Data_TO_Log_Signal(logmessage);
 
 }//openSocket
 //+++++++++++++++++++++++++++++++++
@@ -48,7 +48,9 @@ void WebServer::Write_To_Log(QString log_message)
   emit Data_TO_Log_Signal(log_message);
 }
 //++++++++++++++++++++++++++++++++++++++++++++ Тут и Read и Write
-
+// Это слот для сигнала Process_A(), приходящего из потока, где слушается сокет.
+// Считываем данные из сокета (GET request), отправляем в класс MainWindow на обработку.
+// main idea is read data from socket and send them for parsing
 void WebServer::Output_Data_From_Client_Slot ()
 {
     client_fd = accept(sock, (struct sockaddr *) &cli_addr, &sin_len);
@@ -96,13 +98,50 @@ else { // AF_INET6
     // Данные считали. Отправляем роботу команду, парсим GET запрос.
 
     str.asprintf("%s", request);
-    emit this->Data_TO_Log_Signal(str);
+    emit this->Data_TO_Log_Signal(str); // ОТправили данные GET-запроса в класс MainWindow, там их ловит слот Data_From_Web_SLot
+
+// +++++++++++ Далее идет подготовка ответа и отправка (ответа) клиенту.
+
+//    strcpy(request, this->status_buffer);
+//    str.asprintf("%s", request);
+
+//    str+= " Status buffer"; // Это имитация данных, полученных от Робота
+//    emit this->Data_TO_Log_Signal(str);
+
+//    strcpy(request,"Take the cube, pleae, bro");
+//    str.sprintf(request);
+//    emit this->Data_TO_Log_Signal(str);
 
 
+//   printf("%s\n", request);
+
+
+   // Вот тут обращаемся к роботу, берем у него данные. Делаем отдельным сигнал/слотом
+
+//    strpos = 0;
+//    // Answer for example        {"p13":"13.100000","t8":"8.100000","t10":"10.100000","t3":"3.100000","v9":"9.100000"}
+//    memset(resp1, 0, 2100);
+//    memset(nword, 0, 1100);
+//    sprintf(nword, "{\"p13\":\"%f\",\"t8\":\"%f\",\"t10\":\"%f\",\"t3\":\"%f\",\"v9\":\"%f\"}", 13.1,8.1,10.1,3.1,9.1);
+//    sprintf(resp1, response, strlen(nword));
+//    strcat(resp1,nword )  ;
+//    write(client_fd, resp1, strlen(resp1) ); /*-1:'\0'*/
+
+////    QString rresponse = "HTTP/1.1 200 OK\r\n\r\n%1";
+////    write(client_fd, rresponse.arg(QTime::currentTime().toString()).toUtf8(), 50);
+
+//    close(client_fd);
+
+}
+//++++++++++++++++++++++++++++++++++
+// Слот сигнала Write_2_Webserver_Signal()
+// ОТправляем в сокет данные клиенту.
+void WebServer::Write_2_Client_Slot()
+{
     strcpy(request, this->status_buffer);
     str.asprintf("%s", request);
 
-    str+= " Status buffer";
+    str+= " Status buffer"; // Это имитация данных, полученных от Робота
     emit this->Data_TO_Log_Signal(str);
 
 //    strcpy(request,"Take the cube, pleae, bro");
@@ -111,9 +150,6 @@ else { // AF_INET6
 
 
    printf("%s\n", request);
-
-
-   // Вот тут обращаемся к роботу, берем у него данные.
 
     strpos = 0;
     // Answer for example        {"p13":"13.100000","t8":"8.100000","t10":"10.100000","t3":"3.100000","v9":"9.100000"}

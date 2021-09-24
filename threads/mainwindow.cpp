@@ -19,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     //parcel_size = 8;
     DETECTED = false;
+    new_get_request = false;
     qspb_list = {ui->servo_1_spinBox, ui->servo_2_spinBox, ui->servo_3_spinBox,
                  ui->servo_4_spinBox, ui->servo_5_spinBox, ui->servo_6_spinBox};
 
@@ -46,8 +47,9 @@ MainWindow::MainWindow(QWidget *parent)
     Robot->Write_To_Log(0xf000, str.append(" is started successfully!!!\n"));
 
     TheWeb = new WebServer(); //
-
+    //+++++++++++++++++++++++++++++++++  signal/slot of Get Request to webserver
     connect( TheWeb, SIGNAL(Data_TO_Log_Signal(QString)), this, SLOT(Data_From_Web_SLot(QString))); // Работает
+    connect(this, SIGNAL(Write_2_Client_Signal()), TheWeb, SLOT(Write_2_Client_Slot()));
 
     TheWeb->openSocket();
 
@@ -610,16 +612,26 @@ void MainWindow::send_Data(unsigned char thelast)
     //QByteArray dd = QByteArray::fromRawData(Servos, 6);
     Robot->GoToPosition(dd);
 }
-
+//++++++++++++++++++++++++++
+// Пришел запрос от вебсервера. Весь запрос в message
 void MainWindow::Data_From_Web_SLot(QString message)
 {
  GUI_Write_To_Log(0xf00f, message);
+ new_get_request = true;
 }
 //++++++++++++++++++++++++++
+// Пишем в лог сообщение, что комплексная команда (например,взять кубик в одной точке и положить в другую)
+// А также это индикатор, что команда выполнена и можно, например, отправить эти данные вебсерверу.
 void MainWindow::Moving_Done_Slot()
 {
     GUI_Write_To_Log(0xFAAA, "Demo cycle finished !!!");
     strcpy(TheWeb->status_buffer,"done");
+    if (new_get_request) // Тогда даем сигнал серверу на отправку данных клиенту. Данные уже в буфере TheWeb->status_buffer
+    {
+      emit this->Write_2_Client_Signal();
+      new_get_request = false;
+    }
+
 }
 
 void MainWindow::on_start_tcpButton_clicked()

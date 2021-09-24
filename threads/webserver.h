@@ -99,6 +99,8 @@ void Data_TO_Log_Signal(QString log_message);
 
 public slots:
     void Output_Data_From_Client_Slot();
+private slots:
+    void Write_2_Client_Slot(); // Слот отправки данных от вебсервера клиенту, срабатывает по сигналу Write_2_Webserver_Signal();
 };
 
 #endif // WEBSERVER_H
