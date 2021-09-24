@@ -29,16 +29,14 @@ def video_feed():
     )
 
 
-@app.route('/api', methods=['get'])
-def api():
+@app.route('/run', methods=['get'])
+def run():
     args = request.args.to_dict()
-    if args.get("start") is not None:
-        robotApi.move_robot()
-    if args.get("reset") is not None:
-        robotApi.reset()
-    reply_status = robotApi.status
+    cmd = args.get("cmd")
+    if cmd is not None:
+        if cmd == "start":
+            robotApi.move_robot(cmd)
+        elif cmd == "reset":
+            robotApi.reset()
 
-    return jsonify(
-        msg=reply_status[0],
-        msgcode=reply_status[1]        
-    )
+    return jsonify(robotApi.status.__dict__)
