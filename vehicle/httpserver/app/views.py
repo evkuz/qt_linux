@@ -39,4 +39,7 @@ def run():
         elif cmd == "reset":
             robotApi.reset()
 
-    return jsonify(robotApi.status.__dict__)
+    response = jsonify(robotApi.status.__dict__)
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    
+    return response

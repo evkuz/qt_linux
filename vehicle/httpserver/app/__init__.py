@@ -1,5 +1,4 @@
 from flask import Flask
-from flask_restful import Api, Resource, abort
 import os, config
 
 # создание экземпляра приложения
