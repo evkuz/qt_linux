@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="shortcut icon" href="style/images/favicon.png">
+<title>Robot Control Center</title>
+<!-- Bootstrap core CSS -->
+<link href="style/css/bootstrap.min.css" rel="stylesheet">
+<link href="style/css/plugins.css" rel="stylesheet">
+<link href="style.css" rel="stylesheet">
+<link href="style/css/color/red.css" rel="stylesheet">
+<link href="style/type/bebas.css" rel="stylesheet">
+<link href="style/type/fontello.css" rel="stylesheet">
+<script>
+  iqrSupervisor = {
+    vehicleAddr: "http://192.168.88.227:5000",
+    manipulatorAddr: "http://192.168.88.227:5000"
+  };
+</script>
+<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!--[if lt IE 9]>
+      <script src="style/js/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+      <![endif]-->
+</head>
+<body>
+<div id="prelo  ader"><div id="status"><div class="spinner"></div></div></div>
+<div class="body-wrapper">
+  <div class="offset"></div>
+  <div class="dark-wrapper intro">
+    <div class="container inner">
+      <h1> Robot Control Center </h1>
+      <p>Simulation of the target installation.</p>
+      <div style="float:right;margin-top:-49px;">
+        <a class="btn btn-red" id="start_tp">Start tech process</a>
+      </div>
+    </div>
+    <!--/.container -->
+  </div>
+  <!--/.intro -->
+  
+  <div class="container inner">
+    <div class="row text-center services-1">
+      <div class="col-sm-6">
+        <div class="col-wrapper">
+          <h3>Vehicle camera</h3>
+          <img src="http://localhost:5000/video_feed" width="570" height="427" id="vehicle_cam">
+          <div id="vehicle_status"></div>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="col-wrapper">
+          <h3>Manipulator camera</h3>
+          <img src="http://localhost:5000/video_feed" width="570" height="427" id="manipulator_cam">
+          <div id="manipulator_status"></div>
+        </div>
+      </div>
+    </div>
+    <!-- /.services -->
+    
+  </div>
+  <!--/.container -->
+    
+    <div class="sub-footer">
+      <div class="container">
+        <p class="pull-left">© 2021 IQR LIT. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+  <!-- /footer --> 
+ 
+</div>
+<!--/.body-wrapper --> 
+<script src="style/js/jquery.min.js"></script> 
+<script src="style/js/bootstrap.min.js"></script> 
+<script src="style/js/plugins.js"></script> 
+<script src="style/js/scripts.js"></script>
+<script>/*<![CDATA[*/
+  var getJSON = function(url, callback) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', url, true);
+    xhr.responseType = 'json';
+    xhr.onload = function() {
+      var status = xhr.status;
+      if (status === 200) {
+        callback(null, xhr.response);
+      } else {
+        callback(status, xhr.response);
+      }
+    };
+    xhr.send();
+  };
+  
+  document.getElementById("vehicle_cam").src=iqrSupervisor.vehicleAddr+"/video_feed";
+  document.getElementById("manipulator_cam").src=iqrSupervisor.manipulatorAddr+"/video_feed";
+
+  var manState = "None";
+  var vecState = "None";
+
+  updManipulatorState = function(){
+    getJSON(
+        iqrSupervisor.manipulatorAddr+'/'+"run",
+        function(data) {
+          console.log(data);
+        }
+    );
+    manState = "done";
+  };
+
+  updVehicleState = function(){
+    getJSON(
+        iqrSupervisor.vehicleAddr+'/'+"run",
+        function(data) {
+          console.log(data);
+        }
+    );
+    vecState = "done";
+  };
+
+  const stateInterval = setInterval(
+    () => {
+      updManipulatorState();
+      updVehicleState();
+    },
+    200
+  );
+
+  var tpIntervalId;
+
+    startBtn = document.getElementById("start_tp")
+    startBtn.onclick = function(){
+      btn = document.getElementById("start_tp")
+      if ( btn.classList.contains('btn-red') ){
+        btn.classList.remove('btn-red');
+        btn.classList.add('btn-gray');
+        tpIntervalId = setInterval(() => {
+            if (vecState == "done" && manState == "done") {
+              clearInterval(tpIntervalId);
+              console.log('Done');
+            }
+          },
+          50
+        );
+      } else {
+        btn.classList.remove('btn-gray');
+        btn.classList.add('btn-red');
+      }
+    };
+  /*]]>*/
+</script>
+</body>
+</html>
