@@ -392,16 +392,16 @@ int main(int argc, char* argv[])
 	[&] (IHttpRequestPtr req)
 	{
 		std::string Path = req->GetPath();
-		{
-		std::stringstream Io;
-		Io << "Path: " << Path << std::endl
-			<< Http::Request::Header::Host::Name << ": "
-				<< req->GetHeaderAttr(Http::Request::Header::Host::Value) << std::endl
-			<< Http::Request::Header::Referer::Name << ": "
-				<< req->GetHeaderAttr(Http::Request::Header::Referer::Value) << std::endl;
-		std::lock_guard<std::mutex> Lock(Mtx);
-		std::cout << Io.str() << std::endl;
-		}
+		// {
+		// std::stringstream Io;
+		// Io << "Path: " << Path << std::endl
+		// 	<< Http::Request::Header::Host::Name << ": "
+		// 		<< req->GetHeaderAttr(Http::Request::Header::Host::Value) << std::endl
+		// 	<< Http::Request::Header::Referer::Name << ": "
+		// 		<< req->GetHeaderAttr(Http::Request::Header::Referer::Value) << std::endl;
+		// std::lock_guard<std::mutex> Lock(Mtx);
+		// std::cout << Io.str() << std::endl;
+		// }
 		if (Path == "/video_feed")
 		{
 			cv::Mat resizedFrame;
@@ -409,7 +409,7 @@ int main(int argc, char* argv[])
 				std::unique_lock<std::mutex> locker(frameLock);
 				while(!frameReady) // от ложных пробуждений
 					frameCondition.wait(locker);
-				std::cout << "Have frame!" << std::endl;
+				//std::cout << "Have frame!" << std::endl;
 				resize(serverFrame, resizedFrame, cv::Size(640, 480), 0, 0, cv::INTER_LINEAR);
 			}
 			
