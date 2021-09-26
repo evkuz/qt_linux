@@ -16,8 +16,8 @@
 <link href="style/type/fontello.css" rel="stylesheet">
 <script>
   iqrSupervisor = {
-    vehicleAddr: "http://192.168.88.227:5000",
-    manipulatorAddr: "http://192.168.88.227:5000"
+    vehicleAddr: "http://127.0.0.1:5000",
+    manipulatorAddr: "http://127.0.0.1:5000"
   };
 </script>
 <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -47,14 +47,14 @@
       <div class="col-sm-6">
         <div class="col-wrapper">
           <h3>Vehicle camera</h3>
-          <img src="http://localhost:5000/video_feed" width="570" height="427" id="vehicle_cam">
+          <img src="http://localhost:5000/video_feed" width="550" height="412" id="vehicle_cam">
           <div id="vehicle_status"></div>
         </div>
       </div>
       <div class="col-sm-6">
         <div class="col-wrapper">
           <h3>Manipulator camera</h3>
-          <img src="http://localhost:5000/video_feed" width="570" height="427" id="manipulator_cam">
+          <img src="http://localhost:5000/video_feed" width="550" height="412" id="manipulator_cam">
           <div id="manipulator_status"></div>
         </div>
       </div>
@@ -91,33 +91,88 @@
         callback(status, xhr.response);
       }
     };
+    xhr.onerror= function(e) {
+      callback("Connection error", null);
+    };
+    xhr.ontimeout = function (e) {
+      callback("Connection timeout", null);
+    }
     xhr.send();
   };
   
   document.getElementById("vehicle_cam").src=iqrSupervisor.vehicleAddr+"/video_feed";
   document.getElementById("manipulator_cam").src=iqrSupervisor.manipulatorAddr+"/video_feed";
 
-  var manState = "None";
-  var vecState = "None";
+  vehicleState = {
+    lastCmd: "none",
+    lastCmdResult: 0,
+    status: "wait",
+    connection: false,
+    errorMsg: null
+  };
 
+  manipulatorState = {
+    lastCmd: "none",
+    lastCmdResult: 0,
+    status: "wait",
+    connection: false,
+    errorMsg: null
+  };
+  
   updManipulatorState = function(){
     getJSON(
         iqrSupervisor.manipulatorAddr+'/'+"run",
-        function(data) {
-          console.log(data);
+        function(status, data) {
+          if (status === null) {
+            manipulatorState.connection = true;
+            manipulatorState.status = data.status;
+            manipulatorState.lastCmd = data.lastCmd;
+            manipulatorState.lastCmdResult = data.lastCmdResult;
+          } else {
+            manipulatorState.connection = false;
+            manipulatorState.errorMsg = status;
+          }
         }
     );
-    manState = "done";
+    statusElem = document.getElementById("manipulator_status");
+    if ( manipulatorState.connection ) {
+       statusElem.innerHTML = "<div class='alert alert-warning'>Current state: <strong>" +
+                              manipulatorState.status +                     
+                              "</strong></div>";
+    } else {
+       statusElem.innerHTML ="<div class='alert alert-danger'> <strong>Connection failed!</strong> Message:" +
+                              manipulatorState.errorMsg +
+                              " </div>";
+    }
   };
 
   updVehicleState = function(){
     getJSON(
         iqrSupervisor.vehicleAddr+'/'+"run",
-        function(data) {
-          console.log(data);
+        function(status, data) {
+          if (status === null) {
+            vehicleState.connection = true;
+            vehicleState.status = data.status;
+            vehicleState.lastCmd = data.lastCmd;
+            vehicleState.lastCmdResult = data.lastCmdResult;
+          } else {
+            vehicleState.connection = false;
+            vehicleState.errorMsg = status;
+          }
         }
     );
-    vecState = "done";
+    statusElem = document.getElementById("vehicle_status");
+    if ( vehicleState.connection ) {
+       statusElem.innerHTML = "<div class='alert alert-warning'>Current state: <strong>" +
+                              vehicleState.status +                     
+                              "</strong></div>";
+    } else {
+       statusElem.innerHTML ="<div class='alert alert-danger'> <strong>Connection failed!</strong> Message:" +
+                              vehicleState.errorMsg +
+                              " </div>";
+    }
+    
+
   };
 
   const stateInterval = setInterval(
@@ -136,14 +191,16 @@
       if ( btn.classList.contains('btn-red') ){
         btn.classList.remove('btn-red');
         btn.classList.add('btn-gray');
-        tpIntervalId = setInterval(() => {
-            if (vecState == "done" && manState == "done") {
-              clearInterval(tpIntervalId);
-              console.log('Done');
-            }
-          },
-          50
-        );
+        updManipulatorState();
+        updVehicleState();
+        //tpIntervalId = setInterval(() => {
+        //    if (vecState == "done" && manState == "done") {
+        //      clearInterval(tpIntervalId);
+        //      console.log('Done');
+        //    }
+        //  },
+        //  50
+        //);
       } else {
         btn.classList.remove('btn-gray');
         btn.classList.add('btn-red');

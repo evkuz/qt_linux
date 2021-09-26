@@ -17,7 +17,10 @@ live-server --cors
 ```
 
 
+## Usefull notes
 
+Because of CORS (https://learn.javascript.ru/xhr-crossdomain) we can't make XMLHTTPRequest from JavaScript without special answer from server. So i had to add header to server answer (on json response):
 
-
-https://learn.javascript.ru/xhr-crossdomain
+```
+Access-Control-Allow-Origin: *
+```
