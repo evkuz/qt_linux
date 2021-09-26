@@ -20,6 +20,7 @@ MainWindow::MainWindow(QWidget *parent)
     //parcel_size = 8;
     DETECTED = false;
     new_get_request = false;
+    thread_counter = 0;
     qspb_list = {ui->servo_1_spinBox, ui->servo_2_spinBox, ui->servo_3_spinBox,
                  ui->servo_4_spinBox, ui->servo_5_spinBox, ui->servo_6_spinBox};
 
@@ -47,12 +48,33 @@ MainWindow::MainWindow(QWidget *parent)
     Robot->Write_To_Log(0xf000, str.append(" is started successfully!!!\n"));
 
     TheWeb = new WebServer(); //
+    GUI_Write_To_Log(0000, "Going to Start QTcpSErver");
+    //QSimpleServer server;
+    //server.startTCP();
+    if (server.listen(QHostAddress::AnyIPv4, 8383))
+       { GUI_Write_To_Log(0000, "Listening...");
+        server.LISTENING = true;
+       }
+    else {
+          str = "Error while starting: ";
+          str += server.errorString();
+          GUI_Write_To_Log(0000, str);
+    }
+    str = " The value of LISTENING IS ";
+    str += QVariant(server.LISTENING).toString();
+    GUI_Write_To_Log(0000,str);
+
+
     //+++++++++++++++++++++++++++++++++  signal/slot of Get Request to webserver
     connect( TheWeb, SIGNAL(Data_TO_Log_Signal(QString)), this, SLOT(Data_From_Web_SLot(QString))); // Работает
     connect(this, SIGNAL(Write_2_Client_Signal()), TheWeb, SLOT(Write_2_Client_Slot()));
 
-    TheWeb->openSocket();
+    //TheWeb->openSocket();
+    //server = new QSimpleServer();
 
+    //#########################################
+    connect(&server, SIGNAL(Info_2_Log_Signal(QString)), this, SLOT(Info_2_Log_Slot(QString)));
+    connect(&server, &QTcpServer::newConnection, this, &MainWindow::newConnection_Slot);
     //################### SERIAL SIGNAL/SLOTS ############################
     connect( this, SIGNAL (Open_Port_Signal(QString)), Robot, SLOT(Open_Port_Slot(QString)));
     connect( &Robot->serial, SIGNAL (readyRead()), Robot, SLOT(ReadFromSerial_Slot()));  //&QSerialPort::
@@ -92,6 +114,7 @@ MainWindow::MainWindow(QWidget *parent)
 */
         chan_A->moveToThread(thread_A);
         chan_A->finthread = false;
+        chan_A->pause_thread = false;
 
 
 
@@ -616,8 +639,32 @@ void MainWindow::send_Data(unsigned char thelast)
 // Пришел запрос от вебсервера. Весь запрос в message
 void MainWindow::Data_From_Web_SLot(QString message)
 {
- GUI_Write_To_Log(0xf00f, message);
+ GUI_Write_To_Log(0xf00E, message);
  new_get_request = true;
+ thread_counter +=1;
+ this->ui->threadlabel->setText(QString::number(thread_counter));
+}
+//+++++++++++++++++++++++++++++++++++++++++++++++++++
+//+++++++ Получили запрос от клиента. Парсим его.
+void MainWindow::Info_2_Log_Slot(QString message)
+{
+    GUI_Write_To_Log(0xf00f, message);
+    int sPosition, ePosition; // Индекс строки run в запросе.
+    sPosition = message.indexOf("/run?cmd=");
+    sPosition += 10;
+    ePosition = message.indexOf("&", sPosition);
+    QString str, substr;
+    substr = message.mid(sPosition, (ePosition - sPosition));
+
+    str = "Получена команда : "; str += substr;
+    GUI_Write_To_Log(0xf00f, str);
+
+
+}
+
+void MainWindow::newConnection_Slot()
+{
+    GUI_Write_To_Log(0xf01f, "There is new TCP connection !!!");
 }
 //++++++++++++++++++++++++++
 // Пишем в лог сообщение, что комплексная команда (например,взять кубик в одной точке и положить в другую)
@@ -639,4 +686,9 @@ void MainWindow::on_start_tcpButton_clicked()
     GUI_Write_To_Log(0xFAAA, "Thread Is going to be Start Here !!!");
     thread_A->start();
     GUI_Write_To_Log(0xFAAA, "Thread Started Here !!!");
+}
+//+++++++++++++++++
+void MainWindow::server_New_Connect_Slot()
+{
+    ;
 }

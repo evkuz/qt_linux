@@ -16,6 +16,7 @@
 #include "robo_math.h" //Robo_Math class
 #include "mythread.h"  // thread for web-server
 #include "webserver.h"
+#include "qsimpleserver.h"
 
 //#include "mcinfer.h"
 
@@ -49,11 +50,14 @@ public:
 
     WebServer *TheWeb;
     bool new_get_request; // Флаг сигнализирует, что есть неотвеченный GET-запрос от webserver.
+    QTcpServer* m_pTCPServer;
+    QSimpleServer server;
 
     //+++++++++++++++++++++++++++++ Threads +++++++++++++++
     //
     MyThread  *chan_A, *chan_B, *File_WR;
     QThread   *thread_A, *thread_B, *thread_F;
+    int thread_counter ;
 
 
 #define parcel_size 8
@@ -81,6 +85,11 @@ private:
 
 public slots:
 void Data_From_Web_SLot(QString message);
+void Info_2_Log_Slot(QString);
+
+void newConnection_Slot();
+void server_New_Connect_Slot();
+
 private slots:
     void on_openButton_clicked();
 

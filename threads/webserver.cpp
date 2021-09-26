@@ -4,6 +4,7 @@
 WebServer::WebServer()
 {
   memset(status_buffer, 0x41,sizeof (status_buffer));
+  counter = 0;
 
 }
 //++++++++++++++++++++++++++++++++++++++++++++
@@ -12,8 +13,10 @@ WebServer::~WebServer()
 //++++++++++++++++++++++++++++++++++++++++++++
 int WebServer::openSocket()
 {
-    str.sprintf("========== Openeing Socket : %d\n", this->port);
-    emit this->Data_TO_Log_Signal(str);
+//    str.sprintf("========== Openeing Socket : %d\n", this->port);
+//    asprintf(str, "========== Openeing Socket : %d\n", this->port);)
+    str.asprintf("%s %d\n", request, this->port);
+    //emit this->Data_TO_Log_Signal(str);
 
 
     sock = socket(AF_INET, SOCK_STREAM, 0);
@@ -27,10 +30,12 @@ int WebServer::openSocket()
     svr_addr.sin_addr.s_addr = INADDR_ANY;
     svr_addr.sin_port = htons(port);
 
+    QString myerr = "";
     if (bind(sock, (struct sockaddr *) &svr_addr, sizeof (svr_addr)) == -1) {
         close(sock);
         err(1, "Can't bind");
-    //return 0;
+        myerr += "Can't bind";
+    return 0;
     }
     double setval;
     uint16_t dsetval;
@@ -38,9 +43,10 @@ int WebServer::openSocket()
     listen(sock, 5);
   //  printf("========== Socket listening on port %d:\n", port);
     str.sprintf("========== Socket listening on port : %d\n", port);
-
-   //emit this->Data_TO_Log_Signal(logmessage);
-
+    str += myerr;
+   emit this->Data_TO_Log_Signal(str);
+   str = "";
+   return 0;
 }//openSocket
 //+++++++++++++++++++++++++++++++++
 void WebServer::Write_To_Log(QString log_message)
@@ -53,34 +59,36 @@ void WebServer::Write_To_Log(QString log_message)
 // main idea is read data from socket and send them for parsing
 void WebServer::Output_Data_From_Client_Slot ()
 {
-    client_fd = accept(sock, (struct sockaddr *) &cli_addr, &sin_len);
+//    client_fd = accept(this->sock, (struct sockaddr *) &cli_addr, &sin_len);
 
-if (cli_addr.sin_family == AF_INET) {
-    struct sockaddr_in *s = (struct sockaddr_in *)&cli_addr;
-    port = ntohs(s->sin_port);
-    inet_ntop(AF_INET, &s->sin_addr, ipstr, sizeof ipstr);
-}
-else { // AF_INET6
-    struct sockaddr_in6 *s = (struct sockaddr_in6 *)&cli_addr;
-    port = ntohs(s->sin6_port);
-    inet_ntop(AF_INET6, &s->sin6_addr, ipstr, sizeof ipstr);
-}
+//if (cli_addr.sin_family == AF_INET) {
+//    struct sockaddr_in *s = (struct sockaddr_in *)&cli_addr;
+//    port = ntohs(s->sin_port);
+//    inet_ntop(AF_INET, &s->sin_addr, ipstr, sizeof ipstr);
+//}
+//else { // AF_INET6
+//    struct sockaddr_in6 *s = (struct sockaddr_in6 *)&cli_addr;
+//    port = ntohs(s->sin6_port);
+//    inet_ntop(AF_INET6, &s->sin6_addr, ipstr, sizeof ipstr);
+//}
 
 
 
-  //  printf("========== Connection from %s Request:\n",ipstr);
+//    printf("========== Connection from %s Request:\n",ipstr);
+//   QString err = "";
+//    if (client_fd == -1) {
+//        perror("Can't accept");
+//        //continue;
 
-    if (client_fd == -1) {
-        perror("Can't accept");
-        //continue;
-    }
+//         err =  "Can't accept";
+//    }
 
-    timer = time(NULL);
-    u = localtime(&timer);
-    f = settime(u);
+//    timer = time(NULL);
+//    u = localtime(&timer);
+//    f = settime(u);
 
-    //++++++++++ Читаем запрос в буфер request - http://localhost:8383/putcube/
-    rdlen = read(client_fd, request, 2000);
+//    //++++++++++ Читаем запрос в буфер request - http://localhost:8383/putcube/
+//   rdlen = read(client_fd, request, 2000);
 
     //+++++++++++ Парсим запрос на предмет слова "putcube"
 /*        char parsing[7];
@@ -97,9 +105,15 @@ else { // AF_INET6
 
     // Данные считали. Отправляем роботу команду, парсим GET запрос.
 
-    str.asprintf("%s", request);
+//    str.asprintf("%s", request);
+//    str = QString::number(rdlen);
+    counter +=1;
+    str += QString::number(counter);
+    str += " data read from socket ";
+    str += QString::number(counter);
+//    close(client_fd);
     emit this->Data_TO_Log_Signal(str); // ОТправили данные GET-запроса в класс MainWindow, там их ловит слот Data_From_Web_SLot
-
+//close(client_fd);
 // +++++++++++ Далее идет подготовка ответа и отправка (ответа) клиенту.
 
 //    strcpy(request, this->status_buffer);
@@ -130,7 +144,7 @@ else { // AF_INET6
 ////    QString rresponse = "HTTP/1.1 200 OK\r\n\r\n%1";
 ////    write(client_fd, rresponse.arg(QTime::currentTime().toString()).toUtf8(), 50);
 
-//    close(client_fd);
+    close(client_fd);
 
 }
 //++++++++++++++++++++++++++++++++++
@@ -138,6 +152,34 @@ else { // AF_INET6
 // ОТправляем в сокет данные клиенту.
 void WebServer::Write_2_Client_Slot()
 {
+    client_fd = accept(sock, (struct sockaddr *) &cli_addr, &sin_len);
+
+if (cli_addr.sin_family == AF_INET) {
+    struct sockaddr_in *s = (struct sockaddr_in *)&cli_addr;
+    port = ntohs(s->sin_port);
+    inet_ntop(AF_INET, &s->sin_addr, ipstr, sizeof ipstr);
+}
+else { // AF_INET6
+    struct sockaddr_in6 *s = (struct sockaddr_in6 *)&cli_addr;
+    port = ntohs(s->sin6_port);
+    inet_ntop(AF_INET6, &s->sin6_addr, ipstr, sizeof ipstr);
+}
+
+
+
+  //  printf("========== Connection from %s Request:\n",ipstr);
+
+    if (client_fd == -1) {
+        perror("Can't accept");
+        //continue;
+    }
+
+    timer = time(NULL);
+    u = localtime(&timer);
+    f = settime(u);
+
+
+    //++++++++++++++++++++++++++++++++++++  before accept(sock...
     strcpy(request, this->status_buffer);
     str.asprintf("%s", request);
 

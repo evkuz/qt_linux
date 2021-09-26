@@ -1,4 +1,4 @@
-QT       += core gui
+QT       += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -16,6 +16,7 @@ SOURCES += \
     hiwonder.cpp \
     mcinfer.cpp \
     neuron.cpp \
+    qsimpleserver.cpp \
     robo_math.cpp \
     mythread.cpp \
     webserver.cpp
@@ -30,6 +31,7 @@ HEADERS += \
     neuron.h \
     positions.h \
     hiwonder.h \
+    qsimpleserver.h \
     robo_math.h \
     mythread.h \
     webserver.h

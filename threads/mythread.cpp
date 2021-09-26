@@ -34,7 +34,7 @@ void MyThread::A_SLOT() // ОБработчик для thread_A прием да�
 
     while ((!this->finthread) ) // !!!event-loop!!! && !this->once
     {
-        QThread::usleep(0);
+
  /*       boost::chrono::steady_clock::time_point start= boost::chrono::steady_clock::now();
         boost::chrono::steady_clock::duration delay= boost::chrono::microseconds(300);
         while (boost::chrono::steady_clock::now() - start <= delay) {;}
@@ -42,7 +42,8 @@ void MyThread::A_SLOT() // ОБработчик для thread_A прием да�
 
   //Вызываем функцию или связываем с функциями marsohod.cpp через сигнал/слот
     // Если надо поставить на паузу, то не выдаем этот сигнал !!!
-   if (!this->pause_thread) emit Process_A(); // Передача команды роботу
+   if (!this->pause_thread) {emit Process_A();} // Передача команды роботу Сигнал Process_A() обрабатывается слотом
+    QThread::msleep(500);                                          // TheWeb, SLOT(Output_Data_From_Client_Slot()
   // else {;} //Пауза, пустая операция
     }//while
 

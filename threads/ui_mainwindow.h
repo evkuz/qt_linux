@@ -51,6 +51,7 @@ public:
     QPushButton *submitButton;
     QPushButton *trainButton;
     QPushButton *start_tcpButton;
+    QLabel *threadlabel;
 
     void setupUi(QWidget *MainWindow)
     {
@@ -217,6 +218,9 @@ public:
         start_tcpButton = new QPushButton(MainWindow);
         start_tcpButton->setObjectName(QString::fromUtf8("start_tcpButton"));
         start_tcpButton->setGeometry(QRect(210, 80, 261, 61));
+        threadlabel = new QLabel(MainWindow);
+        threadlabel->setObjectName(QString::fromUtf8("threadlabel"));
+        threadlabel->setGeometry(QRect(20, 20, 91, 31));
 
         retranslateUi(MainWindow);
 
@@ -243,6 +247,7 @@ public:
         submitButton->setText(QCoreApplication::translate("MainWindow", "Submit", nullptr));
         trainButton->setText(QCoreApplication::translate("MainWindow", "TRAIN", nullptr));
         start_tcpButton->setText(QCoreApplication::translate("MainWindow", "START SERVER", nullptr));
+        threadlabel->setText(QCoreApplication::translate("MainWindow", "0", nullptr));
     } // retranslateUi
 
 };

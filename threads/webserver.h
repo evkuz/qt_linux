@@ -42,6 +42,7 @@ public:
     QString     filename;
     QString     str;
     QByteArray  mystatus[3] = {"ready", "work!", "done!"};
+    int counter;
 
 #define STATUS_sz 5
     char status_buffer[STATUS_sz];
