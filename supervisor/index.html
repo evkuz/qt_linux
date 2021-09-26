@@ -16,8 +16,9 @@
 <link href="style/type/fontello.css" rel="stylesheet">
 <script>
   iqrSupervisor = {
-    vehicleAddr: "http://127.0.0.1:5000",
-    manipulatorAddr: "http://127.0.0.1:5000"
+    vehicleAddr: "http://192.168.1.98:5000",
+    manipulatorAddr: "http://159.93.44.84:8383/run",
+    manipulatorCameraAddr: "http://192.168.1.41:5555"
   };
 </script>
 <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -101,7 +102,7 @@
   };
   
   document.getElementById("vehicle_cam").src=iqrSupervisor.vehicleAddr+"/video_feed";
-  document.getElementById("manipulator_cam").src=iqrSupervisor.manipulatorAddr+"/video_feed";
+  document.getElementById("manipulator_cam").src=iqrSupervisor.manipulatorCameraAddr+"/video_feed";
 
   vehicleState = {
     lastCmd: "none",
@@ -181,6 +182,14 @@
       updVehicleState();
     },
     200
+  );
+
+  const manCameraInterval = setInterval(
+    () => {
+      manCamElem = document.getElementById("manipulator_cam");
+      manCamElem.src=iqrSupervisor.manipulatorCameraAddr+"/video_feed?random="+new Date().getTime();
+    },
+    50
   );
 
   var tpIntervalId;

@@ -1,6 +1,8 @@
 import time
 import threading
 import json
+from subprocess import check_call
+import os
 
 
 class RobotStatus(object):
@@ -33,6 +35,9 @@ class RobotApi(object):
         self.__status.lastCmdResult = 0
 
     def move_robot(self, cmdName):
+        if self.__status.status != "wait":
+            return
+
         if self.__thread is None:
             self.__status.status = "init"
             self.__status.lastCmd = cmdName
@@ -47,11 +52,17 @@ class RobotApi(object):
     def __thread_work(self):
         print("TEST MSG: MOVE ROBOT")
         self.__status.status = "inprogress"
-        
-        time.sleep(5)
+        filePath = "/home/xrrobot/sss/spoint.py"
+        try:
+            check_call([
+                'python2.7',
+                filePath
+            ])
+        except Exception as e:
+            print("Error:", e)
 
         self.__status.status = "done"
-        self.__status.lastCmdResult = 5
+        self.__status.lastCmdResult = 0
         self.__doneEvent.set()
 
         self.__thread = None

@@ -10,8 +10,26 @@
 #include <iostream>
 #include <vector>
 
+// For getting IP task
+#include <iostream>     ///< cout
+#include <cstring>      ///< memset
+#include <errno.h>      ///< errno
+#include <sys/socket.h> ///< socket
+#include <netinet/in.h> ///< sockaddr_in
+#include <arpa/inet.h>  ///< getsockname
+#include <unistd.h>     ///< close
+
+// For Socket Server
 #include "SocketServer.h"
 #include "arg_parser.h"
+
+// For Http Server
+#include "httpserver/http_server.h"
+#include "httpserver/http_headers.h"
+#include "httpserver/http_content_type.h"
+#include <mutex>
+#include <condition_variable>
+#include <iterator>
 
 
 using namespace cv;
@@ -269,11 +287,69 @@ void DrawCalibration(Mat& frame){
 	}
 }
 
+// Getting my IP section
+// -----------------------------
+int get_my_ip(char* buffer){
+	int res = -1;
+	const char* google_dns_server = "8.8.8.8";
+    int dns_port = 53;
+
+    struct sockaddr_in serv;
+    int sock = socket(AF_INET, SOCK_DGRAM, 0);
+
+    //Socket could not be created
+    if(sock < 0)
+    {
+        std::cout << "Socket error" << std::endl;
+		return res;
+    }
+
+    memset(&serv, 0, sizeof(serv));
+    serv.sin_family = AF_INET;
+    serv.sin_addr.s_addr = inet_addr(google_dns_server);
+    serv.sin_port = htons(dns_port);
+
+    int err = connect(sock, (const struct sockaddr*)&serv, sizeof(serv));
+    if (err < 0)
+    {
+        std::cout << "Error number: " << errno
+            << ". Error message: " << strerror(errno) << std::endl;
+		return res;
+    }
+
+    struct sockaddr_in name;
+    socklen_t namelen = sizeof(name);
+    err = getsockname(sock, (struct sockaddr*)&name, &namelen);
+
+    const char* p = inet_ntop(AF_INET, &name.sin_addr, buffer, 80);
+    if(p != NULL)
+    {
+        std::cout << "Local IP address is: " << buffer << std::endl;
+		res = 0;
+    }
+    else
+    {
+        std::cout << "Error number: " << errno
+            << ". Error message: " << strerror(errno) << std::endl;
+    }
+
+    close(sock);
+
+	return res;
+}
+// -------------------/ end Getting my IP section
+//
 
 int main(int argc, char* argv[])
 {
-    Miksarus::ParseProgramOptions(argc, argv, options_list);
+	Miksarus::ParseProgramOptions(argc, argv, options_list);
 	
+	// getting my IP
+	char ip_addr[80];
+	if (get_my_ip(ip_addr) != 0) {
+		return -1;
+	}
+
 	VideoCapture capture;
 	capture.open(cameraId);
 
@@ -301,6 +377,75 @@ int main(int argc, char* argv[])
 		return -3;
 	}
 
+	// HTTP Server
+	// ------------------------
+	std::uint16_t SrvPort = 5555;
+	std::uint16_t SrvThreadCount = 4;
+	Mat serverFrame;
+	std::mutex Mtx;
+	std::mutex frameLock;
+	std::condition_variable frameCondition;
+	bool frameReady = false;
+
+	using namespace IQRNetwork;
+	HttpServer Srv(ip_addr, SrvPort, SrvThreadCount,
+	[&] (IHttpRequestPtr req)
+	{
+		std::string Path = req->GetPath();
+		{
+		std::stringstream Io;
+		Io << "Path: " << Path << std::endl
+			<< Http::Request::Header::Host::Name << ": "
+				<< req->GetHeaderAttr(Http::Request::Header::Host::Value) << std::endl
+			<< Http::Request::Header::Referer::Name << ": "
+				<< req->GetHeaderAttr(Http::Request::Header::Referer::Value) << std::endl;
+		std::lock_guard<std::mutex> Lock(Mtx);
+		std::cout << Io.str() << std::endl;
+		}
+		if (Path == "/video_feed")
+		{
+			cv::Mat resizedFrame;
+			{
+				std::unique_lock<std::mutex> locker(frameLock);
+				while(!frameReady) // от ложных пробуждений
+					frameCondition.wait(locker);
+				std::cout << "Have frame!" << std::endl;
+				resize(serverFrame, resizedFrame, cv::Size(640, 480), 0, 0, cv::INTER_LINEAR);
+			}
+			
+			std::vector<int> p;
+			p.push_back(cv::IMWRITE_JPEG_QUALITY);
+			p.push_back(50);
+			
+			int bufferSize = 1000000;
+			vector<unsigned char> buf(bufferSize);
+			imencode(".jpeg", resizedFrame, buf, p);
+
+			req->SetResponseCode(200);
+			req->SetResponseAttr(Http::Response::Header::Server::Value, "Vehicle image server");
+			req->SetResponseAttr(Http::Response::Header::ContentType::Value, "multipart/x-mixed-replace; boundary=frame");
+			req->SetResponseAttr("Connection", "keep-alive");
+			//req->SetResponseAttr(Http::Response::Header::ContentType::Value, "image/jpeg");
+			
+			std::string frameBlockBegin = "--frame\r\nContent-Type: image/jpeg\r\n\r\n";
+			std::vector<unsigned char> dataS(frameBlockBegin.size());
+			for(char& c : frameBlockBegin) {
+				dataS.push_back(static_cast<unsigned char>(c));
+			}
+			buf.insert(buf.begin(), dataS.begin(), dataS.end());
+			req->SetResponseBuf(buf.data(), buf.size());
+		} 
+		else
+		{
+			req->SetResponseCode(400);
+			req->SetResponseAttr(Http::Response::Header::Server::Value, "Vehicle image server");
+			
+			//req->SetResponseBuf(buf.data(), buf.size());
+		}
+	});
+	
+
+	//
 	int framesSinceDetection = 0;
 	Rect etalon;
 	double etalon_border_coef = 1;
@@ -349,6 +494,13 @@ int main(int argc, char* argv[])
 
 			DrawCalibration(frame);
 			imshow(windowName, frame);
+			
+			{
+				std::unique_lock<std::mutex> locker(frameLock);
+				frame.copyTo(serverFrame);
+				frameReady = true;
+				frameCondition.notify_one();
+			}
 
 			char key = (char)waitKey(capture.isOpened() ? 50 : 500);
 			if( key == 115 ) {

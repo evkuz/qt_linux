@@ -217,7 +217,13 @@ namespace IQRNetwork
         auto *OutBuf = evhttp_request_get_output_buffer(request);
         if (!OutBuf)
           throw HttpRequestException("Failed to get output buffer.");
+        
         evhttp_send_reply(request, Request->GetResponseCode(), "", OutBuf);
+        // evhttp_send_reply_start(request, Request->GetResponseCode(), "");
+        // evhttp_remove_header(request->output_headers, "Content-Length");
+        // evhttp_send_reply_chunk(request, OutBuf);
+        // evhttp_send_reply_end(request);
+
       }
       catch (HttpRequestException const &e)
       {
