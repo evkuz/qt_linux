@@ -25,12 +25,13 @@ find_package(Threads REQUIRED)
 
 set (CMAKE_CXX_STANDARD 11)
 
-set(HEADERS SocketServer.h arg_parser.h)
-set(SOURCE SocketServer.cpp simpledetector.cpp)
+set(HEADERS SocketServer.h arg_parser.h httpserver/http_server.h)
+set(SOURCE SocketServer.cpp simpledetector.cpp httpserver/http_server.cpp)
 
 # Declare the executable target built from your sources
 add_executable(${APP_NAME} ${SOURCE})
 
 # Link your application with OpenCV libraries
+target_link_libraries(${APP_NAME} PRIVATE event)
 target_link_libraries(${APP_NAME} PRIVATE ${OpenCV_LIBS})
 target_link_libraries(${APP_NAME} PRIVATE Threads::Threads)

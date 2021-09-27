@@ -7,5 +7,5 @@ if [ ! -d $__build_dir ]; then
 fi
 
 cd $__build_dir
-cmake .. && make
+cmake ../src && make
 

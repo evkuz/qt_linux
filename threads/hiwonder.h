@@ -9,6 +9,7 @@
 #include <QSerialPortInfo>
 
 
+
 class HiWonder : public QObject
 {
     Q_OBJECT
@@ -32,6 +33,13 @@ public:
     bool MOVEMENT_DONE;  // Флаг показывает, что получено сообщение от робота о заврешении цикла движения
 
 
+    struct Status {
+        QString value;
+        int number;
+    };
+
+    QList<QString> status = { "wait", "init", "inprogress", "done" };
+
 
     int writeTo(char *OutBuffer, int numbytes); // Запись данных из ПК в порт (роботу)
     int readFrom(char *buf_data, int buf_size); // Считывает данные из порта в ПК (от робота)
@@ -43,8 +51,16 @@ public:
 
     void Write_Status(QByteArray &status);
 
+private:
+    QString current_status;
+
+public:
+    QString GetCurrentStatus() { return this->current_status; }
+    void SetCurrentStatus(QString);
+
 signals:
     void Moving_Done_Signal();
+    void StatusChangedSignal(QString);
 
 
 public slots:

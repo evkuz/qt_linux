@@ -34,7 +34,8 @@ HEADERS += \
     qsimpleserver.h \
     robo_math.h \
     mythread.h \
-    webserver.h
+    webserver.h \
+    protocol.h
 
 FORMS += \
     mainwindow.ui

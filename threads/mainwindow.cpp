@@ -7,6 +7,9 @@
 #include <stdio.h>
 #include <iostream>
 #include <QtGui>
+#include <chrono>
+#include <thread>
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -66,15 +69,20 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     //+++++++++++++++++++++++++++++++++  signal/slot of Get Request to webserver
-    connect( TheWeb, SIGNAL(Data_TO_Log_Signal(QString)), this, SLOT(Data_From_Web_SLot(QString))); // Работает
-    connect(this, SIGNAL(Write_2_Client_Signal()), TheWeb, SLOT(Write_2_Client_Slot()));
+    //connect( TheWeb, SIGNAL(Data_TO_Log_Signal(QString)), this, SLOT(Data_From_Web_SLot(QString))); // Работает
+    //connect(this, SIGNAL(Write_2_Client_Signal()), TheWeb, SLOT(Write_2_Client_Slot()));
+    // Fixed By Miksarus
+    //connect(this, &MainWindow::Write_2_Client_Signal, &server, &QSimpleServer::Write_2_Client_SLot);
+    connect(&server, SIGNAL(Info_2_Log_Signal(QString)), this, SLOT(Info_2_Log_Slot(QString)));
+    connect(Robot, SIGNAL(StatusChangedSignal(QString)), &server, SLOT(SetCurrentState(QString)));
+    connect(this, SIGNAL(StartTakeAndPutSignal()), this, SLOT(TakeAndPutSlot()));
 
     //TheWeb->openSocket();
     //server = new QSimpleServer();
 
     //#########################################
-    connect(&server, SIGNAL(Info_2_Log_Signal(QString)), this, SLOT(Info_2_Log_Slot(QString)));
-    connect(&server, &QTcpServer::newConnection, this, &MainWindow::newConnection_Slot);
+
+   // connect(&server, &QTcpServer::newConnection, this, &MainWindow::newConnection_Slot);
     //################### SERIAL SIGNAL/SLOTS ############################
     connect( this, SIGNAL (Open_Port_Signal(QString)), Robot, SLOT(Open_Port_Slot(QString)));
     connect( &Robot->serial, SIGNAL (readyRead()), Robot, SLOT(ReadFromSerial_Slot()));  //&QSerialPort::
@@ -120,7 +128,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     //+++++++++++++++ ОТкрываем порт Open_Port_Signal(QString portname); ttyUSB0
- //   emit Open_Port_Signal("ttyUSB0");
+    emit Open_Port_Signal("ttyUSB0");
 
 
 
@@ -605,6 +613,13 @@ if (DETECTED)
    if (ui->servo_1_spinBox->value () > 0){ ui->servo_1_spinBox->setValue (0); Servos[0]=0;}
    else {ui->servo_1_spinBox->setValue (90); Servos[0]=90;}
    this->send_Data(NOT_LAST);
+   //+++++++++++++++++++++++++++++++++
+   this->update_LineDits_from_position (after_put_position);
+   this->repaint();
+   update_Servos_from_LineEdits ();
+   memcpy(dd.data(), Servos, 6);
+   dd.insert(6, 0x31); // Движение "Туда"
+   this->send_Data(NOT_LAST);
 
    //+++++++++++++++++++++ go back to start position
    //on_stand_upButton_clicked();
@@ -648,18 +663,142 @@ void MainWindow::Data_From_Web_SLot(QString message)
 //+++++++ Получили запрос от клиента. Парсим его.
 void MainWindow::Info_2_Log_Slot(QString message)
 {
+    QString str, substr;
+    int value = 0xf00f;
+    new_get_request = true;
     GUI_Write_To_Log(0xf00f, message);
     int sPosition, ePosition; // Индекс строки run в запросе.
     sPosition = message.indexOf("/run?cmd=");
-    sPosition += 10;
-    ePosition = message.indexOf("&", sPosition);
-    QString str, substr;
-    substr = message.mid(sPosition, (ePosition - sPosition));
 
-    str = "Получена команда : "; str += substr;
-    GUI_Write_To_Log(0xf00f, str);
+   QString  wrong_mess = "/favicon.ico HTTP/1.1";
+
+    if (!message.contains (wrong_mess))
+    {
+        sPosition += 9;
+        ePosition = message.indexOf("&", sPosition);
+        substr = message.mid(sPosition, (ePosition - sPosition));
+
+//    if (message.contains ("eeeRRR")) {
+////        on_trainButton_clicked ();
+//        on_clampButton_clicked ();
+//        //on_sitButton_clicked ();
+//        str = "Получена команда : START ";
+//        GUI_Write_To_Log(0xf00f, str);
+
+//    }
+
+        str = "Получена команда : "; str += substr;
+        GUI_Write_To_Log(0xf00f, str);
+
+        // changed by Miksarus
+        if (substr == "start") {
+            //on_clampButton_clicked ();
+            Robot->SetCurrentStatus ("init");
+            //emit StartTakeAndPutSignal();
+            emit on_trainButton_clicked ();
+         }
+
+        if (substr == "reset") {
+            if (Robot->GetCurrentStatus () == "done"){
+                Robot->SetCurrentStatus ("wait");
+            }
+         }
+
+        if (substr == "status") {
+            str = Robot->GetCurrentStatus ();
+            emit Write_2_Client_Signal (str);
+        }
+     }
+
+  //  if (substr == "start") {on_clampButton_clicked ();}
+//    switch( substr )
+//    {
+//    case "start":
+//            on_clampButton_clicked ();
+//            break;
+
+//          default : str.sprintf ("Неизвестная команда : "); str += substr;  GUI_Write_To_Log (value, str);
+
+//    }
 
 
+}
+
+
+// added by Miksarus
+void MainWindow::TakeAndPutSlot()
+{
+    DetectorState state;
+    QString str;
+    str = "";
+
+    Servos[0]=0;
+    update_LineDits_from_servos();
+
+    bool isDetected = false;
+
+    while (!isDetected) {
+        if (readSocket.GetState(&state) == 0)
+        {
+            isDetected = state.isDetected;
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    }
+
+    try_mcinfer(state.objectX, state.objectY);
+
+    str+="DETECTED: ";
+    str += QString::number(state.objectX);
+    str += ", ";
+    str += QString::number(state.objectY);
+
+    std::cout <<  str.toStdString() << std::endl;
+    Robot->Write_To_Log(0xf014, str);
+    GUI_Write_To_Log(0xf014, str);
+
+    //В этой точке робот опустил захват, открыл захват.
+
+    QByteArray dd ;
+    dd.resize(parcel_size);
+    str = "Next movement to robot";
+    this->GUI_Write_To_Log (0xF055, str);
+   //+++++++++++++++++ make clamp
+   //on_clampButton_clicked();
+   if (ui->servo_1_spinBox->value () > 0){ ui->servo_1_spinBox->setValue (0); Servos[0]=0;}
+   else {ui->servo_1_spinBox->setValue (90); Servos[0]=90;}
+   this->send_Data(NOT_LAST);
+   //++++++++++++++++++++ make stand up
+   //on_stand_upButton_clicked();
+   this->update_LineDits_from_position(hwr_Start_position);
+   this->repaint();
+   this->update_Servos_from_LineEdits();
+   this->send_Data(NOT_LAST);
+   //+++++++++++++++++++++ put the cube
+   this->update_LineDits_from_position (put_position);
+   this->repaint();
+   update_Servos_from_LineEdits ();
+   memcpy(dd.data(), Servos, 6);
+   dd.insert(6, 0x31); // Движение "Туда"
+   this->send_Data(NOT_LAST);
+   //+++++++++++++++++++++ Unclamp the gripper
+   //on_clampButton_clicked();
+   if (ui->servo_1_spinBox->value () > 0){ ui->servo_1_spinBox->setValue (0); Servos[0]=0;}
+   else {ui->servo_1_spinBox->setValue (90); Servos[0]=90;}
+   this->send_Data(NOT_LAST);
+   //+++++++++++++++++++++++++++++++++
+   this->update_LineDits_from_position (after_put_position);
+   this->repaint();
+   //update_Servos_from_LineEdits ();
+   //memcpy(dd.data(), Servos, 6);
+   //dd.insert(6, 0x31); // Движение "Туда"
+   //this->send_Data(NOT_LAST);
+
+   //+++++++++++++++++++++ go back to start position
+   //on_stand_upButton_clicked();
+   this->update_LineDits_from_position(hwr_Start_position);
+   this->repaint();
+   this->update_Servos_from_LineEdits();
+   this->send_Data(LASTONE); // The last command
 }
 
 void MainWindow::newConnection_Slot()
@@ -673,9 +812,12 @@ void MainWindow::Moving_Done_Slot()
 {
     GUI_Write_To_Log(0xFAAA, "Demo cycle finished !!!");
     strcpy(TheWeb->status_buffer,"done");
+    // Меняем статус, теперь "done"
+    std::cout<<"Set DONE to Robot!" << std::endl;
+    Robot->SetCurrentStatus ("done");
     if (new_get_request) // Тогда даем сигнал серверу на отправку данных клиенту. Данные уже в буфере TheWeb->status_buffer
     {
-      emit this->Write_2_Client_Signal();
+     // emit Write_2_Client_Signal(Robot->current_status);
       new_get_request = false;
     }
 

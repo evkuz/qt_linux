@@ -1,5 +1,5 @@
 #include "neuron.h"
-//#include "model/model1.h"
+//#include "model/new_5_min_BP.h"
 
 
 //        Механизм запрос - ответ

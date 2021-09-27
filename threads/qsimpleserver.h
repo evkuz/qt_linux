@@ -19,6 +19,8 @@ public:
     bool LISTENING;
     void startTCP();
 
+    QString current_status;
+
 protected:
     void incomingConnection(qintptr handle) override;
 
@@ -28,6 +30,10 @@ signals:
 public slots:
     void onReadyRead();
     void onDisconnected();
+    void Write_2_Client_SLot(QString);
+
+    //Added by Miksarus
+    void SetCurrentState(QString);
 
 
 
