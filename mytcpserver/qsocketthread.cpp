@@ -1,7 +1,7 @@
 #include "qsocketthread.h"
 
 QSocketThread::QSocketThread(int descriptror, QObject *parent) :
-    QThread(parent), socketDescriptor(descriptror)
+    QObject(parent), socketDescriptor(descriptror)
 {
 }
 
@@ -11,7 +11,7 @@ QSocketThread::~QSocketThread()
     delete socket;
 }
 /*
- * If you want to handle an incoming connection as a
+ * If you want to sDescriptor an incoming connection as a
  * new QTcpSocket object in another thread you have to pass
  * the socketDescriptor to the other thread and create the
  * QTcpSocket object there and use its setSocketDescriptor()
@@ -44,14 +44,15 @@ void QSocketThread::process_TheSocket()
     socket->setSocketDescriptor(socketDescriptor);
 
     //Соединение сигналов со слотами
-    connect(socket, SIGNAL(readyRead()), this, SLOT(onReadyRead()),Qt::DirectConnection);
-    connect(socket, SIGNAL(disconnected()), this, SLOT(onDisconnected()),Qt::DirectConnection);
+    connect(socket, SIGNAL(readyRead()), this, SLOT(onReadyRead()),Qt::QueuedConnection);
+    connect(socket, SIGNAL(disconnected()), this, SLOT(onDisconnected()),Qt::AutoConnection);
 
-    //Остановка потока на 1 сек (для иммитации долгого выполнения запроса)
-    sleep(1);
-
+     //Остановка потока на 1 сек (для иммитации долгого выполнения запроса)
+    //msleep(200);
+  //  while(true){;}
     //Запуск цикла обработки событий
-   // emit finished(this);
+   //emit finished();
+
 }
 //+++++++++++++++++++++++++++++++++++++
 void QSocketThread::onReadyRead()
@@ -75,6 +76,7 @@ void QSocketThread::onDisconnected()
     //Закрытие сокета
     socket->close();
     //Завершение потока
-    this->quit();
-    this->deleteLater();
+    emit finished();
+   //this->quit();
+   // this->deleteLater();
 }

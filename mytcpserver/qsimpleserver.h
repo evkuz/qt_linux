@@ -8,15 +8,18 @@
 #include "qsocketthread.h"
 
 
-//Класс сервера
+//Класс сервера - это "Controller" в терминах примера.
 class QSimpleServer : public QTcpServer
 {
     Q_OBJECT
 public:
     //Конструктор
     explicit QSimpleServer(QObject *parent = nullptr);
+    QThread   *thread_A;
+    //QThread workerThread;
     //Метод, вызываемый при подключении нового соединения
-    void incomingConnection(qintptr handle) override;
+    void incomingConnection(qintptr sDescriptor) override;
+
 signals:
 
 public slots:

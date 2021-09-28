@@ -12,13 +12,18 @@ QSimpleServer::QSimpleServer(QObject *parent) :
     }
 }
 
-void QSimpleServer::incomingConnection(qintptr handle)
+void QSimpleServer::incomingConnection(qintptr sDescriptor)
 {
-    //Создание объекта потока
-    QSocketThread* thread = new QSocketThread(handle);
+    // Создание объекта потока QObject
+    thread_A = new QThread;
+    //Создание объекта потока для сокета
+    QSocketThread* thread = new QSocketThread(sDescriptor);
     //Соединение сигнала завершения потока с слотом отложенного удаления
     connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
-    connect(thread, SIGNAL(started()), thread, SLOT(process_TheSocket()));
+    connect(thread_A, SIGNAL(started()), thread, SLOT(process_TheSocket()),Qt::QueuedConnection);
+
+    thread->moveToThread(thread_A);
     //Запуск потока
-    thread->start();
+    thread_A->start();
+    //addPendingConnection(sDescriptor);
 }
