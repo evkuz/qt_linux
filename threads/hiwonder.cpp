@@ -4,6 +4,7 @@
 #include <QTextStream>
 #include <stdlib.h>
 #include <stdio.h>
+#include <iostream>
 
 #include <QSerialPort>
 #include <QSerialPortInfo>
@@ -17,6 +18,7 @@ HiWonder::HiWonder()
     MOVEMENT_DONE = true;
     qbuf.resize (robot_buffer_SIZE);
     memset(outputData, 0xDD, szData); //Инициализация массива с данными для отправки
+    this->SetCurrentStatus ("wait");
 }
 //+++++++++++++++++
 HiWonder::~HiWonder()
@@ -146,6 +148,8 @@ void HiWonder::ReadFromSerial_Slot ()
         str += QString(qbuf);
         this->Write_To_Log(0xF001, str);
         // И вот теперь надо вводить флаг проверки текста сообщения на предмет наличия "DONE"
+
+        std::cout<<"From Serial:" << str.toStdString ()<< std::endl;
         QStringList list_str = str.split(QLatin1Char(' '), Qt::SkipEmptyParts);
 //        for (int i=0; i< list_str.size (); i++){
 //            this->Write_To_Log(0xF001, list_str.at (i));
@@ -167,5 +171,11 @@ void HiWonder::ReadFromSerial_Slot ()
 
 //   if (this->MOVEMENT_DONE) this->Write_To_Log(0xF001, "Robot finished");
 //
+
+}
+
+void HiWonder::SetCurrentStatus(QString newStatus) {
+    this->current_status = newStatus;
+    emit this->StatusChangedSignal(newStatus);
 
 }

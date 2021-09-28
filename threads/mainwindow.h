@@ -80,6 +80,10 @@ public:
     void update_Servos_from_LineEdits(void);
     void send_Data(unsigned char thelast);
 
+
+private:
+
+
 private:
     SocketClient readSocket;
 
@@ -138,12 +142,14 @@ private slots:
 
     void on_start_tcpButton_clicked();
 
+    void TakeAndPutSlot();
 
 signals:
     void Open_Port_Signal(QString portname); // Сигнал даем по нажатию кнопки "OPEN"
     void Pass_XY_Signal(int x_pix, int y_pix); //Сигнал по нажатию кнопки "Get_XY"
     void FW_Kinemaic_Signal(int S3, int S4, int S5, int l1, int l2, int l3); // Углы приводов, длины соответствующих звеньев.
-    void Write_2_Client_Signal(); // Сигнал вебсерверу, чтобы отправлял данные.
+    void Write_2_Client_Signal(QString); // Сигнал вебсерверу, чтобы отправлял данные.
+    void StartTakeAndPutSignal();
 
 private:
     Ui::MainWindow *ui;
