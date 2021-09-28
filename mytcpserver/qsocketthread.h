@@ -8,7 +8,8 @@
 #include <QTime>
 
 //Пользовательский класс потока
-class QSocketThread : public QThread
+// Только вместо public QThread делаем public QObject
+class QSocketThread : public QObject
 {
     Q_OBJECT
 public:
@@ -19,6 +20,7 @@ public:
     //где и размещается код, выполняемый в потоке
     //void run();
 signals:
+    void finished();
 
 public slots:
     // Слот, где будет event loop потока, т.е. вся обработка.
