@@ -1,0 +1,58 @@
+#include "qsocketthread.h"
+
+QSocketThread::QSocketThread(int descriptror, QObject *parent) :
+    QObject(parent), socketDescriptor(descriptror)
+{
+}
+//+++++++++++++++++++++++
+QSocketThread::~QSocketThread()
+{
+    //Удаление объекта сокета
+    delete socket;
+}
+//+++++++++++++++++++++++++++
+////++++++++++++++++++ главный event looop потока
+void QSocketThread::process_TheSocket()
+{
+    //Создание объекта сокета
+    socket = new QTcpSocket();
+    //Сопоставление объекта сокета с системным сокетом через дескриптор
+    socket->setSocketDescriptor(socketDescriptor);
+
+    //Соединение сигналов со слотами
+    connect(socket, SIGNAL(readyRead()), this, SLOT(onReadyRead()),Qt::QueuedConnection);
+    connect(socket, SIGNAL(disconnected()), this, SLOT(onDisconnected()),Qt::AutoConnection);
+
+     //Остановка потока на 1 сек (для иммитации долгого выполнения запроса)
+    //msleep(200);
+  //  while(true){;}
+    //Запуск цикла обработки событий
+   //emit finished();
+
+}
+//+++++++++++++++++++++++++++++++++++++
+void QSocketThread::onReadyRead()
+{
+    //Чтение информации из сокета и вывод в консоль
+    qDebug() << socket->readAll();
+
+    //Шаблон ответа сервера
+    QString response = "HTTP/1.1 200 OK\r\n\r\n%1";
+    //Запись ответа в сокет
+    socket->write(response.arg(QTime::currentTime().toString()).toLatin1());
+    //Отсоединение от удаленнного сокета
+    socket->disconnectFromHost();
+
+}
+
+//++++++++++++++++++
+
+void QSocketThread::onDisconnected()
+{
+    //Закрытие сокета
+    socket->close();
+    //Завершение потока
+    emit finished();
+   //this->quit();
+   // this->deleteLater();
+}

@@ -51,18 +51,19 @@ MainWindow::MainWindow(QWidget *parent)
     GUI_Write_To_Log(0000, "Going to Start QTcpSErver");
     //QSimpleServer server;
     //server.startTCP();
-    if (server.listen(QHostAddress::AnyIPv4, 8383))
-       { GUI_Write_To_Log(0000, "Listening...");
-        server.LISTENING = true;
-       }
-    else {
-          str = "Error while starting: ";
-          str += server.errorString();
-          GUI_Write_To_Log(0000, str);
-    }
-    str = " The value of LISTENING IS ";
-    str += QVariant(server.LISTENING).toString();
-    GUI_Write_To_Log(0000,str);
+
+//    if (server.listen(QHostAddress::AnyIPv4, 8383))
+//       { GUI_Write_To_Log(0000, "Listening...");
+//        //server.LISTENING = true;
+//       }
+//    else {
+//          str = "Error while starting: ";
+//          str += server.errorString();
+//          GUI_Write_To_Log(0000, str);
+//    }
+//    str = " The value of LISTENING IS ";
+//    //str += QVariant(server.LISTENING).toString();
+//    GUI_Write_To_Log(0000,str);
 
 
     //+++++++++++++++++++++++++++++++++  signal/slot of Get Request to webserver
@@ -92,12 +93,12 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     // ============================================== Создаем поток 1 - web-server
-        thread_A = new QThread;
-        chan_A = new MyThread();
+//        thread_A = new QThread;
+//        chan_A = new MyThread();
 
-        connect(thread_A, SIGNAL(started()), chan_A, SLOT(A_SLOT()) );
-        connect(chan_A, SIGNAL(finished()), thread_A, SLOT(quit()));
-        connect(chan_A, SIGNAL(Process_A()), TheWeb, SLOT(Output_Data_From_Client_Slot()), Qt::QueuedConnection); //Считываем из железки в ПК по каналу А
+//        connect(thread_A, SIGNAL(started()), chan_A, SLOT(A_SLOT()) );
+//        connect(chan_A, SIGNAL(finished()), thread_A, SLOT(quit()));
+//        connect(chan_A, SIGNAL(Process_A()), TheWeb, SLOT(Output_Data_From_Client_Slot()), Qt::QueuedConnection); //Считываем из железки в ПК по каналу А
                                                                        // Qt::DirectConnection
                                                                        // Qt::QueuedConnection
                                                                        // Qt::BlockingQueuedConnection
@@ -112,9 +113,9 @@ MainWindow::MainWindow(QWidget *parent)
     4) BlockingQueuedConnection - The slot is invoked as for the Queued Connection,
        except the current thread blocks until the slot returns. Note: Using this type to connect objects in the same thread will cause deadlock."
 */
-        chan_A->moveToThread(thread_A);
-        chan_A->finthread = false;
-        chan_A->pause_thread = false;
+//        chan_A->moveToThread(thread_A);
+//        chan_A->finthread = false;
+//        chan_A->pause_thread = false;
 
 
 

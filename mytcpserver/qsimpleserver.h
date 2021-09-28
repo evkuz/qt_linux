@@ -5,10 +5,10 @@
 #include <QTcpSocket>
 #include <QDebug>
 #include <QDateTime>
-#include <QTime>
-#include <QObject>
 #include "qsocketthread.h"
 
+
+//Класс сервера - это "Controller" в терминах примера.
 class QSimpleServer : public QTcpServer
 {
     Q_OBJECT
@@ -16,18 +16,13 @@ public:
     //Конструктор
     explicit QSimpleServer(QObject *parent = nullptr);
     QThread   *thread_A;
+    //QThread workerThread;
     //Метод, вызываемый при подключении нового соединения
     void incomingConnection(qintptr sDescriptor) override;
 
 signals:
-    void Info_2_Log_Signal(QString);
 
 public slots:
-//    void onReadyRead();
-//    void onDisconnected();
-
-
-
 
 };
 
