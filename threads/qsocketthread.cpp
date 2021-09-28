@@ -39,7 +39,9 @@ void QSocketThread::onReadyRead()
     //Шаблон ответа сервера
     QString response = "HTTP/1.1 200 OK\r\n\r\n%1";
     //Запись ответа в сокет
-    socket->write(response.arg(QTime::currentTime().toString()).toLatin1());
+    //socket->write(response.arg(QTime::currentTime().toString()).toLatin1());
+
+
     //Отсоединение от удаленнного сокета
     socket->disconnectFromHost();
 

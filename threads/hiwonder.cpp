@@ -18,7 +18,8 @@ HiWonder::HiWonder()
     MOVEMENT_DONE = true;
     qbuf.resize (robot_buffer_SIZE);
     memset(outputData, 0xDD, szData); //Инициализация массива с данными для отправки
-    this->SetCurrentStatus ("wait");
+   // this->SetCurrentStatus ("wait");
+    this->current_status = "wait";
 }
 //+++++++++++++++++
 HiWonder::~HiWonder()

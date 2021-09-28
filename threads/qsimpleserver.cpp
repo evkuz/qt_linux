@@ -4,14 +4,14 @@ QSimpleServer::QSimpleServer(QObject *parent) :
     QTcpServer(parent)
 {
     //Включает прослушивание сервером 80 порта
-    if(listen(QHostAddress::LocalHost, 8383)){
+    if(listen(QHostAddress::LocalHost, tcpport)){
         qDebug() << "Listening...";
-    current_status = "wait";
+    //current_status = "wait";
 
-}
+    }
 //+++++++++++++++++++++++++++++++++++++++++++++
-void QSimpleServer::startTCP()
-{
+//void QSimpleServer::startTCP()
+//{
 //    if (listen(QHostAddress::LocalHost, 8383)){
  //       qDebug() << "Listening...";
  //       emit Info_2_Log_Signal("Listening...");
@@ -88,14 +88,14 @@ void QSimpleServer::incomingConnection(qintptr sDescriptor)
 //   // socket->write(response.arg(QTime::currentTime().toString()).toUtf8());
 //    socket->write (response.toUtf8 ());
 //    socket->disconnectFromHost();
-}
+//}
 //+++++++++++++++++++++++++
-void QSimpleServer::onDisconnected()
-{
-    QTcpSocket* socket = qobject_cast<QTcpSocket*>(sender()); // Получили указатель на сокет
-    socket->close();
-    socket->deleteLater();
-}
+//void QSimpleServer::onDisconnected()
+//{
+//    QTcpSocket* socket = qobject_cast<QTcpSocket*>(sender()); // Получили указатель на сокет
+//    socket->close();
+//    socket->deleteLater();
+//}
 //+++++++++++++++++++++++++
 // Слот отправки данных клиенту. Срабатыает по сигналу onWrite_2_Client_Signal
 //
@@ -103,11 +103,13 @@ void QSimpleServer::Write_2_Client_SLot(QString message)
 {
      QTcpSocket* socket = qobject_cast<QTcpSocket*>(sender()); // Получили указатель на сокет
      QString response = "HTTP/1.1 200 OK\r\n\r\n%1";
+
+     QString str = response;
    //  response +
 
 
-         socket->write(response.arg(QTime::currentTime().toString()).toUtf8());
-         socket->disconnectFromHost();
+ //        socket->write(response.arg(QTime::currentTime().toString()).toUtf8());
+ //        socket->disconnectFromHost();
 
 
 
@@ -124,5 +126,6 @@ void QSimpleServer::Write_2_Client_SLot(QString message)
 
 //Added by Miksarus
 void QSimpleServer::SetCurrentState(QString newStatus){
-    this->current_status = newStatus;
+    //this->current_status = newStatus;
+    ;
 }

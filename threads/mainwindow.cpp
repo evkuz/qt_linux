@@ -52,6 +52,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     TheWeb = new WebServer(); //
     GUI_Write_To_Log(0000, "Going to Start QTcpSErver");
+    if (server.isListening ()) {str = "Listening on port "; str += QString::number(server.tcpport);
+        GUI_Write_To_Log(0000, str);
+    }
     //QSimpleServer server;
     //server.startTCP();
 
@@ -74,9 +77,12 @@ MainWindow::MainWindow(QWidget *parent)
     //connect(this, SIGNAL(Write_2_Client_Signal()), TheWeb, SLOT(Write_2_Client_Slot()));
     // Fixed By Miksarus
     //connect(this, &MainWindow::Write_2_Client_Signal, &server, &QSimpleServer::Write_2_Client_SLot);
+
+    // Fixed by E.Kuznetsov
+    connect(this, &MainWindow::Write_2_Client_Signal, &server, &QSimpleServer::Write_2_Client_SLot);
     connect(&server, SIGNAL(Info_2_Log_Signal(QString)), this, SLOT(Info_2_Log_Slot(QString)));
-    connect(Robot, SIGNAL(StatusChangedSignal(QString)), &server, SLOT(SetCurrentState(QString)));
-    connect(this, SIGNAL(StartTakeAndPutSignal()), this, SLOT(TakeAndPutSlot()));
+    //connect(Robot, SIGNAL(StatusChangedSignal(QString)), &server, SLOT(SetCurrentState(QString)));
+    //connect(this, SIGNAL(StartTakeAndPutSignal()), this, SLOT(TakeAndPutSlot()));
 
     //TheWeb->openSocket();
     //server = new QSimpleServer();
@@ -129,7 +135,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     //+++++++++++++++ ОТкрываем порт Open_Port_Signal(QString portname); ttyUSB0
-    emit Open_Port_Signal("ttyUSB0");
+    //emit Open_Port_Signal("ttyUSB0");
 
 
 
@@ -694,7 +700,7 @@ void MainWindow::Info_2_Log_Slot(QString message)
         // changed by Miksarus
         if (substr == "start") {
             //on_clampButton_clicked ();
-            Robot->SetCurrentStatus ("init");
+            //Robot->SetCurrentStatus ("init");
             //emit StartTakeAndPutSignal();
             emit on_trainButton_clicked ();
          }
@@ -706,7 +712,8 @@ void MainWindow::Info_2_Log_Slot(QString message)
          }
 
         if (substr == "status") {
-            str = Robot->GetCurrentStatus ();
+            //str = Robot->GetCurrentStatus ();
+            str = Robot->current_status;
             emit Write_2_Client_Signal (str);
         }
      }

@@ -16,9 +16,8 @@ public:
     explicit QSocketThread(int descriptror, QObject *parent = nullptr);
     ~QSocketThread();
 
-    //При наследовании от QThread, необходимо переопределить метод run,
-    //где и размещается код, выполняемый в потоке
-    //void run();
+
+
 signals:
     void finished();
 
