@@ -703,6 +703,9 @@ void MainWindow::Info_2_Log_Slot(QString message)
 
             // Движение только начинаем, поэтому обнулим значение LASTONE
             emit on_trainButton_clicked ();
+            str = Robot->current_status;
+            //str = "status_from_robot";
+            emit Write_2_Client_Signal (str);
          }
 
         if (substr == "reset") {
@@ -712,6 +715,9 @@ void MainWindow::Info_2_Log_Slot(QString message)
                 str += Robot->current_status;
 
                 GUI_Write_To_Log (value, str);
+                str = Robot->current_status;
+                //str = "status_from_robot";
+                emit Write_2_Client_Signal (str);
             }
          }
 //         ///run?cmd=status&123
