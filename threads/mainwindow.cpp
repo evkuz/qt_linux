@@ -249,7 +249,7 @@ void MainWindow::on_stand_upButton_clicked()
     this->repaint();
     QByteArray dd = QByteArray::fromRawData(hwr_Start_position, 6);
     dd.append(0x30); // Движение "Обратно"
-    dd.append(LASTONE);
+  //  dd.append(LASTONE);
     Robot->GoToPosition(dd);//, hwr_Start_position
 
 //    GUI_Write_To_Log(0xff10, str);
@@ -282,6 +282,7 @@ void MainWindow::on_closeButton_clicked()
 
 //+++++++++++++++++++++++++++++++++++++++++
 //Send data from GUI to robot
+// Раз нажали кнопку, значит это единственная команда, значит добавляем LASTONE
 void MainWindow::on_set_posButton_clicked()
 {
     //QString str;
@@ -566,8 +567,8 @@ void MainWindow::on_trainButton_clicked()
     if (readSocket.GetState(&state) == 0)
       {
         if (state.isDetected){
-            try_mcinfer(state.objectX, state.objectY); // Тут меняем current_status = "inprogress"
-            X = state.objectX;
+            try_mcinfer(state.objectX, state.objectY); // Тут меняем current_status = "inprogress". Команда 0 - Переместить открытый хват к кубику.
+            X = state.objectX;                        //  Хват открывается в процессе движения робота, а не отдельной командой.
             Y = state.objectY;
             str+="DETECTED: ";
             str += QString::number(state.objectX);
@@ -597,30 +598,30 @@ if (DETECTED)
 ////    while (!Robot->MOVEMENT_DONE) {;}
    str = "Next movement to robot";
    this->GUI_Write_To_Log (0xF055, str);
-   //+++++++++++++++++ make clamp
+   //+++++++++++++++++ 1 make clamp
    //on_clampButton_clicked();
    if (ui->servo_1_spinBox->value () > 0){ ui->servo_1_spinBox->setValue (0); Servos[0]=0;}
    else {ui->servo_1_spinBox->setValue (90); Servos[0]=90;}
    this->send_Data(NOT_LAST);
-   //++++++++++++++++++++ make stand up
+   //++++++++++++++++++++ 2 make stand up
    //on_stand_upButton_clicked();
    this->update_LineDits_from_position(hwr_Start_position);
    this->repaint();
    this->update_Servos_from_LineEdits();
    this->send_Data(NOT_LAST);
-   //+++++++++++++++++++++ put the cube
+   //+++++++++++++++++++++ 3 put the cube
    this->update_LineDits_from_position (put_position);
    this->repaint();
    update_Servos_from_LineEdits ();
    memcpy(dd.data(), Servos, 6);
    dd.insert(6, 0x31); // Движение "Туда"
    this->send_Data(NOT_LAST);
-   //+++++++++++++++++++++ Unclamp the gripper
+   //+++++++++++++++++++++ 4  Unclamp the gripper
    //on_clampButton_clicked();
    if (ui->servo_1_spinBox->value () > 0){ ui->servo_1_spinBox->setValue (0); Servos[0]=0;}
    else {ui->servo_1_spinBox->setValue (90); Servos[0]=90;}
    this->send_Data(NOT_LAST);
-   //+++++++++++++++++++++++++++++++++
+   //+++++++++++++++++++++++++++++++++ 5 Приподнять хват, чтобы не задеть тележку.
    this->update_LineDits_from_position (after_put_position);
    this->repaint();
    update_Servos_from_LineEdits ();
@@ -628,7 +629,7 @@ if (DETECTED)
    dd.insert(6, 0x31); // Движение "Туда"
    this->send_Data(NOT_LAST);
 
-   //+++++++++++++++++++++ go back to start position
+   //+++++++++++++++++++++ 6 go back to start position
    //on_stand_upButton_clicked();
    this->update_LineDits_from_position(hwr_Start_position);
    this->repaint();
@@ -638,7 +639,7 @@ if (DETECTED)
   }// if (DETECTED)
 
    DETECTED = false;
-   Robot->current_status = "done";
+   //Robot->current_status = "done"; // Тут еще рано, команды только отправлены.
 
 
 }
@@ -699,6 +700,8 @@ void MainWindow::Info_2_Log_Slot(QString message)
             //on_clampButton_clicked ();
             Robot->SetCurrentStatus ("init");
             //emit StartTakeAndPutSignal();
+
+            // Движение только начинаем, поэтому обнулим значение LASTONE
             emit on_trainButton_clicked ();
          }
 
