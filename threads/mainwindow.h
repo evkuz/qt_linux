@@ -50,7 +50,8 @@ public:
 
     WebServer *TheWeb;
     bool new_get_request; // Флаг сигнализирует, что есть неотвеченный GET-запрос от webserver.
-    QTcpServer* m_pTCPServer;
+    //QTcpServer* m_pTCPServer;
+
     QSimpleServer server;
 
     //+++++++++++++++++++++++++++++ Threads +++++++++++++++

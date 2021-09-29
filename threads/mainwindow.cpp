@@ -673,26 +673,19 @@ void MainWindow::Info_2_Log_Slot(QString message)
     QString str, substr;
     int value = 0xf00f;
     new_get_request = true;
+    str = "Get new command : "; str += message;
     GUI_Write_To_Log(0xf00f, message);
     int sPosition, ePosition; // Индекс строки run в запросе.
     sPosition = message.indexOf("/run?cmd=");
 
    QString  wrong_mess = "/favicon.ico HTTP/1.1";
 
-    if (!message.contains (wrong_mess))
+//    if (!message.contains (wrong_mess))
     {
         sPosition += 9;
         ePosition = message.indexOf("&", sPosition);
         substr = message.mid(sPosition, (ePosition - sPosition));
 
-//    if (message.contains ("eeeRRR")) {
-////        on_trainButton_clicked ();
-//        on_clampButton_clicked ();
-//        //on_sitButton_clicked ();
-//        str = "Получена команда : START ";
-//        GUI_Write_To_Log(0xf00f, str);
-
-//    }
 
         str = "Получена команда : "; str += substr;
         GUI_Write_To_Log(0xf00f, str);
@@ -710,25 +703,21 @@ void MainWindow::Info_2_Log_Slot(QString message)
                 Robot->SetCurrentStatus ("wait");
             }
          }
-
+         ///run?cmd=status&123
         if (substr == "status") {
             //str = Robot->GetCurrentStatus ();
             str = Robot->current_status;
+            str = "superpuper";
             emit Write_2_Client_Signal (str);
         }
      }
-
-  //  if (substr == "start") {on_clampButton_clicked ();}
-//    switch( substr )
-//    {
-//    case "start":
-//            on_clampButton_clicked ();
-//            break;
-
-//          default : str.sprintf ("Неизвестная команда : "); str += substr;  GUI_Write_To_Log (value, str);
-
-//    }
-
+   substr = message;
+   if (substr == "status") {
+       //str = Robot->GetCurrentStatus ();
+       str = Robot->current_status;
+       str = "status_from_robot";
+       emit Write_2_Client_Signal (str);
+   }
 
 }
 

@@ -5,6 +5,19 @@
 /*
  *  https://mayaposch.wordpress.com/2011/11/01/how-to-really-truly-use-qthreads-the-full-explanation/
  *
+ *  29.09.2021
+ *  Сработала передача данных(команда) из tcp сокета наверх роботу.
+ *  ТАкже сработал обратный ответ статуса от робота вниз в сокет.
+ *
+ * //+++++++++++++++++++++++++++
+ *   QString response = "HTTP/1.1 200 OK\r\n"; //"%1";//%1";  application/json
+    response += "content-type: application/json\r\n"; //text/html
+    response += "Access-Control-Allow-Origin: *\r\n";
+    response += "\r\n";
+    response += "{\n\t\"status\":\"";
+    response += current_status;
+    response += "\"\n}";
+
  * //+++++++++++++++++++++++
  * 26.09.2021
  *

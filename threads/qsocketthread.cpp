@@ -3,6 +3,8 @@
 QSocketThread::QSocketThread(int descriptror, QObject *parent) :
     QObject(parent), socketDescriptor(descriptror)
 {
+    data_ready = false;
+    current_status = "wait";
 }
 //+++++++++++++++++++++++
 QSocketThread::~QSocketThread()
@@ -31,20 +33,33 @@ void QSocketThread::process_TheSocket()
 
 }
 //+++++++++++++++++++++++++++++++++++++
+//Данные считываем, готовим ответ.
 void QSocketThread::onReadyRead()
 {
     //Чтение информации из сокета и вывод в консоль
-    qDebug() << socket->readAll();
+    QByteArray qbmessage;
+    qbmessage = socket->readAll();
+    qDebug() << qbmessage;
 
-    //Шаблон ответа сервера
-    QString response = "HTTP/1.1 200 OK\r\n\r\n%1";
-    //Запись ответа в сокет
-    //socket->write(response.arg(QTime::currentTime().toString()).toLatin1());
+    //Парсим команду.
+    QString message, substr;
+    message = QString(qbmessage);
+    int sPosition, ePosition; // Индекс строки run в запросе.
+    sPosition = message.indexOf("/run?cmd=");
 
+   QString  wrong_mess = "/favicon.ico HTTP/1.1";
 
-    //Отсоединение от удаленнного сокета
-    socket->disconnectFromHost();
+    if (!message.contains (wrong_mess))
+    {
+        sPosition += 9;
+        ePosition = message.indexOf("&", sPosition);
+        substr = message.mid(sPosition, (ePosition - sPosition));
 
+        // Получили команду. Передаем её наверх
+
+     emit Command_4_Parsing_Signal(substr);
+
+  }
 }
 
 //++++++++++++++++++
@@ -56,5 +71,30 @@ void QSocketThread::onDisconnected()
     //Завершение потока
     emit finished();
    //this->quit();
-   // this->deleteLater();
+    // this->deleteLater();
 }
+//+++++++++++++++++
+// ПРишли данные от робота на отправку в сокет.
+
+void QSocketThread::Data_2_Client_Slot(QString data)
+{
+    // Готовим ответ.
+    //socket->write(response.arg(QTime::currentTime().toString()).toLatin1());
+    data2Client = data.toUtf8();
+    QString response = "HTTP/1.1 200 OK\r\n";
+    response += "content-type: application/json\r\n";
+    response += "Access-Control-Allow-Origin: *\r\n";
+    response += "\r\n";
+    response += "{\n\t\"status\":\"";
+    response += data2Client;
+    response += "\"\n}";
+
+    socket->write(response.toUtf8());
+
+    //Отсоединение от удаленнного сокета
+    socket->disconnectFromHost();
+
+}
+//++++++++++++++++++++++++++
+
+//+++++++++++++++++++++++++++++++

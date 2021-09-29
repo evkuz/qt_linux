@@ -16,10 +16,12 @@ public:
     explicit QSocketThread(int descriptror, QObject *parent = nullptr);
     ~QSocketThread();
 
-
-
+    QByteArray data2Client; // храним данные на отправку клиенту.
+    bool data_ready; // Данные на отправку сформированы, можно отправлять.
+    QString current_status;
 signals:
     void finished();
+    void Command_4_Parsing_Signal(QString);
 
 public slots:
     // Слот, где будет event loop потока, т.е. вся обработка.
@@ -29,6 +31,10 @@ public slots:
     void onReadyRead();
     //Слот закрытия сокета
     void onDisconnected();
+    //Слот принятия данных на отправку в сокет.
+    void Data_2_Client_Slot(QString);
+
+
 private:
     //Дескриптор сокета
     int socketDescriptor;
