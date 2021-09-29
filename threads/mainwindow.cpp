@@ -135,7 +135,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     //+++++++++++++++ ОТкрываем порт Open_Port_Signal(QString portname); ttyUSB0
-    //emit Open_Port_Signal("ttyUSB0");
+    emit Open_Port_Signal("ttyUSB0");
 
 
 
@@ -706,7 +706,7 @@ void MainWindow::Info_2_Log_Slot(QString message)
          }
 
         if (substr == "reset") {
-            if (Robot->GetCurrentStatus () == "done"){
+            if (Robot->GetCurrentStatus () != "wait"){
                 Robot->SetCurrentStatus ("wait");
                 str = "Robot changed status, now it is : ";
                 str += Robot->current_status;

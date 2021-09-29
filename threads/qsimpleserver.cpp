@@ -4,7 +4,7 @@ QSimpleServer::QSimpleServer(QObject *parent) :
     QTcpServer(parent)
 {
     //Включает прослушивание сервером 80 порта
-    if(listen(QHostAddress::LocalHost, tcpport)){
+    if(listen(QHostAddress::AnyIPv4, tcpport)){
         qDebug() << "Listening...";
     //current_status = "wait";
 
