@@ -675,10 +675,11 @@ void MainWindow::Info_2_Log_Slot(QString message)
     new_get_request = true;
     str = "Get new command : "; str += message;
     GUI_Write_To_Log(0xf00f, str);
-    int sPosition, ePosition; // Индекс строки run в запросе.
-    sPosition = message.indexOf("/run?cmd=");
 
-   QString  wrong_mess = "/favicon.ico HTTP/1.1";
+//    int sPosition, ePosition; // Индекс строки run в запросе.
+//    sPosition = message.indexOf("/run?cmd=");
+
+//   QString  wrong_mess = "/favicon.ico HTTP/1.1";
 
 //    if (!message.contains (wrong_mess))
 //    {
@@ -715,7 +716,7 @@ void MainWindow::Info_2_Log_Slot(QString message)
    if (substr == "status") {
        //str = Robot->GetCurrentStatus ();
        str = Robot->current_status;
-       str = "status_from_robot";
+       //str = "status_from_robot";
        emit Write_2_Client_Signal (str);
    }
 
