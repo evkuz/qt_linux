@@ -566,7 +566,7 @@ void MainWindow::on_trainButton_clicked()
     if (readSocket.GetState(&state) == 0)
       {
         if (state.isDetected){
-            try_mcinfer(state.objectX, state.objectY);
+            try_mcinfer(state.objectX, state.objectY); // Тут меняем current_status = "inprogress"
             X = state.objectX;
             Y = state.objectY;
             str+="DETECTED: ";
@@ -638,6 +638,7 @@ if (DETECTED)
   }// if (DETECTED)
 
    DETECTED = false;
+   Robot->current_status = "done";
 
 
 }
@@ -691,19 +692,25 @@ void MainWindow::Info_2_Log_Slot(QString message)
 //        str = "Получена команда : "; str += substr;
 //        GUI_Write_To_Log(0xf00f, str);
 
-        // changed by Miksarus
-//        if (substr == "start") {
-//            //on_clampButton_clicked ();
-//            //Robot->SetCurrentStatus ("init");
-//            //emit StartTakeAndPutSignal();
-//            emit on_trainButton_clicked ();
-//         }
+        substr = message;
 
-//        if (substr == "reset") {
-//            if (Robot->GetCurrentStatus () == "done"){
-//                Robot->SetCurrentStatus ("wait");
-//            }
-//         }
+        // changed by Miksarus
+        if (substr == "start") {
+            //on_clampButton_clicked ();
+            Robot->SetCurrentStatus ("init");
+            //emit StartTakeAndPutSignal();
+            emit on_trainButton_clicked ();
+         }
+
+        if (substr == "reset") {
+            if (Robot->GetCurrentStatus () == "done"){
+                Robot->SetCurrentStatus ("wait");
+                str = "Robot changed status, now it is : ";
+                str += Robot->current_status;
+
+                GUI_Write_To_Log (value, str);
+            }
+         }
 //         ///run?cmd=status&123
 //        if (substr == "status") {
 //            //str = Robot->GetCurrentStatus ();
@@ -712,7 +719,8 @@ void MainWindow::Info_2_Log_Slot(QString message)
 //            emit Write_2_Client_Signal (str);
 //        }
 //     }
-   substr = message;
+
+
    if (substr == "status") {
        //str = Robot->GetCurrentStatus ();
        str = Robot->current_status;

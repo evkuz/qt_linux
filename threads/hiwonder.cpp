@@ -167,6 +167,7 @@ void HiWonder::ReadFromSerial_Slot ()
         if (list_str.contains (str)) {
             this->MOVEMENT_DONE = true;
             this->Write_To_Log(0xF001, "Robot finished complex command");
+            this->current_status = "done";
             emit this->Moving_Done_Signal();
         }
 
@@ -177,6 +178,6 @@ void HiWonder::ReadFromSerial_Slot ()
 
 void HiWonder::SetCurrentStatus(QString newStatus) {
     this->current_status = newStatus;
-    emit this->StatusChangedSignal(newStatus);
+//    emit this->StatusChangedSignal(newStatus);
 
 }

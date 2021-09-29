@@ -46,6 +46,7 @@ void MainWindow::try_mcinfer(int x, int y){
     this->update_LineDits_from_servos();
     this->repaint();
 
+    Robot->current_status = "inprogress";
     on_set_posButton_clicked();
 
     str = "Mcinfer Data : ";
