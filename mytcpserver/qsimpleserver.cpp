@@ -25,5 +25,4 @@ void QSimpleServer::incomingConnection(qintptr sDescriptor)
     thread->moveToThread(thread_A);
     //Запуск потока
     thread_A->start();
-    //addPendingConnection(sDescriptor);
 }
