@@ -80,6 +80,7 @@ public:
     void update_LineDits_from_position(unsigned char *pos);
     void update_Servos_from_LineEdits(void);
     void send_Data(unsigned char thelast);
+    void make_json_answer();   // подготовка json-строки с полями ответа в TCP сокет.
 
 
 private:

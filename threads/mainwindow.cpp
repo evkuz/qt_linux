@@ -136,6 +136,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     //+++++++++++++++ ОТкрываем порт Open_Port_Signal(QString portname); ttyUSB0
     emit Open_Port_Signal("ttyUSB0");
+    make_json_answer();
 
 
 
@@ -659,6 +660,21 @@ void MainWindow::send_Data(unsigned char thelast)
     //QByteArray dd = QByteArray::fromRawData(Servos, 6);
     Robot->GoToPosition(dd);
 }
+//+++++++++++++++++++++++++++++++++
+// подготовка json-строки с полями ответа в TCP сокет.
+void MainWindow::make_json_answer()
+{
+  int value = 0x1111;
+  QString jsn_str = "{"; jsn_str += "\"status\":";
+  jsn_str += "\"";
+  jsn_str += Robot->current_status;
+  jsn_str += "\",";
+
+  QString str = "Строка ответа в формате json :\n";
+  str += jsn_str;
+  GUI_Write_To_Log(value, str);
+ }
+
 //++++++++++++++++++++++++++
 // Пришел запрос от вебсервера. Весь запрос в message
 void MainWindow::Data_From_Web_SLot(QString message)
