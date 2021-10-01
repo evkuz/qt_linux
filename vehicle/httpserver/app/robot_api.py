@@ -1,9 +1,8 @@
 import time
 import threading
 import json
-from subprocess import PIPE, Popen
+from subprocess import Popen
 from threading  import Thread
-from subprocess import check_call
 import os
 
 
@@ -25,11 +24,14 @@ class RobotStatus(object):
 class RobotApi(object):
     def __init__(self):
         self.__thread = None
-        self.__waitForCommand = True
+        self.__process = None
         self.__status = RobotStatus("wait", 0, "none")
 
     def reset(self):
-        self.__waitForCommand = True
+        if self.__thread is not None:
+            if self.__process is not None:
+                self.__process.terminate()
+
         self.__status.status = "wait"
         self.__status.active_command = "reset"
         self.__status.return_code = 0
@@ -61,25 +63,22 @@ class RobotApi(object):
         filePath = "/home/xrrobot/sss/spoint.py"
         #filePath = "/home/miksarus/projects/iqr_lit/vehicle/httpserver/app/testrobotmove.py"
         command = ['python2.7', filePath]
+        
+        self.__process = Popen(command)
         res = 0
         try:
-            res = check_call(command)
+            res = self.__process.wait()
         except Exception as e:
             print("Error:", e)
             res = -1
-
-        # p = Popen(command, stdout=PIPE)
-        
+   
         # Thread(target=self.__read_pipe, args=(p.stdout,)).start()
-        
-        # try:
-        #     res = p.wait() #check_call()
-        # except Exception as e:
-        #     print("Error:", e)
 
-        self.__status.status = "done"
-        self.__status.return_code = res
+        if self.__status.active_command != "reset":
+            self.__status.status = "done"
+            self.__status.return_code = res
 
+        self.__process = None
         self.__thread = None
 
     def __read_pipe(self, out, ntrim=80):    
