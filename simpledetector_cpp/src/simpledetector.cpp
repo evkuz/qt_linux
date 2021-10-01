@@ -287,6 +287,23 @@ void DrawCalibration(Mat& frame){
 	}
 }
 
+
+void DrawCameraMarks(Mat& frame){
+	int step = 50;
+
+	cv::Point p1(step, step);
+	cv::Point p2(frame.cols - step, step);
+	cv::Point p3(step, frame.rows - step);
+	cv::Point p4(frame.cols - step, frame.rows - step);
+
+
+	cv::drawMarker(frame, p1,  cv::Scalar(0, 0, 0), MARKER_CROSS, 20, 1);
+	cv::drawMarker(frame, p2,  cv::Scalar(0, 0, 0), MARKER_CROSS, 20, 1);
+	cv::drawMarker(frame, p3,  cv::Scalar(0, 0, 0), MARKER_CROSS, 20, 1);
+	cv::drawMarker(frame, p4,  cv::Scalar(0, 0, 0), MARKER_CROSS, 20, 1);
+}
+
+
 // Getting my IP section
 // -----------------------------
 int get_my_ip(char* buffer){
@@ -493,6 +510,7 @@ int main(int argc, char* argv[])
 			}
 
 			DrawCalibration(frame);
+			DrawCameraMarks(frame);
 			imshow(windowName, frame);
 			
 			{
