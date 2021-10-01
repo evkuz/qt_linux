@@ -18,17 +18,18 @@ public:
     ~HiWonder();
 
 #define serial_speed Baud115200
-#define robot_buffer_SIZE 64
+#define robot_buffer_SIZE 32
 #define Log_File_Name        "./hiwonder.log"
 #define DOF 6
-#define szData 7 //Размер посылки в байтах
-
+#define szData 8 //Размер посылки в байтах
+    unsigned char outputData [szData];
     QSerialPort serial;
     QByteArray byInputBuffer[robot_buffer_SIZE];
     char byOutputBuffer[robot_buffer_SIZE];
     QFile       LogFile;
 
     QByteArray qbuf;
+    bool MOVEMENT_DONE;  // Флаг показывает, что получено сообщение от робота о заврешении цикла движения
 
 
 
@@ -43,9 +44,12 @@ public:
 
 
 signals:
+    void Moving_Done_Signal();
+
 
 public slots:
     void Open_Port_Slot(QString portname);
+    void ReadFromSerial_Slot();
 };
 
 #endif // HIWONDER_H

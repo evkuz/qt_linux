@@ -40,12 +40,17 @@ public:
 
     QList<QLineEdit*> qle_list;
     QList<QSpinBox*> qspb_list;
-    QList<QSlider*>  slider_list;
+    QList<QSlider*> slider_list;
 
     HiWonder *Robot;
     Robo_Math * RMath;
+#define parcel_size 8
+#define NOT_LAST 0xC8 //200  // Не последняя команда
+#define LASTONE  0xDE //222  // Последняя команда роботу при комплексном движении
+    //int parcel_size; // размер посылки в байтах от ПК к роботу
 
     int X, Y;//Координаты x,y
+    bool DETECTED; // Флаг, показывающий, сработал ли захват изображения.
 
     unsigned char Servos [6] = {93,93,93,93,93,93};
 
@@ -55,7 +60,9 @@ public:
     void try_mcinfer(int x, int y);
     void update_LineDits_from_servos(void);
     void update_LineDits_from_position(const char *pos);
+    void update_LineDits_from_position(unsigned char *pos);
     void update_Servos_from_LineEdits(void);
+    void send_Data(unsigned char thelast);
 
 private:
     SocketClient readSocket;
@@ -69,30 +76,9 @@ private slots:
 
     void on_closeButton_clicked();
 
-    void on_servo_1_lineEdit_editingFinished();
-
-    void on_servo_2_lineEdit_editingFinished();
-
-    void on_servo_3_lineEdit_editingFinished();
-
-    void on_servo_4_lineEdit_editingFinished();
-
-    void on_servo_5_lineEdit_editingFinished();
-
-    void on_servo_6_lineEdit_editingFinished();
 
     void on_set_posButton_clicked();
-    void on_S1_verSlider_valueChanged(int value);
 
-    void on_S2_verSlider_valueChanged(int value);
-
-    void on_S3_verSlider_valueChanged(int value);
-
-    void on_S4_verSlider_valueChanged(int value);
-
-    void on_S5_verSlider_valueChanged(int value);
-
-    void on_S6_verSlider_valueChanged(int value);
 
     void on_socketButton_clicked();
 
@@ -112,7 +98,8 @@ private slots:
 
     void on_servo_6_spinBox_valueChanged(int arg1);
 
-    void on_pushButton_clicked();
+
+
 
 
 
@@ -120,6 +107,11 @@ private slots:
     void Return_EL_Slot(float EL);
     void Return_FW_Kinematic_XYZ_Slot(int X, int Y, int Z, float EL);
     void Pass_String_Slot(QString str);
+
+    void on_submitButton_clicked();
+
+    void on_trainButton_clicked();
+    void Moving_Done_Slot(); // ОБработка сигнала окончания движения
 
 signals:
     void Open_Port_Signal(QString portname); // Сигнал даем по нажатию кнопки "OPEN"

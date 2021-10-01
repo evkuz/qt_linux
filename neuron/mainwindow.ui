@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>950</width>
-    <height>765</height>
+    <height>482</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,7 @@
      <x>200</x>
      <y>40</y>
      <width>278</width>
-     <height>27</height>
+     <height>29</height>
     </rect>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout">
@@ -45,110 +45,14 @@
   <widget class="QPushButton" name="clampButton">
    <property name="geometry">
     <rect>
-     <x>520</x>
-     <y>90</y>
+     <x>530</x>
+     <y>160</y>
      <width>89</width>
      <height>51</height>
     </rect>
    </property>
    <property name="text">
     <string>CLAMP</string>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="servo_1_lineEdit">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>690</y>
-     <width>61</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>93</string>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="servo_2_lineEdit">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="geometry">
-    <rect>
-     <x>120</x>
-     <y>690</y>
-     <width>61</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>93</string>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="servo_3_lineEdit">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="geometry">
-    <rect>
-     <x>220</x>
-     <y>690</y>
-     <width>61</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>93</string>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="servo_4_lineEdit">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="geometry">
-    <rect>
-     <x>320</x>
-     <y>690</y>
-     <width>61</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>93</string>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="servo_5_lineEdit">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="geometry">
-    <rect>
-     <x>410</x>
-     <y>690</y>
-     <width>61</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>93</string>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="servo_6_lineEdit">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="geometry">
-    <rect>
-     <x>510</x>
-     <y>690</y>
-     <width>61</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>93</string>
    </property>
   </widget>
   <widget class="QPushButton" name="set_posButton">
@@ -167,10 +71,10 @@
   <widget class="QPushButton" name="stand_upButton">
    <property name="geometry">
     <rect>
-     <x>230</x>
-     <y>110</y>
-     <width>89</width>
-     <height>25</height>
+     <x>510</x>
+     <y>70</y>
+     <width>141</width>
+     <height>61</height>
     </rect>
    </property>
    <property name="text">
@@ -258,10 +162,10 @@
   <widget class="QPushButton" name="sitButton">
    <property name="geometry">
     <rect>
-     <x>120</x>
-     <y>110</y>
-     <width>89</width>
-     <height>25</height>
+     <x>20</x>
+     <y>80</y>
+     <width>131</width>
+     <height>51</height>
     </rect>
    </property>
    <property name="text">
@@ -281,145 +185,13 @@
     <string>Get XY</string>
    </property>
   </widget>
-  <widget class="QSlider" name="S6_verSlider">
-   <property name="geometry">
-    <rect>
-     <x>820</x>
-     <y>400</y>
-     <width>21</width>
-     <height>251</height>
-    </rect>
-   </property>
-   <property name="sizePolicy">
-    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-     <horstretch>0</horstretch>
-     <verstretch>0</verstretch>
-    </sizepolicy>
-   </property>
-   <property name="sizeIncrement">
-    <size>
-     <width>1</width>
-     <height>1</height>
-    </size>
-   </property>
-   <property name="maximum">
-    <number>180</number>
-   </property>
-   <property name="value">
-    <number>93</number>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Vertical</enum>
-   </property>
-   <property name="tickPosition">
-    <enum>QSlider::TicksBelow</enum>
-   </property>
-   <property name="tickInterval">
-    <number>2</number>
-   </property>
-  </widget>
-  <widget class="QSlider" name="S5_verSlider">
-   <property name="geometry">
-    <rect>
-     <x>700</x>
-     <y>400</y>
-     <width>16</width>
-     <height>251</height>
-    </rect>
-   </property>
-   <property name="maximum">
-    <number>180</number>
-   </property>
-   <property name="value">
-    <number>93</number>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Vertical</enum>
-   </property>
-  </widget>
-  <widget class="QSlider" name="S4_verSlider">
-   <property name="geometry">
-    <rect>
-     <x>540</x>
-     <y>400</y>
-     <width>16</width>
-     <height>251</height>
-    </rect>
-   </property>
-   <property name="maximum">
-    <number>180</number>
-   </property>
-   <property name="value">
-    <number>93</number>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Vertical</enum>
-   </property>
-  </widget>
-  <widget class="QSlider" name="S3_verSlider">
-   <property name="geometry">
-    <rect>
-     <x>380</x>
-     <y>400</y>
-     <width>16</width>
-     <height>251</height>
-    </rect>
-   </property>
-   <property name="maximum">
-    <number>180</number>
-   </property>
-   <property name="value">
-    <number>93</number>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Vertical</enum>
-   </property>
-  </widget>
-  <widget class="QSlider" name="S2_verSlider">
-   <property name="geometry">
-    <rect>
-     <x>220</x>
-     <y>400</y>
-     <width>16</width>
-     <height>251</height>
-    </rect>
-   </property>
-   <property name="maximum">
-    <number>180</number>
-   </property>
-   <property name="value">
-    <number>93</number>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Vertical</enum>
-   </property>
-  </widget>
-  <widget class="QSlider" name="S1_verSlider">
-   <property name="geometry">
-    <rect>
-     <x>60</x>
-     <y>400</y>
-     <width>16</width>
-     <height>251</height>
-    </rect>
-   </property>
-   <property name="maximum">
-    <number>180</number>
-   </property>
-   <property name="value">
-    <number>93</number>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Vertical</enum>
-   </property>
-  </widget>
   <widget class="QPushButton" name="socketButton">
    <property name="geometry">
     <rect>
      <x>680</x>
-     <y>110</y>
+     <y>64</y>
      <width>151</width>
-     <height>25</height>
+     <height>71</height>
     </rect>
    </property>
    <property name="text">
@@ -620,11 +392,14 @@ QSpinBox::up-button{
      <pointsize>24</pointsize>
     </font>
    </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
    <property name="maxLength">
     <number>28</number>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton">
+  <widget class="QPushButton" name="submitButton">
    <property name="geometry">
     <rect>
      <x>460</x>
@@ -638,8 +413,30 @@ QSpinBox::up-button{
      <pointsize>18</pointsize>
     </font>
    </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
    <property name="text">
     <string>Submit</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="trainButton">
+   <property name="geometry">
+    <rect>
+     <x>660</x>
+     <y>360</y>
+     <width>211</width>
+     <height>91</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>18</pointsize>
+     <italic>false</italic>
+    </font>
+   </property>
+   <property name="text">
+    <string>TRAIN</string>
    </property>
   </widget>
  </widget>
