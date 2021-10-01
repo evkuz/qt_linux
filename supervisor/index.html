@@ -16,9 +16,13 @@
 <link href="style/type/fontello.css" rel="stylesheet">
 <script>
   iqrSupervisor = {
-    vehicleAddr: "http://192.168.1.98:5000",
-    manipulatorAddr: "http://159.93.44.84:8383/run",
-    manipulatorCameraAddr: "http://192.168.1.41:5555"
+    //vehicleAddr: "http://192.168.1.41:5000/",
+    vehicleAddr: "http://192.168.1.98:5000/",
+    //manipulatorAddr: "http://192.168.1.41:8384",
+    manipulatorAddr: "http://159.93.44.84:8383/",
+    manipulatorCameraAddr: "http://159.93.44.84:5555/",
+    updateStateInterval: 200,
+    tpInterval: 500
   };
 </script>
 <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -70,151 +74,312 @@
         <p class="pull-left">© 2021 IQR LIT. All rights reserved.</p>
       </div>
     </div>
+    <div style="float:right;margin-top:-49px;">
+      <a class="btn btn-red" id="update_manip">Update state</a>
+    </div>
   </footer>
   <!-- /footer --> 
  
 </div>
 <!--/.body-wrapper --> 
-<script src="style/js/jquery.min.js"></script> 
+<!-- <script src="style/js/jquery.min.js"></script> 
 <script src="style/js/bootstrap.min.js"></script> 
 <script src="style/js/plugins.js"></script> 
-<script src="style/js/scripts.js"></script>
+<script src="style/js/scripts.js"></script> -->
 <script>/*<![CDATA[*/
-  var getJSON = function(url, callback) {
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', url, true);
-    xhr.responseType = 'json';
-    xhr.onload = function() {
-      var status = xhr.status;
-      if (status === 200) {
-        callback(null, xhr.response);
-      } else {
-        callback(status, xhr.response);
-      }
-    };
-    xhr.onerror= function(e) {
-      callback("Connection error", null);
-    };
-    xhr.ontimeout = function (e) {
-      callback("Connection timeout", null);
-    }
-    xhr.send();
-  };
-  
-  document.getElementById("vehicle_cam").src=iqrSupervisor.vehicleAddr+"/video_feed";
-  document.getElementById("manipulator_cam").src=iqrSupervisor.manipulatorCameraAddr+"/video_feed";
-
-  vehicleState = {
-    lastCmd: "none",
-    lastCmdResult: 0,
-    status: "wait",
-    connection: false,
-    errorMsg: null
-  };
-
   manipulatorState = {
-    lastCmd: "none",
-    lastCmdResult: 0,
-    status: "wait",
-    connection: false,
-    errorMsg: null
+    "connection": false,
+    "active_command": "none",
+    "comment": "",
+    "return_code": 0,
+    "status": "wait"
   };
   
-  updManipulatorState = function(){
-    getJSON(
-        iqrSupervisor.manipulatorAddr+'/'+"run",
-        function(status, data) {
-          if (status === null) {
-            manipulatorState.connection = true;
-            manipulatorState.status = data.status;
-            manipulatorState.lastCmd = data.lastCmd;
-            manipulatorState.lastCmdResult = data.lastCmdResult;
-          } else {
-            manipulatorState.connection = false;
-            manipulatorState.errorMsg = status;
-          }
+  vehicleState = {
+    "connection": false,
+    "active_command": "none",
+    "comment": "",
+    "return_code": 0,
+    "status": "wait"
+  };
+
+  document.getElementById("vehicle_cam").src=iqrSupervisor.vehicleAddr+"/video_feed";
+  //document.getElementById("manipulator_cam").src=iqrSupervisor.manipulatorCameraAddr+"/video_feed";
+
+
+  function httpGet(url) {
+    return new Promise(function(resolve, reject) {
+ 
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', url, true);
+      xhr.responseType = 'json';
+      xhr.timeout = iqrSupervisor.updateStateInterval;
+  
+      xhr.onload = function() {
+        if (this.status == 200) {
+          resolve(this.response);
+        } else {
+          var error = new Error(this.statusText);
+          error.code = this.status;
+          reject(error);
         }
+      };
+      
+      xhr.ontimeout = function() {
+        reject(new Error("Connection timeout"));
+      };
+
+      xhr.onerror = function() {
+        reject(new Error("Network Error"));
+      };
+  
+      xhr.send();
+    });
+  }
+  
+
+  async function sendCommandToManipulator(cmd){
+    return httpGet(iqrSupervisor.manipulatorAddr + "run?cmd=" + cmd + "&").then(
+      response => {
+        response.connection = true;
+        return response;
+      },
+      error => { return error;}
+     );
+  };
+
+  async function sendCommandToVehicle(cmd){
+    return httpGet(iqrSupervisor.vehicleAddr + "run?cmd=" + cmd).then(
+      response => {
+        response.connection = true;
+        return response;
+      },
+      error => { return error;}
+     );
+  };
+
+   
+  function updManipulatorState() {
+    return httpGet(iqrSupervisor.manipulatorAddr + "run?cmd=status&").then(
+      response => {
+        statusElem = document.getElementById("manipulator_status");
+        statusElem.innerHTML = "<div class='alert alert-warning'>" +
+          "<p><strong>Current state:</strong>" + response.status + "</p>" +
+          "<p><strong>Comment:</strong>" + response.comment + new Date().getTime() + "</p></div>";
+        manipulatorState.connection = true;
+        manipulatorState.status = response.status;
+      },
+      error => {
+        statusElem = document.getElementById("manipulator_status");
+        statusElem.innerHTML ="<div class='alert alert-danger'> <strong>Connection failed!</strong> Message:" +
+          error +" </div>";
+        manipulatorState.connection = false;
+      });
+  };
+
+
+  function updVehicleState() {
+    return httpGet(iqrSupervisor.vehicleAddr + "run?cmd=status").then(
+      response => {
+        statusElem = document.getElementById("vehicle_status");
+        statusElem.innerHTML = "<div class='alert alert-warning'>" +
+          "<p><strong>Current state:</strong>" + response.status + "</p>" +
+          "<p><strong>Comment:</strong>" + response.comment + new Date().getTime() + "</p></div>";
+        vehicleState.connection = true;
+        vehicleState.status = response.status;
+      },
+      error => {
+        statusElem = document.getElementById("vehicle_status");
+        statusElem.innerHTML ="<div class='alert alert-danger'> <strong>Connection failed!</strong> Message:" +
+          error +" </div>";
+          vehicleState.connection = false;
+      });
+  };
+
+
+  // Region Status Updating
+  // ------------------------------
+  let statusTimeoutIsRuning = false;
+  let statusTimeoutId = null;
+
+  async function statusTimeoutFunction(){
+    await updManipulatorState();
+    await updVehicleState();
+    if(statusTimeoutIsRuning){
+      statusTimeoutId = setTimeout(
+        statusTimeoutFunction,
+        iqrSupervisor.updateStateInterval
+      );
+    }
+  };
+  
+  function StartStatusUpdate(){
+    ubtn = document.getElementById("update_manip")
+    ubtn.classList.remove('btn-red');
+    ubtn.classList.add('btn-gray');
+    ubtn.innerHTML = "Stop updating"
+    statusTimeoutIsRuning = true;
+    statusTimeoutFunction();
+  };
+
+  function StopStatusUpdate(){
+    statusTimeoutIsRuning = false;
+    if (statusTimeoutId!=null) {clearTimeout(statusTimeoutId);}
+    ubtn = document.getElementById("update_manip")
+    ubtn.classList.remove('btn-gray');
+    ubtn.classList.add('btn-red');
+    ubtn.innerHTML = "Start updating"
+  };
+
+  StartStatusUpdate();
+
+  updateBtn = document.getElementById("update_manip")
+  updateBtn.onclick = function(){
+    if(statusTimeoutIsRuning){ StopStatusUpdate(); }
+    else { StartStatusUpdate(); }
+  };
+  // END -- Region Status Updating
+  
+
+  // Region Manipulator Camera Updating
+  // ------------------------------
+  function manCameraTimeoutFunction(){
+    manCamElem = document.getElementById("manipulator_cam");
+    manCamElem.src=iqrSupervisor.manipulatorCameraAddr+"video_feed?random="+new Date().getTime();
+    statusTimeoutId = setTimeout(
+      manCameraTimeoutFunction,
+      400
     );
-    statusElem = document.getElementById("manipulator_status");
-    if ( manipulatorState.connection ) {
-       statusElem.innerHTML = "<div class='alert alert-warning'>Current state: <strong>" +
-                              manipulatorState.status +                     
-                              "</strong></div>";
-    } else {
-       statusElem.innerHTML ="<div class='alert alert-danger'> <strong>Connection failed!</strong> Message:" +
-                              manipulatorState.errorMsg +
-                              " </div>";
+  };
+
+  manCameraTimeoutFunction();
+  // END -- Region Manipulator Camera Updating
+
+
+  // Region TECH PROCESS
+  // ------------------------------
+  var tpTimerId = null;
+  var tpInProgress = false;
+  var tpstate = 0;
+
+  async function TPWork() {
+    if(tpstate == 0){
+      await sendCommandToManipulator("start").then(
+        response => {
+          //alert("Command 'start' was sended!");
+          //if (response.return_code != 0){
+          //  alert("Error sending command 'start': returned_code: " + response.return_code );
+          //  StopTP();
+          //  return;
+          //}
+          tpstate++;
+          tpTimerId = setTimeout(
+            TPWork,
+            iqrSupervisor.tpInterval
+          );
+        },
+        error => {
+          alert("Error sending command 'start' to manipulator! " + error);
+          StopTP();
+        }
+      );
+    } else if (tpstate == 1) {
+      if (manipulatorState.status != "done"){
+        //if (!manipulatorState.connection) {return;}
+        if (!tpInProgress){return;}
+      } else {
+        tpstate++;
+      }
+      tpTimerId = setTimeout(
+        TPWork,
+        iqrSupervisor.tpInterval
+      );
+    } else if(tpstate == 2){
+      await sendCommandToVehicle("start").then(
+        response => {
+          //alert("Command 'start' was sended!");
+          if (response.return_code != 0){
+            alert("Error sending command 'start': returned_code: " + response.return_code );
+            StopTP();
+            return;
+          }
+          tpstate++;
+          tpTimerId = setTimeout(
+            TPWork,
+            iqrSupervisor.tpInterval
+          );
+        },
+        error => {
+          alert("Error sending command 'start' to vehicle!");
+          StopTP();
+        }
+      );
+    } else if (tpstate == 3) {
+      if (vehicleState.status != "done"){
+        //if (!vehicleState.connection) {return;}
+        if (!tpInProgress){return;}
+      } else {
+        tpstate++;
+      }
+      tpTimerId = setTimeout(
+        TPWork,
+        iqrSupervisor.tpInterval
+      );
+    } else if (tpstate == 4) {
+      console.log('Done');
+      //tpInProgress = false;
     }
   };
 
-  updVehicleState = function(){
-    getJSON(
-        iqrSupervisor.vehicleAddr+'/'+"run",
-        function(status, data) {
-          if (status === null) {
-            vehicleState.connection = true;
-            vehicleState.status = data.status;
-            vehicleState.lastCmd = data.lastCmd;
-            vehicleState.lastCmdResult = data.lastCmdResult;
-          } else {
-            vehicleState.connection = false;
-            vehicleState.errorMsg = status;
-          }
-        }
-    );
-    statusElem = document.getElementById("vehicle_status");
-    if ( vehicleState.connection ) {
-       statusElem.innerHTML = "<div class='alert alert-warning'>Current state: <strong>" +
-                              vehicleState.status +                     
-                              "</strong></div>";
-    } else {
-       statusElem.innerHTML ="<div class='alert alert-danger'> <strong>Connection failed!</strong> Message:" +
-                              vehicleState.errorMsg +
-                              " </div>";
-    }
-    
-
-  };
-
-  const stateInterval = setInterval(
-    () => {
-      updManipulatorState();
-      updVehicleState();
-    },
-    200
-  );
-
-  const manCameraInterval = setInterval(
-    () => {
-      manCamElem = document.getElementById("manipulator_cam");
-      manCamElem.src=iqrSupervisor.manipulatorCameraAddr+"/video_feed?random="+new Date().getTime();
-    },
-    50
-  );
-
-  var tpIntervalId;
-
-    startBtn = document.getElementById("start_tp")
-    startBtn.onclick = function(){
-      btn = document.getElementById("start_tp")
-      if ( btn.classList.contains('btn-red') ){
+  function StartTP(){
+    if (manipulatorState.connection && vehicleState.connection){
+      if (manipulatorState.status == "wait") {
+        tpInProgress = true;
+        tpstate = 0;
+        btn = document.getElementById("start_tp")
         btn.classList.remove('btn-red');
         btn.classList.add('btn-gray');
-        updManipulatorState();
-        updVehicleState();
-        //tpIntervalId = setInterval(() => {
-        //    if (vecState == "done" && manState == "done") {
-        //      clearInterval(tpIntervalId);
-        //      console.log('Done');
-        //    }
-        //  },
-        //  50
-        //);
+        tpTimerId = setTimeout(
+          TPWork,
+          1
+        );
+        
       } else {
-        btn.classList.remove('btn-gray');
-        btn.classList.add('btn-red');
+        StopTP();
       }
-    };
+    } else {
+      alert("Not all robots are connected!");
+    }
+  };
+
+  function StopTP(){
+    tpInProgress = false;
+    if(tpTimerId != null) {clearTimeout(tpTimerId); tpTimerId = null;}
+
+    sendCommandToManipulator("reset").then(
+      response => {
+        sendCommandToVehicle("reset").then(
+          response => {
+            if(response.return_code == '0'){
+              btn = document.getElementById("start_tp")
+              btn.classList.remove('btn-gray');
+              btn.classList.add('btn-red');
+            }
+          },
+          error => { alert("Error sending command 'reset'! " + error); }
+        );
+      },
+      error => {alert("Error sending command 'reset'! " + error);}
+    );
+  };
+
+  startBtn = document.getElementById("start_tp")
+  startBtn.onclick = function(){
+    if (!tpInProgress) { StartTP();}
+    else { StopTP(); }
+  };
+  // END -- Region  TECH PROCESS
+
   /*]]>*/
 </script>
 </body>

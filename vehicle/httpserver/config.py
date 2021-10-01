@@ -19,4 +19,4 @@ class TestingConfig(BaseConfig):
 
 class ProductionConfig(BaseConfig):
     DEBUG = False
-    CAMERA_NUM = 1
+    CAMERA_NUM = 0
