@@ -23,10 +23,11 @@ def index():
 
 @app.route('/video_feed')
 def video_feed():
-    return Response(
+    response = Response(
         gen(activeCamera),
         mimetype='multipart/x-mixed-replace; boundary=frame'
     )
+    return response
 
 
 @app.route('/run', methods=['get'])

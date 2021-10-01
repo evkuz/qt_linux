@@ -40,11 +40,14 @@ public:
 
     QList<QLineEdit*> qle_list;
     QList<QSpinBox*> qspb_list;
-    QList<QSlider*>  slider_list;
+    QList<QSlider*> slider_list;
 
     HiWonder *Robot;
     Robo_Math * RMath;
-    int parcel_size; // размер посылки в байтах от ПК к роботу
+#define parcel_size 8
+#define NOT_LAST 0xC8 //200  // Не последняя команда
+#define LASTONE  0xDE //222  // Последняя команда роботу при комплексном движении
+    //int parcel_size; // размер посылки в байтах от ПК к роботу
 
     int X, Y;//Координаты x,y
     bool DETECTED; // Флаг, показывающий, сработал ли захват изображения.
@@ -59,6 +62,7 @@ public:
     void update_LineDits_from_position(const char *pos);
     void update_LineDits_from_position(unsigned char *pos);
     void update_Servos_from_LineEdits(void);
+    void send_Data(unsigned char thelast);
 
 private:
     SocketClient readSocket;
@@ -107,6 +111,7 @@ private slots:
     void on_submitButton_clicked();
 
     void on_trainButton_clicked();
+    void Moving_Done_Slot(); // ОБработка сигнала окончания движения
 
 signals:
     void Open_Port_Signal(QString portname); // Сигнал даем по нажатию кнопки "OPEN"

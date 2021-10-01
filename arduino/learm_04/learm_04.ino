@@ -18,9 +18,10 @@
  * Роботу надо сообщать углы (конечное положение)+ для приводов, далее он сам передвигает ПЛАВНО двигатели в нужную позицию
 */
 
+#include <Arduino.h>
 #include <Servo.h>
 //#include "/home/evkuz/0_arduino/include/hiwonder_byte.h"
-//#include "move_servos.h"
+//#include "move_servos.ino"
 
 ///home/evkuz/0_arduino/include/hiwonder_byte.h
 ///home/evkuz/lit/learm/include/hiwonder_byte.h
@@ -31,8 +32,8 @@
 
 
 #define serv_number 6 // Количество приводов под управлением
-#define sBufSize 7   // Размер буфера компорта в плате NANO - 64 байта.
-
+#define sBufSize 32   // Размер буфера компорта в плате NANO - 64 байта.
+#define szParcel 8
 Servo servo1, servo2, servo3,servo4,servo5,servo6;
 Servo servos [6] = {servo1, servo2, servo3,servo4,servo5,servo6};
 
@@ -43,7 +44,7 @@ byte readed_pos[6];
 byte delta [6];     // Разница (между текущим и целевым положением) в угле для соответствующего привода 0 - 180
 //String message, number;//, s_pos;
 char *s_pos;
-char yesss;
+char buf[sBufSize];
 
 byte ints[sBufSize]; // Данные, полученные по serial
 short DF [6] ={1, 1, 1, 1, 1, 1};
@@ -64,11 +65,12 @@ void setup() {
   delay(1000);
 
 
-  for (byte i=0; i<= 63; i++){
+  for (byte i=0; i< sBufSize; i++){
       ints[i] = 93;
+      buf[i] = 255;
   }
 
-}
+} //setup()
 //++++++++++++++++++++++++ loop 
 void loop() {
 
@@ -132,7 +134,7 @@ void get_all_servos(String when)
 void get_curr_delta (byte *pos)
 {
 
-  for (int i=0; i<=serv_number -1; i++)
+  for (int i=0; i<serv_number; i++)
   {
     if (current_s[i] > pos[i])
       {
@@ -386,7 +388,7 @@ void parse_command ()
       //byte ints[64];           // массив для численных данных, у нас 6 приводов
       byte numReaded;
       
-      numReaded=Serial.readBytes(ints, 7);
+      numReaded=Serial.readBytes(ints, szParcel);
       //Serial.print(numReaded);
      // Serial.write(numReaded);
       //message = "Robot just got data : ";
@@ -395,8 +397,11 @@ void parse_command ()
       {          message += String(ints[i]); message += " ";
 
       }
+
       message.remove(message.length()-1);
-     // Serial.print(message);
+      strcpy(buf, message.c_str());
+      Serial.print(buf);
+
       //Serial.println(message);
       //Serial.println("Old macDonald have a farm 12345 very very well !!!!"); //51
       //Serial.flush();
@@ -436,41 +441,76 @@ void Go_To_Position(byte *pos)
 
     case 0x31: // Движение "Туда"
 
-        move_servo_together (ints, 4, 6);
-        delay(1000);
-        move_servo_together (ints, 1, 1);
-        delay(1000);
-        move_servo_together (ints, 3, 3);
-        delay(1000);
-        break;
-        
-    case 0x30: // Движение "Обратно"
+        if (pos[7]==0xE9)
+        {
+            move_servo_together (ints, 3, 6);
+            delay(1000);
+            move_servo_together (ints, 1, 1);
+            delay(1000);
+//            move_servo_together (ints, 3, 3);
+//            delay(1000);
 
-        move_servo_together (ints, 3, 3);
-        delay(1000);
-        move_servo_together (ints, 1, 1);
-        delay(1000);
-        move_servo_together (ints, 4, 6);
-        delay(1000);
-        break;
+        }
+
+        else {
+           move_servo_together (ints, 4, 6);
+           delay(1000);
+           move_servo_together (ints, 1, 1);
+           delay(1000);
+           move_servo_together (ints, 3, 3);
+           delay(1000);
+        }
+
+      break;
+
+          
+    case 0x30: // Движение "Обратно"
+          if (pos[7]==0xC8) 
+          {// Не последняя команда, то как обычно
+
+          move_servo_together (ints, 3, 3);
+          delay(1000);
+          move_servo_together (ints, 1, 1);
+          delay(1000);
+          move_servo_together (ints, 4, 6);
+          delay(1000);
+          }
+
+          if (pos[7]==0xDE)
+          {// Последняя команда, может быть и одиночой, но на случай работы с кубиком делаем так
+            
+          move_servo_together (ints, 3, 5);
+          delay(1000);
+          move_servo_together (ints, 1, 6);
+
+          }   
+     break; //case 0x30:
+
+
 
 
     default:
         message = "Wrong data !!!";
         Serial.println(message);
         //Serial.flush();
-    }
-
-
-    message = "Robot movement DONE! Total"; //26 bytes  //message += String(numBytes);
+        
+    }//switch (pos[6])
+    
+if (pos[7]==0xDE) {
+   message = "Robot movement DONE! LAST !!"; 
+  }
+  else {
+   message = "Robot movement DONE! Total!!"; //28 bytes  //message += String(numBytes);}
+  }
+    
    // message = "Robot movement DONE! I like to move it move it";
 //    byte mystrlen = message.length();
-//    while ( message.length() <=61){
-//        message += " ";//String(9);
-//        //byte a = 120;
-//    }
+
     //Serial.println(message);
-    Serial.write(message, 26)
+    //Serial.write(message, 28); //sizeof(message)
+
+    strcpy(buf, message.c_str());
+    Serial.print(buf);
    // Serial.flush();
-}
+}//Go_To_Position
 //+++++++++++++++++++++++++++++

@@ -16,6 +16,7 @@ HiWonder::HiWonder()
     memset(byInputBuffer, 0xEE, robot_buffer_SIZE); //sizeof(byInputBuffer)
     MOVEMENT_DONE = true;
     qbuf.resize (robot_buffer_SIZE);
+    memset(outputData, 0xDD, szData); //Инициализация массива с данными для отправки
 }
 //+++++++++++++++++
 HiWonder::~HiWonder()
@@ -58,12 +59,14 @@ void HiWonder::Open_Port_Slot(QString portname)
     int serial_error;
     QString stt;
 
-    serial.setPortName(portname);
+    serial.setPortName(portname); //portname == "ttyUSB0"
     OK = true;
    // OK = serial.open(QIODevice::ReadWrite);
     if (!serial.open(QIODevice::ReadWrite)) { OK = false; serial_error = serial.error(); this->Write_To_Log(0xFF00, "Error opening Serial port !!!");} //"Error opening Serial port !!!");}
     stt = QString::number (serial_error);
     this->Write_To_Log(0xFF00,stt);
+
+    // https://www.linuxhowtos.org/data/6/perror.txt
 //    if (!serial.open(QIODevice::ReadWrite)) {
 //        processError(tr("Can't open %1, error code %2")
 //                     .arg(serial.portName()).arg()));
@@ -74,7 +77,7 @@ void HiWonder::Open_Port_Slot(QString portname)
     serial.setParity(QSerialPort::NoParity);
     serial.setStopBits(QSerialPort::OneStop);
     serial.setFlowControl(QSerialPort::NoFlowControl);
-    QString str = "Serial port is opened";
+    QString str = "Serial port "; str += portname; str += " is opened";
     if (OK) this->Write_To_Log(0xFF00, str);
 
 }
@@ -85,11 +88,12 @@ void HiWonder::GoToPosition(QByteArray &position)//, const char *servo)
 //    int sz = position.size();
 //    if (sz > robot_buffer_SIZE) sz = robot_buffer_SIZE;
     this->MOVEMENT_DONE = false;
-   position.resize (7);
-   serial.waitForBytesWritten();
+   position.resize (szData);
    serial.write(position);
-   serial.flush(); // Пробуем очистить буфер совсем
    serial.waitForBytesWritten();
+
+   //serial.flush(); // Пробуем очистить буфер совсем
+ //  serial.waitForBytesWritten();
 
     // Для проверки
 //    str = "To Robot in hex: ";
@@ -99,14 +103,14 @@ void HiWonder::GoToPosition(QByteArray &position)//, const char *servo)
 
 //    void *const tmp = const_cast<char*>(servo);
 //    unsigned char* sData = static_cast<unsigned char*>(tmp);
-   unsigned char sData [7]= {0,0,0,0,0,0,0};
-   memcpy(&sData, position,7);
+   //unsigned char sData [7]= {0,0,0,0,0,0,0};
+   memcpy(&outputData, position,szData);
 
     str = "To Robot: ";
-    for (int i=0; i<= szData - 1; i++){
+    for (int i=0; i< szData; i++){
     //    str += QString::number(sData[i]);
         //str+= QString::number(position.at(i));
-        str+= QString::number(sData[i]);
+        str+= QString::number(outputData[i]);
         str+= ", ";
 
     }
@@ -150,10 +154,16 @@ void HiWonder::ReadFromSerial_Slot ()
 //        }
         str="DONE!";
         if (list_str.contains (str)) {this->MOVEMENT_DONE = true; this->Write_To_Log(0xF001, "Robot finished"); }
+        else this->Write_To_Log(0xF001, "Robot still running");
 
-
+        str="LAST";
+        if (list_str.contains (str)) {
+            this->MOVEMENT_DONE = true;
+            this->Write_To_Log(0xF001, "Robot finished complex command");
+            emit this->Moving_Done_Signal();
+        }
 
 //   if (this->MOVEMENT_DONE) this->Write_To_Log(0xF001, "Robot finished");
-//   else this->Write_To_Log(0xF001, "Robot still running");
+//
 
 }

@@ -45,8 +45,8 @@
   <widget class="QPushButton" name="clampButton">
    <property name="geometry">
     <rect>
-     <x>520</x>
-     <y>90</y>
+     <x>530</x>
+     <y>160</y>
      <width>89</width>
      <height>51</height>
     </rect>
@@ -71,10 +71,10 @@
   <widget class="QPushButton" name="stand_upButton">
    <property name="geometry">
     <rect>
-     <x>230</x>
-     <y>110</y>
-     <width>89</width>
-     <height>25</height>
+     <x>510</x>
+     <y>70</y>
+     <width>141</width>
+     <height>61</height>
     </rect>
    </property>
    <property name="text">
@@ -162,10 +162,10 @@
   <widget class="QPushButton" name="sitButton">
    <property name="geometry">
     <rect>
-     <x>120</x>
-     <y>110</y>
-     <width>89</width>
-     <height>25</height>
+     <x>20</x>
+     <y>80</y>
+     <width>131</width>
+     <height>51</height>
     </rect>
    </property>
    <property name="text">
@@ -189,9 +189,9 @@
    <property name="geometry">
     <rect>
      <x>680</x>
-     <y>110</y>
+     <y>64</y>
      <width>151</width>
-     <height>25</height>
+     <height>71</height>
     </rect>
    </property>
    <property name="text">

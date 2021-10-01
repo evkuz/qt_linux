@@ -16,7 +16,8 @@ SOURCES += \
     hiwonder.cpp \
     mcinfer.cpp \
     neuron.cpp \
-    robo_math.cpp
+    robo_math.cpp \
+
 
 HEADERS += \
     SocketClient.h \
