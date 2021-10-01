@@ -9,6 +9,7 @@
 #include <QSerialPortInfo>
 
 
+
 class HiWonder : public QObject
 {
     Q_OBJECT
@@ -33,6 +34,9 @@ public:
 
 
 
+    QList<QString> statuslst = { "wait", "init", "inprogress", "done" };
+    QString current_status;
+
     int writeTo(char *OutBuffer, int numbytes); // Запись данных из ПК в порт (роботу)
     int readFrom(char *buf_data, int buf_size); // Считывает данные из порта в ПК (от робота)
 
@@ -41,10 +45,18 @@ public:
 
     void GoToPosition(QByteArray &position); //, const char *servo Оправляет данные для новой позиции приводов в порт (Роботу)
 
+    void Write_Status(QByteArray &status);
 
+private:
+    //QString current_status;
+
+public:
+    QString GetCurrentStatus() { return this->current_status; }
+    void SetCurrentStatus(QString);
 
 signals:
     void Moving_Done_Signal();
+//    void StatusChangedSignal(QString);
 
 
 public slots:
