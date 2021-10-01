@@ -53,14 +53,14 @@
         <div class="col-wrapper">
           <h3>Vehicle camera</h3>
           <img src="http://localhost:5000/video_feed" width="550" height="412" id="vehicle_cam">
-          <div id="vehicle_status"></div>
+          <div id="vehicle_status" style="text-align:left;"></div>
         </div>
       </div>
       <div class="col-sm-6">
         <div class="col-wrapper">
           <h3>Manipulator camera</h3>
           <img src="http://localhost:5000/video_feed" width="550" height="412" id="manipulator_cam">
-          <div id="manipulator_status"></div>
+          <div id="manipulator_status" style="text-align:left;"></div>
         </div>
       </div>
     </div>
@@ -102,10 +102,6 @@
     "return_code": 0,
     "status": "wait"
   };
-
-  document.getElementById("vehicle_cam").src=iqrSupervisor.vehicleAddr+"/video_feed";
-  //document.getElementById("manipulator_cam").src=iqrSupervisor.manipulatorCameraAddr+"/video_feed";
-
 
   function httpGet(url) {
     return new Promise(function(resolve, reject) {
@@ -165,7 +161,7 @@
         statusElem = document.getElementById("manipulator_status");
         statusElem.innerHTML = "<div class='alert alert-warning'>" +
           "<p><strong>Current state:</strong>" + response.status + "</p>" +
-          "<p><strong>Comment:</strong>" + response.comment + new Date().getTime() + "</p></div>";
+          "<p><strong>Comment:</strong>" + response.comment + "</p></div>";
         manipulatorState.connection = true;
         manipulatorState.status = response.status;
       },
@@ -184,7 +180,7 @@
         statusElem = document.getElementById("vehicle_status");
         statusElem.innerHTML = "<div class='alert alert-warning'>" +
           "<p><strong>Current state:</strong>" + response.status + "</p>" +
-          "<p><strong>Comment:</strong>" + response.comment + new Date().getTime() + "</p></div>";
+          "<p><strong>Comment:</strong>" + response.comment + "</p></div>";
         vehicleState.connection = true;
         vehicleState.status = response.status;
       },
@@ -244,8 +240,9 @@
   // Region Manipulator Camera Updating
   // ------------------------------
   function manCameraTimeoutFunction(){
-    manCamElem = document.getElementById("manipulator_cam");
-    manCamElem.src=iqrSupervisor.manipulatorCameraAddr+"video_feed?random="+new Date().getTime();
+    document.getElementById("manipulator_cam").src=iqrSupervisor.manipulatorCameraAddr+"video_feed?random="+new Date().getTime();
+    document.getElementById("vehicle_cam").src=iqrSupervisor.vehicleAddr+"/video_feed?random="+new Date().getTime();
+    
     statusTimeoutId = setTimeout(
       manCameraTimeoutFunction,
       400
