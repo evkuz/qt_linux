@@ -12,7 +12,13 @@
  *
  * Камера детектит кубик и на тележке 2230, 490
  *
+ * Добавил слоты для сигналов quit(), deleteLater() для объекта класса QThread (было только для QSocketThread* tcpthread)
+ * Теперь их Аж 3.
  *
+ *  connect(tcpthread, SIGNAL(finished()), thread_A, SLOT(quit()));
+    connect(tcpthread, SIGNAL(finished()), tcpthread, SLOT(deleteLater()));
+    connect(thread_A, SIGNAL(finished()), thread_A, SLOT(deleteLater()));
+
  *
  * //++++++++++++++++++++++++++
  *
