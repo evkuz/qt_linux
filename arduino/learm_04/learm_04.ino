@@ -134,7 +134,7 @@ void get_all_servos(String when)
 void get_curr_delta (byte *pos)
 {
 
-  for (int i=0; i<=serv_number -1; i++)
+  for (int i=0; i<serv_number; i++)
   {
     if (current_s[i] > pos[i])
       {
@@ -441,23 +441,52 @@ void Go_To_Position(byte *pos)
 
     case 0x31: // Движение "Туда"
 
-        move_servo_together (ints, 4, 6);
-        delay(1000);
-        move_servo_together (ints, 1, 1);
-        delay(1000);
-        move_servo_together (ints, 3, 3);
-        delay(1000);
-        break;
-        
-    case 0x30: // Движение "Обратно"
+        if (pos[7]==0xE9)
+        {
+            move_servo_together (ints, 3, 6);
+            delay(1000);
+            move_servo_together (ints, 1, 1);
+            delay(1000);
+//            move_servo_together (ints, 3, 3);
+//            delay(1000);
 
-        move_servo_together (ints, 3, 3);
-        delay(1000);
-        move_servo_together (ints, 1, 1);
-        delay(1000);
-        move_servo_together (ints, 4, 6);
-        delay(1000);
-        break;
+        }
+
+        else {
+           move_servo_together (ints, 4, 6);
+           delay(1000);
+           move_servo_together (ints, 1, 1);
+           delay(1000);
+           move_servo_together (ints, 3, 3);
+           delay(1000);
+        }
+
+      break;
+
+          
+    case 0x30: // Движение "Обратно"
+          if (pos[7]==0xC8) 
+          {// Не последняя команда, то как обычно
+
+          move_servo_together (ints, 3, 3);
+          delay(1000);
+          move_servo_together (ints, 1, 1);
+          delay(1000);
+          move_servo_together (ints, 4, 6);
+          delay(1000);
+          }
+
+          if (pos[7]==0xDE)
+          {// Последняя команда, может быть и одиночой, но на случай работы с кубиком делаем так
+            
+          move_servo_together (ints, 3, 5);
+          delay(1000);
+          move_servo_together (ints, 1, 6);
+
+          }   
+     break; //case 0x30:
+
+
 
 
     default:
@@ -465,7 +494,7 @@ void Go_To_Position(byte *pos)
         Serial.println(message);
         //Serial.flush();
         
-    }//switch
+    }//switch (pos[6])
     
 if (pos[7]==0xDE) {
    message = "Robot movement DONE! LAST !!"; 

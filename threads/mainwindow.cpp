@@ -135,8 +135,8 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     //+++++++++++++++ ОТкрываем порт Open_Port_Signal(QString portname); ttyUSB0
-    emit Open_Port_Signal("ttyUSB0");
-    make_json_answer();
+    emit Open_Port_Signal("ttyUSB1");
+    //make_json_answer();
 
 
 
@@ -250,7 +250,7 @@ void MainWindow::on_stand_upButton_clicked()
     this->repaint();
     QByteArray dd = QByteArray::fromRawData(hwr_Start_position, 6);
     dd.append(0x30); // Движение "Обратно"
-  //  dd.append(LASTONE);
+    dd.append(LASTONE);
     Robot->GoToPosition(dd);//, hwr_Start_position
 
 //    GUI_Write_To_Log(0xff10, str);
@@ -610,24 +610,19 @@ if (DETECTED)
    this->repaint();
    this->update_Servos_from_LineEdits();
    this->send_Data(NOT_LAST);
+
    //+++++++++++++++++++++ 3 put the cube
+   // {60, 93, 100, 35, 145, 35};
    this->update_LineDits_from_position (put_position);
    this->repaint();
    update_Servos_from_LineEdits ();
    memcpy(dd.data(), Servos, 6);
    dd.insert(6, 0x31); // Движение "Туда"
-   this->send_Data(NOT_LAST);
+   this->send_Data(BEFORE_LAST); //0xE9, NOT_LAST ==C8
    //+++++++++++++++++++++ 4  Unclamp the gripper
    //on_clampButton_clicked();
    if (ui->servo_1_spinBox->value () > 0){ ui->servo_1_spinBox->setValue (0); Servos[0]=0;}
    else {ui->servo_1_spinBox->setValue (90); Servos[0]=90;}
-   this->send_Data(NOT_LAST);
-   //+++++++++++++++++++++++++++++++++ 5 Приподнять хват, чтобы не задеть тележку.
-   this->update_LineDits_from_position (after_put_position);
-   this->repaint();
-   update_Servos_from_LineEdits ();
-   memcpy(dd.data(), Servos, 6);
-   dd.insert(6, 0x31); // Движение "Туда"
    this->send_Data(NOT_LAST);
 
    //+++++++++++++++++++++ 6 go back to start position
@@ -635,7 +630,36 @@ if (DETECTED)
    this->update_LineDits_from_position(hwr_Start_position);
    this->repaint();
    this->update_Servos_from_LineEdits();
+   dd.insert(6, 0x30); // Движение "Обратно"
    this->send_Data(LASTONE); // The last command
+
+
+//   //+++++++++++++++++++++ 3 put the cube
+//   this->update_LineDits_from_position (put_position);
+//   this->repaint();
+//   update_Servos_from_LineEdits ();
+//   memcpy(dd.data(), Servos, 6);
+//   dd.insert(6, 0x31); // Движение "Туда"
+//   this->send_Data(NOT_LAST);
+//   //+++++++++++++++++++++ 4  Unclamp the gripper
+//   //on_clampButton_clicked();
+//   if (ui->servo_1_spinBox->value () > 0){ ui->servo_1_spinBox->setValue (0); Servos[0]=0;}
+//   else {ui->servo_1_spinBox->setValue (90); Servos[0]=90;}
+//   this->send_Data(NOT_LAST);
+//   //+++++++++++++++++++++++++++++++++ 5 Приподнять хват, чтобы не задеть тележку.
+//   this->update_LineDits_from_position (after_put_position);
+//   this->repaint();
+//   update_Servos_from_LineEdits ();
+//   memcpy(dd.data(), Servos, 6);
+//   dd.insert(6, 0x31); // Движение "Туда"
+//   this->send_Data(NOT_LAST);
+
+//   //+++++++++++++++++++++ 6 go back to start position
+//   //on_stand_upButton_clicked();
+//   this->update_LineDits_from_position(hwr_Start_position);
+//   this->repaint();
+//   this->update_Servos_from_LineEdits();
+//   this->send_Data(LASTONE); // The last command
 
   }// if (DETECTED)
 
@@ -853,15 +877,41 @@ void MainWindow::Moving_Done_Slot()
     }
 
 }
+//++++++++++++++++++++++++++
 
-void MainWindow::on_start_tcpButton_clicked()
-{
-    GUI_Write_To_Log(0xFAAA, "Thread Is going to be Start Here !!!");
-    thread_A->start();
-    GUI_Write_To_Log(0xFAAA, "Thread Started Here !!!");
-}
+
 //+++++++++++++++++
 void MainWindow::server_New_Connect_Slot()
 {
     ;
+}
+
+
+void MainWindow::on_getBackButton_clicked()
+{
+    QByteArray dd ;
+    dd.resize(parcel_size);
+
+    //+++++++++++++++++++++ 3 put the cube
+    // {60, 93, 100, 35, 145, 35};
+    this->update_LineDits_from_position (put_position);
+    this->repaint();
+    update_Servos_from_LineEdits ();
+    memcpy(dd.data(), Servos, 6);
+    dd.insert(6, 0x31); // Движение "Туда"
+    this->send_Data(BEFORE_LAST); //0xE9, NOT_LAST ==C8
+    //+++++++++++++++++++++ 4  Unclamp the gripper
+    //on_clampButton_clicked();
+    if (ui->servo_1_spinBox->value () > 0){ ui->servo_1_spinBox->setValue (0); Servos[0]=0;}
+    else {ui->servo_1_spinBox->setValue (90); Servos[0]=90;}
+    this->send_Data(NOT_LAST);
+
+    //+++++++++++++++++++++ 6 go back to start position
+    //on_stand_upButton_clicked();
+    this->update_LineDits_from_position(hwr_Start_position);
+    this->repaint();
+    this->update_Servos_from_LineEdits();
+    dd.insert(6, 0x30); // Движение "Обратно"
+    this->send_Data(LASTONE); // The last command
+
 }

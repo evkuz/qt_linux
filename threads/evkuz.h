@@ -5,6 +5,17 @@
 /*
  *  https://mayaposch.wordpress.com/2011/11/01/how-to-really-truly-use-qthreads-the-full-explanation/
  *
+ *
+ *  (threads:15185): GLib-ERROR **: Creating pipes for GWakeup: Too many open files
+ *
+ * 30.09.2021
+ *
+ * Камера детектит кубик и на тележке 2230, 490
+ *
+ *
+ *
+ * //++++++++++++++++++++++++++
+ *
  *  29.09.2021
  *  Фиксируем результат.
  *  Сработала передача данных(команда) из tcp сокета наверх роботу.

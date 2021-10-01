@@ -8,8 +8,9 @@ const char sit_down_position [6] = {93, 93, 93, 48, 48, 93} ; // Поза сид
 const char sit_45_position [6] = {93, 93, 5, 5, 10, 45};
 unsigned char train_position [6] = {0, 93, 78, 25, 145, 148}; // координаты : 301, 553,
 //unsigned char put_position [6] = {93, 93, 78, 25, 145, 45}; //60, 93, 100, 35, 145, 35
-unsigned char put_position [6] = {60, 93, 100, 35, 145, 35};
-unsigned char after_put_position [6] = {0, 93, 150, 45, 155, 35};
+unsigned char put_position [6] = {60, 93, 100, 40, 145, 35};
+                            //      60, 93, 100, 35, 145, 35
+unsigned char after_put_position [6] = {0, 93, 120, 45, 135, 35};
 
 /*
 quint8 horse_position [6] = [93, 93, 0, 48, 48, 93];

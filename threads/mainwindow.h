@@ -62,8 +62,10 @@ public:
 
 
 #define parcel_size 8
-#define NOT_LAST 0xC8 //200  // Не последняя команда
-#define LASTONE  0xDE //222  // Последняя команда роботу при комплексном движении
+#define NOT_LAST    0xC8 //200  // Не последняя команда
+#define LASTONE     0xDE //222  // Последняя команда роботу при комплексном движении
+#define BEFORE_LAST 0xE9 //233  // Предпоследняя команда - положить кубик на тележку.
+
     //int parcel_size; // размер посылки в байтах от ПК к роботу
 
     int X, Y;//Координаты x,y
@@ -142,9 +144,11 @@ private slots:
     void on_trainButton_clicked();
     void Moving_Done_Slot(); // ОБработка сигнала окончания движения
 
-    void on_start_tcpButton_clicked();
 
     void TakeAndPutSlot();
+
+
+    void on_getBackButton_clicked();
 
 signals:
     void Open_Port_Signal(QString portname); // Сигнал даем по нажатию кнопки "OPEN"
