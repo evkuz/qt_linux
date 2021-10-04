@@ -46,6 +46,7 @@ MainWindow::MainWindow(QWidget *parent)
     Robot = new HiWonder(); // Без этого будет "The program has unexpectedly finished", хотя в начале нговорила, что это ambiguous
 
     Robot->Log_File_Open(Log_File_Name);
+    Robot->Source_Points_File_Open (SOURCE_POINTS_FILE);
 
     QString str = "The application \"";  str +=target_name; str += "\"";
     Robot->Write_To_Log(0xf000, str.append(" is started successfully!!!\n"));
@@ -135,7 +136,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     //+++++++++++++++ ОТкрываем порт Open_Port_Signal(QString portname); ttyUSB0
-    emit Open_Port_Signal("ttyUSB1");
+    emit Open_Port_Signal("ttyUSB0");
     //make_json_answer();
 
 
@@ -914,4 +915,39 @@ void MainWindow::on_getBackButton_clicked()
     dd.insert(6, 0x30); // Движение "Обратно"
     this->send_Data(LASTONE); // The last command
 
+}
+
+void MainWindow::on_fixButton_clicked()
+{
+    int value = 0x4444;
+    DetectorState state;
+    QString str = "";
+
+    if (readSocket.GetState(&state) == 0)
+      {
+        if (state.isDetected){
+            try_mcinfer(state.objectX, state.objectY); // Тут меняем current_status = "inprogress". Команда 0 - Переместить открытый хват к кубику.
+            X = state.objectX;                        //  Хват открывается в процессе движения робота, а не отдельной командой.
+            Y = state.objectY;
+
+            str += QString::number(state.objectX);
+            str += ", ";
+            str += QString::number(state.objectY);
+            str += ", ";
+            DETECTED = true;
+
+        } else {
+            str += "NOT DETECTED";
+        }
+
+       std::cout <<  str.toStdString() << std::endl;
+       Robot->Write_To_Log(0xf014, str);
+       GUI_Write_To_Log(0xf014, str);
+    }
+
+
+
+
+    str += ui->All_Servos_lineEdit->text ();
+    Robot->Write_To_Source (value, str);
 }

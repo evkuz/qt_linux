@@ -150,6 +150,8 @@ private slots:
 
     void on_getBackButton_clicked();
 
+    void on_fixButton_clicked();
+
 signals:
     void Open_Port_Signal(QString portname); // Сигнал даем по нажатию кнопки "OPEN"
     void Pass_XY_Signal(int x_pix, int y_pix); //Сигнал по нажатию кнопки "Get_XY"

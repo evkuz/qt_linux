@@ -52,6 +52,7 @@ public:
     QPushButton *trainButton;
     QLabel *threadlabel;
     QPushButton *getBackButton;
+    QPushButton *fixButton;
 
     void setupUi(QWidget *MainWindow)
     {
@@ -114,7 +115,7 @@ public:
         getXYButton->setGeometry(QRect(750, 240, 151, 25));
         socketButton = new QPushButton(MainWindow);
         socketButton->setObjectName(QString::fromUtf8("socketButton"));
-        socketButton->setGeometry(QRect(680, 64, 151, 71));
+        socketButton->setGeometry(QRect(760, 140, 151, 71));
         servo_1_spinBox = new QSpinBox(MainWindow);
         servo_1_spinBox->setObjectName(QString::fromUtf8("servo_1_spinBox"));
         servo_1_spinBox->setGeometry(QRect(10, 300, 121, 61));
@@ -221,6 +222,13 @@ public:
         getBackButton = new QPushButton(MainWindow);
         getBackButton->setObjectName(QString::fromUtf8("getBackButton"));
         getBackButton->setGeometry(QRect(190, 80, 261, 101));
+        fixButton = new QPushButton(MainWindow);
+        fixButton->setObjectName(QString::fromUtf8("fixButton"));
+        fixButton->setGeometry(QRect(690, 30, 211, 91));
+        QFont font3;
+        font3.setPointSize(18);
+        font3.setItalic(true);
+        fixButton->setFont(font3);
 
         retranslateUi(MainWindow);
 
@@ -248,6 +256,7 @@ public:
         trainButton->setText(QCoreApplication::translate("MainWindow", "TRAIN", nullptr));
         threadlabel->setText(QCoreApplication::translate("MainWindow", "0", nullptr));
         getBackButton->setText(QCoreApplication::translate("MainWindow", "GetBack", nullptr));
+        fixButton->setText(QCoreApplication::translate("MainWindow", "Fix Data", nullptr));
     } // retranslateUi
 
 };

@@ -52,7 +52,7 @@ void MainWindow::try_mcinfer(int x, int y){
     //on_set_posButton_clicked();
 
 //    this->update_Servos_from_LineEdits();
-    send_Data (NOT_LAST);
+//    send_Data (NOT_LAST);
 
 
     str = "Mcinfer Data : ";

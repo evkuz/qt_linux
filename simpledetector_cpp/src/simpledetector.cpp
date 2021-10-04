@@ -291,10 +291,10 @@ void DrawCalibration(Mat& frame){
 void DrawCameraMarks(Mat& frame){
 	int step = 50;
 
-	cv::Point p1(55, 53);
-	cv::Point p2(frame.cols - 53, 57);
-	cv::Point p3(54, frame.rows - 501);
-	cv::Point p4(frame.cols - 48, frame.rows - 502);
+	cv::Point p1(95, 31);
+	cv::Point p2(frame.cols - 66, 56);
+	cv::Point p3(91, frame.rows - 549);
+	cv::Point p4(frame.cols - 74, frame.rows - 528);
 
 
 	cv::drawMarker(frame, p1,  cv::Scalar(0, 0, 0), MARKER_CROSS, 20, 2);
