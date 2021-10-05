@@ -48,11 +48,11 @@ void MainWindow::try_mcinfer(int x, int y){
     this->repaint();
 
     Robot->current_status = "inprogress";
-    // Неправильно, влияет на статус !!!
+    // Неправильно, так не делать !!! влияет на статус !!!
     //on_set_posButton_clicked();
 
 //    this->update_Servos_from_LineEdits();
-//    send_Data (NOT_LAST);
+    send_Data (NOT_LAST);
 
 
     str = "Mcinfer Data : ";

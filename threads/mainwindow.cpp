@@ -570,7 +570,7 @@ void MainWindow::on_trainButton_clicked()
 //    if (ui->servo_1_lineEdit->text().toInt() > 0){ ui->servo_1_lineEdit->setText("0"); Servos[0]=0;}
 //    else {ui->servo_1_lineEdit->setText("160"); Servos[0]=160;}
     Servos[0]=0;
-    update_LineDits_from_servos();
+  //  update_LineDits_from_servos();
 
     if (readSocket.GetState(&state) == 0)
       {
@@ -799,11 +799,17 @@ void MainWindow::Info_2_Log_Slot(QString message)
 
    if (substr == "status") {
        //str = Robot->GetCurrentStatus ();
-       str = Robot->current_status;
+     //  str = Robot->current_status;
        //str = "status_from_robot";
       // str="Абырвалг";
-       make_json_answer ();
-       emit Write_2_Client_Signal (this->rAnswer);
+
+       //make_json_answer (); // Формируем ответ в переменной rAnswer
+       //emit Write_2_Client_Signal (this->rAnswer);
+      // str  = "{\n\t\"status\":\"";
+       str = Robot->current_status;
+     //  str += "\"\n}";
+
+       emit Write_2_Client_Signal (str);
    }
 
 }

@@ -35,8 +35,11 @@
 
 
 //#include "model/new_5_min.h"
-#include "model/new_5_min_BP.h"
+//#include "model/new_5_min_BP.h"
 //#include "model/model3.h"
+//#include "model/new_05_10.h"
+#include "model/new2_05_10.h"
+
 //+++++++++++++++++ Вспомогательные переменные
 
 float in[3] = {0,0,0}; //массив для ввода
