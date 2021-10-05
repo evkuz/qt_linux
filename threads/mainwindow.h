@@ -60,6 +60,8 @@ public:
     QThread   *thread_A, *thread_B, *thread_F;
     int thread_counter ;
 
+    QString rAnswer; // Ответ робота - статус, return_code, etc
+
 
 #define parcel_size 8
 #define NOT_LAST    0xC8 //200  // Не последняя команда

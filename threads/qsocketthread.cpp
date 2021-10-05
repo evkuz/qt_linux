@@ -85,9 +85,9 @@ void QSocketThread::Data_2_Client_Slot(QString data)
     response += "content-type: application/json\r\n";
     response += "Access-Control-Allow-Origin: *\r\n";
     response += "\r\n";
-    response += "{\n\t\"status\":\"";
+//    response += "{\n\t\"status\":\"";
     response += data2Client;
-    response += "\"\n}";
+//    response += "\"\n}";
 
     socket->write(response.toUtf8());
 

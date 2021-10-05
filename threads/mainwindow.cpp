@@ -454,6 +454,8 @@ void MainWindow::on_getXYButton_clicked()
 //            str += "NOT DETECTED";
 //        }
 //      }//if (readSocket.GetState(&state) == 0)
+
+    /*
       GUI_Write_To_Log(0xf233, "Have got X,Y ");
       X = 500; Y=500;
       str += QString::number(X); str += ", ";
@@ -468,6 +470,10 @@ void MainWindow::on_getXYButton_clicked()
       ui->All_Servos_lineEdit->setText(str);
       GUI_Write_To_Log(0xf233, "No go to Kinematic !");
       emit FW_Kinemaic_Signal(48, 25, 133, RMath->el1, RMath->el2, RMath->el3 ); //1190, 356
+*/
+
+    str = "sdklfjlk";
+    make_json_answer();
 
 }
 //++++++++++++++++++++++void Return_XY_Slot(float EL)
@@ -690,14 +696,34 @@ void MainWindow::send_Data(unsigned char thelast)
 void MainWindow::make_json_answer()
 {
   int value = 0x1111;
-  QString jsn_str = "{"; jsn_str += "\"status\":";
+  QString jsn_str = "{";
+  jsn_str += "\r\n";
+  jsn_str += "\"status\":";
   jsn_str += "\"";
   jsn_str += Robot->current_status;
-  jsn_str += "\",";
+  jsn_str += "\","; jsn_str += "\r\n";
+  jsn_str += "\"return_code\":";
+  jsn_str += "\"";
+  jsn_str +="0";
+  jsn_str += "\","; jsn_str += "\r\n";
+  jsn_str += "\"active_command\":";
+  jsn_str += "\"";
+  jsn_str +="TheCommand";
+
+  jsn_str += "\","; jsn_str += "\r\n";
+  jsn_str += "\"comment\":";
+  jsn_str += "\"";
+  jsn_str +="Some helpful data";
+  jsn_str += "\"";
+  jsn_str += "\r\n";
+  jsn_str += "}";
 
   QString str = "Строка ответа в формате json :\n";
   str += jsn_str;
   GUI_Write_To_Log(value, str);
+
+  // Строку подготовили, отправляем в TcpServer
+ this->rAnswer = jsn_str;
  }
 
 //++++++++++++++++++++++++++
@@ -775,7 +801,9 @@ void MainWindow::Info_2_Log_Slot(QString message)
        //str = Robot->GetCurrentStatus ();
        str = Robot->current_status;
        //str = "status_from_robot";
-       emit Write_2_Client_Signal (str);
+      // str="Абырвалг";
+       make_json_answer ();
+       emit Write_2_Client_Signal (this->rAnswer);
    }
 
 }

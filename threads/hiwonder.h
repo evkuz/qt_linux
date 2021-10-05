@@ -36,7 +36,11 @@ public:
 
 
     QList<QString> statuslst = { "wait", "init", "inprogress", "done" };
-    QString current_status;
+    // Ответ робота состоит из 4 полей
+    QString current_status; // Текущий статус
+    QString return_code;    // результат обработки запроса - понял/не понял
+    QString active_command; // команда, которая сейчас исполняется
+    QString comment;        // любые дополнительные данные
 
     int writeTo(char *OutBuffer, int numbytes); // Запись данных из ПК в порт (роботу)
     int readFrom(char *buf_data, int buf_size); // Считывает данные из порта в ПК (от робота)
