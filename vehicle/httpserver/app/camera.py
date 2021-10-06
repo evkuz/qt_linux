@@ -10,7 +10,7 @@ class Camera(object):
         self.port = camPort
         self.FrameWidth = width
         self.FrameHeight = height
-        self.__actualFrame = None
+        self.__actualFrameBytes = None
         self.__thread = None
         self.__cap = cv2.VideoCapture()
         self.__isWorking = False
@@ -66,16 +66,7 @@ class Camera(object):
         
         self.__waitForFrame.wait()
         self.__waitForFrame.clear()
-        frame = self.__actualFrame.copy()
-        # cv2.putText(
-        #     frame,
-        #     f"time={Camera.last_access}",
-        #  			(100, 20),
-        #     cv2.FONT_HERSHEY_COMPLEX,
-        #     0.5,
-        #     (0, 0, 0),
-        #     1
-        # )
+        frame = self.__actualFrameBytes
         Camera.last_access = time.time()
         return frame
 
@@ -85,7 +76,8 @@ class Camera(object):
 
         while self.__isWorking:
             _, frame = self.__cap.read()
-            self.__actualFrame = frame.copy()
+            (flag, encodedImage) = cv2.imencode(".jpeg", frame)
+            self.__actualFrameBytes = encodedImage
             self.__waitForFrame.set()
             time.sleep(0)
             #the last 5 seconds stop the thread

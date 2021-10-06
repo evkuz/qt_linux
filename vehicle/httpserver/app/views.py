@@ -1,19 +1,21 @@
 from app import app
 from flask import render_template, request, jsonify
 from flask.wrappers import Response
-import cv2
+
 from .camera import Camera
+#from .ROSCamera import ROSCamera
+from .test_camera import TestCamera
 from . import robot_api
 
-activeCamera = Camera(app.config['CAMERA_NUM'])
+activeCamera = TestCamera()
+#activeCamera = Camera(app.config['CAMERA_NUM'])
 robotApi = robot_api.RobotApi()
 
 def gen(camera):
     while True:
-        frame = camera.get_frame()
-        (flag, encodedImage) = cv2.imencode(".jpeg", frame)
+        frame = bytearray(camera.get_frame())
         yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + encodedImage.tobytes() + b'\r\n')
+               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
 
 @app.route('/')

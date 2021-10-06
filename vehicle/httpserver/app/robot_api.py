@@ -56,7 +56,7 @@ class RobotApi(object):
     def __thread_work(self):
         print("TEST MSG: MOVE ROBOT")
         
-        time.sleep(1)
+        time.sleep(0.2)
 
         self.__status.status = "inprogress"
 
