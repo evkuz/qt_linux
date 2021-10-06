@@ -17,12 +17,15 @@ void QSimpleServer::incomingConnection(qintptr sDescriptor)
     // Создание объекта потока QObject
     thread_A = new QThread;
     //Создание объекта потока для сокета
-    QSocketThread* thread = new QSocketThread(sDescriptor);
-    //Соединение сигнала завершения потока с слотом отложенного удаления
-    connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
-    connect(thread_A, SIGNAL(started()), thread, SLOT(process_TheSocket()),Qt::QueuedConnection);
+    tcpthread = new QSocketThread(sDescriptor);
 
-    thread->moveToThread(thread_A);
+    //Соединение сигнала завершения потока с слотом отложенного удаления
+    connect(tcpthread, SIGNAL(finished()), thread_A, SLOT(quit()));
+    connect(tcpthread, SIGNAL(finished()), tcpthread, SLOT(deleteLater()));
+    connect(thread_A, SIGNAL(started()), tcpthread, SLOT(process_TheSocket()),Qt::QueuedConnection);
+    connect(thread_A, SIGNAL(finished()), thread_A, SLOT(deleteLater()));
+
+    tcpthread->moveToThread(thread_A);
     //Запуск потока
     thread_A->start();
 }
