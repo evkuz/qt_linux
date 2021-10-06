@@ -43,10 +43,17 @@ void MainWindow::try_mcinfer(int x, int y){
         Robot->Write_To_Log(0xf020, str.append(" \n"));
 
 
+    // Значения серво уже пришли из нейронки
     this->update_LineDits_from_servos();
     this->repaint();
 
-    on_set_posButton_clicked();
+    Robot->current_status = "inprogress";
+    // Неправильно, влияет на статус !!!
+    //on_set_posButton_clicked();
+
+//    this->update_Servos_from_LineEdits();
+    send_Data (NOT_LAST);
+
 
     str = "Mcinfer Data : ";
     str += QString::number(x); str+= ", ";

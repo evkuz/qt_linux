@@ -62,8 +62,10 @@ public:
 
 
 #define parcel_size 8
-#define NOT_LAST 0xC8 //200  // Не последняя команда
-#define LASTONE  0xDE //222  // Последняя команда роботу при комплексном движении
+#define NOT_LAST    0xC8 //200  // Не последняя команда
+#define LASTONE     0xDE //222  // Последняя команда роботу при комплексном движении
+#define BEFORE_LAST 0xE9 //233  // Предпоследняя команда - положить кубик на тележку.
+
     //int parcel_size; // размер посылки в байтах от ПК к роботу
 
     int X, Y;//Координаты x,y
@@ -80,6 +82,7 @@ public:
     void update_LineDits_from_position(unsigned char *pos);
     void update_Servos_from_LineEdits(void);
     void send_Data(unsigned char thelast);
+    void make_json_answer();   // подготовка json-строки с полями ответа в TCP сокет.
 
 
 private:
@@ -141,16 +144,18 @@ private slots:
     void on_trainButton_clicked();
     void Moving_Done_Slot(); // ОБработка сигнала окончания движения
 
-    void on_start_tcpButton_clicked();
 
     void TakeAndPutSlot();
+
+
+    void on_getBackButton_clicked();
 
 signals:
     void Open_Port_Signal(QString portname); // Сигнал даем по нажатию кнопки "OPEN"
     void Pass_XY_Signal(int x_pix, int y_pix); //Сигнал по нажатию кнопки "Get_XY"
     void FW_Kinemaic_Signal(int S3, int S4, int S5, int l1, int l2, int l3); // Углы приводов, длины соответствующих звеньев.
-    void Write_2_Client_Signal(QString); // Сигнал вебсерверу, чтобы отправлял данные.
-    void StartTakeAndPutSignal();
+    void Write_2_Client_Signal(QString); // Сигнал вебсерверу, - пересылка данных в сокет на отправку.
+//    void StartTakeAndPutSignal();
 
 private:
     Ui::MainWindow *ui;

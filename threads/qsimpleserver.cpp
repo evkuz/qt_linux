@@ -4,7 +4,7 @@ QSimpleServer::QSimpleServer(QObject *parent) :
     QTcpServer(parent)
 {
     //Включает прослушивание сервером 80 порта
-    if(listen(QHostAddress::LocalHost, tcpport)){
+    if(listen(QHostAddress::AnyIPv4, tcpport)){
         qDebug() << "Listening...";
     //current_status = "wait";
 
@@ -20,10 +20,15 @@ void QSimpleServer::incomingConnection(qintptr sDescriptor)
     thread_A = new QThread;
     //Создание объекта потока для сокета
     QSocketThread* tcpthread = new QSocketThread(sDescriptor);
+
+    tcpthread->moveToThread(thread_A);
+
     //Соединение сигнала завершения потока с слотом отложенного удаления
+    connect(tcpthread, SIGNAL(finished()), thread_A, SLOT(quit()));
     connect(tcpthread, SIGNAL(finished()), tcpthread, SLOT(deleteLater()));
     connect(thread_A, SIGNAL(started()), tcpthread, SLOT(process_TheSocket()),Qt::QueuedConnection);
-    tcpthread->moveToThread(thread_A);
+    connect(thread_A, SIGNAL(finished()), thread_A, SLOT(deleteLater()));
+
 
     connect(tcpthread, &QSocketThread::Command_4_Parsing_Signal, this, &QSimpleServer::Command_4_Parsing_Slot);
     connect(this, &QSimpleServer::Data_2_Client_Signal, tcpthread, &QSocketThread::Data_2_Client_Slot);

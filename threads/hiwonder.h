@@ -56,7 +56,7 @@ public:
 
 signals:
     void Moving_Done_Signal();
-    void StatusChangedSignal(QString);
+//    void StatusChangedSignal(QString);
 
 
 public slots:
