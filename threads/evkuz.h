@@ -9,6 +9,14 @@
  *  (threads:15185): GLib-ERROR **: Creating pipes for GWakeup: Too many open files
  *
  *
+ * //++++++++++++++++++++++++++++++++++++++++++++
+ * 06.10.2021
+ * Начал создавать Блок-схему работы ПО для манипулятора.
+ * Файл threads/Software_Scheme_HiWionder.odg
+ * Наиболее интересно - организация работы
+ * И, соответственно, передача информации "Сверху вниз", т.е. MainWindow--->QTcpServer--->QTcpSocket
+ * и "Снизу вверх",                                      т.е. QTcpSocket--->QTcpServer--->MainWindow
+ *
  *
  * //++++++++++++++++++++++++++++++++++++++++++++
  * 05.10.2021
