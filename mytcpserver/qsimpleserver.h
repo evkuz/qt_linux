@@ -17,8 +17,9 @@ public:
     explicit QSimpleServer(QObject *parent = nullptr);
     QThread   *thread_A;
     QSocketThread *tcpthread;
-    //QThread workerThread;
-    //Метод, вызываемый при подключении нового соединения
+
+    // Метод, вызываемый при подключении нового соединения
+    // Переопределяем его
     void incomingConnection(qintptr sDescriptor) override;
 
 signals:
