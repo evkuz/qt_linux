@@ -20,9 +20,9 @@
     vehicleAddr: "http://192.168.1.98:5000/",
     //manipulatorAddr: "http://192.168.1.41:8384",
     //manipulatorAddr: "http://159.93.44.84:8383/",
-    //manipulatorCameraAddr: "http://159.93.44.84:5555/",
-    manipulatorAddr: "http://192.168.1.39:8383/",
-    manipulatorCameraAddr: "http://192.168.1.39:5555/",
+    manipulatorCameraAddr: "http://159.93.44.84:5555/",
+    manipulatorAddr: "http://192.168.1.175:8383/",
+    //manipulatorCameraAddr: "http://192.168.1.175:5555/",
 
     updateStateInterval: 500,
     tpInterval: 500
@@ -55,7 +55,6 @@
       <div class="col-sm-6">
         <div class="col-wrapper">
           <h3>Vehicle camera</h3>
-          <img src="http://localhost:5000/video_feed" width="550" height="412" id="vehicle_cam">
           <div id="vehicle_status" style="text-align:left;"></div>
         </div>
       </div>
@@ -244,7 +243,7 @@
   // ------------------------------
   function manCameraTimeoutFunction(){
     document.getElementById("manipulator_cam").src=iqrSupervisor.manipulatorCameraAddr+"video_feed?random="+new Date().getTime();
-    document.getElementById("vehicle_cam").src=iqrSupervisor.vehicleAddr+"/video_feed?random="+new Date().getTime();
+    //document.getElementById("vehicle_cam").src=iqrSupervisor.vehicleAddr+"/video_feed?random="+new Date().getTime();
     
     statusTimeoutId = setTimeout(
       manCameraTimeoutFunction,

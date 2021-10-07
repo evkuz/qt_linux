@@ -18,6 +18,12 @@ class QSimpleServer : public QTcpServer
 public:
     //Конструктор
     explicit QSimpleServer(QObject *parent = nullptr);
+
+    // http://localhost:8383/run?cmd=status&
+    // http://192.168.1.175:8383/run?cmd=status&
+#define  wifi_ADDRESS "192.168.1.175"
+#define  ipv4_ADDRESS "159.93.84.44"
+
     QThread   *thread_A;
     QSocketThread *tcpthread;
     quint16 tcpport = 8383;  // Порт, который слушает QTcpServer

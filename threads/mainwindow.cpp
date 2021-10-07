@@ -53,7 +53,11 @@ MainWindow::MainWindow(QWidget *parent)
 
     TheWeb = new WebServer(); //
     GUI_Write_To_Log(0000, "Going to Start QTcpSErver");
-    if (server.isListening ()) {str = "Listening on port "; str += QString::number(server.tcpport);
+    if (server.isListening ()) {
+
+        str = "Listening on address "; str += server.serverAddress().toString();
+        str += " and port "; str += QString::number(server.serverPort());//QString::number(server.tcpport);
+
         GUI_Write_To_Log(0000, str);
     }
     //QSimpleServer server;
@@ -472,8 +476,17 @@ void MainWindow::on_getXYButton_clicked()
       emit FW_Kinemaic_Signal(48, 25, 133, RMath->el1, RMath->el2, RMath->el3 ); //1190, 356
 */
 
-    str = "sdklfjlk";
+   // str = "sdklfjlk";
     make_json_answer();
+
+    if (server.isListening ()) {
+
+        str = "Listening on address "; str += server.serverAddress().toString();
+        str += " and port "; str += QString::number(server.serverPort());//QString::number(server.tcpport);
+
+        GUI_Write_To_Log(0000, str);
+    }
+
 
 }
 //++++++++++++++++++++++void Return_XY_Slot(float EL)

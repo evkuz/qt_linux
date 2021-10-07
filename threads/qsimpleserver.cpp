@@ -3,7 +3,14 @@
 QSimpleServer::QSimpleServer(QObject *parent) :
     QTcpServer(parent)
 {
-    //Включает прослушивание сервером 80 порта
+    //Включает прослушивание сервером 8383 порта
+    // server.listen(QHostAddress("127.0.0.1"),8888);
+    // {
+    // QHostAddress adr;
+    // adr.setAddress("192.168.1.175");
+    // if(listen(adr, tcpport)){
+    // Так не слушает даже localhost, а только указанный ip
+    // if(listen(QHostAddress("192.168.1.175"), tcpport))
     if(listen(QHostAddress::AnyIPv4, tcpport)){
         qDebug() << "Listening...";
     //current_status = "wait";
