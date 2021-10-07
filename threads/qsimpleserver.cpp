@@ -30,7 +30,7 @@ void QSimpleServer::incomingConnection(qintptr sDescriptor)
 
     tcpthread->moveToThread(thread_A);
 
-    //Соединение сигнала завершения потока с слотом отложенного удаления
+    //Соединение сигнала завершения потока со слотом отложенного удаления
     connect(tcpthread, SIGNAL(finished()), thread_A, SLOT(quit()));
     connect(tcpthread, SIGNAL(finished()), tcpthread, SLOT(deleteLater()));
     connect(thread_A, SIGNAL(started()), tcpthread, SLOT(process_TheSocket()),Qt::QueuedConnection);
