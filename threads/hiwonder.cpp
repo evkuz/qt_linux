@@ -35,8 +35,8 @@ void HiWonder::Log_File_Open(QString lname)
 
 void HiWonder::Source_Points_File_Open(QString fname)
 {
-    SourceFile.setFileName(fname);
-    SourceFile.open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text);
+    SourceFile.setFileName(fname);         //QIODevice::Truncate
+    SourceFile.open(QIODevice::ReadWrite | QIODevice::Append | QIODevice::Text);
 
 }
 //++++++++++++++++++++++++++++++

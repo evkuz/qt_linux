@@ -53,6 +53,7 @@ public:
     QLabel *threadlabel;
     QPushButton *getBackButton;
     QPushButton *fixButton;
+    QPushButton *PUTButton;
 
     void setupUi(QWidget *MainWindow)
     {
@@ -229,6 +230,10 @@ public:
         font3.setPointSize(18);
         font3.setItalic(true);
         fixButton->setFont(font3);
+        PUTButton = new QPushButton(MainWindow);
+        PUTButton->setObjectName(QString::fromUtf8("PUTButton"));
+        PUTButton->setGeometry(QRect(620, 140, 99, 121));
+        PUTButton->setFont(font3);
 
         retranslateUi(MainWindow);
 
@@ -257,6 +262,7 @@ public:
         threadlabel->setText(QCoreApplication::translate("MainWindow", "0", nullptr));
         getBackButton->setText(QCoreApplication::translate("MainWindow", "GetBack", nullptr));
         fixButton->setText(QCoreApplication::translate("MainWindow", "Fix Data", nullptr));
+        PUTButton->setText(QCoreApplication::translate("MainWindow", "PUT", nullptr));
     } // retranslateUi
 
 };

@@ -41,7 +41,7 @@ void MainWindow::try_mcinfer(int x, int y){
         }
 
         Robot->Write_To_Log(0xf020, str.append(" \n"));
-
+//494, 796
 
     // Значения серво уже пришли из нейронки
     this->update_LineDits_from_servos();

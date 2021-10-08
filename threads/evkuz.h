@@ -9,11 +9,17 @@
  *  (threads:15185): GLib-ERROR **: Creating pipes for GWakeup: Too many open files
  *
  * //++++++++++++++++++++++++++++++++++++++++++++
+ * Путь к Supervisor-у
+ * file:///home/ubuntu/iqr_lit/supervisor/index.html
+ *
+ *
+ * //++++++++++++++++++++++++++++++++++++++++++++
  * 07.10.2021
  * Если настроить  QTcpServer на слушание любого ipv4 адреса, т.е. listen(QHostAddress::AnyIPv4, tcpport))
  * То QTcpServer::serverAddress() выдает "0.0.0.0".
  * А если настроить на специфичный адрес, то только его и будет слушать, т.е. даже localhost может не отзываться.
  *
+ * Координаты вечером 692, 573
  *
  * //++++++++++++++++++++++++++++++++++++++++++++
  * 06.10.2021

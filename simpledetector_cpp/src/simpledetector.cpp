@@ -362,10 +362,11 @@ int main(int argc, char* argv[])
 	Miksarus::ParseProgramOptions(argc, argv, options_list);
 	
 	// getting my IP
-	char ip_addr[80];
-	if (get_my_ip(ip_addr) != 0) {
-		return -1;
-	}
+    //char ip_addr[80];
+    //if (get_my_ip(ip_addr) != 0) {
+    //	return -1;
+    //}
+    const char* ip_addr = "192.168.1.175";
 
 	VideoCapture capture;
 	capture.open(cameraId);

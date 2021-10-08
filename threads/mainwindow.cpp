@@ -644,6 +644,16 @@ if (DETECTED)
    if (ui->servo_1_spinBox->value () > 0){ ui->servo_1_spinBox->setValue (0); Servos[0]=0;}
    else {ui->servo_1_spinBox->setValue (90); Servos[0]=90;}
    this->send_Data(NOT_LAST);
+   //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+      //+++++++++++++++++++++++++++++++++ 5 Приподнять хват, чтобы не задеть тележку.
+      this->update_LineDits_from_position (after_put_position);
+      this->repaint();
+      update_Servos_from_LineEdits ();
+      memcpy(dd.data(), Servos, 6);
+      dd.insert(6, 0x30); // Движение "Туда"
+      this->send_Data(AFTER_PUT);
+
+
 
    //+++++++++++++++++++++ 6 go back to start position
    //on_stand_upButton_clicked();
@@ -970,6 +980,7 @@ void MainWindow::on_fixButton_clicked()
     DetectorState state;
     QString str = "";
 
+    Servos[0] = 0;
     if (readSocket.GetState(&state) == 0)
       {
         if (state.isDetected){
@@ -997,4 +1008,31 @@ void MainWindow::on_fixButton_clicked()
 
     str += ui->All_Servos_lineEdit->text ();
     Robot->Write_To_Source (value, str);
+}
+
+void MainWindow::on_PUTButton_clicked()
+{
+    QByteArray dd;
+    //+++++++++++++++++++++ 3 put the cube
+    // {60, 93, 100, 35, 145, 35};
+    this->update_LineDits_from_position (put_position);
+    this->repaint();
+    update_Servos_from_LineEdits ();
+    memcpy(dd.data(), Servos, 6);
+    dd.insert(6, 0x31); // Движение "Туда"
+    this->send_Data(BEFORE_LAST); //0xE9, NOT_LAST ==C8
+    //+++++++++++++++++++++ 4  Unclamp the gripper
+    //on_clampButton_clicked();
+    if (ui->servo_1_spinBox->value () > 0){ ui->servo_1_spinBox->setValue (0); Servos[0]=0;}
+    else {ui->servo_1_spinBox->setValue (90); Servos[0]=90;}
+    this->send_Data(NOT_LAST);
+
+    //+++++++++++++++++++++ 6 go back to start position
+    //on_stand_upButton_clicked();
+    this->update_LineDits_from_position(hwr_Start_position);
+    this->repaint();
+    this->update_Servos_from_LineEdits();
+    dd.insert(6, 0x30); // Движение "Обратно"
+    this->send_Data(LASTONE); // The last command
+
 }

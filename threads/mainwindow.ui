@@ -484,6 +484,25 @@ QSpinBox::up-button{
     <string>Fix Data</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="PUTButton">
+   <property name="geometry">
+    <rect>
+     <x>620</x>
+     <y>140</y>
+     <width>99</width>
+     <height>121</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>18</pointsize>
+     <italic>true</italic>
+    </font>
+   </property>
+   <property name="text">
+    <string>PUT</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

@@ -67,6 +67,7 @@ public:
 #define NOT_LAST    0xC8 //200  // Не последняя команда
 #define LASTONE     0xDE //222  // Последняя команда роботу при комплексном движении
 #define BEFORE_LAST 0xE9 //233  // Предпоследняя команда - положить кубик на тележку.
+#define AFTER_PUT   0xF4 //244  Кубик на тележку положили, теперь грамотно убираем манипулятор.
 
     //int parcel_size; // размер посылки в байтах от ПК к роботу
 
@@ -153,6 +154,8 @@ private slots:
     void on_getBackButton_clicked();
 
     void on_fixButton_clicked();
+
+    void on_PUTButton_clicked();
 
 signals:
     void Open_Port_Signal(QString portname); // Сигнал даем по нажатию кнопки "OPEN"
