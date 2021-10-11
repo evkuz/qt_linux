@@ -40,69 +40,56 @@ class SerialCommunication:
         self.__sp = serial.Serial()
         self.__sp.port = port
         self.__sp.baudrate = baudrate
-        self.__thread = None
-        self.__isWorking = False
-        self.__isFinished = False
+        self.__isOpened = False
+        self.__currentState = (0, 0, 0, 0, 0)
 
     def set_port(self, port_name):
         wasOpened = False
-        if self.__thread:
-            self.stop_communication();
+        if self.__isOpened:
+            self.close_device()
             wasOpened = True
 
         self.__sp.port = port_name
         if wasOpened:
-            self.start_communication()
+            self.open_device()
 
-    @property
-    def isFinished(self):
-        self.last_access = time.time()
-        return self.__isFinished
+    def get_state(self):
+        self.__write_message("s\n")
+        self.__currentState = self.__read_state()
+        return self.__currentState
 
-    def start_communication(self):
-        self.last_access = time.time()
-        if self.__thread is not None:
-            return
-        self.__thread = threading.Thread(target=self.__thread_work)
-        self.__thread.start()
-        time.sleep(0.05)
+    def open_device(self):
+        if not self.__isOpened:
+            self.__sp.open()
+            time.sleep(0.5)
+            self.__isOpened = True
 
-    def stop_communication(self):
-        if self.__thread is not None:
-            self.__isWorking = False
-            self.__thread.join()
+    def close_device(self):
+        if self.__isOpened:
+            self.__sp.close()
+            self.__isOpened = False
 
-    def __thread_work(self):
-        self.__isWorking = True
-        self.__sp.open()
+    def send_command(self, pos1:int, pos2:int, pos3:int, pos4:int):
+        msg = f"m {pos1:03d} {pos2:03d} {pos3:03d} {pos4:03d}\n"
+        self.__write_message(msg)
+        self.__currentState = self.__read_state()
+        return self.__currentState
 
-        while self.__isWorking:
-            self.__isFinished = self.__get_is_finished()
-            time.sleep(0.05)
-            #the last 5 seconds stop the thread
-            if time.time() - self.last_access > 5:
-                break
-
-        self.__sp.close()
-        self.__thread = None
-        self.__isWorking = False
-
-
-    def send_command(self, x:int, y:int, dist:int):
-        self.start_communication()
-
-        if x >= 640:
-            x = 639
-
-        if y >= 480:
-            y = 479
-        
-        msg = f"{x:04d} {y:04d} {dist:04d}\n"
+    def __write_message(self, msg):
+        if not self.__isOpened:
+            raise RuntimeError("Device not opened!")
         self.__sp.write(msg.encode("utf-8"))
 
-    def __get_is_finished(self):
-        ans = self.__sp.read(3)
-        return True if ans[0] == 49 else False
+    def __read_state(self):
+        if not self.__isOpened:
+            raise RuntimeError("Device not opened!")
+
+        line = self.__sp.readline()#str(, "utf-8")
+        res = line.decode("utf-8").split('\t')
+        if len(res) == 5:
+            return (int(res[0]), int(res[1]), int(res[2]), int(res[3]), int(res[4]))
+        else:
+            return (0, 0, 0, 0, 0)
 
 
 
@@ -112,12 +99,16 @@ if __name__ == '__main__':
         print(p)
 
     s = SerialCommunication(port=ports[0])
-    s.start_communication()
-    
-    s.send_command(100, 480, 100)
-    
-    for i in range(30):
-        print(s.isFinished)
-        time.sleep(0.5)
+    s.open_device()
+    time.sleep(2)
+    while True:
+        print(s.get_state())
+        line = input()
+        
+        if len(line) < 2:
+            break
+        res = line.split('\t')
+        if len(res) == 4:
+            s.send_command(int(res[0]), int(res[1]), int(res[2]), int(res[3]))
 
-    s.stop_communication()
+    s.close_device()

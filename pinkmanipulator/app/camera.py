@@ -2,12 +2,13 @@ import cv2
 import time
 import threading
 import numpy as np
+import copy
 
 
 class CameraDetector(object):
-    def __init__(self, camPort, width=None, height=None):
+    def __init__(self, camPort, width=640, height=480, showWindow=False):
         self.last_access = 0  # time of last client access to the camera
-        self.color_range = ((0, 20, 240), (200, 250, 255))
+        self.color_range = ((100, 50, 124), (162, 166, 178))
 
         self.port = camPort
         self.FrameWidth = width
@@ -21,7 +22,9 @@ class CameraDetector(object):
         self.__waitForFrame.clear()
         self.__waitForPosition = threading.Event()
         self.__waitForPosition.clear()
-        self.position = (False, 0, 0, 0)
+        self.position = (False, 0, 0, 0, 0)
+        
+        self.__showWindow = showWindow
 
     @property
     def isOpened(self):
@@ -56,8 +59,10 @@ class CameraDetector(object):
     def start(self):
         if self.__thread is not None:
             return
-
+        print("starting..")
+        self.last_access = time.time()
         self.__thread = threading.Thread(target=self.__thread_work)
+        self.__isWorking = True
         self.__thread.start()
 
     def stop(self):
@@ -66,18 +71,28 @@ class CameraDetector(object):
         self.__isWorking = False
         self.__thread.join()
 
-    def get_frame(self):
-        if not self.isStarted:
+    def get_byte_frame(self):
+        if self.__thread is None:
             self.start()
 
         self.__waitForFrame.wait()
         self.__waitForFrame.clear()
-        frame = self.__actualFrameBytes
+        frame = copy.deepcopy(self.__actualFrameBytes)
+        CameraDetector.last_access = time.time()
+        return frame
+
+    def get_frame(self):
+        if self.__thread is None:
+            self.start()
+
+        self.__waitForFrame.wait()
+        self.__waitForFrame.clear()
+        frame = self.__actualFrame
         CameraDetector.last_access = time.time()
         return frame
     
     def get_position(self):
-        if not self.isStarted:
+        if self.__thread is None:
             self.start()
 
         self.__waitForPosition.wait()
@@ -105,17 +120,22 @@ class CameraDetector(object):
             if(area > 100) and area > bestCountorArea:
                 bestCountorArea = area
                 x, y, w, h = cv2.boundingRect(contour)
-
-        area = w * h
-        ox = int(x + w / 2)
-        oy = int(y + h / 2)
-
-        border_coef = w / h
-        cw = w / self.FrameWidth
-        ch = h / self.FrameHeight
+        
         detected = False
+        ox, oy = (0, 0)
 
-        if border_coef > 0.5 and border_coef < 1.6 and w < 0.8 and w > 0.030 and h < 0.9 and h > 0.09:
+        if bestCountorArea > 1000:
+            ox = int(x + w / 2)
+            oy = int(y + h / 2)
+
+            border_coef = w / h
+            cw = w / self.FrameWidth
+            ch = h / self.FrameHeight
+
+            if border_coef > 0.5 and border_coef < 1.6 and cw < 0.8 and cw > 0.030 and ch < 0.9 and ch > 0.09:
+                detected = True
+
+        if detected:
             output = cv2.rectangle(
                 frame, 
                 (x, y),
@@ -123,7 +143,6 @@ class CameraDetector(object):
                 (0, 255, 0),
                 2
             )
-            detected = True
         else:
             output = cv2.rectangle(
                 frame, 
@@ -132,21 +151,22 @@ class CameraDetector(object):
                 (0, 0, 255),
                 2
             )
-			
-        return output, (detected, ox, oy, area)
+        return output, (detected, ox, oy, w, h)
 
     def calibrate_colors(self, x1, y1, x2, y2):
-        if not self.isStarted:
+        if self.__thread is None:
             self.start()
+
         self.__waitForFrame.wait()
-        
+
         color_lower = [255,255,255]
         color_upper = [0,0,0]
         if self.__actualFrame is None:
             return
-        roi = self.__actualFrame[x1:x2-x1,y1:y2-y1].copy()
-        for i in range(roi.shape[1]):
-            for j in range(roi.shape[0]):
+        frameCpy = self.__actualFrame.copy()
+        roi = frameCpy[x1:x2,y1:y2]
+        for i in range(roi.shape[0]):
+            for j in range(roi.shape[1]):
                 b = roi[i, j, 0] # B
                 g = roi[i, j, 1] # G
                 r = roi[i, j, 2] # R
@@ -206,7 +226,7 @@ class CameraDetector(object):
     def __thread_work(self):
         self.__isWorking = True
         self.__open_device()
-
+     
         while self.__isWorking:
             _, frame = self.__cap.read()
             frame, self.position = self.__detect(frame)
@@ -215,11 +235,46 @@ class CameraDetector(object):
             self.__actualFrame = frame.copy()
             self.__waitForFrame.set()
             self.__waitForPosition.set()
+            if self.__showWindow:
+                cv2.imshow("Camera test", self.__actualFrame)
+                key = cv2.waitKey(1)
+                if key & 0xFF == ord('q'):
+                    break
+                self.last_access = time.time()
+
             time.sleep(0)
             # the last 5 seconds stop the thread
-            if time.time() - self.last_access > 5:
+            if time.time() - self.last_access > 10:
                 break
 
         self.__close_device()
         self.__thread = None
         self.__isWorking = False
+        
+        if self.__showWindow:
+            cv2.destroyAllWindows()
+        
+
+if __name__ == '__main__':
+    c = CameraDetector(3, showWindow=True)
+    # winName = "Camera demonstration"
+    # cv2.namedWindow(winName)
+    #c.start()
+    while True:
+        c.get_frame()
+        line = input()
+        if len(line) == 0:
+            continue
+
+        if line == 'q':
+            break
+        par = line.split(" ")
+        if len(par) == 4:
+            c.calibrate_colors(
+                int(par[0]),
+                int(par[1]),
+                int(par[2]),
+                int(par[3])
+            )
+
+    c.stop()

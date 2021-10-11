@@ -3,8 +3,8 @@ import threading
 import json
 from subprocess import Popen
 from threading  import Thread
-from .serial_communication import SerialCommunication
-from .camera import CameraDetector
+from serial_communication import SerialCommunication
+from camera import CameraDetector
 
 
 class RobotStatus(object):
@@ -24,10 +24,15 @@ class RobotStatus(object):
 
 class RobotApi(object):
     def __init__(self, camera:CameraDetector, port="/dev/ttyACM0"):
-        self.__thread = None
+        self.__camera = camera
         self.__status = RobotStatus("wait", 0, "none")
         self.__serial = SerialCommunication(port=port)
+        self.__serial.open_device()
+        self.__thread = None
         self.__isWorking = False
+        self.__pixToDegreeX = 60.0 / self.__camera.FrameWidth
+        self.__pixToDegreeY = 50.0 / self.__camera.FrameHeight
+        self.__pixToDegreeZ = 0.01
 
     def reset(self):
         if self.__thread is not None:
@@ -38,7 +43,7 @@ class RobotApi(object):
         self.__status.return_code = 0
         self.__status.comment = ""
 
-    def move_robot(self, cmdName, x, y, dist):
+    def catch_cube(self, cmdName):
         if self.__status.status != "wait":
             self.__status.return_code = -1
             return
@@ -58,12 +63,27 @@ class RobotApi(object):
         return self.__status.__copy__()
 
     def __thread_work(self):
-        self.__serial.start_communication()
+        
         self.__status.status = "inprogress"
         res = 0
         
         while self.__isWorking:
-
+            detected, x, y, w, h = self.__camera.get_position()
+            currentPos = self.__serial.get_state()
+            if detected:
+                pos1 = currentPos[0] + 0.1*(self.__pixToDegreeX * (x - self.__camera.FrameWidth / 2))
+                pos2 = currentPos[1] + 0.1*(self.__pixToDegreeY * (y - self.__camera.FrameHeight / 2))
+                pos3 = currentPos[2] #+ self.__pixToDegreeZ * (self.__camera.FrameWidth - w)
+                pos4 = 180
+                currentPos = self.__serial.send_command(pos1, pos2, pos3, pos4)
+            if currentPos[4] == 1:
+                self.__serial.send_command(
+                    currentPos[0],
+                    currentPos[1],
+                    currentPos[2],
+                    20
+                )
+                break
 
         if self.__status.active_command != "reset":
             self.__status.status = "done"
@@ -77,3 +97,25 @@ class RobotApi(object):
         for line in out:
             self.__status.comment="line"
             out.flush()
+
+if __name__ == '__main__':
+    ports = SerialCommunication.serial_ports()
+    for p in ports:
+        print(p)
+    
+    camera = CameraDetector(1, showWindow=True)
+
+    rob = RobotApi(camera=camera, port=ports[0])
+    time.sleep(1)
+    rob.catch_cube("start")
+    
+    while True:
+        line = input()
+        if line == "q":
+            break
+        if line == "r":
+            rob.reset()
+        if line == "s":
+            rob.catch_cube("start")
+
+        print(rob.status.status)
