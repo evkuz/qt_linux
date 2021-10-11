@@ -2,15 +2,15 @@ from app import app
 from flask import render_template, request, jsonify
 from flask.wrappers import Response
 
-from .camera import Camera
+from .camera import CameraDetector
 from . import robot_api
 
-activeCamera = Camera(app.config['CAMERA_NUM'])
-robotApi = robot_api.RobotApi()
+activeCamera = CameraDetector(app.config['CAMERA_NUM'])
+robotApi = robot_api.RobotApi(camera=activeCamera, port=app.config['COM_PORT'])
 
 def gen(camera):
     while True:
-        frame = bytearray(camera.get_frame())
+        frame = bytearray(camera.get_byte_frame())
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
 
@@ -35,9 +35,20 @@ def run():
     cmd = args.get("cmd")
     if cmd is not None:
         if cmd == "start":
-            robotApi.move_robot(cmd)
+            robotApi.catch_cube(cmd)
         elif cmd == "reset":
             robotApi.reset()
+        elif cmd == "camcalib":
+            x1 = args.get("x1")
+            y1 = args.get("x1")
+            x2 = args.get("x2")
+            y2 = args.get("y2")
+            if x1 is not None and y1 is not None and x2 is not None and y2 is not None:
+                activeCamera.calibrate_colors(
+                    int(x1), int(y1),
+                    int(x2), int(y2)
+                )
+
 
     response = jsonify(robotApi.status.__dict__)
     response.headers.add("Access-Control-Allow-Origin", "*")
