@@ -8,7 +8,7 @@ import copy
 class CameraDetector(object):
     def __init__(self, camPort, width=640, height=480, showWindow=False):
         self.last_access = 0  # time of last client access to the camera
-        self.color_range = ((100, 50, 124), (162, 166, 178))
+        self.color_range = ((1, 50, 144), (100, 120, 178))
 
         self.port = camPort
         self.FrameWidth = width
@@ -256,7 +256,7 @@ class CameraDetector(object):
         
 
 if __name__ == '__main__':
-    c = CameraDetector(3, showWindow=True)
+    c = CameraDetector(2, showWindow=True)
     # winName = "Camera demonstration"
     # cv2.namedWindow(winName)
     #c.start()

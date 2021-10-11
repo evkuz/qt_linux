@@ -107,7 +107,7 @@ if __name__ == '__main__':
         
         if len(line) < 2:
             break
-        res = line.split('\t')
+        res = line.split(',')
         if len(res) == 4:
             s.send_command(int(res[0]), int(res[1]), int(res[2]), int(res[3]))
 

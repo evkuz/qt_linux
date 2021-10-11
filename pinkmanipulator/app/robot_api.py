@@ -37,11 +37,14 @@ class RobotApi(object):
     def reset(self):
         if self.__thread is not None:
             self.__isWorking = False
-
-        self.__status.status = "wait"
+        
+        self.__status.status = "init"
         self.__status.active_command = "reset"
         self.__status.return_code = 0
         self.__status.comment = ""
+        t = threading.Thread(target=self.__reset_thread_work)
+        t.start()
+
 
     def catch_cube(self, cmdName):
         if self.__status.status != "wait":
@@ -53,7 +56,7 @@ class RobotApi(object):
             self.__status.active_command = cmdName
             self.__status.return_code = 0
             self.__isWorking = True
-            self.__thread = threading.Thread(target=self.__thread_work)
+            self.__thread = threading.Thread(target=self.__catch_cube_thread_work)
             self.__thread.start()
 
     @property
@@ -62,27 +65,35 @@ class RobotApi(object):
         #     self.__status.status = "inprogress"
         return self.__status.__copy__()
 
-    def __thread_work(self):
-        
+    def __catch_cube_thread_work(self):
         self.__status.status = "inprogress"
         res = 0
-        
+        tp_state = 0
         while self.__isWorking:
-            detected, x, y, w, h = self.__camera.get_position()
-            currentPos = self.__serial.get_state()
-            if detected:
-                pos1 = currentPos[0] + 0.1*(self.__pixToDegreeX * (x - self.__camera.FrameWidth / 2))
-                pos2 = currentPos[1] + 0.1*(self.__pixToDegreeY * (y - self.__camera.FrameHeight / 2))
-                pos3 = currentPos[2] #+ self.__pixToDegreeZ * (self.__camera.FrameWidth - w)
-                pos4 = 180
-                currentPos = self.__serial.send_command(pos1, pos2, pos3, pos4)
-            if currentPos[4] == 1:
-                self.__serial.send_command(
-                    currentPos[0],
-                    currentPos[1],
-                    currentPos[2],
-                    20
-                )
+            if tp_state == 0:
+                detected, x, y, w, h = self.__camera.get_position()
+                currentPos = self.__serial.get_state()
+                if detected:
+                    errZ = self.__camera.FrameWidth - w
+                    errX = x - self.__camera.FrameWidth / 2
+                    errY = y - self.__camera.FrameHeight / 2
+                    pos1 = int(currentPos[0] - 0.2*(self.__pixToDegreeX * errX))
+                    pos2 = int(currentPos[1] - 0.2*(self.__pixToDegreeY*errY + self.__pixToDegreeZ*errZ))
+                    pos3 = int(currentPos[2] - 0.2*(self.__pixToDegreeY*errY - self.__pixToDegreeZ*errZ))
+                    pos4 = 180
+                    currentPos = self.__serial.send_command(pos1, pos2, pos3, pos4)
+                if currentPos[4] == 1:
+                    self.__serial.send_command(
+                        currentPos[0],
+                        currentPos[1],
+                        currentPos[2],
+                        80
+                    )
+                    tp_state+=1
+            if tp_state == 1:
+                self.__serial.send_command(10, 60, 60, 80)
+                self.__serial.send_command(10, 60, 60, 180)
+                self.__serial.send_command(91, 120, 80, 170)
                 break
 
         if self.__status.active_command != "reset":
@@ -91,19 +102,20 @@ class RobotApi(object):
         
         self.__thread = None
         self.__isWorking = False
+    
+    def __reset_thread_work(self):
+        self.__status.status = "inprogress"
+        if self.__thread is not None: self.__thread.join()
+        _ = self.__serial.send_command(91, 120, 80, 170)
+        self.__status.status = "wait"
 
-    def __read_pipe(self, out, ntrim=80):    
-        out.flush()
-        for line in out:
-            self.__status.comment="line"
-            out.flush()
 
 if __name__ == '__main__':
     ports = SerialCommunication.serial_ports()
     for p in ports:
         print(p)
     
-    camera = CameraDetector(1, showWindow=True)
+    camera = CameraDetector(2, showWindow=True)
 
     rob = RobotApi(camera=camera, port=ports[0])
     time.sleep(1)
