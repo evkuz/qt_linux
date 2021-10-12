@@ -61,8 +61,9 @@ class SerialCommunication:
     def open_device(self):
         if not self.__isOpened:
             self.__sp.open()
-            time.sleep(0.5)
+            time.sleep(1)
             self.__isOpened = True
+            self.go_to_start()
 
     def close_device(self):
         if self.__isOpened:
@@ -74,6 +75,9 @@ class SerialCommunication:
         self.__write_message(msg)
         self.__currentState = self.__read_state()
         return self.__currentState
+
+    def go_to_start(self):
+        return self.send_command(91, 140, 35, 170)
 
     def __write_message(self, msg):
         if not self.__isOpened:

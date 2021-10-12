@@ -3,8 +3,10 @@ import threading
 import json
 from subprocess import Popen
 from threading  import Thread
-from serial_communication import SerialCommunication
-from camera import CameraDetector
+from . import serial_communication
+from . import camera
+from .serial_communication import SerialCommunication
+from .camera import CameraDetector
 
 
 class RobotStatus(object):
@@ -32,7 +34,7 @@ class RobotApi(object):
         self.__isWorking = False
         self.__pixToDegreeX = 60.0 / self.__camera.FrameWidth
         self.__pixToDegreeY = 50.0 / self.__camera.FrameHeight
-        self.__pixToDegreeZ = 0.01
+        self.__pixToDegreeZ = 0.015
 
     def reset(self):
         if self.__thread is not None:
@@ -77,9 +79,9 @@ class RobotApi(object):
                     errZ = self.__camera.FrameWidth - w
                     errX = x - self.__camera.FrameWidth / 2
                     errY = y - self.__camera.FrameHeight / 2
-                    pos1 = int(currentPos[0] - 0.2*(self.__pixToDegreeX * errX))
-                    pos2 = int(currentPos[1] - 0.2*(self.__pixToDegreeY*errY + self.__pixToDegreeZ*errZ))
-                    pos3 = int(currentPos[2] - 0.2*(self.__pixToDegreeY*errY - self.__pixToDegreeZ*errZ))
+                    pos1 = int(currentPos[0] - 0.3*(self.__pixToDegreeX * errX))
+                    pos2 = int(currentPos[1] - 0.4*(self.__pixToDegreeY*errY + self.__pixToDegreeZ*errZ))
+                    pos3 = int(currentPos[2] - 0.4*(self.__pixToDegreeY*errY - self.__pixToDegreeZ*errZ))
                     pos4 = 180
                     currentPos = self.__serial.send_command(pos1, pos2, pos3, pos4)
                 if currentPos[4] == 1:
@@ -93,7 +95,7 @@ class RobotApi(object):
             if tp_state == 1:
                 self.__serial.send_command(10, 60, 60, 80)
                 self.__serial.send_command(10, 60, 60, 180)
-                self.__serial.send_command(91, 120, 80, 170)
+                self.__serial.go_to_start()
                 break
 
         if self.__status.active_command != "reset":
@@ -106,7 +108,7 @@ class RobotApi(object):
     def __reset_thread_work(self):
         self.__status.status = "inprogress"
         if self.__thread is not None: self.__thread.join()
-        _ = self.__serial.send_command(91, 120, 80, 170)
+        _ = self.__serial.go_to_start()
         self.__status.status = "wait"
 
 
