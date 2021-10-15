@@ -51,7 +51,6 @@ MainWindow::MainWindow(QWidget *parent)
     QString str = "The application \"";  str +=target_name; str += "\"";
     Robot->Write_To_Log(0xf000, str.append(" is started successfully!!!\n"));
 
-    TheWeb = new WebServer(); //
     GUI_Write_To_Log(0000, "Going to Start QTcpSErver");
     if (server.isListening ()) {
 
@@ -153,7 +152,7 @@ MainWindow::~MainWindow()
     GUI_Write_To_Log(0xffff, "Program is going to be closed");
     delete ui;
     delete Robot;
-    delete TheWeb;
+
 
 }
 //+++++++++++++++++++++++++++++++++++++++
@@ -924,7 +923,6 @@ void MainWindow::newConnection_Slot()
 void MainWindow::Moving_Done_Slot()
 {
     GUI_Write_To_Log(0xFAAA, "Demo cycle finished !!!");
-    strcpy(TheWeb->status_buffer,"done");
     // Меняем статус, теперь "done"
     std::cout<<"Set DONE to Robot!" << std::endl;
     Robot->SetCurrentStatus ("done");

@@ -18,8 +18,6 @@ SOURCES += \
     neuron.cpp \
     qsimpleserver.cpp \
     robo_math.cpp \
-    mythread.cpp \
-    webserver.cpp \
     qsocketthread.cpp
 
 
@@ -34,8 +32,6 @@ HEADERS += \
     hiwonder.h \
     qsimpleserver.h \
     robo_math.h \
-    mythread.h \
-    webserver.h \
     protocol.h \
     qsocketthread.h
 

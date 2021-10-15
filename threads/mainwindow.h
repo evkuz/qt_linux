@@ -14,8 +14,6 @@
 #include "hiwonder.h"  // hiwonder class
 #include "SocketClient.h"
 #include "robo_math.h" //Robo_Math class
-#include "mythread.h"  // thread for web-server
-#include "webserver.h"
 #include "qsimpleserver.h"
 
 //#include "mcinfer.h"
@@ -48,16 +46,13 @@ public:
     HiWonder *Robot;
     Robo_Math * RMath;
 
-    WebServer *TheWeb;
+
     bool new_get_request; // Флаг сигнализирует, что есть неотвеченный GET-запрос от webserver.
     //QTcpServer* m_pTCPServer;
 
     QSimpleServer server;
 
     //+++++++++++++++++++++++++++++ Threads +++++++++++++++
-    //
-    MyThread  *chan_A, *chan_B, *File_WR;
-    QThread   *thread_A, *thread_B, *thread_F;
     int thread_counter ;
 
     QString rAnswer; // Ответ робота - статус, return_code, etc
