@@ -6,8 +6,7 @@
  *  https://mayaposch.wordpress.com/2011/11/01/how-to-really-truly-use-qthreads-the-full-explanation/
  *
  *
- *  (threads:15185): GLib-ERROR **: Creating pipes for GWakeup: Too many open files
- *
+ **
  * //++++++++++++++++++++++++++++++++++++++++++++
  * Путь к Supervisor-у
  * file:///home/ubuntu/iqr_lit/supervisor/index.html
@@ -28,6 +27,9 @@
  * Наиболее интересно - организация работы
  * И, соответственно, передача информации "Сверху вниз", т.е. MainWindow--->QTcpServer--->QTcpSocket
  * и "Снизу вверх",                                      т.е. QTcpSocket--->QTcpServer--->MainWindow
+ *
+ * Добавил кнопку "PUT", которая повторяет операцию "положить кубик на тележку", чтобы кубик точнее попадал в рабочую
+ * область.
  *
  *
  * //++++++++++++++++++++++++++++++++++++++++++++
@@ -63,9 +65,11 @@
  * Теперь их Аж 3.
  *
  *  connect(tcpthread, SIGNAL(finished()), thread_A, SLOT(quit()));
-    connect(tcpthread, SIGNAL(finished()), tcpthread, SLOT(deleteLater()));
-    connect(thread_A, SIGNAL(finished()), thread_A, SLOT(deleteLater()));
-
+ *  connect(tcpthread, SIGNAL(finished()), tcpthread, SLOT(deleteLater()));
+ *  connect(thread_A, SIGNAL(finished()), thread_A, SLOT(deleteLater()));
+ *
+ *  И ушла ошибка
+ *  (threads:15185): GLib-ERROR **: Creating pipes for GWakeup: Too many open files
  *
  * //++++++++++++++++++++++++++
  *
@@ -94,47 +98,7 @@
  * переменных.
  *
  *
- * //+++++++++++++++++++++++++++
- *   QString response = "HTTP/1.1 200 OK\r\n"; //"%1";//%1";  application/json
-    response += "content-type: application/json\r\n"; //text/html
-    response += "Access-Control-Allow-Origin: *\r\n";
-    response += "\r\n";
-    response += "{\n\t\"status\":\"";
-    response += current_status;
-    response += "\"\n}";
 
- * //+++++++++++++++++++++++
- * 26.09.2021
- *
- * Get-запрос приходит в виде 2-ух сообщений !!!
- * Из-за этого дважды срабатывает incommingConnection и т.д.
- *
-// * ==========================================================
-// * 2021-09-26__18:15:33:671 > 0xf00f: GET /run?cmd=start&gfhj HTTP/1.1
-// * Host: 159.93.44.84:8383
-// * Connection: keep-alive
-// * Cache-Control: max-age=0
-// * Upgrade-Insecure-Requests: 1
-// * User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.54 Safari/537.36
-// * Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
-// * Accept-Encoding: gzip, deflate
-// * Accept-Language: ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7
-
-
-// * 2021-09-26__18:15:33:671 > 0xf00f: Получена команда : start
-// * 2021-09-26__18:15:33:684 > 0xf00f: GET /favicon.ico HTTP/1.1
-// * Host: 159.93.44.84:8383
-// * Connection: keep-alive
-// * Pragma: no-cache
-// * Cache-Control: no-cache
-// * User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.54 Safari/537.36
-// * Accept: image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8
-// * Referer: http://159.93.44.84:8383/run?cmd=start&gfhj
-// * Accept-Encoding: gzip, deflate
-// * Accept-Language: ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7
-
-// *
-/*
  * //++++++++++
  * 25.09.2021
  *
