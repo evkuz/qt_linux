@@ -1,9 +1,9 @@
+QT += core network  serialport
 QT -= gui
 
 CONFIG += c++11 console
 CONFIG -= app_bundle
 
-QT += serialport
 
 # The following define makes your compiler emit warnings if you use
 # any Qt feature that has been marked deprecated (the exact warnings
@@ -23,7 +23,8 @@ SOURCES += \
     qsimpleserver.cpp \
     qsocketthread.cpp \
     SocketClient.cpp \
-    mainprocess.cpp
+    mainprocess.cpp \
+    mcinfer.cpp
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

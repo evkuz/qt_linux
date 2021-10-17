@@ -4,7 +4,7 @@
 
 //        Механизм запрос - ответ
 
-void MainWindow::try_mcinfer(int x, int y){
+void MainProcess::try_mcinfer(int x, int y){
     QString str;
 
 //            in[0] = actAngle;

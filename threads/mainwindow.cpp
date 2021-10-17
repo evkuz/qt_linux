@@ -942,7 +942,8 @@ void MainWindow::server_New_Connect_Slot()
     ;
 }
 
-
+//+++++++++++++++++
+// отладка процесса возврата после поклажи кубика на транспортировщика
 void MainWindow::on_getBackButton_clicked()
 {
     QByteArray dd ;

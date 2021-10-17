@@ -2,7 +2,7 @@
 #define NEURON_H
 
 //#include "mcinfer.h"
-#include "mainwindow.h"
+#include "mainprocess.h"
 //#include "model/model1.h"
 //#include "model/model2.h"
 //#include "model/model3.h"
