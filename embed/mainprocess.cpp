@@ -13,21 +13,13 @@
 
 MainProcess::MainProcess(QObject *parent)
     : QObject(parent)
-//    , readSocket("../../simpledetector_cpp/iqr.socket")
+    , readSocket("../../simpledetector_cpp/iqr.socket")
 
 {
 
     DETECTED = false;
     new_get_request = false;
     thread_counter = 0;
-//    qspb_list = {ui->servo_1_spinBox, ui->servo_2_spinBox, ui->servo_3_spinBox,
-//                 ui->servo_4_spinBox, ui->servo_5_spinBox, ui->servo_6_spinBox};
-
-//    foreach (const QSerialPortInfo &info, QSerialPortInfo::availablePorts()){
-//        ui->comL->addItem(info.portName(),info.portName());
-//    }
-
-
 
  //   target_name = QFileInfo(QCoreApplication::applicationFilePath()).fileName();
     //QByteArray ba = target_name.toLocal8Bit();
@@ -51,21 +43,12 @@ MainProcess::MainProcess(QObject *parent)
     }
 
     //+++++++++++++++++++++++++++++++++  signal/slot of Get Request to webserver
-    //connect( TheWeb, SIGNAL(Data_TO_Log_Signal(QString)), this, SLOT(Data_From_Web_SLot(QString))); // Работает
-    //connect(this, SIGNAL(Write_2_Client_Signal()), TheWeb, SLOT(Write_2_Client_Slot()));
-    // Fixed By Miksarus
-    //connect(this, &MainProcess::Write_2_Client_Signal, &server, &QSimpleServer::Write_2_Client_SLot);
-
-    // Fixed by E.Kuznetsov
+    // Отправка данных от сервера клиенту (в  ЦУП)
     connect(this, &MainProcess::Write_2_Client_Signal, &server, &QSimpleServer::Write_2_Client_SLot);
+    // Чтение данных от клиента серверу (из ЦУП)
     connect(&server, SIGNAL(Info_2_Log_Signal(QString)), this, SLOT(Info_2_Log_Slot(QString)));
     //connect(Robot, SIGNAL(StatusChangedSignal(QString)), &server, SLOT(SetCurrentState(QString)));
     //connect(this, SIGNAL(StartTakeAndPutSignal()), this, SLOT(TakeAndPutSlot()));
-
-    //TheWeb->openSocket();
-    //server = new QSimpleServer();
-
-    //#########################################
 
    // connect(&server, &QTcpServer::newConnection, this, &MainProcess::newConnection_Slot);
     //################### SERIAL SIGNAL/SLOTS ############################
@@ -105,6 +88,8 @@ MainProcess::MainProcess(QObject *parent)
 
 
     //+++++++++++++++ ОТкрываем порт Open_Port_Signal(QString portname); ttyUSB0
+    // Arduino NANO виден как ttyUSB0
+    // Arduino Mega - как
     emit Open_Port_Signal("ttyUSB0");
     //make_json_answer();
 
@@ -139,6 +124,7 @@ void MainProcess::GUI_Write_To_Log (int value, QString log_message)
 
 
 //+++++++++++++++++++++++++++++++++++++++
+// open Serial port
 void MainProcess::on_openButton_clicked()
 {
 QString portname = "Some Serial"; //ui->comL->currentText();
@@ -191,24 +177,22 @@ emit Open_Port_Signal(portname);
     }
     */
 }
-
+//+++++++++++++++++++++++++
+// Go to "sit" position
 void MainProcess::on_sitButton_clicked()
 {
-//    this->update_LineDits_from_position(sit_down_position);
-//    //   this->repaint();
-
-    QByteArray dd = QByteArray::fromRawData(sit_down_position, 6);
+    QByteArray dd = QByteArray::fromRawData(reinterpret_cast<const char*>(sit_down_position), 6);
     dd.append(0x31); // Движение "Туда"
     Robot->GoToPosition(dd);//, sit_down_position
 }
 //+++++++++++++++++++++++++++++++
-
+// Go to Initial "Start" position
 void MainProcess::on_stand_upButton_clicked()
 {
   //  this->update_LineDits_from_position(hwr_Start_position);
     this->update_Servos_from_position(hwr_Start_position);
     //   this->repaint();
-    QByteArray dd = QByteArray::fromRawData(hwr_Start_position, 6);
+    QByteArray dd = QByteArray::fromRawData(reinterpret_cast<const char*>(hwr_Start_position), 6);
     dd.append(0x30); // Движение "Обратно"
     dd.append(LASTONE);
     Robot->GoToPosition(dd);//, hwr_Start_position
@@ -216,31 +200,10 @@ void MainProcess::on_stand_upButton_clicked()
 //    GUI_Write_To_Log(0xff10, str);
 }
 //+++++++++++++++++++++++++++++++
-//++++++++++++++++++++++++++++++++++++++++++++++
-//void MainProcess::update_data_from_sliders(int index, int value)
-//{
-//    Servos[index]   = value;
-//    on_set_posButton_clicked();
-////    const char *   pchar;
-////    pchar = static_cast<const char *>(static_cast<char *>(Servos));
-////    QByteArray dd = QByteArray::fromRawData(pchar, 6);
-////    QString str = "Servos before write to serial ";
-////    for (int i=0; i<= DOF - 1; i++){
-////        str += QString::number(Servos[i]);
-////        str+= ", ";
-////    }
-////    GUI_Write_To_Log(0xf002,str);
-////    Robot->GoToPosition(dd, pchar);
-
-
-//}
-//++++++++++++++++++++++++++++++++++++++++++++++
 void MainProcess::on_closeButton_clicked()
 {
     Robot->serial.close();
 }
-//+++++++++++++++++++++++++ update servos from LineEdits
-
 //+++++++++++++++++++++++++++++++++++++++++
 //Send data from GUI to robot
 // Раз нажали кнопку, значит это единственная команда, значит добавляем LASTONE
@@ -307,46 +270,6 @@ void MainProcess::on_clampButton_clicked()
 
     on_set_posButton_clicked();
 }
-//++++++++++++++++++++++++++++++++++++++
-//void MainProcess::update_LineDits_from_servos(void)
-//{
-//    for (int i =0; i<= DOF -1; i++)
-//    {
-//       // qle_list[i]->setText(QString::number(Servos[i]));
-//        qspb_list[i]->setValue((Servos[i]));
-//       // GUI_Write_To_Log(0xf010, QString::number (Servos[i]));
-//    }
-//}
-////+++++++++++++++++++++++++++++++++++++
-//void MainProcess::update_LineDits_from_position(const char *pos)
-//{
-//    for (int i =0; i<= DOF -1; i++)
-//    {
-//        //qle_list[i]->setText(QString::number(pos[i]));
-//        qspb_list[i]->setValue(pos[i]);
-//    }
-
-//}
-//+++++++++++++++++++++++++++++++++++++
-//void MainProcess::update_LineDits_from_position(unsigned char *pos)
-//{
-//    for (int i =0; i<= DOF -1; i++)
-//    {
-//        //qle_list[i]->setText(QString::number(pos[i]));
-//        qspb_list[i]->setValue(pos[i]);
-//    }
-
-//}
-//+++++++++++++++++++++++++++++++++++++
-//void MainProcess::update_Servos_from_LineEdits(void)
-//{
-//    for (int i =0; i<= DOF -1; i++)
-//    {
-//       // Servos[i] = qle_list[i]->text().toInt();
-//        Servos[i] = qspb_list[i]->value();
-//    }
-//}
-
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -430,141 +353,86 @@ void MainProcess::Pass_String_Slot(QString str)
 //+++++++++++++++++++++++++++++++++
 //background-color: rgb(26, 148, 255);
 
-//void MainProcess::on_submitButton_clicked()
-//{
-//    int num;
-//    QString str;
-//    QString data = ui->All_Servos_lineEdit->text();
-//    QStringList list;
 
-//    str="The data from line edit are : ";
-//    str.append(data);
-//    GUI_Write_To_Log(0xf010, data);
-
-//    QRegExp rx("[, ]");// match a comma or a space
-//  //  QStringList list = {"100", "100", "100", "100", "100", "100" };
-//    list = data.split(rx, Qt::SkipEmptyParts);
-//    num = list.size (); //Число элементов, начиная с 1
-//    if (num < DOF) {
-//        str = "Данных НЕДОСТАТОЧНО !!! Передано всего "; str.append (QString::number(list.size()));
-//        //Если данных недостаточно, то меняем цвет кнопки и строки ввода, для подсказки
-//        GUI_Write_To_Log(0xf010, str);
-//        str = "background-color: rgb(26, 148, 255)";
-//        ui->submitButton->setStyleSheet (str);
-
-//        str = "background-color: rgb(255, 235, 11)";
-//        ui->All_Servos_lineEdit->setStyleSheet (str);
-
-//    }
-//    if (num == DOF)
-//      {
-//        // А теперь все это в qle_list
-//        for (int i =0; i<= DOF -1; i++)
-//        {
-//            //qle_list[i]->setText(QString::number(Servos[i]));
-//            qspb_list[i]->setValue(list.at(i).toInt());
-
-//        }
-//        // Если данные введены верно, то возвращаем цвета кнопки и строки ввода к значениям по умолчанию.
-//        ui->submitButton->setStyleSheet ("");
-//        ui->All_Servos_lineEdit->setStyleSheet ("");
-//        GUI_Write_To_Log(0xf010, "Данные переданы корректно");
-//     }//(num == DOF -1)
-
-////    GUI_Write_To_Log(0xf010, str); //QString::number(list.size())
-////    for (int i=0; i< list.size(); ++i ) {
-////        GUI_Write_To_Log(0xf010, list.at(i).toLocal8Bit().constData());
-////    }
-
-
-////   this->repaint();
-//}
 //++++++++++++++++++++++++++
-//void MainProcess::on_trainButton_clicked()
-//{
-////    for (int i =0; i<= DOF -1; i++)
-////    {
-////       Servos[i] = train_position[i];
-////    }
-////    update_LineDits_from_servos ();
-
-
-//    DetectorState state;
-//    QString str;
-//    str = "";
-////Сразу открываем захват
-////    if (ui->servo_1_lineEdit->text().toInt() > 0){ ui->servo_1_lineEdit->setText("0"); Servos[0]=0;}
-////    else {ui->servo_1_lineEdit->setText("160"); Servos[0]=160;}
-//    Servos[0]=0;
-//  //  update_LineDits_from_servos();
-
-//    if (readSocket.GetState(&state) == 0)
-//      {
-//        if (state.isDetected){
-//            try_mcinfer(state.objectX, state.objectY); // Тут меняем current_status = "inprogress". Команда 0 - Переместить открытый хват к кубику.
-//            X = state.objectX;                        //  Хват открывается в процессе движения робота, а не отдельной командой.
-//            Y = state.objectY;
-//            str+="DETECTED: ";
-//            str += QString::number(state.objectX);
-//            str += ", ";
-//            str += QString::number(state.objectY);
-//            DETECTED = true;
-
-//        } else {
-//            str += "NOT DETECTED";
-//        }
-
-//       std::cout <<  str.toStdString() << std::endl;
-//       Robot->Write_To_Log(0xf014, str);
-//       GUI_Write_To_Log(0xf014, str);
-//    }
-
-////В этой точке робот опустил захват, открыл захват.
-
-//if (DETECTED)
+void MainProcess::on_trainButton_clicked()
+{
+//    for (int i =0; i<= DOF -1; i++)
 //    {
+//       Servos[i] = train_position[i];
+//    }
+//    update_LineDits_from_servos ();
 
-//    QByteArray dd ;
-//    dd.resize(parcel_size);
-////    memcpy(dd.data(), Servos, 6);
-////    dd.insert(6, 0x31); // Движение "Туда"
-////    Robot->GoToPosition(dd);
-//////    while (!Robot->MOVEMENT_DONE) {;}
-//   str = "Next movement to robot";
-//   this->GUI_Write_To_Log (0xF055, str);
-//   //+++++++++++++++++ 1 make clamp
-//   //on_clampButton_clicked();
-//   if (ui->servo_1_spinBox->value () > 0){ ui->servo_1_spinBox->setValue (0); Servos[0]=0;}
-//   else {ui->servo_1_spinBox->setValue (90); Servos[0]=90;}
-//   this->send_Data(NOT_LAST);
-//   //++++++++++++++++++++ 2 make stand up
-//   //on_stand_upButton_clicked();
-//   this->update_LineDits_from_position(hwr_Start_position);
-////   //   this->repaint();
-//   this->update_Servos_from_LineEdits();
-//   this->send_Data(NOT_LAST);
 
-//   //+++++++++++++++++++++ 3 put the cube
-//   // {60, 93, 100, 35, 145, 35};
-//   this->update_LineDits_from_position (put_position);
-////   //   this->repaint();
-//   update_Servos_from_LineEdits ();
-//   memcpy(dd.data(), Servos, 6);
-//   dd.insert(6, 0x31); // Движение "Туда"
-//   this->send_Data(BEFORE_LAST); //0xE9, NOT_LAST ==C8
-//   //+++++++++++++++++++++ 4  Unclamp the gripper
-//   //on_clampButton_clicked();
-//   if (ui->servo_1_spinBox->value () > 0){ ui->servo_1_spinBox->setValue (0); Servos[0]=0;}
-//   else {ui->servo_1_spinBox->setValue (90); Servos[0]=90;}
-//   this->send_Data(NOT_LAST);
-//   //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-//      //+++++++++++++++++++++++++++++++++ 5 Приподнять хват, чтобы не задеть тележку.
-//      this->update_LineDits_from_position (after_put_position);
-////      //   this->repaint();
-//      update_Servos_from_LineEdits ();
-//      memcpy(dd.data(), Servos, 6);
-//      dd.insert(6, 0x30); // Движение "Туда"
-//      this->send_Data(AFTER_PUT);
+    DetectorState state;
+    QString str;
+    str = "";
+//Сразу открываем захват
+//    if (ui->servo_1_lineEdit->text().toInt() > 0){ ui->servo_1_lineEdit->setText("0"); Servos[0]=0;}
+//    else {ui->servo_1_lineEdit->setText("160"); Servos[0]=160;}
+    Servos[0]=0;
+  //  update_LineDits_from_servos();
+
+    if (readSocket.GetState(&state) == 0)
+      {
+        if (state.isDetected){
+            try_mcinfer(state.objectX, state.objectY); // Тут меняем current_status = "inprogress". Команда 0 - Переместить открытый хват к кубику.
+            X = state.objectX;                        //  Хват открывается в процессе движения робота, а не отдельной командой.
+            Y = state.objectY;
+            str+="DETECTED: ";
+            str += QString::number(state.objectX);
+            str += ", ";
+            str += QString::number(state.objectY);
+            DETECTED = true;
+
+        } else {
+            str += "NOT DETECTED";
+        }
+
+       std::cout <<  str.toStdString() << std::endl;
+       Robot->Write_To_Log(0xf014, str);
+       GUI_Write_To_Log(0xf014, str);
+    }
+
+//В этой точке робот опустился над кубиком, открыл захват.
+
+if (DETECTED)
+    {
+
+    QByteArray dd ;
+    dd.resize(parcel_size);
+//    memcpy(dd.data(), Servos, 6);
+//    dd.insert(6, 0x31); // Движение "Туда"
+//    Robot->GoToPosition(dd);
+////    while (!Robot->MOVEMENT_DONE) {;}
+   str = "Next movement to robot";
+   this->GUI_Write_To_Log (0xF055, str);
+   //+++++++++++++++++ 1 make clamp, хватаем кубик
+   //on_clampButton_clicked();
+   if (Servos[0] > 0){ Servos[0]=0;}
+   else {Servos[0]=90;}
+   this->send_Data(NOT_LAST);
+   //++++++++++++++++++++ 2 make stand up, встаем в исходную точку
+   //on_stand_upButton_clicked();
+   this->update_Servos_from_position(hwr_Start_position);
+   this->send_Data(NOT_LAST);
+
+   //+++++++++++++++++++++ 3 put the cube, наклоняем захват с кубиком к транспортировщику
+   // {60, 93, 100, 35, 145, 35};
+   this->update_Servos_from_position(put_position);
+   memcpy(dd.data(), Servos, 6);
+   dd.insert(6, 0x31); // Движение "Туда"
+   this->send_Data(BEFORE_LAST); //0xE9, NOT_LAST ==C8
+   //+++++++++++++++++++++ 4  Unclamp the gripper, открываем захват, т.е. кладем кубик на транспортировщик
+   //on_clampButton_clicked();
+   Servos[0]=0;
+   this->send_Data(NOT_LAST);
+   //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   //+++++++++++++++++++++++++++++++++ 5 Приподнять хват, чтобы не задеть тележку.
+      this->update_Servos_from_position(after_put_position);
+      memcpy(dd.data(), Servos, 6);
+      dd.insert(6, 0x30); // Движение "Туда"
+      this->send_Data(AFTER_PUT);
 
 
 
@@ -604,13 +472,13 @@ void MainProcess::Pass_String_Slot(QString str)
 ////   this->update_Servos_from_LineEdits();
 ////   this->send_Data(LASTONE); // The last command
 
-//  }// if (DETECTED)
+  }// if (DETECTED)
 
-//   DETECTED = false;
-//   //Robot->current_status = "done"; // Тут еще рано, команды только отправлены.
+   DETECTED = false;
+   //Robot->current_status = "done"; // Тут еще рано, команды только отправлены.
 
 
-//}
+}//
 //++++++++++++++++++++++++++++++++++++
 void MainProcess::send_Data(unsigned char thelast)
 {
@@ -736,13 +604,13 @@ void MainProcess::Info_2_Log_Slot(QString message)
 
    if (substr == "sit") {
 
-       QByteArray dd = QByteArray::fromRawData(sit_down_position, 6);
+       QByteArray dd = QByteArray::fromRawData(reinterpret_cast<const char*>(sit_down_position), 6);
        dd.append(0x31); // Движение "Туда"
        Robot->GoToPosition(dd);//, sit_down_position
    }//"sit"
 
    if (substr == "standup") {
-       QByteArray dd = QByteArray::fromRawData(hwr_Start_position, 6);
+       QByteArray dd = QByteArray::fromRawData(reinterpret_cast<const char*>(hwr_Start_position), 6);
        dd.append(0x30); // Движение "Обратно"
        dd.append(LASTONE);
        Robot->GoToPosition(dd);//, hwr_Start_position
@@ -753,83 +621,9 @@ void MainProcess::Info_2_Log_Slot(QString message)
 
 }
 
-//+++++++++++++++++++++++++++++++++++++
-// added by Miksarus
-//void MainProcess::TakeAndPutSlot()
-//{
-//    DetectorState state;
-//    QString str;
-//    str = "";
 
-//    Servos[0]=0;
-//    update_LineDits_from_servos();
 
-//    bool isDetected = false;
-
-//    while (!isDetected) {
-//        if (readSocket.GetState(&state) == 0)
-//        {
-//            isDetected = state.isDetected;
-//        }
-//        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-//    }
-
-//    try_mcinfer(state.objectX, state.objectY);
-
-//    str+="DETECTED: ";
-//    str += QString::number(state.objectX);
-//    str += ", ";
-//    str += QString::number(state.objectY);
-
-//    std::cout <<  str.toStdString() << std::endl;
-//    Robot->Write_To_Log(0xf014, str);
-//    GUI_Write_To_Log(0xf014, str);
-
-//    //В этой точке робот опустил захват, открыл захват.
-
-//    QByteArray dd ;
-//    dd.resize(parcel_size);
-//    str = "Next movement to robot";
-//    this->GUI_Write_To_Log (0xF055, str);
-//   //+++++++++++++++++ make clamp
-//   //on_clampButton_clicked();
-//   if (ui->servo_1_spinBox->value () > 0){ ui->servo_1_spinBox->setValue (0); Servos[0]=0;}
-//   else {ui->servo_1_spinBox->setValue (90); Servos[0]=90;}
-//   this->send_Data(NOT_LAST);
-//   //++++++++++++++++++++ make stand up
-//   //on_stand_upButton_clicked();
-//   this->update_LineDits_from_position(hwr_Start_position);
-//   //   this->repaint();
-//   this->update_Servos_from_LineEdits();
-//   this->send_Data(NOT_LAST);
-//   //+++++++++++++++++++++ put the cube
-//   this->update_LineDits_from_position (put_position);
-//   //   this->repaint();
-//   update_Servos_from_LineEdits ();
-//   memcpy(dd.data(), Servos, 6);
-//   dd.insert(6, 0x31); // Движение "Туда"
-//   this->send_Data(NOT_LAST);
-//   //+++++++++++++++++++++ Unclamp the gripper
-//   //on_clampButton_clicked();
-//   if (ui->servo_1_spinBox->value () > 0){ ui->servo_1_spinBox->setValue (0); Servos[0]=0;}
-//   else {ui->servo_1_spinBox->setValue (90); Servos[0]=90;}
-//   this->send_Data(NOT_LAST);
-//   //+++++++++++++++++++++++++++++++++
-//   this->update_LineDits_from_position (after_put_position);
-//   //   this->repaint();
-//   //update_Servos_from_LineEdits ();
-//   //memcpy(dd.data(), Servos, 6);
-//   //dd.insert(6, 0x31); // Движение "Туда"
-//   //this->send_Data(NOT_LAST);
-
-//   //+++++++++++++++++++++ go back to start position
-//   //on_stand_upButton_clicked();
-//   this->update_LineDits_from_position(hwr_Start_position);
-//   //   this->repaint();
-//   this->update_Servos_from_LineEdits();
-//   this->send_Data(LASTONE); // The last command
-//}
-
+//+++++++++++++++++
 void MainProcess::newConnection_Slot()
 {
     GUI_Write_To_Log(0xf01f, "There is new TCP connection !!!");
@@ -861,7 +655,7 @@ void MainProcess::server_New_Connect_Slot()
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-void MainProcess::update_Servos_from_position(const char *pos)
+void MainProcess::update_Servos_from_position(unsigned char *pos)
 {
     for (int i =0; i< DOF; i++) { Servos[i] = pos[i]; }
 

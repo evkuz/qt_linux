@@ -13,7 +13,7 @@
 //HiWonder::HiWonder(QObject *parent) : QObject(parent)
 HiWonder::HiWonder()
 {
-    // Инициализируем буфер данными
+    // Инициализируем буфер данными QByteArray
     memset(byInputBuffer, 0xEE, robot_buffer_SIZE); //sizeof(byInputBuffer)
     MOVEMENT_DONE = true;
     qbuf.resize (robot_buffer_SIZE);
@@ -32,7 +32,8 @@ void HiWonder::Log_File_Open(QString lname)
     LogFile.setFileName(lname);
     LogFile.open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text);
 }
-
+//+++++++++++++++++++++
+// ОТкрытие файла для записи координат и углов. Для ускорения процесса набора тестовых точек
 void HiWonder::Source_Points_File_Open(QString fname)
 {
     SourceFile.setFileName(fname);         //QIODevice::Truncate
@@ -55,7 +56,7 @@ void HiWonder::Write_To_Log (int value, QString log_message)
     uin << str << str2 << log_message << "\n";
 
 }
-
+//++++++++++++++++++++++++++++
 void HiWonder::Write_To_Source(int value, QString points_data)
 {
     QDateTime curdate ;
@@ -75,11 +76,13 @@ void HiWonder::Write_To_Source(int value, QString points_data)
 }
 //++++++++++++++++ REMEMBER WHILE OPENING PORT !!!!!
 /*
+ * Для работы arduino-плат через com-порт dialout, добавляемся в группу
  * sudo usermod -a -G dialout <username>
 
 where <username> is your Linux user name. You will need to log out and log in again for this change to take effect.
 
 */
+//+++++++++++ Open Serial port
 void HiWonder::Open_Port_Slot(QString portname)
 
 {
@@ -111,29 +114,20 @@ void HiWonder::Open_Port_Slot(QString portname)
 
 }
 //++++++++++++++++++++++
+// Задаем роботу углы для нужной позиции - отправляем данные для углов в Serial port
 void HiWonder::GoToPosition(QByteArray &position)//, const char *servo)
 {
     QString str;
-//    int sz = position.size();
-//    if (sz > robot_buffer_SIZE) sz = robot_buffer_SIZE;
     this->MOVEMENT_DONE = false;
    position.resize (szData);
    serial.write(position);
    serial.waitForBytesWritten();
 
-   //serial.flush(); // Пробуем очистить буфер совсем
- //  serial.waitForBytesWritten();
-
-    // Для проверки
-//    str = "To Robot in hex: ";
-//    str += QString(position.toHex());
-//    //str = str + str2;
-//    this->Write_To_Log(0xF001, str);
-
 //    void *const tmp = const_cast<char*>(servo);
 //    unsigned char* sData = static_cast<unsigned char*>(tmp);
    //unsigned char sData [7]= {0,0,0,0,0,0,0};
    memcpy(&outputData, position,szData);
+// Данные роботу отправили, теперь запись в лог об этом
 
     str = "To Robot: ";
     for (int i=0; i< szData; i++){
@@ -144,23 +138,14 @@ void HiWonder::GoToPosition(QByteArray &position)//, const char *servo)
 
     }
     this->Write_To_Log(0xF001, str);
-//    serial.waitForReadyRead();
-
-//    str = "Ready to read data from robot";
-//    this->Write_To_Log(0xF001, str);
-//    qbuf = serial.readAll();
-//    //qbuf = "askdjhfakjhfak";
-//    str = "From Robot :";
-//    str += QString(qbuf);
-//    this->Write_To_Log(0xF001, str);
 
 }
 //+++++++++++++++++++++++++++++++
-// code From Robot :
+// Считываем данные из Serial port, т.е. от робота.  code From Robot :
 void HiWonder::ReadFromSerial_Slot ()
 {
     QString str;
-    int numBytes;
+    qint64 numBytes;
         numBytes = serial.bytesAvailable ();
 
         str = "There are "; //
@@ -169,7 +154,6 @@ void HiWonder::ReadFromSerial_Slot ()
         this->Write_To_Log(0xF001, str);
 
         qbuf = serial.readAll();
-    //    //qbuf = "askdjhfakjhfak";
         str = "From Robot : ";
         str += QString(qbuf);
         this->Write_To_Log(0xF001, str);
@@ -200,7 +184,7 @@ void HiWonder::ReadFromSerial_Slot ()
 //
 
 }
-
+//++++++++++++++++++++++++
 void HiWonder::SetCurrentStatus(QString newStatus) {
     this->current_status = newStatus;
 //    emit this->StatusChangedSignal(newStatus);

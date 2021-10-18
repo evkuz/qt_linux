@@ -1,23 +1,21 @@
+/*
+ *
+ * В GUI-версии это класс MainWindow, или класс основного потока, поэтому в текущей, консольной версии - класс MainProcess
+ *
+*/
+
 #ifndef MainProcess_H
 #define MainProcess_H
 
-//#include <QMainProcess>
 #include <QSerialPort>
 #include <QSerialPortInfo>
 #include <QByteArray>
 #include <stdint.h>
 #include <QFile>
 #include <QList>
-//#include <QLineEdit>
-//#include <QSpinBox>
-//#include <QSlider>
 #include "hiwonder.h"  // hiwonder class
-//#include "SocketClient.h"
-//#include "robo_math.h" //Robo_Math class
 #include "qsimpleserver.h"
-
-//#include "mcinfer.h"
-
+#include "SocketClient.h"
 
 
 
@@ -38,10 +36,6 @@ public:
     QString     target_name;
     //char       *servos;    //unsigned char
     QByteArray LineEdits[6];
-
-//    QList<QLineEdit*> qle_list;
-//    QList<QSpinBox*> qspb_list;
-//    QList<QSlider*> slider_list;
 
     HiWonder *Robot;
 //    Robo_Math * RMath;
@@ -79,7 +73,7 @@ public:
 //    void update_LineDits_from_position(const char *pos);
 //    void update_LineDits_from_position(unsigned char *pos);
 //    void update_Servos_from_LineEdits(void);
-    void update_Servos_from_position(const char *pos);
+    void update_Servos_from_position(unsigned char *pos);
 
     void send_Data(unsigned char thelast);
     void make_json_answer();   // подготовка json-строки с полями ответа в TCP сокет.
@@ -89,7 +83,7 @@ private:
 
 
 private:
-//    SocketClient readSocket;
+    SocketClient readSocket;
 
 public slots:
 void Data_From_Web_SLot(QString message);
@@ -124,7 +118,7 @@ private slots:
 
 //    void on_submitButton_clicked();
 
-//    void on_trainButton_clicked();
+    void on_trainButton_clicked();
     void Moving_Done_Slot(); // ОБработка сигнала окончания движения
 
 

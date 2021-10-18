@@ -11,6 +11,10 @@
  * Created on August 16, 2017, 4:04 PM
  */
 
+/*
+ * Взаимодействие с системой распознавания через сокет.
+ *
+*/
 #ifndef SOCKETClient_H
 #define SOCKETClient_H
 
