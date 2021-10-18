@@ -355,6 +355,8 @@ void MainProcess::Pass_String_Slot(QString str)
 
 
 //++++++++++++++++++++++++++
+// Обработка сигнала on_trainButton_clicked()
+// Выполняем целый набор действий - взять кубик и положить на транспортировщик
 void MainProcess::on_trainButton_clicked()
 {
 //    for (int i =0; i<= DOF -1; i++)
@@ -573,7 +575,7 @@ void MainProcess::Info_2_Log_Slot(QString message)
             //emit StartTakeAndPutSignal();
 
             // Движение только начинаем, поэтому обнулим значение LASTONE
-            //emit on_trainButton_clicked ();
+            emit on_trainButton_clicked ();
             str = Robot->current_status;
             //str = "status_from_robot";
             emit Write_2_Client_Signal (str);
