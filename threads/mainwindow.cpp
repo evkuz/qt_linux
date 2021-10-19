@@ -983,7 +983,7 @@ void MainWindow::on_fixButton_clicked()
     if (readSocket.GetState(&state) == 0)
       {
         if (state.isDetected){
-            try_mcinfer(state.objectX, state.objectY); // Тут меняем current_status = "inprogress". Команда 0 - Переместить открытый хват к кубику.
+           // try_mcinfer(state.objectX, state.objectY); // Тут меняем current_status = "inprogress". Команда 0 - Переместить открытый хват к кубику.
             X = state.objectX;                        //  Хват открывается в процессе движения робота, а не отдельной командой.
             Y = state.objectY;
 
@@ -997,16 +997,18 @@ void MainWindow::on_fixButton_clicked()
             str += "NOT DETECTED";
         }
 
-       std::cout <<  str.toStdString() << std::endl;
-       Robot->Write_To_Log(0xf014, str);
+       str += ui->All_Servos_lineEdit->text();
+       //std::cout <<  str.toStdString() << std::endl;
+       //Robot->Write_To_Log(0xf014, str);
        GUI_Write_To_Log(0xf014, str);
+       Robot->Write_To_Source (value, str);
     }
 
 
 
 
-    str += ui->All_Servos_lineEdit->text ();
-    Robot->Write_To_Source (value, str);
+//    str += ui->All_Servos_lineEdit->text ();
+//    Robot->Write_To_Source (value, str);
 }
 
 void MainWindow::on_PUTButton_clicked()
