@@ -9,7 +9,7 @@
 //#include <QtGui>
 #include <chrono>
 #include <thread>
-
+//(QObject *parent)
 
 MainProcess::MainProcess(QObject *parent)
     : QObject(parent)
@@ -21,7 +21,7 @@ MainProcess::MainProcess(QObject *parent)
     new_get_request = false;
     thread_counter = 0;
 
- //   target_name = QFileInfo(QCoreApplication::applicationFilePath()).fileName();
+    target_name = QFileInfo(QCoreApplication::applicationFilePath()).fileName();
     //QByteArray ba = target_name.toLocal8Bit();
     //g/const char *c_str = ba.data();
     //printf("Appname : %s", c_str);
@@ -44,9 +44,14 @@ MainProcess::MainProcess(QObject *parent)
 
     //+++++++++++++++++++++++++++++++++  signal/slot of Get Request to webserver
     // Отправка данных от сервера клиенту (в  ЦУП)
-    connect(this, &MainProcess::Write_2_Client_Signal, &server, &QSimpleServer::Write_2_Client_SLot);
+    connect(this, &MainProcess::Write_2_Client_Signal, &server, &QSimpleServer::Write_2_Client_SLot); // works ?
+
     // Чтение данных от клиента серверу (из ЦУП)
-    connect(&server, SIGNAL(Info_2_Log_Signal(QString)), this, SLOT(Info_2_Log_Slot(QString)));
+    //connect(&server, SIGNAL(Info_2_Log_Signal(QString)), this, SLOT(Info_2_Log_Slot(QString))); // Not working
+    connect(&server, &QSimpleServer::Info_2_Log_Signal, this, &MainProcess::Info_2_Log_Slot);
+
+
+
     //connect(Robot, SIGNAL(StatusChangedSignal(QString)), &server, SLOT(SetCurrentState(QString)));
     //connect(this, SIGNAL(StartTakeAndPutSignal()), this, SLOT(TakeAndPutSlot()));
 
@@ -93,6 +98,11 @@ MainProcess::MainProcess(QObject *parent)
     emit Open_Port_Signal("ttyUSB0");
     //make_json_answer();
 
+    //+++++++++ Проверяем, что работает QSerialPort
+    QThread::sleep(2);
+    emit on_clampButton_clicked();
+    QThread::sleep(1);
+    emit on_clampButton_clicked();
 
 
 
@@ -438,46 +448,18 @@ if (DETECTED)
 
 
 
-//   //+++++++++++++++++++++ 6 go back to start position
-//   //on_stand_upButton_clicked();
-//   this->update_LineDits_from_position(hwr_Start_position);
-//   //   this->repaint();
-//   this->update_Servos_from_LineEdits();
-//   dd.insert(6, 0x30); // Движение "Обратно"
-//   this->send_Data(LASTONE); // The last command
+   //+++++++++++++++++++++ 6 go back to start position
+   //on_stand_upButton_clicked();
+   this->update_Servos_from_position(hwr_Start_position);
+   dd.insert(6, 0x30); // Движение "Обратно"
+   this->send_Data(LASTONE); // The last command
 
 
-////   //+++++++++++++++++++++ 3 put the cube
-////   this->update_LineDits_from_position (put_position);
-////   //   this->repaint();
-////   update_Servos_from_LineEdits ();
-////   memcpy(dd.data(), Servos, 6);
-////   dd.insert(6, 0x31); // Движение "Туда"
-////   this->send_Data(NOT_LAST);
-////   //+++++++++++++++++++++ 4  Unclamp the gripper
-////   //on_clampButton_clicked();
-////   if (ui->servo_1_spinBox->value () > 0){ ui->servo_1_spinBox->setValue (0); Servos[0]=0;}
-////   else {ui->servo_1_spinBox->setValue (90); Servos[0]=90;}
-////   this->send_Data(NOT_LAST);
-////   //+++++++++++++++++++++++++++++++++ 5 Приподнять хват, чтобы не задеть тележку.
-////   this->update_LineDits_from_position (after_put_position);
-////   //   this->repaint();
-////   update_Servos_from_LineEdits ();
-////   memcpy(dd.data(), Servos, 6);
-////   dd.insert(6, 0x31); // Движение "Туда"
-////   this->send_Data(NOT_LAST);
-
-////   //+++++++++++++++++++++ 6 go back to start position
-////   //on_stand_upButton_clicked();
-////   this->update_LineDits_from_position(hwr_Start_position);
-////   //   this->repaint();
-////   this->update_Servos_from_LineEdits();
-////   this->send_Data(LASTONE); // The last command
 
   }// if (DETECTED)
 
    DETECTED = false;
-   //Robot->current_status = "done"; // Тут еще рано, команды только отправлены.
+   Robot->current_status = "done"; // Тут еще рано, команды только отправлены.
 
 
 }//
@@ -548,7 +530,8 @@ void MainProcess::Info_2_Log_Slot(QString message)
     QString str, substr;
     int value = 0xf00f;
     new_get_request = true;
-    str = "Get new command : "; str += message;
+    //str = "!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSimpleServer->Info_2_Log_Signal !!!!!!!!!!!!!!!!!!!";
+    str = "From TCP Get new command : "; str += message;
     GUI_Write_To_Log(0xf00f, str);
 
 //    int sPosition, ePosition; // Индекс строки run в запросе.

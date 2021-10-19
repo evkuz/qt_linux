@@ -44,7 +44,7 @@ void QSimpleServer::incomingConnection(qintptr sDescriptor)
     //addPendingConnection(sDescriptor);
 }
 //++++++++++++++++
-// Слот отправки данных от робота клиенту в сокет
+// Слот отправки данных от робота клиенту в сокет (в ЦУП)
 void QSimpleServer::Write_2_Client_SLot(QString data)
 {
     // Передаем данные дальше вниз в qtcpsocket
@@ -54,7 +54,10 @@ void QSimpleServer::Write_2_Client_SLot(QString data)
 // ОТправляем команду наверх, роботу на выполнение.
 void QSimpleServer::Command_4_Parsing_Slot(QString message)
 {
-  emit Info_2_Log_Signal(message);
+  emit Info_2_Log_Signal(message); // works ???
+    qDebug() << "!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSimpleServer->Command_4_Parsing_Slot !!!!!!!!!!!!!!!!!!!";
+    qDebug() << message;
+
 }
 
 

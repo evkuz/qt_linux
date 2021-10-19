@@ -7,6 +7,7 @@
 #ifndef MainProcess_H
 #define MainProcess_H
 
+#include <QtCore>
 #include <QSerialPort>
 #include <QSerialPortInfo>
 #include <QByteArray>
@@ -29,6 +30,7 @@ class MainProcess : public QObject
 
 public:
     MainProcess(QObject *parent = nullptr);
+    //MainProcess();
     ~MainProcess();
     QSerialPort serial;
     QByteArray *buff;
@@ -139,7 +141,7 @@ signals:
 //    void StartTakeAndPutSignal();
 
 private:
-    Ui::MainProcess *ui;
+//    Ui::MainProcess *ui;
 };
 
 #endif // MainProcess_H

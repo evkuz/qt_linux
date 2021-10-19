@@ -40,6 +40,7 @@ void QSocketThread::onReadyRead()
     QByteArray qbmessage;
     qbmessage = socket->readAll();
     qDebug() << qbmessage;
+   // qDebug() << "!!!!!!!!!!!!!!!!!!!!!11 Get Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!!1";
 
     //Парсим команду.
     QString message, substr;
@@ -56,8 +57,10 @@ void QSocketThread::onReadyRead()
         substr = message.mid(sPosition, (ePosition - sPosition));
 
         // Получили команду. Передаем её наверх
+        qDebug() << "!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET !!!!!!!!!!!!!!!!!!!";
+        qDebug() << substr;
 
-     emit Command_4_Parsing_Signal(substr);
+     emit Command_4_Parsing_Signal(substr); // works !
 
   }
 }
