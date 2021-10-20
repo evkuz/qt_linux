@@ -82,14 +82,11 @@ public:
 
 
 private:
-
-
-private:
     SocketClient readSocket;
 
 public slots:
 void Data_From_Web_SLot(QString message);
-void Info_2_Log_Slot(QString);
+void Data_From_TcpClient_Slot(QString);
 
 void newConnection_Slot();
 void server_New_Connect_Slot();
@@ -137,11 +134,9 @@ signals:
     void Open_Port_Signal(QString portname); // Сигнал даем по нажатию кнопки "OPEN"
     void Pass_XY_Signal(int x_pix, int y_pix); //Сигнал по нажатию кнопки "Get_XY"
     void FW_Kinemaic_Signal(int S3, int S4, int S5, int l1, int l2, int l3); // Углы приводов, длины соответствующих звеньев.
-    void Write_2_Client_Signal(QString); // Сигнал вебсерверу, - пересылка данных в сокет на отправку.
+    void Write_2_TcpClient_Signal(QString); // Сигнал вебсерверу, - пересылка данных в сокет на отправку.
 //    void StartTakeAndPutSignal();
 
-private:
-//    Ui::MainProcess *ui;
 };
 
 #endif // MainProcess_H

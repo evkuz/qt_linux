@@ -79,7 +79,7 @@ void QSocketThread::onDisconnected()
 //+++++++++++++++++
 // ПРишли данные от робота на отправку в сокет.
 
-void QSocketThread::Data_2_Client_Slot(QString data)
+void QSocketThread::Data_2_TcpClient_Slot(QString data)
 {
     // Готовим ответ.
     //socket->write(response.arg(QTime::currentTime().toString()).toLatin1());

@@ -39,7 +39,7 @@ public slots:
     //Слот закрытия сокета
     void onDisconnected();
     //Слот принятия данных на отправку в сокет.
-    void Data_2_Client_Slot(QString);
+    void Data_2_TcpClient_Slot(QString);
 
 
 private:

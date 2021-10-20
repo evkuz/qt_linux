@@ -44,11 +44,11 @@ MainProcess::MainProcess(QObject *parent)
 
     //+++++++++++++++++++++++++++++++++  signal/slot of Get Request to webserver
     // Отправка данных от сервера клиенту (в  ЦУП)
-    connect(this, &MainProcess::Write_2_Client_Signal, &server, &QSimpleServer::Write_2_Client_SLot); // works ?
+    connect(this, &MainProcess::Write_2_TcpClient_Signal, &server, &QSimpleServer::Write_2_TcpClient_SLot); // works ?
 
     // Чтение данных от клиента серверу (из ЦУП)
     //connect(&server, SIGNAL(Info_2_Log_Signal(QString)), this, SLOT(Info_2_Log_Slot(QString))); // Not working
-    connect(&server, &QSimpleServer::Info_2_Log_Signal, this, &MainProcess::Info_2_Log_Slot);
+    connect(&server, &QSimpleServer::Data_From_TcpClient_Signal, this, &MainProcess::Data_From_TcpClient_Slot);
 
 
 
@@ -524,8 +524,8 @@ void MainProcess::Data_From_Web_SLot(QString message)
  //this->ui->threadlabel->setText(QString::number(thread_counter));
 }
 //+++++++++++++++++++++++++++++++++++++++++++++++++++
-//+++++++ Получили запрос от клиента. Парсим его.
-void MainProcess::Info_2_Log_Slot(QString message)
+//+++++++ Получили данне (запрос) от клиента. Парсим.
+void MainProcess::Data_From_TcpClient_Slot(QString message)
 {
     QString str, substr;
     int value = 0xf00f;
@@ -533,21 +533,6 @@ void MainProcess::Info_2_Log_Slot(QString message)
     //str = "!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSimpleServer->Info_2_Log_Signal !!!!!!!!!!!!!!!!!!!";
     str = "From TCP Get new command : "; str += message;
     GUI_Write_To_Log(0xf00f, str);
-
-//    int sPosition, ePosition; // Индекс строки run в запросе.
-//    sPosition = message.indexOf("/run?cmd=");
-
-//   QString  wrong_mess = "/favicon.ico HTTP/1.1";
-
-//    if (!message.contains (wrong_mess))
-//    {
-//        sPosition += 9;
-//        ePosition = message.indexOf("&", sPosition);
-//        substr = message.mid(sPosition, (ePosition - sPosition));
-
-
-//        str = "Получена команда : "; str += substr;
-//        GUI_Write_To_Log(0xf00f, str);
 
         substr = message;
 
@@ -560,8 +545,7 @@ void MainProcess::Info_2_Log_Slot(QString message)
             // Движение только начинаем, поэтому обнулим значение LASTONE
             emit on_trainButton_clicked ();
             str = Robot->current_status;
-            //str = "status_from_robot";
-            emit Write_2_Client_Signal (str);
+            emit Write_2_TcpClient_Signal (str);
          }
 
         if (substr == "reset") {
@@ -573,7 +557,7 @@ void MainProcess::Info_2_Log_Slot(QString message)
                 GUI_Write_To_Log (value, str);
                 str = Robot->current_status;
                 //str = "status_from_robot";
-                emit Write_2_Client_Signal (str);
+                emit Write_2_TcpClient_Signal (str);
             }
          }
 //         ///run?cmd=status&123
@@ -584,7 +568,7 @@ void MainProcess::Info_2_Log_Slot(QString message)
        str = Robot->current_status;
      //  str += "\"\n}";
 
-       emit Write_2_Client_Signal (str);
+       emit Write_2_TcpClient_Signal (str);
    }
 
    if (substr == "sit") {
