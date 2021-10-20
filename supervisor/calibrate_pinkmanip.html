@@ -16,11 +16,8 @@
 <link href="style/type/fontello.css" rel="stylesheet">
 <script>
   iqrSupervisor = {
-    //vehicleAddr: "http://192.168.1.41:5000/",
-    vehicleAddr: "http://192.168.1.98:5000/",
-    //manipulatorAddr: "http://192.168.1.41:8384",
-    manipulatorAddr: "http://159.93.44.84:8383/",
-    manipulatorCameraAddr: "http://159.93.44.84:5555/",
+    pinkmanipAddr: "http://localhost:5001/",
+    updateImgInterval: 400,
     updateStateInterval: 400,
     tpInterval: 500
   };
@@ -32,7 +29,7 @@
       <![endif]-->
 </head>
 <body>
-<div id="prelo  ader"><div id="status"><div class="spinner"></div></div></div>
+<!-- <div id="prelo  ader"><div id="status"><div class="spinner"></div></div></div> -->
 <div class="body-wrapper">
   <div class="offset"></div>
   <div class="dark-wrapper intro">
@@ -51,16 +48,14 @@
     <div class="row text-center services-1">
       <div class="col-sm-6">
         <div class="col-wrapper">
-          <h3>Vehicle camera</h3>
-          <!-- <img src="http://localhost:5000/video_feed" width="550" height="412" id="vehicle_cam"> -->
-          <div id="vehicle_status" style="text-align:left;"></div>
+          <h3>Pink Manipulator camera</h3>
+          <img src="http://localhost:5001/video_feed" width="550" height="412" id="pinkmanip_cam">
+          <div id="pinkmanip_status" style="text-align:left;"></div>
         </div>
       </div>
       <div class="col-sm-6">
         <div class="col-wrapper">
-          <h3>Manipulator camera</h3>
-          <img src="http://localhost:5000/video_feed" width="550" height="412" id="manipulator_cam">
-          <div id="manipulator_status" style="text-align:left;"></div>
+          
         </div>
       </div>
     </div>
@@ -87,7 +82,7 @@
 <script src="style/js/plugins.js"></script> 
 <script src="style/js/scripts.js"></script> -->
 <script>/*<![CDATA[*/
-  manipulatorState = {
+  pinkmanipState = {
     "connection": false,
     "active_command": "none",
     "comment": "",
@@ -95,14 +90,6 @@
     "status": "wait"
   };
   
-  vehicleState = {
-    "connection": false,
-    "active_command": "none",
-    "comment": "",
-    "return_code": 0,
-    "status": "wait"
-  };
-
   function httpGet(url) {
     return new Promise(function(resolve, reject) {
  
@@ -134,8 +121,8 @@
   }
   
 
-  async function sendCommandToManipulator(cmd){
-    return httpGet(iqrSupervisor.manipulatorAddr + "run?cmd=" + cmd + "&").then(
+  async function sendCommandToPinkmanip(cmd){
+    return httpGet(iqrSupervisor.pinkmanipAddr + "run?cmd=" + cmd + "&").then(
       response => {
         response.connection = true;
         return response;
@@ -144,63 +131,33 @@
      );
   };
 
-  async function sendCommandToVehicle(cmd){
-    return httpGet(iqrSupervisor.vehicleAddr + "run?cmd=" + cmd).then(
+  function updPinkmanipState() {
+    return httpGet(iqrSupervisor.pinkmanipAddr + "run?cmd=status&").then(
       response => {
-        response.connection = true;
-        return response;
-      },
-      error => { return error;}
-     );
-  };
-
-   
-  function updManipulatorState() {
-    return httpGet(iqrSupervisor.manipulatorAddr + "run?cmd=status&").then(
-      response => {
-        statusElem = document.getElementById("manipulator_status");
+        statusElem = document.getElementById("pinkmanip_status");
         statusElem.innerHTML = "<div class='alert alert-warning'>" +
           "<p><strong>Current state:</strong>" + response.status + "</p>" +
           "<p><strong>Comment:</strong>" + response.comment + "</p></div>";
-        manipulatorState.connection = true;
-        manipulatorState.status = response.status;
+        pinkmanipState.connection = true;
+        pinkmanipState.status = response.status;
       },
       error => {
-        statusElem = document.getElementById("manipulator_status");
+        statusElem = document.getElementById("pinkmanip_status");
         statusElem.innerHTML ="<div class='alert alert-danger'> <strong>Connection failed!</strong> Message:" +
           error +" </div>";
-        manipulatorState.connection = false;
+          pinkmanipState.connection = false;
       });
   };
 
 
-  function updVehicleState() {
-    return httpGet(iqrSupervisor.vehicleAddr + "run?cmd=status").then(
-      response => {
-        statusElem = document.getElementById("vehicle_status");
-        statusElem.innerHTML = "<div class='alert alert-warning'>" +
-          "<p><strong>Current state:</strong>" + response.status + "</p>" +
-          "<p><strong>Comment:</strong>" + response.comment + "</p></div>";
-        vehicleState.connection = true;
-        vehicleState.status = response.status;
-      },
-      error => {
-        statusElem = document.getElementById("vehicle_status");
-        statusElem.innerHTML ="<div class='alert alert-danger'> <strong>Connection failed!</strong> Message:" +
-          error +" </div>";
-          vehicleState.connection = false;
-      });
-  };
-
-
+  
   // Region Status Updating
   // ------------------------------
   let statusTimeoutIsRuning = false;
   let statusTimeoutId = null;
 
   async function statusTimeoutFunction(){
-    await updManipulatorState();
-    await updVehicleState();
+    await updPinkmanipState();
     if(statusTimeoutIsRuning){
       statusTimeoutId = setTimeout(
         statusTimeoutFunction,
@@ -240,12 +197,12 @@
   // Region Manipulator Camera Updating
   // ------------------------------
   function manCameraTimeoutFunction(){
-    document.getElementById("manipulator_cam").src=iqrSupervisor.manipulatorCameraAddr+"video_feed?random="+new Date().getTime();
+    document.getElementById("pinkmanip_cam").src=iqrSupervisor.pinkmanipAddr+"video_feed?random="+new Date().getTime();
     //document.getElementById("vehicle_cam").src=iqrSupervisor.vehicleAddr+"/video_feed?random="+new Date().getTime();
     
     statusTimeoutId = setTimeout(
       manCameraTimeoutFunction,
-      400
+      iqrSupervisor.updateImgInterval
     );
   };
 
@@ -261,7 +218,7 @@
 
   async function TPWork() {
     if(tpstate == 0){
-      await sendCommandToManipulator("start").then(
+      await sendCommandToPinkmanip("start").then(
         response => {
           //alert("Command 'start' was sended!");
           //if (response.return_code != 0){
@@ -281,7 +238,7 @@
         }
       );
     } else if (tpstate == 1) {
-      if (manipulatorState.status != "done"){
+      if (pinkmanipState.status != "done"){
         //if (!manipulatorState.connection) {return;}
         if (!tpInProgress){return;}
       } else {
@@ -292,45 +249,14 @@
         iqrSupervisor.tpInterval
       );
     } else if(tpstate == 2){
-      await sendCommandToVehicle("start").then(
-        response => {
-          //alert("Command 'start' was sended!");
-          if (response.return_code != 0){
-            alert("Error sending command 'start': returned_code: " + response.return_code );
-            StopTP();
-            return;
-          }
-          tpstate++;
-          tpTimerId = setTimeout(
-            TPWork,
-            iqrSupervisor.tpInterval
-          );
-        },
-        error => {
-          alert("Error sending command 'start' to vehicle!");
-          StopTP();
-        }
-      );
-    } else if (tpstate == 3) {
-      if (vehicleState.status != "done"){
-        //if (!vehicleState.connection) {return;}
-        if (!tpInProgress){return;}
-      } else {
-        tpstate++;
-      }
-      tpTimerId = setTimeout(
-        TPWork,
-        iqrSupervisor.tpInterval
-      );
-    } else if (tpstate == 4) {
       console.log('Done');
       //tpInProgress = false;
     }
   };
 
   function StartTP(){
-    if (manipulatorState.connection && vehicleState.connection){
-      if (manipulatorState.status == "wait") {
+    if (pinkmanipState.connection){
+      if (pinkmanipState.status == "wait") {
         tpInProgress = true;
         tpstate = 0;
         btn = document.getElementById("start_tp")
@@ -353,18 +279,13 @@
     tpInProgress = false;
     if(tpTimerId != null) {clearTimeout(tpTimerId); tpTimerId = null;}
 
-    sendCommandToManipulator("reset").then(
-      response => {
-        sendCommandToVehicle("reset").then(
-          response => {
-            if(response.return_code == '0'){
-              btn = document.getElementById("start_tp")
-              btn.classList.remove('btn-gray');
-              btn.classList.add('btn-red');
-            }
-          },
-          error => { alert("Error sending command 'reset'! " + error); }
-        );
+    sendCommandToPinkmanip("reset").then(
+      response=> {
+        if(response.return_code == '0'){
+          btn = document.getElementById("start_tp")
+          btn.classList.remove('btn-gray');
+          btn.classList.add('btn-red');
+        }
       },
       error => {alert("Error sending command 'reset'! " + error);}
     );
@@ -376,6 +297,20 @@
     else { StopTP(); }
   };
   // END -- Region  TECH PROCESS
+
+
+
+  //region Color Calibration
+  // ------------------------------
+
+  startBtn = document.getElementById("start_tp")
+  startBtn.onclick = function(){
+    if (!tpInProgress) { StartTP();}
+    else { StopTP(); }
+  };
+
+
+  // END -- Region Color Calibration
 
   /*]]>*/
 </script>
