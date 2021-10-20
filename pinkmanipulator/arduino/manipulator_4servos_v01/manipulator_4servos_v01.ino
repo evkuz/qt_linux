@@ -9,7 +9,7 @@
 
 #include <Servo.h>
 
-int DelayServo = 10;
+int DelayServo = 40;
 
 int trigPin = 53;    // Trigger
 int echoPin = 52;    // Echo
@@ -17,8 +17,8 @@ long duration, cm;
 
 //задать параметры
 const int start1=91;
-const int start2=120;
-const int start3=80;
+const int start2=130;
+const int start3=35;
 const int start4=120;
 
 int minPos1 = 0;

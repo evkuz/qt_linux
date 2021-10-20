@@ -77,7 +77,7 @@ class SerialCommunication:
         return self.__currentState
 
     def go_to_start(self):
-        return self.send_command(91, 140, 35, 170)
+        return self.send_command(91, 130, 35, 170)
 
     def __write_message(self, msg):
         if not self.__isOpened:

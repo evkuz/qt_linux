@@ -89,12 +89,19 @@ class RobotApi(object):
                         currentPos[0],
                         currentPos[1],
                         currentPos[2],
-                        80
+                        100
                     )
                     tp_state+=1
             if tp_state == 1:
-                self.__serial.send_command(10, 60, 60, 80)
+                self.__serial.send_command(
+                    currentPos[0],
+                    currentPos[1] + 20,
+                    currentPos[2] + 10,
+                    100
+                )
+                self.__serial.send_command(10, 60, 60, 100)
                 self.__serial.send_command(10, 60, 60, 180)
+                self.__serial.send_command(10, 120, 60, 180)
                 self.__serial.go_to_start()
                 break
 
