@@ -459,7 +459,6 @@ if (DETECTED)
   }// if (DETECTED)
 
    DETECTED = false;
-   Robot->current_status = "done"; // Тут еще рано, команды только отправлены.
 
 
 }//
@@ -539,11 +538,15 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
         // changed by Miksarus
         if (substr == "start") {
             //on_clampButton_clicked ();
-            Robot->SetCurrentStatus ("init");
+            Robot->SetCurrentStatus ("init"); // Перед запуском распознавания
             //emit StartTakeAndPutSignal();
 
             // Движение только начинаем, поэтому обнулим значение LASTONE
             emit on_trainButton_clicked ();
+            str = "Robot current status is ";
+            str += Robot->current_status;
+            Robot->Write_To_Log(0xf00F, str);
+
             str = Robot->current_status;
             emit Write_2_TcpClient_Signal (str);
          }

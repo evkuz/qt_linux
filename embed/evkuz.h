@@ -3,8 +3,10 @@
 
 
 /*
- *  https://mayaposch.wordpress.com/2011/11/01/how-to-really-truly-use-qthreads-the-full-explanation/
- *
+ * https://mayaposch.wordpress.com/2011/11/01/how-to-really-truly-use-qthreads-the-full-explanation/
+ * В к. 406Б использую kit : Qt 5.15.2 (gcc_64)
+ * В к. 240Б использую       Qt 5.15.2 (gcc_64)for Desktop
+
  *
  *
  * //++++++++++++++++++++++++++++++++++++++++++++
@@ -13,7 +15,6 @@
  *
  * //+++++++++++++++++++++++
  * 20.10.2021
- * В к. 406Б использую kit : Qt 5.15.2 (gcc_64)
  * Поменял имена сигналов/слотов для обмена по TCP, в обе стороны, т.е.
  *
  * и "Сверху вниз", MainWindow--->QTcpServer--->QTcpSocket

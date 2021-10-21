@@ -4,8 +4,8 @@ void move_servo_together (byte *pos, byte start_servo, byte end_servo) // addres
 {
   byte s_pos, maxdt;
   String message;
-  get_all_servos("before"); //Получаем массив current_s[]
-  get_curr_delta(pos);
+  get_all_servos("before"); // Получаем массив current_s[] - текущие значения углов сервоприводов
+  get_curr_delta(pos);      // Получаем массив delta и направление (массив - DF)
   maxdt = get_max_delta(delta, start_servo, end_servo); // индекс в массиве delta, а не абсолютное значение/
 /*  message = "Servo index with max delta is ";
   message += String(maxdt);
@@ -35,9 +35,9 @@ Serial.flush();
 while (maxdt != 100) // Перебираем дельты с наибольшим значением пока таковое не станет нулевым.
   {                    // см. get_max_delta()
 
-     //Сначала проходим приводы 6-4, пауза 1сек. затем отдельно привод 1, и в конце приводы 3-2
-    for (byte i=start_servo -1; i< end_servo ; i++) // ОБходим все приводы, но в обратном порядке
-    {                                                // т.е. начинаем с 6-го и далее по убыванию номера привода.
+     //
+    for (byte i=start_servo -1; i< end_servo ; i++) //
+    {                                                //
 
         s_pos = servos[i].read();
         if (delta[i] !=0)
@@ -64,7 +64,7 @@ get_all_servos("after");
 И вот тут надо бы сравнить, что пришло и что сейчас.
 */
 // Сравниваем массивы
-message += "Main Cycle worked "; message += String(cycle_num); message += " times";
+// message += "Main Cycle worked "; message += String(cycle_num); message += " times";
 
 //for (byte i=0; i<=serv_number -1; i++){ // ОБходим все приводы, проверяем совпадение позиции с заданной
 //  if (current_s[i] != pos[i]){
@@ -98,7 +98,7 @@ byte get_max_delta (byte *arr, byte start_servo, byte end_servo)
   int maxdelta, index;
   maxdelta=0;
   index=0;
-  for (int i=start_servo-1; i<=end_servo-1; i++)
+  for (int i=start_servo-1; i<end_servo; i++)
   {
     if (arr[i] > maxdelta)
     {
@@ -110,7 +110,7 @@ byte get_max_delta (byte *arr, byte start_servo, byte end_servo)
 
   if (maxdelta==0)
   { // Перебрали все дельты и все теперь равны 0
-    index = 100;
+    index = 100; // Признак завершения движения приводов.
   }
 
   return index;
