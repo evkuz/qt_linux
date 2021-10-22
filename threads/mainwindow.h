@@ -152,6 +152,8 @@ private slots:
 
     void on_PUTButton_clicked();
 
+    void on_GetBackFromServoButton_clicked();
+
 signals:
     void Open_Port_Signal(QString portname); // Сигнал даем по нажатию кнопки "OPEN"
     void Pass_XY_Signal(int x_pix, int y_pix); //Сигнал по нажатию кнопки "Get_XY"

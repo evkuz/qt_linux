@@ -1037,3 +1037,17 @@ void MainWindow::on_PUTButton_clicked()
     this->send_Data(LASTONE); // The last command
 
 }
+//++++++++++++++++++++++++++++++++++++++++++++
+// Данные обратно из qspinboxes to LineEdit
+void MainWindow::on_GetBackFromServoButton_clicked()
+{
+   QString str = "";
+    for (int i =0; i< DOF; i++)
+    {
+        str += QString::number((qspb_list[i]->value()));
+        str += ", ";
+    }
+    str.truncate(str.lastIndexOf(","));
+    GUI_Write_To_Log(0xf016, str);
+    ui->All_Servos_lineEdit->setText(str);
+}
