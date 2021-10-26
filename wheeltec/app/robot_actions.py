@@ -27,8 +27,8 @@ class RunRosScriptAction(BaseAction):
 
 class TransferCubeAction(RunRosScriptAction):
     def __init__(self):
-        super().__init__("transfercube", "/home/ubuntu/sss/spoint.py")
+        super().__init__("transfercube", "/home/wheeltec/sss/spoint.py")
 
 class MoveBackAction(RunRosScriptAction):
     def __init__(self):
-        super().__init__("moveback", "/home/ubuntu/sss/spoint.py")
+        super().__init__("moveback", "/home/wheeltec/sss/spoint.py")
