@@ -31,6 +31,16 @@ def video_feed():
     return response
 
 
+@app.route('/status')
+def status():
+    state = robotApi.status
+    response = make_response(str(state))
+    response.headers['Content-Type'] = 'application/json'
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    
+    return response
+
+
 @app.route('/run', methods=['get'])
 def run():
     args = request.args.to_dict()

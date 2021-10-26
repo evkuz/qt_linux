@@ -1,0 +1,21 @@
+[Unit]
+Description=Robot http server daemon
+After=network.target
+
+[Service]
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/home/ubuntu/wheeltec
+ExecStart=/home/ubuntu/wheeltec/.venv/bin/python \
+          /home/ubuntu/wheeltec/runner.py
+Type=simple
+ExecReload=/bin/kill -s HUP $MAINPID
+KillMode=mixed
+TimeoutStopSec=5
+PrivateTmp=true
+Restart=always
+Environment="PYTHONPATH=/home/ubuntu/wheeltec"
+Environment="FLASK_ENV=config.ProductionConfig"
+
+[Install]
+WantedBy=multi-user.target
