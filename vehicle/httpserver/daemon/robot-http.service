@@ -3,18 +3,18 @@ Description=Robot http server daemon
 After=network.target
 
 [Service]
-User=wheeltec
-Group=autologin
-WorkingDirectory=/home/wheeltec/wheeltec
-ExecStart=/home/wheeltec/wheeltec/.venv/bin/python \
-          /home/wheeltec/wheeltec/runner.py
+User=xrrobot
+Group=wheeltec
+WorkingDirectory=/home/xrrobot/httpserver
+ExecStart=/home/xrrobot/httpserver/.venv/bin/python \
+          /home/xrrobot/httpserver/runner.py
 Type=simple
 ExecReload=/bin/kill -s HUP $MAINPID
 KillMode=mixed
 TimeoutStopSec=5
 PrivateTmp=true
 Restart=always
-Environment="PYTHONPATH=/home/wheeltec/wheeltec"
+Environment="PYTHONPATH=/home/xrrobot/httpserver"
 Environment="FLASK_ENV=config.ProductionConfig"
 
 [Install]

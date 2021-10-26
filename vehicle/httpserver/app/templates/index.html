@@ -1,9 +1,17 @@
 <html>
   <head>
-    <title>Video Streaming Demonstration</title>
+    <title>Mobile robot http server</title>
   </head>
   <body>
-    <h1>Video Streaming Demonstration</h1>
+    <h1>Mobile robot http server</h1>
     <img src="{{ url_for('video_feed') }}">
+    <h2>Send command</h2>
+    <p><strong>/run?cmd=ACTION_NAME</strong>&nbsp;-&nbsp;run action</p>
+      <p>Available actions:
+        <ul>
+        <li><b>transfercube</b> - will move robot from pinkmanipulator</li>
+        <li><b>status</b> - will return status</li>
+      </ul></p>
+    <p><strong>/status</strong> - ask for state</p>
   </body>
 </html>

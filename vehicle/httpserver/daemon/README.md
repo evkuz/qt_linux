@@ -1,4 +1,4 @@
-Copy project code to /home/wheeltec/wheeltec
+Copy project code to /home/xrrobot/httpserver
 
 ```bash
 python3 -m venv .venv --prompt='http-server'
@@ -8,8 +8,6 @@ pip install -r requirements.txt
 ```
 
 Copy robot-http.service to /etc/systemd/system/
-Copy rosrun.service to /etc/systemd/system/
-Copy rosrun.sh to /home/wheeltec
 
 
 ```bash
