@@ -1,77 +1,64 @@
 import time
 import threading
 import json
-from subprocess import Popen
-from threading  import Thread
 from . import serial_communication
 from . import camera
 from .serial_communication import SerialCommunication
 from .camera import CameraDetector
+from .action import BaseAction
 
 
 class RobotStatus(object):
-    def __init__(self, status, return_code, active_command, comment=""):
-        self.status = status
-        self.return_code = return_code
-        self.active_command = active_command
-        self.comment = comment
-
-    def __copy__(self):
-        return type(self)(self.status, self.return_code, self.active_command, self.comment)
+    """
+    status:{
+        rc:”return code”, // return code от запроса
+        // service_return:”результат вызова сервиса ”,  //если ответ на команду run?service=
+        action_list:[<массив action>],
+        // state:<init|run|fail> //init – ноды запускаются, run – робот активен и в работе, fail – не функционален
+    }
+    """
+    def __init__(self, rc, action_state_list):
+        self.rc = rc
+        self.actions_list = action_state_list
 
     def toJSON(self):
         return json.dumps(self, default=lambda o: o.__dict__,
                           sort_keys=True, indent=4)
+    
+    def __str__(self) -> str:
+        res  = "{\n"
+        res += f"    \"rc\": \"{self.rc}\",\n"
+        res += "    \"action_list\": \n        [\n"
+        first = True
+        for act in self.actions_list:
+            if first:
+                res+=f"{act}"
+                first = False
+            else:
+                res+= f",\n{act}"
+        res += "\n        ]\n}\n"
+
+        return res
 
 
-class RobotApi(object):
-    def __init__(self, camera:CameraDetector, port="/dev/ttyACM0"):
+class CatchCubeAction(BaseAction):
+    def __init__(self, camera, serial):
+        BaseAction.__init__(self, "catchcube")
         self.__camera = camera
-        self.__status = RobotStatus("wait", 0, "none")
-        self.__serial = SerialCommunication(port=port)
-        self.__serial.open_device()
-        self.__thread = None
-        self.__isWorking = False
+        self.__serial = serial
         self.__pixToDegreeX = 60.0 / self.__camera.FrameWidth
         self.__pixToDegreeY = 50.0 / self.__camera.FrameHeight
         self.__pixToDegreeZ = 0.015
 
-    def reset(self):
-        if self.__thread is not None:
-            self.__isWorking = False
-        
-        self.__status.status = "init"
-        self.__status.active_command = "reset"
-        self.__status.return_code = 0
-        self.__status.comment = ""
-        t = threading.Thread(target=self.__reset_thread_work)
-        t.start()
+    def move_manip(self, pos1, pos2, pos3, pos4):
+        pos = self.__serial.send_command(pos1, pos2, pos3, pos4)
+        self._set_state_info(f"position: ({pos[0]}, {pos[1]}, {pos[2]}, {pos[3]}, {pos[4]})")
+        return pos
 
-
-    def catch_cube(self, cmdName):
-        if self.__status.status != "wait":
-            self.__status.return_code = -1
-            return
-
-        if self.__thread is None:
-            self.__status.status = "init"
-            self.__status.active_command = cmdName
-            self.__status.return_code = 0
-            self.__isWorking = True
-            self.__thread = threading.Thread(target=self.__catch_cube_thread_work)
-            self.__thread.start()
-
-    @property
-    def status(self):
-        # if self.__thread is not None:
-        #     self.__status.status = "inprogress"
-        return self.__status.__copy__()
-
-    def __catch_cube_thread_work(self):
-        self.__status.status = "inprogress"
+    def run_action(self):
         res = 0
         tp_state = 0
-        while self.__isWorking:
+        while self._isWorking:
             if tp_state == 0:
                 detected, x, y, w, h = self.__camera.get_position()
                 currentPos = self.__serial.get_state()
@@ -83,9 +70,9 @@ class RobotApi(object):
                     pos2 = int(currentPos[1] - 0.2*(self.__pixToDegreeY*errY + self.__pixToDegreeZ*errZ))
                     pos3 = int(currentPos[2] - 0.3*(self.__pixToDegreeY*errY - self.__pixToDegreeZ*errZ))
                     pos4 = 180
-                    currentPos = self.__serial.send_command(pos1, pos2, pos3, pos4)
+                    currentPos = self.move_manip(pos1, pos2, pos3, pos4)
                 if currentPos[4] == 1:
-                    self.__serial.send_command(
+                    _ = self.move_manip(
                         currentPos[0],
                         currentPos[1],
                         currentPos[2],
@@ -93,41 +80,89 @@ class RobotApi(object):
                     )
                     tp_state+=1
             if tp_state == 1:
-                self.__serial.send_command(
+                pos = self.move_manip(
                     currentPos[0],
                     currentPos[1] + 20,
                     currentPos[2] + 10,
                     100
                 )
-                self.__serial.send_command(10, 60, 60, 100)
-                self.__serial.send_command(10, 60, 60, 180)
-                self.__serial.send_command(10, 120, 60, 180)
-                self.__serial.go_to_start()
+                pos = self.move_manip(10, 120, 60, 100)
                 break
-
-        if self.__status.active_command != "reset":
-            self.__status.status = "done"
-            self.__status.return_code = res
-        
-        self.__thread = None
-        self.__isWorking = False
+        return res
     
-    def __reset_thread_work(self):
-        self.__status.status = "inprogress"
-        if self.__thread is not None: self.__thread.join()
-        _ = self.__serial.go_to_start()
-        self.__status.status = "wait"
+    def reset_action(self):
+        pos = self.__serial.go_to_start()
+        self._set_state_info(f"position: ({pos[0]}, {pos[1]}, {pos[2]}, {pos[3]}, {pos[4]})")
+        return -126
 
-    def __thread_work(self, action):
-        self.__status.status = "inprogress"
-        res = action()
+
+class PutCubeAction(BaseAction):
+    def __init__(self, camera, serial):
+        BaseAction.__init__(self, "putcube")
+        self.__camera = camera
+        self.__serial = serial
+
+    def move_manip(self, pos1, pos2, pos3, pos4):
+        pos = self.__serial.send_command(pos1, pos2, pos3, pos4)
+        self._set_state_info(f"position: ({pos[0]}, {pos[1]}, {pos[2]}, {pos[3]}, {pos[4]})")
+        return pos
+
+    def run_action(self):
+        res = 0
+        currentPos = self.__serial.get_state()
+        pos = self.move_manip(
+            currentPos[0],
+            currentPos[1] + 20,
+            currentPos[2] + 10,
+            100
+        )
+        _ = self.move_manip(10, 120, 60, 100)
+        _ = self.move_manip(10, 60, 60, 180)
+        _ = self.move_manip(10, 120, 60, 180)
+        pos = self.__serial.go_to_start()
+        self._set_state_info(f"position: ({pos[0]}, {pos[1]}, {pos[2]}, {pos[3]}, {pos[4]})")
+        return res
+    
+    def reset_action(self):
+        pos = self.__serial.go_to_start()
+        self._set_state_info(f"position: ({pos[0]}, {pos[1]}, {pos[2]}, {pos[3]}, {pos[4]})")
+        return -126
+
+
+class RobotApi(object):
+    def __init__(self, camera:CameraDetector, port="/dev/ttyACM0"):
+        self.__camera = camera
+        self.__serial = SerialCommunication(port=port)
+        self.__serial.open_device()
         
-        if self.__status.active_command != "reset":
-            self.__status.status = "done"
-            self.__status.return_code = res
-        
-        self.__thread = None
-        self.__isWorking = False
+        self.__actions_list = [
+            CatchCubeAction(self.__camera, self.__serial),
+            PutCubeAction(self.__camera, self.__serial)
+        ]
+
+    def __make_status(self, rc):
+        act_states = []
+        for act in self.__actions_list:
+            act_states.append(act.State)
+        return RobotStatus(rc, act_states)
+
+    def reset(self):
+        for act in self.__actions_list:
+            if act.IsWorking:
+                act.reset()
+        return self.__make_status(0)
+    
+    def run_action(self, action_name):
+        rc = -1
+        for act in self.__actions_list:
+            if act.Name == action_name:
+                rc = act.run()
+                break
+        return self.__make_status(rc)
+
+    @property
+    def status(self):
+        return self.__make_status(0)
 
 
 if __name__ == '__main__':
@@ -139,7 +174,7 @@ if __name__ == '__main__':
 
     rob = RobotApi(camera=camera, port=ports[0])
     time.sleep(1)
-    rob.catch_cube("start")
+    rob.run_action("catchcube")
     
     while True:
         line = input()
@@ -147,7 +182,9 @@ if __name__ == '__main__':
             break
         if line == "r":
             rob.reset()
+        if line == "p":
+            rob.run_action("putcube")
         if line == "s":
-            rob.catch_cube("start")
+            rob.run_action("catchcube")
 
-        print(rob.status.status)
+        print(rob.status)

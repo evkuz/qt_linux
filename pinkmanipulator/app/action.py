@@ -49,6 +49,18 @@ class ActionState:
 
     def set_info(self, info):
         self.info = info
+    
+    def __str__(self) -> str:
+        indend = "            "
+        res  = indend + "{\n"
+        res += indend + f"    \"name\": \"{self.name}\",\n"
+        res += indend + f"    \"state\": \"{self.state}\",\n"
+        res += indend + f"    \"info\": \"{self.info}\",\n"
+        res += indend + f"    \"st_time\": \"{self.st_time}\",\n"
+        res += indend + f"    \"fin_time\": \"{self.fin_time}\",\n"
+        res += indend + f"    \"result\": \"{self.result}\"\n"
+        res += indend + "}"
+        return res
 
 
 class BaseAction:
@@ -59,28 +71,38 @@ class BaseAction:
         self._resetFlag = False
 
     @property
-    def status(self):
-        # if self.__thread is not None:
-        #     self.__status.status = "inprogress"
+    def State(self):
         return self.__state.__copy__()
+    
+    @property
+    def IsWorking(self):
+        return self._isWorking or self.__thread is not None
 
-    def run(self, cmdName):
+    @property
+    def Name(self):
+        return self.__state.name
+
+    def run(self) -> int:
         if self.__thread is None:
             self.__thread = threading.Thread(target=self.__run_thread_work)
             self.__state.set_start()
             self._isWorking = True
             self._resetFlag = False
             self.__thread.start()
+            return 0
+        return -2
 
     def __run_thread_work(self):
         self.__state.set_run()
         
         res = self.run_action()
         
+        if not self._resetFlag:
+            self.__state.set_success(res)
         self.__thread = None
         self._isWorking = False
     
-    def run_action(self):
+    def run_action(self) -> int:
         """[return result code]
 
         Raises:
@@ -99,13 +121,14 @@ class BaseAction:
 
     def __reset_thread_work(self):
         if self.__thread is not None: self.__thread.join()
+        self.__state.set_info("reset was sent")
         res = self.reset_action()
         self.__state.set_fail(res)
 
-    def reset_action(self):
+    def reset_action(self) -> int:
         """[return result code -126 by default]
         """
         return -126
 
-    def set_state_info(self, info):
+    def _set_state_info(self, info):
         self.__state.set_info(info)

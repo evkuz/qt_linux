@@ -84,7 +84,7 @@ class CameraDetector(object):
         self.__waitForFrame.wait()
         self.__waitForFrame.clear()
         frame = copy.deepcopy(self.__actualFrameBytes)
-        CameraDetector.last_access = time.time()
+        self.last_access = time.time()
         return frame
 
     def get_frame(self):
@@ -94,7 +94,7 @@ class CameraDetector(object):
         self.__waitForFrame.wait()
         self.__waitForFrame.clear()
         frame = self.__actualFrame
-        CameraDetector.last_access = time.time()
+        self.last_access = time.time()
         return frame
     
     def get_position(self):

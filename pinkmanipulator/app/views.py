@@ -1,5 +1,5 @@
 from app import app
-from flask import render_template, request, jsonify
+from flask import render_template, request, jsonify, make_response
 from flask.wrappers import Response
 
 from .camera import CameraDetector
@@ -35,11 +35,10 @@ def video_feed():
 def run():
     args = request.args.to_dict()
     cmd = args.get("cmd")
+    state = "None"
     if cmd is not None:
-        if cmd == "start":
-            robotApi.catch_cube(cmd)
-        elif cmd == "reset":
-            robotApi.reset()
+        if cmd == "reset":
+            state = robotApi.reset()
         elif cmd == "camcalib":
             x1 = args.get("x1")
             y1 = args.get("x1")
@@ -50,9 +49,13 @@ def run():
                     int(x1), int(y1),
                     int(x2), int(y2)
                 )
-
-
-    response = jsonify(robotApi.status.__dict__)
+        elif cmd == "status":
+            state = robotApi.status
+        else:
+            state = robotApi.run_action(cmd)
+        
+    response = make_response(str(state))
+    response.headers['Content-Type'] = 'application/json'
     response.headers.add("Access-Control-Allow-Origin", "*")
     
     return response
