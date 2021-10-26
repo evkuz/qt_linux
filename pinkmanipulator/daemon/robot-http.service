@@ -1,0 +1,21 @@
+[Unit]
+Description=Robot http server daemon
+After=network.target
+
+[Service]
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/home/ubuntu/pinkmanipulator
+ExecStart=/home/ubuntu/pinkmanipulator/.venv/bin/python \
+          /home/ubuntu/pinkmanipulator/runner.py >> "/home/ubuntu/pinkmanipulator/error.log"
+Type=simple
+ExecReload=/bin/kill -s HUP $MAINPID
+KillMode=mixed
+TimeoutStopSec=5
+PrivateTmp=true
+Restart=always
+Environment="PYTHONPATH=/home/ubuntu/pinkmanipulator"
+Environment="FLASK_ENV=config.ProductionConfig"
+
+[Install]
+WantedBy=multi-user.target
