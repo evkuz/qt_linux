@@ -51,7 +51,7 @@ def run():
             state = robotApi.reset()
         elif cmd == "camcalib":
             x1 = args.get("x1")
-            y1 = args.get("x1")
+            y1 = args.get("y1")
             x2 = args.get("x2")
             y2 = args.get("y2")
             if x1 is not None and y1 is not None and x2 is not None and y2 is not None:
@@ -59,6 +59,7 @@ def run():
                     int(x1), int(y1),
                     int(x2), int(y2)
                 )
+            state = robotApi.status
         elif cmd == "status":
             state = robotApi.status
         else:
