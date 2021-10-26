@@ -441,18 +441,24 @@ if (DETECTED)
    this->send_Data(NOT_LAST);
    //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
    //+++++++++++++++++++++++++++++++++ 5 Приподнять хват, чтобы не задеть тележку.
-      this->update_Servos_from_position(after_put_position);
-      memcpy(dd.data(), Servos, 6);
-      dd.insert(6, 0x30); // Движение "Туда"
-      this->send_Data(AFTER_PUT);
+//      this->update_Servos_from_position(after_put_position);
+//      memcpy(dd.data(), Servos, 6);
+//      dd.insert(6, 0x30); // Движение "Туда"
+//      this->send_Data(AFTER_PUT);
 
 
 
    //+++++++++++++++++++++ 6 go back to start position
    //on_stand_upButton_clicked();
    this->update_Servos_from_position(hwr_Start_position);
-   dd.insert(6, 0x30); // Движение "Обратно"
-   this->send_Data(LASTONE); // The last command
+//   dd.insert(6, 0x30); // Движение "Обратно"
+  // this->send_Data(LASTONE); // The last command
+   memcpy(dd.data(), Servos, 6);
+   dd.insert(parcel_size-2, 0x30); // Движение "Обратно"
+   dd.insert(parcel_size-1, LASTONE);
+
+   // this->ssend_Data(dd); // The last command
+   Robot->GoToPosition(dd);
 
 
 

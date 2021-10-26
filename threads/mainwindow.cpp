@@ -638,19 +638,24 @@ if (DETECTED)
    memcpy(dd.data(), Servos, 6);
    dd.insert(6, 0x31); // Движение "Туда"
    this->send_Data(BEFORE_LAST); //0xE9, NOT_LAST ==C8
-   //+++++++++++++++++++++ 4  Unclamp the gripper
+   //+++++++++++++++++++++ 4.1  Unclamp the gripper
    //on_clampButton_clicked();
    if (ui->servo_1_spinBox->value () > 0){ ui->servo_1_spinBox->setValue (0); Servos[0]=0;}
    else {ui->servo_1_spinBox->setValue (90); Servos[0]=90;}
    this->send_Data(NOT_LAST);
    //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   //+++++++++++++++++++++ 4.2  Clamp back the gripper - не надо, может кубик сдвинуть.
+//   if (ui->servo_1_spinBox->value () > 0){ ui->servo_1_spinBox->setValue (0); Servos[0]=0;}
+//   else {ui->servo_1_spinBox->setValue (90); Servos[0]=90;}
+//   this->send_Data(NOT_LAST);
+
       //+++++++++++++++++++++++++++++++++ 5 Приподнять хват, чтобы не задеть тележку.
-      this->update_LineDits_from_position (after_put_position);
-      this->repaint();
-      update_Servos_from_LineEdits ();
-      memcpy(dd.data(), Servos, 6);
-      dd.insert(6, 0x30); // Движение "Туда"
-      this->send_Data(AFTER_PUT);
+//      this->update_LineDits_from_position (after_put_position);
+//      this->repaint();
+//      update_Servos_from_LineEdits ();
+//      memcpy(dd.data(), Servos, 6);
+//      dd.insert(6, 0x30); // Движение "Обратно"
+//      this->send_Data(AFTER_PUT);
 
 
 
@@ -659,9 +664,12 @@ if (DETECTED)
    this->update_LineDits_from_position(hwr_Start_position);
    this->repaint();
    this->update_Servos_from_LineEdits();
-   dd.insert(6, 0x30); // Движение "Обратно"
-   this->send_Data(LASTONE); // The last command
+   memcpy(dd.data(), Servos, 6);
+   dd.insert(parcel_size-2, 0x30); // Движение "Обратно"
+   dd.insert(parcel_size-1, LASTONE);
 
+   // this->ssend_Data(dd); // The last command
+   Robot->GoToPosition(dd);
 
 //   //+++++++++++++++++++++ 3 put the cube
 //   this->update_LineDits_from_position (put_position);
@@ -706,13 +714,21 @@ void MainWindow::send_Data(unsigned char thelast)
     QByteArray dd ;
     dd.resize(parcel_size);
     memcpy(dd.data(), Servos, 6);
-    dd.insert(parcel_size-2, 0x31); // Движение "Туда"
+    dd.insert(parcel_size-2, 0x31); // А вот зачем это было нужно ????
     dd.insert(parcel_size-1, thelast);
     //dd.append(0x31);
     //dd.resize(64);
     //QByteArray dd = QByteArray::fromRawData(Servos, 6);
     Robot->GoToPosition(dd);
 }
+
+void MainWindow::ssend_Data(QByteArray position)
+{
+    Robot->GoToPosition(position);
+}
+//+++++++++++++++++++++++++++++++++++++
+
+
 //+++++++++++++++++++++++++++++++++
 // подготовка json-строки с полями ответа в TCP сокет.
 void MainWindow::make_json_answer()

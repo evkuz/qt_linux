@@ -251,13 +251,15 @@ void Go_To_Position(byte *pos)
 
           if (pos[7]==0xDE) // Последняя команда роботу при комплексном движении
           {// Последняя команда, может быть и одиночой, но на случай работы с кубиком делаем так
-            
-          move_servo_together (ints, 3, 4);
-          delay(1000);
 
-          move_servo_together (ints, 5, 6);
-          delay(500);
-          move_servo_together (ints, 1, 1);
+          move_servo_together (ints, 3, 5);
+          delay(1000);
+//          move_servo_together (ints, 3, 4);
+//          delay(1000);
+
+          move_servo_together (ints, 1, 6);
+//          delay(300);
+//          move_servo_together (ints, 6, 6);
 
           }   
      break; //case 0x30:
