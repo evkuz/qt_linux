@@ -36,3 +36,10 @@ Status can be:
 * `inprogress` - command was performed and in progress
 * `done` - execution of the command was finished
 
+
+
+
+
+dmesg | egrep --color 'serial|ttyS'
+
+https://linuxconfig.org/ubuntu-20-04-connect-to-wifi-from-command-line

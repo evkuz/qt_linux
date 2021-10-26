@@ -4,9 +4,11 @@ from flask.wrappers import Response
 
 from .camera import CameraDetector
 from . import robot_api
+from .serial_communication import SerialCommunication
 
+s_ports = SerialCommunication.serial_ports()
 activeCamera = CameraDetector(app.config['CAMERA_NUM'])
-robotApi = robot_api.RobotApi(camera=activeCamera, port=app.config['COM_PORT'])
+robotApi = robot_api.RobotApi(camera=activeCamera, port=s_ports[0])
 
 def gen(camera):
     while True:

@@ -52,6 +52,12 @@ class CameraDetector(object):
 
         if self.FrameHeight is not None:
             self.__cap.set(cv2.CAP_PROP_FRAME_HEIGHT, self.FrameHeight)
+        
+        self.__cap.set(cv2.CAP_PROP_AUTO_EXPOSURE, 0.0)
+        self.__cap.set(cv2.CAP_PROP_EXPOSURE, 0.60)
+        self.__cap.set(cv2.CAP_PROP_AUTO_WB, 0.0)
+        self.__cap.set(cv2.CAP_PROP_AUTOFOCUS, 0.25)
+
 
     def __close_device(self):
         self.__cap.release()
@@ -124,7 +130,7 @@ class CameraDetector(object):
         detected = False
         ox, oy = (0, 0)
 
-        if bestCountorArea > 1000:
+        if bestCountorArea > 500:
             ox = int(x + w / 2)
             oy = int(y + h / 2)
 
@@ -132,7 +138,7 @@ class CameraDetector(object):
             cw = w / self.FrameWidth
             ch = h / self.FrameHeight
 
-            if border_coef > 0.5 and border_coef < 1.6 and cw < 0.8 and cw > 0.030 and ch < 0.9 and ch > 0.09:
+            if border_coef > 0.5 and border_coef < 1.6 and cw < 0.85 and cw > 0.08 and ch < 0.9 and ch > 0.08:
                 detected = True
 
         if detected:

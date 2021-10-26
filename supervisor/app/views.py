@@ -8,6 +8,11 @@ def index():
     return render_template('index.html')
 
 
+@app.route('/pinkman')
+def pinkman():
+    return render_template('calibrate_pinkmanip.html')
+
+
 @app.route('/run', methods=['get'])
 def run():
     args = request.args.to_dict()

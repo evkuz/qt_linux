@@ -79,9 +79,9 @@ class RobotApi(object):
                     errZ = self.__camera.FrameWidth - w
                     errX = x - self.__camera.FrameWidth / 2
                     errY = y - self.__camera.FrameHeight / 2
-                    pos1 = int(currentPos[0] - 0.3*(self.__pixToDegreeX * errX))
-                    pos2 = int(currentPos[1] - 0.4*(self.__pixToDegreeY*errY + self.__pixToDegreeZ*errZ))
-                    pos3 = int(currentPos[2] - 0.4*(self.__pixToDegreeY*errY - self.__pixToDegreeZ*errZ))
+                    pos1 = int(currentPos[0] - 0.2*(self.__pixToDegreeX * errX))
+                    pos2 = int(currentPos[1] - 0.2*(self.__pixToDegreeY*errY + self.__pixToDegreeZ*errZ))
+                    pos3 = int(currentPos[2] - 0.3*(self.__pixToDegreeY*errY - self.__pixToDegreeZ*errZ))
                     pos4 = 180
                     currentPos = self.__serial.send_command(pos1, pos2, pos3, pos4)
                 if currentPos[4] == 1:
@@ -117,6 +117,17 @@ class RobotApi(object):
         if self.__thread is not None: self.__thread.join()
         _ = self.__serial.go_to_start()
         self.__status.status = "wait"
+
+    def __thread_work(self, action):
+        self.__status.status = "inprogress"
+        res = action()
+        
+        if self.__status.active_command != "reset":
+            self.__status.status = "done"
+            self.__status.return_code = res
+        
+        self.__thread = None
+        self.__isWorking = False
 
 
 if __name__ == '__main__':
