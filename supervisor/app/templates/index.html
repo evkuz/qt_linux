@@ -16,11 +16,11 @@
 <link href="style/type/fontello.css" rel="stylesheet">
 <script>
   iqrSupervisor = {
-    //vehicleAddr: "http://192.168.1.41:5000/",
-    vehicleAddr: "http://192.168.1.98:5000/",
-    //manipulatorAddr: "http://192.168.1.41:8384",
     manipulatorAddr: "http://159.93.44.84:8383/",
     manipulatorCameraAddr: "http://159.93.44.84:5555/",
+    wheeltecAddr: "http://192.168.1.80:5001/",
+    pinkmanAddr: "http://192.168.1.177:5001/",
+    xrrobotAddr: "http://192.168.1.98:5000/",
     updateStateInterval: 400,
     tpInterval: 500
   };
@@ -39,7 +39,7 @@
     <div class="container inner">
       <h1> Robot Control Center </h1>
       <p>Simulation of the target installation.</p>
-      <div style="float:right;margin-top:-49px;">
+      <div style="float:right;margin-top:-49px;display:none;">
         <a class="btn btn-red" id="start_tp">Start tech process</a>
       </div>
     </div>
@@ -47,12 +47,12 @@
   </div>
   <!--/.intro -->
   
-  <div class="container inner">
+  <!-- <div class="container inner">
     <div class="row text-center services-1">
       <div class="col-sm-6">
         <div class="col-wrapper">
           <h3>Vehicle camera</h3>
-          <!-- <img src="http://localhost:5000/video_feed" width="550" height="412" id="vehicle_cam"> -->
+          <img src="http://localhost:5000/video_feed" width="550" height="412" id="vehicle_cam">
           <div id="vehicle_status" style="text-align:left;"></div>
         </div>
       </div>
@@ -63,7 +63,7 @@
           <div id="manipulator_status" style="text-align:left;"></div>
         </div>
       </div>
-    </div>
+    </div> -->
     <!-- /.services -->
     
   </div>
@@ -74,7 +74,7 @@
         <p class="pull-left">© 2021 IQR LIT. All rights reserved.</p>
       </div>
     </div>
-    <div style="float:right;margin-top:-49px;">
+    <div style="float:right;margin-top:-49px;display:none;">
       <a class="btn btn-red" id="update_manip">Update state</a>
     </div>
   </footer>
@@ -88,22 +88,7 @@
 <script src="style/js/scripts.js"></script> -->
 <script src="scripts/main.js"></script>
 <script>/*<![CDATA[*/
-  manipulatorState = {
-    "connection": false,
-    "active_command": "none",
-    "comment": "",
-    "return_code": 0,
-    "status": "wait"
-  };
   
-  vehicleState = {
-    "connection": false,
-    "active_command": "none",
-    "comment": "",
-    "return_code": 0,
-    "status": "wait"
-  };
-
   async function sendCommandToManipulator(cmd){
     return httpGet(iqrSupervisor.manipulatorAddr + "run?cmd=" + cmd + "&").then(
       response => {

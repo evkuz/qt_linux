@@ -10,7 +10,7 @@ class RunRosScriptAction(BaseAction):
 
     def run_action(self):
         res = 0
-        command = ['python2.7', self.__script_path]
+        command = ['/bin/bash', self.__script_path]
         self.__process = Popen(command)
         res = 0
         try:
@@ -27,7 +27,7 @@ class RunRosScriptAction(BaseAction):
 
 class TransferCubeAction(RunRosScriptAction):
     def __init__(self):
-        super().__init__("transfercube", "/home/xrrobot/sss/spoint.py")
+        super().__init__("transfercube", "/home/xrrobot/httpserver/transfercube.sh")
 
 class MoveBackAction(RunRosScriptAction):
     def __init__(self):
