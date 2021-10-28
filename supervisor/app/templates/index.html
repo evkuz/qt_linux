@@ -16,8 +16,9 @@
 <link href="style/type/fontello.css" rel="stylesheet">
 <script>
   iqrSupervisor = {
-    manipulatorAddr: "http://159.93.44.84:8383/",
-    manipulatorCameraAddr: "http://159.93.44.84:5555/",
+    manipulatorAddr: "http://192.168.1.175:8383/",
+    manipulatorCameraAddr: "http://192.168.1.175:5555/",
+    //manipulatorCameraAddr: "http://159.93.44.84:5555/",
     wheeltecAddr: "http://192.168.1.80:5001/",
     pinkmanAddr: "http://192.168.1.177:5001/",
     xrrobotAddr: "http://192.168.1.98:5000/",
@@ -249,126 +250,9 @@
     );
   };
 
-  //bmCameraTimeoutFunction();
+  bmCameraTimeoutFunction();
   // END -- Region Manipulator Camera Updating
 
-
-  // Region TECH PROCESS
-  // ------------------------------
-  var tpTimerId = null;
-  var tpInProgress = false;
-  var tpstate = 0;
-
-  async function TPWork() {
-    if(tpstate == 0){
-      await sendCommandToManipulator("start").then(
-        response => {
-          //alert("Command 'start' was sended!");
-          //if (response.return_code != 0){
-          //  alert("Error sending command 'start': returned_code: " + response.return_code );
-          //  StopTP();
-          //  return;
-          //}
-          tpstate++;
-          tpTimerId = setTimeout(
-            TPWork,
-            iqrSupervisor.tpInterval
-          );
-        },
-        error => {
-          alert("Error sending command 'start' to manipulator! " + error);
-          StopTP();
-        }
-      );
-    } else if (tpstate == 1) {
-      if (manipulatorState.status != "done"){
-        //if (!manipulatorState.connection) {return;}
-        if (!tpInProgress){return;}
-      } else {
-        tpstate++;
-      }
-      tpTimerId = setTimeout(
-        TPWork,
-        iqrSupervisor.tpInterval
-      );
-    } else if(tpstate == 2){
-      await sendCommandToVehicle("start").then(
-        response => {
-          //alert("Command 'start' was sended!");
-          if (response.return_code != 0){
-            alert("Error sending command 'start': returned_code: " + response.return_code );
-            StopTP();
-            return;
-          }
-          tpstate++;
-          tpTimerId = setTimeout(
-            TPWork,
-            iqrSupervisor.tpInterval
-          );
-        },
-        error => {
-          alert("Error sending command 'start' to vehicle!");
-          StopTP();
-        }
-      );
-    } else if (tpstate == 3) {
-      if (vehicleState.status != "done"){
-        //if (!vehicleState.connection) {return;}
-        if (!tpInProgress){return;}
-      } else {
-        tpstate++;
-      }
-      tpTimerId = setTimeout(
-        TPWork,
-        iqrSupervisor.tpInterval
-      );
-    } else if (tpstate == 4) {
-      console.log('Done');
-      //tpInProgress = false;
-    }
-  };
-
-  function StartTP(){
-    if (manipulatorState.connection && vehicleState.connection){
-      if (manipulatorState.status == "wait") {
-        tpInProgress = true;
-        tpstate = 0;
-        btn = document.getElementById("start_tp")
-        btn.classList.remove('btn-red');
-        btn.classList.add('btn-gray');
-        tpTimerId = setTimeout(
-          TPWork,
-          1
-        );
-        
-      } else {
-        StopTP();
-      }
-    } else {
-      alert("Not all robots are connected!");
-    }
-  };
-
-  function StopTP(){
-    tpInProgress = false;
-    if(tpTimerId != null) {clearTimeout(tpTimerId); tpTimerId = null;}
-
-    sendCommandToManipulator("reset").then(
-      response => {
-        sendCommandToVehicle("reset").then(
-          response => {
-            if(response.return_code == '0'){
-              btn = document.getElementById("start_tp")
-              btn.classList.remove('btn-gray');
-              btn.classList.add('btn-red');
-            }
-          },
-          error => { alert("Error sending command 'reset'! " + error); }
-        );
-      },
-      error => {alert("Error sending command 'reset'! " + error);}
-    );
-  };
 
   startBtn = document.getElementById("start_tp")
   startBtn.onclick = function(){

@@ -70,14 +70,20 @@ class PutCubeAction(BaseAction):
 
     def run_action(self):
         res = 0
-        currentPos = self.__serial.get_state()
-        _ = self.move_manip(180, 120, 60, 100)
-        _ = self.move_manip(180, 49, 90, 100)
-        _ = self.move_manip(180, 49, 90, 180)
-        _ = self.move_manip(180, 120, 74, 180)
-        _ = self.move_manip(91, 120, 60, 180)
-        pos = self.__serial.go_to_start()
-        self._set_state_info(f"position: ({pos[0]}, {pos[1]}, {pos[2]}, {pos[3]}, {pos[4]})")
+        #currentPos = self.__serial.get_state()
+        if self._isWorking:
+            _ = self.move_manip(180, 120, 60, 100)
+        if self._isWorking:
+            _ = self.move_manip(180, 49, 90, 100)
+        if self._isWorking:
+            _ = self.move_manip(180, 49, 90, 180)
+        if self._isWorking:
+            _ = self.move_manip(180, 120, 74, 180)
+        if self._isWorking:
+            _ = self.move_manip(91, 120, 60, 180)
+        if self._isWorking:
+            pos = self.__serial.go_to_start()
+            self._set_state_info(f"position: ({pos[0]}, {pos[1]}, {pos[2]}, {pos[3]}, {pos[4]})")
         return res
     
     def reset_action(self):
