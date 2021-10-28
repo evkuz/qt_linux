@@ -25,6 +25,7 @@
     tpInterval: 500
   };
 </script>
+<script src="scripts/main.js"></script>
 <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!--[if lt IE 9]>
       <script src="style/js/html5shiv.js"></script>
@@ -32,7 +33,6 @@
       <![endif]-->
 </head>
 <body>
-<div id="prelo  ader"><div id="status"><div class="spinner"></div></div></div>
 <div class="body-wrapper">
   <div class="offset"></div>
   <div class="dark-wrapper intro">
@@ -46,24 +46,130 @@
     <!--/.container -->
   </div>
   <!--/.intro -->
-  
-  <!-- <div class="container inner">
-    <div class="row text-center services-1">
+  <div class="offset"></div>
+  <!-- <div class="dark-wrapper"> -->
+    <div class="container inner">
+      <h2>Tech process control</h2>
+      
+      <div class="divide30"></div>
+
+      <div class="row text-center services-1 dark-wrapper">
+        <div class="col-sm-2">
+          <div class="col-wrapper" style="padding:30px 10px;">
+            <a class="btn btn-green" id="step1" onclick="bmStart(iqrSupervisor);">Step 1</a>
+            <div class="divide20"></div>
+            <div style="height:80px; clear:both; text-align:left; vertical-align:top;">
+              <p>Find cube, take it with blue manipulator and put it to mobile robot.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-2">
+          <div class="col-wrapper" style="padding:30px 10px;">
+            <a class="btn btn-green" id="step2" onclick="m1Transfer(iqrSupervisor);">Step 2</a>
+            <div class="divide20"></div>
+            <div style="height:80px; clear:both; text-align:left; vertical-align:top;">
+              <p>Transfer cube from blue manipulator to pink manipulator.</p>
+            </div>          
+          </div>
+        </div>
+        <div class="col-sm-2">
+          <div class="col-wrapper" style="padding:30px 10px;">
+            <a class="btn btn-green" id="step3" onclick="pmCatchCube(iqrSupervisor);">Step 3</a>
+            <div class="divide20"></div>
+            <div style="height:80px; clear:both; text-align:left; vertical-align:top;">
+              <p>Take cube with pink manipulator.</p>
+            </div>          
+          </div>
+        </div>
+        <div class="col-sm-2">
+          <div class="col-wrapper" style="padding:30px 10px;">
+            <a class="btn btn-green" id="step4" onclick="m1MoveBack(iqrSupervisor);">Step 4</a>
+            <div class="divide20"></div>
+            <div style="height:80px; clear:both; text-align:left; vertical-align:top;">
+              <p>Move mobile robot back.</p>
+            </div>          
+          </div>
+        </div>
+        <div class="col-sm-2">
+          <div class="col-wrapper" style="padding:30px 10px;">
+            <a class="btn btn-green" id="step5" onclick="pmPutCube(iqrSupervisor);">Step 5</a>
+            <div class="divide20"></div>
+            <div style="height:80px; clear:both; text-align:left; vertical-align:top;">
+              <p>Put cube to pink platform of second mobile robot.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-2">
+          <div class="col-wrapper" style="padding:30px 10px;">
+            <a class="btn btn-green" id="step6" onclick="m2Transfer(iqrSupervisor);">Step 6</a>
+            <div class="divide20"></div>
+            <div style="height:80px; clear:both; text-align:left; vertical-align:top;">
+              <p>Transfer cube with second mobile robot.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--/.container -->
+  <!-- </div> -->
+
+  <div class="container inner">
+    <h2 style="margin-bottom:30px;">Robots control</h2>
+    <div class="row text-center services-2">
       <div class="col-sm-6">
         <div class="col-wrapper">
-          <h3>Vehicle camera</h3>
-          <img src="http://localhost:5000/video_feed" width="550" height="412" id="vehicle_cam">
-          <div id="vehicle_status" style="text-align:left;"></div>
+          <h3>Blue manipulator</h3>
+          <img src="/img/no-video.jpg" width="570" height="427" id="bm_camera">
+          <div class="divide20"></div>
+          <div class="col-wrapper"  style="text-align:left;">
+            <a class="btn btn-green" onclick="bmStart(iqrSupervisor);">Start</a>
+            <a class="btn btn-red" onclick="bmReset(iqrSupervisor);">Reset</a>
+          </div>
+          <div class="divide20"></div>
+          <div id="bm_status" style="text-align:left;" class="alert alert-info">No information</div>
         </div>
       </div>
       <div class="col-sm-6">
         <div class="col-wrapper">
-          <h3>Manipulator camera</h3>
-          <img src="http://localhost:5000/video_feed" width="550" height="412" id="manipulator_cam">
-          <div id="manipulator_status" style="text-align:left;"></div>
+          <h3>Pink manipulator</h3>
+          <img src="/img/no-video.jpg" width="570" height="427" id="pm_camera">
+          <div class="divide20"></div>
+          <div class="col-wrapper"  style="text-align:left;">
+            <a class="btn btn-green" onclick="pmCatchCube(iqrSupervisor);">Catch Cube</a>
+            <a class="btn btn-green" onclick="pmPutCube(iqrSupervisor);">Put Cube</a>
+            <a class="btn btn-red" onclick="pmReset(iqrSupervisor);">Reset</a>
+          </div>
+          <div class="divide20"></div>
+          <div id="pm_status" style="text-align:left;" class="alert alert-info">No information</div>
         </div>
       </div>
-    </div> -->
+    </div>
+    <div class="divide30"></div>
+    <div class="row text-center services-2">
+      <div class="col-sm-6">
+        <div class="col-wrapper">
+          <h3>Mobile robot 1</h3>
+          <div class="col-wrapper"  style="text-align:left;">
+            <a class="btn btn-green" onclick="m1Transfer(iqrSupervisor);">Transfer Cube</a>
+            <a class="btn btn-green" onclick="m1MoveBack(iqrSupervisor);">MoveBack</a>
+            <a class="btn btn-red" onclick="m1Reset(iqrSupervisor);">Reset</a>
+          </div>
+          <div class="divide20"></div>
+          <div id="m1_status" style="text-align:left;" class="alert alert-info">No information</div>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="col-wrapper">
+          <h3>Mobile robot 2</h3>
+          <div class="col-wrapper"  style="text-align:left;">
+            <a class="btn btn-green" onclick="m2Transfer(iqrSupervisor);">Transfer Cube</a>
+            <a class="btn btn-red" onclick="m2Reset(iqrSupervisor);">Reset</a>
+          </div>
+          <div class="divide20"></div>
+          <div id="m2_status" style="text-align:left;" class="alert alert-info">No information</div>
+        </div>
+      </div>
+    </div>
     <!-- /.services -->
     
   </div>
@@ -86,68 +192,9 @@
 <script src="style/js/bootstrap.min.js"></script> 
 <script src="style/js/plugins.js"></script> 
 <script src="style/js/scripts.js"></script> -->
-<script src="scripts/main.js"></script>
 <script>/*<![CDATA[*/
+  document.getElementById("pm_camera").src=iqrSupervisor.pinkmanAddr+"video_feed?random="+new Date().getTime();
   
-  async function sendCommandToManipulator(cmd){
-    return httpGet(iqrSupervisor.manipulatorAddr + "run?cmd=" + cmd + "&").then(
-      response => {
-        response.connection = true;
-        return response;
-      },
-      error => { return error;}
-     );
-  };
-
-  async function sendCommandToVehicle(cmd){
-    return httpGet(iqrSupervisor.vehicleAddr + "run?cmd=" + cmd).then(
-      response => {
-        response.connection = true;
-        return response;
-      },
-      error => { return error;}
-     );
-  };
-
-   
-  function updManipulatorState() {
-    return httpGet(iqrSupervisor.manipulatorAddr + "run?cmd=status&").then(
-      response => {
-        statusElem = document.getElementById("manipulator_status");
-        statusElem.innerHTML = "<div class='alert alert-warning'>" +
-          "<p><strong>Current state:</strong>" + response.status + "</p>" +
-          "<p><strong>Comment:</strong>" + response.comment + "</p></div>";
-        manipulatorState.connection = true;
-        manipulatorState.status = response.status;
-      },
-      error => {
-        statusElem = document.getElementById("manipulator_status");
-        statusElem.innerHTML ="<div class='alert alert-danger'> <strong>Connection failed!</strong> Message:" +
-          error +" </div>";
-        manipulatorState.connection = false;
-      });
-  };
-
-
-  function updVehicleState() {
-    return httpGet(iqrSupervisor.vehicleAddr + "run?cmd=status").then(
-      response => {
-        statusElem = document.getElementById("vehicle_status");
-        statusElem.innerHTML = "<div class='alert alert-warning'>" +
-          "<p><strong>Current state:</strong>" + response.status + "</p>" +
-          "<p><strong>Comment:</strong>" + response.comment + "</p></div>";
-        vehicleState.connection = true;
-        vehicleState.status = response.status;
-      },
-      error => {
-        statusElem = document.getElementById("vehicle_status");
-        statusElem.innerHTML ="<div class='alert alert-danger'> <strong>Connection failed!</strong> Message:" +
-          error +" </div>";
-          vehicleState.connection = false;
-      });
-  };
-
-
   // Region Status Updating
   // ------------------------------
   let statusTimeoutIsRuning = false;
@@ -182,29 +229,27 @@
     ubtn.innerHTML = "Start updating"
   };
 
-  StartStatusUpdate();
+  //StartStatusUpdate();
 
-  updateBtn = document.getElementById("update_manip")
-  updateBtn.onclick = function(){
-    if(statusTimeoutIsRuning){ StopStatusUpdate(); }
-    else { StartStatusUpdate(); }
-  };
+  //updateBtn = document.getElementById("update_manip")
+  //updateBtn.onclick = function(){
+  //  if(statusTimeoutIsRuning){ StopStatusUpdate(); }
+  //  else { StartStatusUpdate(); }
+  //};
   // END -- Region Status Updating
   
 
-  // Region Manipulator Camera Updating
+  // Region Blue Manipulator Camera Updating
   // ------------------------------
-  function manCameraTimeoutFunction(){
-    document.getElementById("manipulator_cam").src=iqrSupervisor.manipulatorCameraAddr+"video_feed?random="+new Date().getTime();
-    //document.getElementById("vehicle_cam").src=iqrSupervisor.vehicleAddr+"/video_feed?random="+new Date().getTime();
-    
-    statusTimeoutId = setTimeout(
-      manCameraTimeoutFunction,
+  function bmCameraTimeoutFunction(){
+    document.getElementById("bm_camera").src=iqrSupervisor.manipulatorCameraAddr+"video_feed?random="+new Date().getTime();
+    bmCameraTimeoutId = setTimeout(
+      bmCameraTimeoutFunction,
       400
     );
   };
 
-  manCameraTimeoutFunction();
+  //bmCameraTimeoutFunction();
   // END -- Region Manipulator Camera Updating
 
 
