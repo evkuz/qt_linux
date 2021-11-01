@@ -8,8 +8,6 @@
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
-    for (int i=0; i<5; i++)
-    {
 
     CDiophantine dp(1,2,3,4,30);
 
@@ -26,7 +24,6 @@ int main(int argc, char *argv[])
           std::cout << "c = " << gn.alleles[2] << "." << std::endl;
           std::cout << "d = " << gn.alleles[3] << "." << std::endl;
        }
-       }//for
 
 
     return a.exec();
