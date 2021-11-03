@@ -1,0 +1,70 @@
+Raspberry Pi 4B mobile robot
+
+Remove unused generated locales.
+
+Основная задача - установить qt на Raspberry Pi 4 Model B (RP4B)для общения с платой arduino mega, управляющей манипулятором, как с QSerialPort-ом
+
+- Поставил  ubuntu на RP4B - OK
+  Ключи, обновления, rsync, openssh-server
+
+- Начал установку Qt на RP4B и начались танцы с бубном.
+  В общем, репозитории убунты для RP4B  не рассчитаны на установку Qt. 
+  Потратил на это день, ну, теперь будем знать.
+
+- Поставил Raspberry Pi OS. Ключи, hostname, pi password. Решил сделать образ sd-карты. (Блин, а обновления не поставил...)
+
+# dd bs=4M if=/dev/sdc of=/home/ubuntu/raspi/mobman.img
+  /dev/sdc - SD-карта с RP4B
+  /home/ubuntu/raspi/mobman.img - имя образа, куда сохранится sd-карта
+
+  Есть еще минус в том, что карта размером 64Гб, соответственно и файл образа тоже такого размера.
+  Надо было сделать shrink карте перед созданием образа.
+  ТАкже надо добавить к команде опцию "status=progress", чтобы наблюдать прогресс, т.е.
+
+  dd bs=4M if=/dev/sdc of=/home/ubuntu/raspi/mobman.img status=progress
+ 
+  Косвенно можно наблюдать прогресс за изменением размера файла mobman.img
+
+  Почти час (без нескольких секунд) копировалось.
+  64021856256 bytes (64 GB, 60 GiB) copied, 3562,23 s, 18,0 MB/s
+
+
+- Ставим Qt. https://microtechnics.ru/raspberry-pi-i-qt-kross-kompilyacziya-qt-i-ustanovka-qt-creator/
+  ШАГ 1-2 Успешно.
+
+  ШАГ 3 Успешно. "locale: Cannot set LC_ALL to default locale: No such file or directory"? 
+  ШАг 4-6 Успешно.
+
+  ШАГ 7 rsync -avz pi@192.168.1.200:/usr/lib sysroot/usr
+rsync error: some files/attrs were not transferred (see previous errors) (code 23) at main.c(1655) [generator=3.1.1]
+        
+  ШАГ 8-9 Успешно.
+
+  ШАГ 10 - забыл поправить пути, но со 2 захода Успешно.
+
+  Note: Also available for Linux: linux-clang linux-icc
+
+Note: PKG_CONFIG_LIBDIR automatically set to /home/ubuntu/raspi/sysroot/usr/lib/pkgconfig:/home/ubuntu/raspi/sysroot/usr/share/pkgconfig:/home/ubuntu/raspi/sysroot/usr/lib/arm-linux-gnueabihf/pkgconfig
+
+Note: PKG_CONFIG_SYSROOT_DIR automatically set to /home/ubuntu/raspi/sysroot
+
+WARNING: Command line option -skip is only effective in top-level builds.
+
+Qt is now configured for building. Just run 'make'.
+Once everything is built, you must run 'make install'.
+Qt will be installed into '/home/ubuntu/raspi/qt'.
+
+Prior to reconfiguration, make sure you remove any leftovers from
+the previous build.
+
+ШАГ 11-12 Успешно.
+
+Now go to "Qt Creator для Raspberry Pi."
+
+Step 1-6 OK
+
+
+
+
+  
+
