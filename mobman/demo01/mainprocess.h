@@ -16,7 +16,7 @@
 #include <QList>
 #include "hiwonder.h"  // hiwonder class
 #include "qsimpleserver.h"
-#include "SocketClient.h"
+//#include "SocketClient.h"
 
 
 
@@ -65,7 +65,7 @@ public:
     int X, Y;//Координаты x,y
     bool DETECTED; // Флаг, показывающий, сработал ли захват изображения.
 
-    unsigned char Servos [6] = {93,93,93,93,93,93};
+    unsigned char Servos [DOF] = {93,93,93,93};
 
     //void update_data_from_sliders(int index, int value);
 
@@ -82,7 +82,7 @@ public:
 
 
 private:
-    SocketClient readSocket;
+//    SocketClient readSocket;
 
 public slots:
 void Data_From_Web_SLot(QString message);

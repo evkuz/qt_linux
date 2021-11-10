@@ -27,7 +27,7 @@ public:
 #define robot_buffer_SIZE 32
 #define Log_File_Name        "./hiwonder.log"
 #define SOURCE_POINTS_FILE  "../source_points.xls"
-#define DOF 6
+#define DOF 4     // mobman
 #define szData 8 //Размер посылки в байтах
     unsigned char outputData [szData];
     QSerialPort serial;
@@ -56,7 +56,7 @@ public:
     void Write_To_Log (int value, QString log_message);
     void Write_To_Source(int value, QString points_data); // Запись в файл координат кубика и 6 приводов в виде строки.
 
-    void GoToPosition(QByteArray &position); //, const char *servo Оправляет данные для новой позиции приводов в порт (Роботу)
+    void GoToPosition(QByteArray &position); //, const char *serhttps://www.motoman.com/en-us/products/robots/educationvo Оправляет данные для новой позиции приводов в порт (Роботу)
 
     void Write_Status(QByteArray &status);
 
