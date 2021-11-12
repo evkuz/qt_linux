@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
 
     qDebug() << "Started";
     Log_File_Open(Log_File_Name);
-    Write_To_Log (0xAAAA, "WORKS !!!");
+    Write_To_Log (0xCCCC, "WORKS !!!");
     LogFile.close();
 
     return a.exec();

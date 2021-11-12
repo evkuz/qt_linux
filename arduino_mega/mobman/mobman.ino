@@ -217,7 +217,7 @@ void Go_To_Position(byte *pos)
         else {  // Обычный порядок - двжиение за кубиком при создании обучающей выборки
            move_servo_together (ints, 4, 4);
            delay(1000);
-           move_servo_together (ints, 1, 1);
+           move_servo_together (ints, 1, 2);
            delay(1000);
            move_servo_together (ints, 3, 3);
            delay(1000);

@@ -22,6 +22,8 @@ Remove unused generated locales.
   ТАкже надо добавить к команде опцию "status=progress", чтобы наблюдать прогресс, т.е.
 
   dd bs=4M if=/dev/sdc of=/home/ubuntu/raspi/mobman.img status=progress
+
+  dd bs=4M if=/dev/sdc of=/media/ubuntu/BackUpD/mobman01.img status=progress
  
   Косвенно можно наблюдать прогресс за изменением размера файла mobman.img
 
@@ -63,8 +65,17 @@ Now go to "Qt Creator для Raspberry Pi."
 
 Step 1-6 OK
 
+//+++++++++++++++
+put the file wpa_supplicant.conf at boot folder
 
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+country=RU
 
+network={
+        ssid="Keenetic-8610"
+        psk="5KGHapDM"
+}
 
   
 

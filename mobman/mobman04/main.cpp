@@ -8,6 +8,8 @@
 #include <QTextStream>
 #include <QRegExp>
 
+// servos=75,90,45,45,45,45,49,222
+
 void Log_File_Open(QString lname);
 void Write_To_Log (int value, QString log_message);
 QString parse_command (QString command);

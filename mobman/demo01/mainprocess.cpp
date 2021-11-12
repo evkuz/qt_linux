@@ -95,14 +95,16 @@ MainProcess::MainProcess(QObject *parent)
     //+++++++++++++++ ОТкрываем порт Open_Port_Signal(QString portname); ttyUSB0
     // Arduino NANO виден как ttyUSB0
     // Arduino Mega - как
-    emit Open_Port_Signal("ttyUSB0");
+    emit Open_Port_Signal("ttyACM0"); //"ttyUSB0"
     //make_json_answer();
 
     //+++++++++ Проверяем, что работает QSerialPort
-    QThread::sleep(1);
-    emit on_clampButton_clicked();
-    QThread::sleep(1);
-    emit on_clampButton_clicked();
+//    QThread::sleep(1);
+//    emit on_clampButton_clicked();
+//    QThread::sleep(1);
+//    emit on_clampButton_clicked();
+//    QThread::sleep(1);
+//    emit on_clampButton_clicked();
 
 
 
@@ -111,6 +113,7 @@ MainProcess::MainProcess(QObject *parent)
 MainProcess::~MainProcess()
 {
     GUI_Write_To_Log(0xffff, "Program is going to be closed");
+    delete this;
     delete Robot;
 
 
@@ -274,8 +277,11 @@ void MainProcess::on_socketButton_clicked()
 //+++++++++++++++++++++++++++++++++++++++  ->text().toInt()
 void MainProcess::on_clampButton_clicked()
 {
-    if (Servos[0]>0){ Servos[0]=0;}
-    else {Servos[0]=90;}
+    quint8 FULL_OPENED, FULL_CLOSED;
+    FULL_CLOSED = 35;
+    FULL_OPENED = 90;
+    if (Servos[0]>FULL_CLOSED){ Servos[0]=FULL_CLOSED;}
+    else {Servos[0]=FULL_OPENED;}
 //    update_LineDits_from_servos();
 
     on_set_posButton_clicked();
@@ -490,7 +496,7 @@ void MainProcess::send_Data(unsigned char thelast)
 
     QByteArray dd ;
     dd.resize(parcel_size);
-    memcpy(dd.data(), Servos, 6);
+    memcpy(dd.data(), Servos, DOF);
     dd.insert(parcel_size-2, 0x31); // Движение "Туда"
     dd.insert(parcel_size-1, thelast);
     //dd.append(0x31);
@@ -546,6 +552,7 @@ void MainProcess::Data_From_Web_SLot(QString message)
 //+++++++ Получили данне (запрос) от клиента. Парсим.
 void MainProcess::Data_From_TcpClient_Slot(QString message)
 {
+    QByteArray dd ;
     QString str, substr;
     int value = 0xf00f;
     new_get_request = true;
@@ -609,7 +616,48 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 
    }
 
+   if (substr == "clamp") { on_clampButton_clicked();}//"sit"
 
+   if (substr == "servo2_20")
+   {
+       Servos[1]=20;
+       QByteArray dd ;
+       dd.resize(parcel_size);
+       memcpy(dd.data(), Servos, DOF);
+       dd.insert(6, 0x31); // Движение "Туда"
+       Robot->GoToPosition(dd);
+
+   }
+   if (substr == "servo2_90")
+   {
+       Servos[1]=90;
+       QByteArray dd ;
+       dd.resize(parcel_size);
+       memcpy(dd.data(), Servos, DOF);
+       dd.insert(6, 0x31); // Движение "Туда"
+       Robot->GoToPosition(dd);
+
+   }
+//++++++++++++++++++ Если команда длинная, а для распознавания
+// достаточно первые несколько символов
+
+   if (substr.startsWith("servos=")){
+       substr = substr.remove("servos=");
+       QStringList list1 = substr.split(QLatin1Char(','));
+       for (int i=0; i<DOF; ++i)
+       {
+           Servos[i] = list1.at(i).toUInt();
+
+//           dd.resize(parcel_size);
+//           memcpy(dd.data(), Servos, DOF);
+//           dd.insert(6, 0x31); // Движение "Туда"
+//           Robot->GoToPosition(dd);
+
+           // so now we have here servos array with actual values
+       }//for
+
+       this->send_Data(NOT_LAST);
+   }
 
 }
 
