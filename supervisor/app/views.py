@@ -13,6 +13,11 @@ def pinkman():
     return render_template('calibrate_pinkmanip.html')
 
 
+@app.route('/simple')
+def simple_page():
+    return render_template('index_simple.html')
+
+
 @app.route('/run', methods=['get'])
 def run():
     args = request.args.to_dict()
