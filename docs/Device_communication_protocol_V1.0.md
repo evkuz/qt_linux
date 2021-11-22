@@ -36,8 +36,10 @@
 
 ```json
 {
+  "name": str - device name,
   "rc": "int - request result code",
-  "state": "str - global device status: init | run | fail"
+  "info": "str - text interpretation of return code",
+  "state": "str - global device status: init | run | fail",
   "action_list": [
     {
       "name": "str - action_name",
@@ -92,11 +94,11 @@
 
 Запуск action можно осуществить двумя способами:
 
-* `/run?action=action_name[&param=value[...]]&`
+* `/action?name=action_name[&param=value[...]]&`
 * `/run?cmd=action_name[&param=value[...]]&`
 
 Параметров может быть много, а может и вообще не быть.
-Все параметры в формате GET, например: `/run?action=act_name&param1=value1&param2=value2&`.
+Все параметры в формате GET, например: `/action?name=act_name&param1=value1&param2=value2&`.
 
 Ответ на запрос запуска action выглядит следующим образом:
 
@@ -117,7 +119,7 @@
 
 ## Запрос информации из service
 
-Запрос осуществляется по адресу `/run?service=service_name[&param=value[...]]&`
+Запрос осуществляется по адресу `/service?name=service_name[&param=value[...]]&`
 
 Параметров может быть много, а может и вообще не быть.
 
@@ -130,10 +132,10 @@
   "name": "str - service name",
   "rc": "int - request result code",
   "info": "str - text interpretation of return code"
-  "data": [
-    {"param_name": "param_value"},
+  "data": {
+    "param_name": "param_value"
     ...
-  ]
+  }
 }
 ```
 
