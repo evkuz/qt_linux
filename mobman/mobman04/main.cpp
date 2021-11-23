@@ -93,7 +93,7 @@ void analyze_command (QString command)
 {
     QRegExp rx("^servos=.*");
     QString message, substr;
-    int sPosition, ePosition; // Индекс строки в запросе.
+ //   int sPosition, ePosition; // Индекс строки в запросе.
 
     //if (rx.exactMatch(command)){
       if(command.startsWith("servos=")){

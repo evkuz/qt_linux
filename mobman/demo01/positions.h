@@ -18,6 +18,8 @@ unsigned char put_position [6] = {60, 93, 90, 40, 140, 30};
 unsigned char after_put_position [6] = {0, 93, 90, 45, 135, 30};
 
 unsigned char mob_Start_position [4] = {75,90,90,160};//,45,45,49,222
+
+// moving position 75,90,0,180
 //servos=90,90,90,160,45,45,49,222&
 
 //93, 93, 100, 50, 120, 30

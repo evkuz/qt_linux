@@ -549,7 +549,7 @@ void MainProcess::Data_From_Web_SLot(QString message)
  //this->ui->threadlabel->setText(QString::number(thread_counter));
 }
 //+++++++++++++++++++++++++++++++++++++++++++++++++++
-//+++++++ Получили данне (запрос) от клиента. Парсим.
+//+++++++ Получили данные (запрос) от клиента. Парсим.
 void MainProcess::Data_From_TcpClient_Slot(QString message)
 {
     QByteArray dd ;
