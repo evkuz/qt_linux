@@ -1,7 +1,7 @@
 from time import time
 import threading
 import json
-from baseresponce import BaseResponce, obj_to_dict
+from iqrdevice.baseresponce import BaseResponce, obj_to_dict
 
 
 class ActionResponce(BaseResponce):

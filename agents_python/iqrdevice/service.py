@@ -1,6 +1,6 @@
 from time import time
 import threading
-from baseresponce import BaseResponce
+from iqrdevice.baseresponce import BaseResponce
 
 
 class ServiceResponce(BaseResponce):

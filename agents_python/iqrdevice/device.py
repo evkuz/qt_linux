@@ -1,7 +1,7 @@
-from action import BaseAction, ActionResponce
-from device_py.status import StatusResponce
-from service import BaseService, ServiceResponce
-from history import History, HistResponce
+from iqrdevice.action import BaseAction, ActionResponce
+from iqrdevice.status import StatusResponce
+from iqrdevice.service import BaseService, ServiceResponce
+from iqrdevice.history import History, HistResponce
 
 
 class ListActionsService(BaseService):
@@ -10,7 +10,7 @@ class ListActionsService(BaseService):
         self.__device = device
     
     def get_data(self, **kwargs):
-        res = [x.get_info() for x in self.__device.__actions]
+        return self.__device.get_list_actions()
 
     def get_info(self) -> dict:
         return {"name": self.Name}
@@ -22,7 +22,7 @@ class ListServicesService(BaseService):
         self.__device = device
     
     def get_data(self, **kwargs):
-        res = [x.get_info() for x in self.__device.__services]
+        return self.__device.get_list_services()
 
     def get_info(self) -> dict:
         return {"name": self.Name}
@@ -52,11 +52,20 @@ class IQRDevice:
     def set_state_init(self):
         self.__state = "init"
 
+
+    def get_list_services(self):
+        return [x.get_info() for x in self.__services]
+
+    def get_list_actions(self):
+        return [x.get_info() for x in self.__actions]
+
+
     def register_action(self, action:BaseAction):
         self.__actions.append(action)
 
     def register_service(self, service:BaseService):
         self.__services.append(service)
+
 
     def get_status(self, actions=[]) -> StatusResponce:
         action_list = []

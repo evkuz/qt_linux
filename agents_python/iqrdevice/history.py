@@ -1,6 +1,6 @@
 from time import time
-from action import ActionState
-from baseresponce import BaseResponce
+from iqrdevice.action import ActionState
+from iqrdevice.baseresponce import BaseResponce
 
 
 class HistResponce(BaseResponce):

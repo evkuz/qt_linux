@@ -1,12 +1,13 @@
-from device_py import app
 from flask import render_template, request, make_response
 
-from device_py import device
-from device_py.action import ActionResponce
-from device_py.baseresponce import BaseResponce
-from device_py.status import StatusResponce
-from device_py.service import ServiceResponce
-from device_py.history import HistResponce
+from iqrdevice.action import ActionResponce
+from iqrdevice.baseresponce import BaseResponce
+from iqrdevice.status import StatusResponce
+from iqrdevice.service import ServiceResponce
+from iqrdevice.history import HistResponce
+
+from iqrdevice import app
+from iqrdevice import device
 
 
 def make_my_responce(resp:BaseResponce):

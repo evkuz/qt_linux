@@ -1,4 +1,4 @@
-from baseresponce import BaseResponce
+from iqrdevice.baseresponce import BaseResponce
 
 
 class StatusResponce(BaseResponce):

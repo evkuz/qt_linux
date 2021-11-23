@@ -5,7 +5,9 @@ import os, config
 app = Flask(__name__)
 #app.config.from_object(os.environ.get('FLASK_ENV') or 'config.DevelopementConfig')
 
-from device_py.device import IQRDevice
+from iqrdevice.device import IQRDevice
 device = IQRDevice("agent")
 
-from device_py import views
+from iqrdevice import views
+
+print(device.__repr__())
