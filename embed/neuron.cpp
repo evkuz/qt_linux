@@ -4,7 +4,7 @@
 
 //        Механизм запрос - ответ
 
-void MainWindow::try_mcinfer(int x, int y){
+void MainProcess::try_mcinfer(int x, int y){
     QString str;
 
 //            in[0] = actAngle;
@@ -44,10 +44,14 @@ void MainWindow::try_mcinfer(int x, int y){
 //494, 796
 
     // Значения серво уже пришли из нейронки
-    this->update_LineDits_from_servos();
-    this->repaint();
+//    this->update_LineDits_from_servos();
+//    this->repaint();
 
     Robot->current_status = "inprogress";
+    str = "Robot current status is ";
+    str += Robot->current_status;
+    Robot->Write_To_Log(0xf020, str);
+
     // Неправильно, так не делать !!! влияет на статус !!!
     //on_set_posButton_clicked();
 

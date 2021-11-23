@@ -11,6 +11,8 @@ QSimpleServer::QSimpleServer(QObject *parent) :
     // if(listen(adr, tcpport)){
     // Так не слушает даже localhost, а только указанный ip
     // if(listen(QHostAddress("192.168.1.175"), tcpport))
+
+    // Запускаем слушание порта
     if(listen(QHostAddress::AnyIPv4, tcpport)){
         qDebug() << "Listening...";
     //current_status = "wait";
@@ -38,23 +40,26 @@ void QSimpleServer::incomingConnection(qintptr sDescriptor)
 
 
     connect(tcpthread, &QSocketThread::Command_4_Parsing_Signal, this, &QSimpleServer::Command_4_Parsing_Slot);
-    connect(this, &QSimpleServer::Data_2_Client_Signal, tcpthread, &QSocketThread::Data_2_Client_Slot);
+    connect(this, &QSimpleServer::Data_2_TcpClient_Signal, tcpthread, &QSocketThread::Data_2_TcpClient_Slot);
     //Запуск потока
     thread_A->start();
     //addPendingConnection(sDescriptor);
 }
 //++++++++++++++++
-// Слот отправки данных от робота клиенту в сокет
-void QSimpleServer::Write_2_Client_SLot(QString data)
+// Слот отправки данных от робота клиенту в сокет (в ЦУП)
+void QSimpleServer::Write_2_TcpClient_SLot(QString data)
 {
     // Передаем данные дальше вниз в qtcpsocket
-    emit Data_2_Client_Signal(data);
+    emit Data_2_TcpClient_Signal(data);
 }
 //++++++++++++
 // ОТправляем команду наверх, роботу на выполнение.
 void QSimpleServer::Command_4_Parsing_Slot(QString message)
 {
-  emit Info_2_Log_Signal(message);
+  emit Data_From_TcpClient_Signal(message); // works ???
+    qDebug() << "!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSimpleServer->Command_4_Parsing_Slot !!!!!!!!!!!!!!!!!!!";
+    qDebug() << message;
+
 }
 
 

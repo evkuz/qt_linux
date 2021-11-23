@@ -291,16 +291,16 @@ void DrawCalibration(Mat& frame){
 void DrawCameraMarks(Mat& frame){
 	int step = 50;
 
-	cv::Point p1(step, step);
-	cv::Point p2(frame.cols - step, step);
-	cv::Point p3(step, frame.rows - step);
-	cv::Point p4(frame.cols - step, frame.rows - step);
+	cv::Point p1(95, 31);
+	cv::Point p2(frame.cols - 66, 56);
+	cv::Point p3(91, frame.rows - 549);
+	cv::Point p4(frame.cols - 74, frame.rows - 528);
 
 
-	cv::drawMarker(frame, p1,  cv::Scalar(0, 0, 0), MARKER_CROSS, 20, 1);
-	cv::drawMarker(frame, p2,  cv::Scalar(0, 0, 0), MARKER_CROSS, 20, 1);
-	cv::drawMarker(frame, p3,  cv::Scalar(0, 0, 0), MARKER_CROSS, 20, 1);
-	cv::drawMarker(frame, p4,  cv::Scalar(0, 0, 0), MARKER_CROSS, 20, 1);
+	cv::drawMarker(frame, p1,  cv::Scalar(0, 0, 0), MARKER_CROSS, 20, 2);
+	cv::drawMarker(frame, p2,  cv::Scalar(0, 0, 0), MARKER_CROSS, 20, 2);
+	cv::drawMarker(frame, p3,  cv::Scalar(0, 0, 0), MARKER_CROSS, 20, 2);
+	cv::drawMarker(frame, p4,  cv::Scalar(0, 0, 0), MARKER_CROSS, 20, 2);
 }
 
 
@@ -362,10 +362,11 @@ int main(int argc, char* argv[])
 	Miksarus::ParseProgramOptions(argc, argv, options_list);
 	
 	// getting my IP
-	char ip_addr[80];
-	if (get_my_ip(ip_addr) != 0) {
-		return -1;
-	}
+    //char ip_addr[80];
+    //if (get_my_ip(ip_addr) != 0) {
+    //	return -1;
+    //}
+    const char* ip_addr = "192.168.1.175";
 
 	VideoCapture capture;
 	capture.open(cameraId);
@@ -485,7 +486,7 @@ int main(int argc, char* argv[])
 				int ox = static_cast<int>(pos.x + pos.width/2);
 				int oy = static_cast<int>(pos.y + pos.height/2);
 				//printf("w: %0.3f, h: %0.3f, border_coef:%0.3f\n", w, h, border_coef);
-				if (border_coef > 0.6 && border_coef < 1.4 && w < 0.1 && w > 0.030 && h < 0.19 && h > 0.09){
+				if (border_coef > 0.6 && border_coef < 1.6 && w < 0.16 && w > 0.020 && h < 0.19 && h > 0.04){
 					printf("%i, %i (w: %i, h: %i, area: %i px^2)\n", ox, oy, pos.width, pos.height, area);
 					rectangle(frame, pos, Scalar(0,255, 0),2);
 					if( abs(pos.x - etalon.x) < 3 && abs(pos.y - etalon.y) < 3 ){

@@ -17,11 +17,14 @@
 <script>
   iqrSupervisor = {
     //vehicleAddr: "http://192.168.1.41:5000/",
-    vehicleAddr: "http://192.168.1.98:5000/",
+    vehicleAddr: "http://192.168.1.80:5000/",
     //manipulatorAddr: "http://192.168.1.41:8384",
-    manipulatorAddr: "http://159.93.44.84:8383/",
-    manipulatorCameraAddr: "http://159.93.44.84:5555/",
-    updateStateInterval: 400,
+    //manipulatorAddr: "http://159.93.44.84:8383/",
+    //manipulatorCameraAddr: "http://159.93.44.84:5555/",
+    manipulatorAddr: "http://192.168.1.175:8383/",
+    manipulatorCameraAddr: "http://192.168.1.175:5555/",
+
+    updateStateInterval: 500,
     tpInterval: 500
   };
 </script>
@@ -32,7 +35,6 @@
       <![endif]-->
 </head>
 <body>
-<div id="prelo  ader"><div id="status"><div class="spinner"></div></div></div>
 <div class="body-wrapper">
   <div class="offset"></div>
   <div class="dark-wrapper intro">
@@ -51,14 +53,13 @@
     <div class="row text-center services-1">
       <div class="col-sm-6">
         <div class="col-wrapper">
-          <h3>Vehicle camera</h3>
-          <!-- <img src="http://localhost:5000/video_feed" width="550" height="412" id="vehicle_cam"> -->
+          <h3>Mobile robot</h3>
           <div id="vehicle_status" style="text-align:left;"></div>
         </div>
       </div>
       <div class="col-sm-6">
         <div class="col-wrapper">
-          <h3>Manipulator camera</h3>
+          <h3>Manipulator</h3>
           <img src="http://localhost:5000/video_feed" width="550" height="412" id="manipulator_cam">
           <div id="manipulator_status" style="text-align:left;"></div>
         </div>

@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QLineEdit" name="lineEdit">
+   <widget class="QLineEdit" name="tcpdatalineEdit">
     <property name="geometry">
      <rect>
       <x>120</x>
@@ -27,6 +27,19 @@
      <font>
       <pointsize>24</pointsize>
      </font>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>170</x>
+      <y>50</y>
+      <width>121</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Data from client</string>
     </property>
    </widget>
   </widget>
