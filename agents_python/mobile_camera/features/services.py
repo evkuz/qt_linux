@@ -8,7 +8,13 @@ class CamDetectorService(BaseService):
         self.__cam = cam
     
     def get_data(self, **kwargs):
-        res = self.__cam.get_position()
+        pos = self.__cam.get_position()
+        res = {
+            "detected": pos[0],
+            "x": pos[1],
+            "distance": pos[2]
+        }
+        return res
 
     def get_info(self) -> dict:
         return {"name": self.Name}

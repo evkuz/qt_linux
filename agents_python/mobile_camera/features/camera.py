@@ -8,8 +8,9 @@ import copy
 class CameraDetector(object):
     def __init__(self, camPort, width=640, height=480, showWindow=False):
         self.last_access = 0  # time of last client access to the camera
-        self.color_range = ((83, 198, 207), (151, 241, 251)) #((18, 120, 131), (43, 150, 158))
-        #self.color_range = ((1, 50, 144), (100, 120, 178))
+        #self.color_range = ((83, 198, 207), (151, 241, 251)) #((18, 120, 131), (43, 150, 158))
+        #self.color_range = ((0, 0, 140), (10, 25, 183))
+        self.color_range = ((0, 230, 115), (8, 255, 183))
 
         self.port = camPort
         self.FrameWidth = width
@@ -109,7 +110,8 @@ class CameraDetector(object):
         return res
 
     def __detect(self, frame):
-        blurred = cv2.GaussianBlur(frame, (51, 51), 0)
+        hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+        blurred = cv2.GaussianBlur(hsv, (51, 51), 0)
 
         # create NumPy arrays from the boundaries
         lower = np.array(self.color_range[0], dtype="uint8")
@@ -131,9 +133,9 @@ class CameraDetector(object):
         detected = False
         ox, oy = (0, 0)
 
-        if bestCountorArea > 500:
-            ox = int(x + w / 2)
-            oy = int(y + h / 2)
+        if bestCountorArea > 200:
+            ox = int(x + w / 2) - self.FrameWidth/2
+            oy = self.FrameHeight/2 - int(y + h / 2)
 
             border_coef = w / h
             cw = w / self.FrameWidth
@@ -145,7 +147,7 @@ class CameraDetector(object):
 
         if detected:
             output = cv2.rectangle(
-                frame, 
+                hsv, 
                 (x, y),
                 (x + w, y + h),
                 (0, 255, 0),
@@ -153,7 +155,7 @@ class CameraDetector(object):
             )
         else:
             output = cv2.rectangle(
-                frame, 
+                hsv, 
                 (x, y),
                 (x + w, y + h),
                 (0, 0, 255),
@@ -237,6 +239,8 @@ class CameraDetector(object):
      
         while self.__isWorking:
             _, frame = self.__cap.read()
+            #frame = cv2.imread("mobile_camera/ffff/Untitled1.png", 1)
+            frame = cv2.flip(frame, 0)
             frame, self.position = self.__detect(frame)
             (flag, encodedImage) = cv2.imencode(".jpeg", frame)
             self.__actualFrameBytes = encodedImage
@@ -264,7 +268,7 @@ class CameraDetector(object):
         
 
 if __name__ == '__main__':
-    c = CameraDetector(2, showWindow=True)
+    c = CameraDetector(0, showWindow=True)
     # winName = "Camera demonstration"
     # cv2.namedWindow(winName)
     #c.start()

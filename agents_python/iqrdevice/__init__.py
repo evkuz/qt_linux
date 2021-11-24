@@ -10,4 +10,4 @@ device = IQRDevice("agent")
 
 from iqrdevice import views
 
-print(device.__repr__())
+#print(device.__repr__())
