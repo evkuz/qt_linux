@@ -1,0 +1,21 @@
+[Unit]
+Description=Robot http server daemon
+After=network.target
+
+[Service]
+User=xrrobot
+Group=wheeltec
+WorkingDirectory=/home/xrrobot/httpserver
+ExecStart=/home/xrrobot/httpserver/.venv/bin/python \
+          /home/xrrobot/httpserver/runner.py
+Type=simple
+ExecReload=/bin/kill -s HUP $MAINPID
+KillMode=mixed
+TimeoutStopSec=5
+PrivateTmp=true
+Restart=always
+Environment="PYTHONPATH=/home/xrrobot/httpserver"
+Environment="FLASK_ENV=config.ProductionConfig"
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="shortcut icon" href="style/images/favicon.png">
+<title>Robot Control Center</title>
+<!-- Bootstrap core CSS -->
+<link href="style/css/bootstrap.min.css" rel="stylesheet">
+<link href="style/css/plugins.css" rel="stylesheet">
+<link href="style.css" rel="stylesheet">
+<link href="style/css/color/red.css" rel="stylesheet">
+<link href="style/type/bebas.css" rel="stylesheet">
+<link href="style/type/fontello.css" rel="stylesheet">
+<script>
+  iqrSupervisor = {
+    pinkmanipAddr: "http://192.168.1.177:5001/",
+    updateImgInterval: 2000,
+    updateStateInterval: 400,
+    tpInterval: 500
+  };
+</script>
+<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!--[if lt IE 9]>
+      <script src="style/js/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+      <![endif]-->
+</head>
+<body>
+<!-- <div id="prelo  ader"><div id="status"><div class="spinner"></div></div></div> -->
+<div class="body-wrapper">
+  <div class="offset"></div>
+  <div class="dark-wrapper intro">
+    <div class="container inner">
+      <h1> Robot Control Center </h1>
+      <p>Simulation of the target installation.</p>
+      <div style="float:right;margin-top:-49px;">
+        <a class="btn btn-red" id="start_tp">Start tech process</a>
+      </div>
+    </div>
+    <!--/.container -->
+  </div>
+  <!--/.intro -->
+  
+  <div class="container inner">
+    <div class="row text-center services-1">
+      <div class="col-sm-6">
+        <div class="col-wrapper">
+          <h3>Pink Manipulator camera</h3>
+          <img src="http://localhost:5001/video_feed" width="550" height="412" id="pinkmanip_cam">
+          <div id="pinkmanip_status" style="text-align:left;"></div>
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="col-wrapper">
+          
+        </div>
+      </div>
+    </div>
+    <!-- /.services -->
+    
+  </div>
+  <!--/.container -->
+    
+    <div class="sub-footer">
+      <div class="container">
+        <p class="pull-left">© 2021 IQR LIT. All rights reserved.</p>
+      </div>
+    </div>
+    <div style="float:right;margin-top:-49px;">
+      <a class="btn btn-red" id="update_manip">Update state</a>
+    </div>
+  </footer>
+  <!-- /footer --> 
+ 
+</div>
+<!--/.body-wrapper --> 
+<!-- <script src="style/js/jquery.min.js"></script> 
+<script src="style/js/bootstrap.min.js"></script> 
+<script src="style/js/plugins.js"></script> 
+<script src="style/js/scripts.js"></script> -->
+<script>/*<![CDATA[*/
+  pinkmanipState = {
+    "connection": false,
+    "active_command": "none",
+    "comment": "",
+    "return_code": 0,
+    "status": "wait"
+  };
+  
+  function httpGet(url) {
+    return new Promise(function(resolve, reject) {
+ 
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', url, true);
+      xhr.responseType = 'json';
+      xhr.timeout = iqrSupervisor.updateStateInterval;
+  
+      xhr.onload = function() {
+        if (this.status == 200) {
+          resolve(this.response);
+        } else {
+          var error = new Error(this.statusText);
+          error.code = this.status;
+          reject(error);
+        }
+      };
+      
+      xhr.ontimeout = function() {
+        reject(new Error("Connection timeout"));
+      };
+
+      xhr.onerror = function() {
+        reject(new Error("Network Error"));
+      };
+  
+      xhr.send();
+    });
+  }
+  
+
+  async function sendCommandToPinkmanip(cmd){
+    return httpGet(iqrSupervisor.pinkmanipAddr + "run?cmd=" + cmd + "&").then(
+      response => {
+        response.connection = true;
+        return response;
+      },
+      error => { return error;}
+     );
+  };
+
+  function updPinkmanipState() {
+    return httpGet(iqrSupervisor.pinkmanipAddr + "run?cmd=status&").then(
+      response => {
+        statusElem = document.getElementById("pinkmanip_status");
+        statusElem.innerHTML = "<div class='alert alert-warning'>" +
+          "<p><strong>Current state:</strong>" + response.status + "</p>" +
+          "<p><strong>Comment:</strong>" + response.comment + "</p></div>";
+        pinkmanipState.connection = true;
+        pinkmanipState.status = response.status;
+      },
+      error => {
+        statusElem = document.getElementById("pinkmanip_status");
+        statusElem.innerHTML ="<div class='alert alert-danger'> <strong>Connection failed!</strong> Message:" +
+          error +" </div>";
+          pinkmanipState.connection = false;
+      });
+  };
+
+
+  
+  // Region Status Updating
+  // ------------------------------
+  let statusTimeoutIsRuning = false;
+  let statusTimeoutId = null;
+
+  async function statusTimeoutFunction(){
+    await updPinkmanipState();
+    if(statusTimeoutIsRuning){
+      statusTimeoutId = setTimeout(
+        statusTimeoutFunction,
+        iqrSupervisor.updateStateInterval
+      );
+    }
+  };
+  
+  function StartStatusUpdate(){
+    ubtn = document.getElementById("update_manip")
+    ubtn.classList.remove('btn-red');
+    ubtn.classList.add('btn-gray');
+    ubtn.innerHTML = "Stop updating"
+    statusTimeoutIsRuning = true;
+    statusTimeoutFunction();
+  };
+
+  function StopStatusUpdate(){
+    statusTimeoutIsRuning = false;
+    if (statusTimeoutId!=null) {clearTimeout(statusTimeoutId);}
+    ubtn = document.getElementById("update_manip")
+    ubtn.classList.remove('btn-gray');
+    ubtn.classList.add('btn-red');
+    ubtn.innerHTML = "Start updating"
+  };
+
+  StartStatusUpdate();
+
+  updateBtn = document.getElementById("update_manip")
+  updateBtn.onclick = function(){
+    if(statusTimeoutIsRuning){ StopStatusUpdate(); }
+    else { StartStatusUpdate(); }
+  };
+  // END -- Region Status Updating
+  
+
+  // Region Manipulator Camera Updating
+  // ------------------------------
+  function manCameraTimeoutFunction(){
+    document.getElementById("pinkmanip_cam").src=iqrSupervisor.pinkmanipAddr+"video_feed?random="+new Date().getTime();
+    //document.getElementById("vehicle_cam").src=iqrSupervisor.vehicleAddr+"/video_feed?random="+new Date().getTime();
+    
+    statusTimeoutId = setTimeout(
+      manCameraTimeoutFunction,
+      iqrSupervisor.updateImgInterval
+    );
+  };
+
+  manCameraTimeoutFunction();
+  // END -- Region Manipulator Camera Updating
+
+
+  // Region TECH PROCESS
+  // ------------------------------
+  var tpTimerId = null;
+  var tpInProgress = false;
+  var tpstate = 0;
+
+  async function TPWork() {
+    if(tpstate == 0){
+      await sendCommandToPinkmanip("start").then(
+        response => {
+          //alert("Command 'start' was sended!");
+          //if (response.return_code != 0){
+          //  alert("Error sending command 'start': returned_code: " + response.return_code );
+          //  StopTP();
+          //  return;
+          //}
+          tpstate++;
+          tpTimerId = setTimeout(
+            TPWork,
+            iqrSupervisor.tpInterval
+          );
+        },
+        error => {
+          alert("Error sending command 'start' to manipulator! " + error);
+          StopTP();
+        }
+      );
+    } else if (tpstate == 1) {
+      if (pinkmanipState.status != "done"){
+        //if (!manipulatorState.connection) {return;}
+        if (!tpInProgress){return;}
+      } else {
+        tpstate++;
+      }
+      tpTimerId = setTimeout(
+        TPWork,
+        iqrSupervisor.tpInterval
+      );
+    } else if(tpstate == 2){
+      console.log('Done');
+      //tpInProgress = false;
+    }
+  };
+
+  function StartTP(){
+    if (pinkmanipState.connection){
+      if (pinkmanipState.status == "wait") {
+        tpInProgress = true;
+        tpstate = 0;
+        btn = document.getElementById("start_tp")
+        btn.classList.remove('btn-red');
+        btn.classList.add('btn-gray');
+        tpTimerId = setTimeout(
+          TPWork,
+          1
+        );
+        
+      } else {
+        StopTP();
+      }
+    } else {
+      alert("Not all robots are connected!");
+    }
+  };
+
+  function StopTP(){
+    tpInProgress = false;
+    if(tpTimerId != null) {clearTimeout(tpTimerId); tpTimerId = null;}
+
+    sendCommandToPinkmanip("reset").then(
+      response=> {
+        if(response.return_code == '0'){
+          btn = document.getElementById("start_tp")
+          btn.classList.remove('btn-gray');
+          btn.classList.add('btn-red');
+        }
+      },
+      error => {alert("Error sending command 'reset'! " + error);}
+    );
+  };
+
+  startBtn = document.getElementById("start_tp")
+  startBtn.onclick = function(){
+    if (!tpInProgress) { StartTP();}
+    else { StopTP(); }
+  };
+  // END -- Region  TECH PROCESS
+
+
+
+  //region Color Calibration
+  // ------------------------------
+
+  startBtn = document.getElementById("start_tp")
+  startBtn.onclick = function(){
+    if (!tpInProgress) { StartTP();}
+    else { StopTP(); }
+  };
+
+
+  // END -- Region Color Calibration
+
+  /*]]>*/
+</script>
+</body>
+</html>

@@ -5,7 +5,9 @@ if [ ! -d '.venv' ]; then
       echo "can't create virtual enviroment!"
       exit 1
   }
-  python3 -m pip install -r requirements.txt || {
+  source .venv/bin/activate
+  python -m pip install pip --upgrade
+  python -m pip install -r requirements.txt || {
       echo "can't install requirements!"
       exit 2
   }
@@ -16,5 +18,5 @@ source .venv/bin/activate || {
       exit 3
 } && {
   export FLASK_ENV=config.ProductionConfig
-  gunicorn --threads 5 --workers 1 --bind 0.0.0.0:5000 runner:app
+  python runner.py
 }
