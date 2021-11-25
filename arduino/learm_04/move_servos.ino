@@ -116,3 +116,20 @@ byte get_max_delta (byte *arr, byte start_servo, byte end_servo)
   return index;
 } //get_max_delta
 //++++++++++++++++++++++++++
+//++++++++++++++++++++++++++
+// Attach all servos. need for smooth start
+void smoothStart()
+{
+    for (byte i=0; i< serv_number; i++) //
+    {
+      for (byte j=0; j< 10; j++) {
+        servos[i].detach();
+        delay(75);
+        servos[i].attach(i+2);
+        // writeUs(_servoCurrentPos);
+        delay(25);
+      }
+
+    }
+
+}

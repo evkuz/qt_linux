@@ -33,6 +33,8 @@ MainProcess::MainProcess(QObject *parent)
     QString str = "The application \"";  str +=target_name; str += "\"";
     Robot->Write_To_Log(0xf000, str.append(" is started successfully!!!\n"));
 
+    qDebug() << "Started " << target_name;
+
     GUI_Write_To_Log(0000, "Going to Start QTcpSErver");
     if (server.isListening ()) {
 
@@ -40,6 +42,7 @@ MainProcess::MainProcess(QObject *parent)
         str += " and port "; str += QString::number(server.serverPort());//QString::number(server.tcpport);
 
         GUI_Write_To_Log(0000, str);
+         qDebug() << str;
     }
 
     //+++++++++++++++++++++++++++++++++  signal/slot of Get Request to webserver
@@ -106,13 +109,35 @@ MainProcess::MainProcess(QObject *parent)
 //    QThread::sleep(1);
 //    emit on_clampButton_clicked();
 
+//    QString tcp_command="/run?cmd=servos=25,35,45,55,65,75,125,222&";
+//    http://192.168.1.201:8383/run?cmd=servos=45,90,45,165,0,0,125,222&
+
+//    QByteArray dd = QByteArray::fromRawData(reinterpret_cast<const char*>(sit_down_position), 6);
+//    dd.append(0x31); // Движение "Туда"
+//    Robot->GoToPosition(dd);//, sit_down_position
+
+//    str = "Current servo values are : ";
+
+
+//    for (int i=0; i< DOF; i++){
+//        str += QString::number(Servos[i]);
+//        str += ", ";
+//    }
+// GUI_Write_To_Log(0000, str);
+// qDebug() << str;
+
+    str = "On start ";
+    Servos_To_Log(str);
+ QThread::sleep(1);
 
 
 }
 //++++++++++++++++++++++++++++++++++++++++++++++
 MainProcess::~MainProcess()
 {
-    GUI_Write_To_Log(0xffff, "Program is going to be closed");
+    QString str = "Program is going to be closed";
+    GUI_Write_To_Log(0xffff, str);
+    qDebug() << str;
     delete this;
     delete Robot;
 
@@ -132,6 +157,20 @@ void MainProcess::GUI_Write_To_Log (int value, QString log_message)
 
     uin << str << str2 << log_message << "\n";
 
+
+}
+
+void MainProcess::Servos_To_Log(QString message)
+{
+ QString   str = message;
+    str += "Current servo values are : ";
+
+
+    for (int i=0; i< DOF; i++){
+        str += QString::number(Servos[i]);
+        str += ", ";
+    }
+ GUI_Write_To_Log(0000, str);
 
 }
 
@@ -618,6 +657,17 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 
    if (substr == "clamp") { on_clampButton_clicked();}//"sit"
 
+   if (substr == "parking")
+   {
+        str = "Before parking memcpy ";
+        Servos_To_Log(str);
+        memcpy(Servos, mob_parking_position, DOF);
+        str = "After parking memcpy ";
+        Servos_To_Log(str);
+        this->send_Data(LASTONE);
+   }
+
+
    if (substr == "servo2_20")
    {
        Servos[1]=20;
@@ -638,6 +688,15 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
        Robot->GoToPosition(dd);
 
    }
+
+   if (substr == "pos_22")
+   {
+       memcpy(Servos, mob_pos_22, DOF);
+       this->send_Data(LASTONE);
+
+   }
+
+
 //++++++++++++++++++ Если команда длинная, а для распознавания
 // достаточно первые несколько символов
 

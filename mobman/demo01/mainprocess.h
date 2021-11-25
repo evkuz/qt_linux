@@ -55,6 +55,7 @@ public:
 
 
 #define parcel_size 8
+#define FORWARD     0X31 //049
 #define NOT_LAST    0xC8 //200  // Не последняя команда
 #define LASTONE     0xDE //222  // Последняя команда роботу при комплексном движении
 #define BEFORE_LAST 0xE9 //233  // Предпоследняя команда - положить кубик на тележку.
@@ -70,6 +71,7 @@ public:
     //void update_data_from_sliders(int index, int value);
 
     void GUI_Write_To_Log (int value, QString log_message); //Пишет в лог-файл номер ошибки value и сообщение message
+    void Servos_To_Log(QString message);
     void try_mcinfer(int x, int y);
 //    void update_LineDits_from_servos(void);
 //    void update_LineDits_from_position(const char *pos);

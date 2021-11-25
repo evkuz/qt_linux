@@ -20,6 +20,8 @@
 
 #include <Arduino.h>
 #include <Servo.h>
+//#include <ServoSmooth.h>
+
 //#include "/home/evkuz/0_arduino/include/hiwonder_byte.h"
 //#include "move_servos.ino"
 
@@ -30,12 +32,22 @@
 /// //../include/hiwonder_byte.h
 #include <stdlib.h>
 
-
-#define serv_number 6 // Количество приводов под управлением
+//for (byte i = 0; i < 10; i++) {
+//        detach();
+//        delay(75);
+//        attach();
+//        writeUs(_servoCurrentPos);
+//        delay(25);
+//    }  
+//
+#define serv_number 4 // Количество приводов под управлением
 #define sBufSize 32   // Размер буфера компорта в плате NANO - 64 байта.
 #define szParcel 8
 Servo servo1, servo2, servo3,servo4,servo5,servo6;
-Servo servos [serv_number] = {servo1, servo2, servo3,servo4,servo5,servo6}; // Текущие значения углов
+Servo servos [serv_number] = {servo1, servo2, servo3,servo4};//,servo5,servo6}; // Текущие значения углов
+
+//ServoSmooth servo1, servo2, servo3,servo4,servo5,servo6;
+//ServoSmooth servos [serv_number] = {servo1, servo2, servo3,servo4,servo5,servo6}; // Текущие значения углов
 
 
 //int *s1, *s2, *s3, *s4, *s5, *s6;
@@ -48,7 +60,7 @@ char *s_pos;
 char buf[sBufSize];
 
 byte ints[sBufSize]; // Данные, полученные по serial, заданные позиции сервоприводов
-short DF [serv_number] ={1, 1, 1, 1, 1, 1}; // Значения приращений угла в градусах для приводов, т.е. 1 - увеличиваем на 1 градус,
+short DF [serv_number] ={1, 1, 1, 1};//, 1, 1}; // Значения приращений угла в градусах для приводов, т.е. 1 - увеличиваем на 1 градус,
                                   // а (-1) - уменьшаем на 1 градус.
                                   // При значении 1 - движение робота максимально плавное
                                   // Направление изменений - увеличение/уменьшение
@@ -64,6 +76,8 @@ void setup() {
     }
 // attach servos to correspondent pin
   for (int i=0; i<= serv_number -1; i++)  { servos[i].attach(i+2); } //, 500, 2500;
+  
+  smoothStart();
 
 //  move_servo_together(hwr_Start_position, 1, 6);
   delay(1000);
@@ -215,12 +229,17 @@ void Go_To_Position(byte *pos)
         }
 
         else {  // Обычный порядок - двжиение за кубиком при создании обучающей выборки
-           move_servo_together (ints, 4, 4);
-           delay(1000);
-           move_servo_together (ints, 1, 2);
-           delay(1000);
-           move_servo_together (ints, 3, 3);
-           delay(1000);
+//           move_servo_together (ints, 4, 4);
+//           delay(1000);
+//           move_servo_together (ints, 1, 2);
+//           delay(1000);
+//           move_servo_together (ints, 3, 3);
+//           delay(1000);
+
+            //move_servos(ints);
+            move_servo_together (ints, 1, 4);
+            delay(1000);
+
         }
 
       break;
@@ -250,12 +269,13 @@ void Go_To_Position(byte *pos)
           if (pos[7]==0xDE) // Последняя команда роботу при комплексном движении
           {// Последняя команда, может быть и одиночой, но на случай работы с кубиком делаем так
 
-          move_servo_together (ints, 3, 4);
+        //  move_servo_together (ints, 3, 4);
+          move_servos(ints);
           delay(1000);
 //          move_servo_together (ints, 1, 2);
 //          delay(1000);
 
-          move_servo_together (ints, 1, 2);
+//          move_servo_together (ints, 1, 2);
 //          delay(300);
 //          move_servo_together (ints, 6, 6);
 

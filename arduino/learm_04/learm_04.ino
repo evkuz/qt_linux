@@ -64,6 +64,7 @@ void setup() {
     }
 // attach servos to correspondent pin
   for (int i=0; i<= serv_number -1; i++)  { servos[i].attach(i+2); } //, 500, 2500;
+  smoothStart();
 
 //  move_servo_together(hwr_Start_position, 1, 6);
   delay(1000);
