@@ -1,3 +1,8 @@
+/*
+ * Класс hiwonder - для объекта робот. Написан под робота LeArm или, в более поздней версии, - Hiwonder.
+ *
+*/
+
 #ifndef HIWONDER_H
 #define HIWONDER_H
 

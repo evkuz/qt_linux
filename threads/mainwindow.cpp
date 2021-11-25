@@ -46,13 +46,17 @@ MainWindow::MainWindow(QWidget *parent)
     Robot = new HiWonder(); // Без этого будет "The program has unexpectedly finished", хотя в начале нговорила, что это ambiguous
 
     Robot->Log_File_Open(Log_File_Name);
+    Robot->Source_Points_File_Open (SOURCE_POINTS_FILE);
 
     QString str = "The application \"";  str +=target_name; str += "\"";
     Robot->Write_To_Log(0xf000, str.append(" is started successfully!!!\n"));
 
-    TheWeb = new WebServer(); //
     GUI_Write_To_Log(0000, "Going to Start QTcpSErver");
-    if (server.isListening ()) {str = "Listening on port "; str += QString::number(server.tcpport);
+    if (server.isListening ()) {
+
+        str = "Listening on address "; str += server.serverAddress().toString();
+        str += " and port "; str += QString::number(server.serverPort());//QString::number(server.tcpport);
+
         GUI_Write_To_Log(0000, str);
     }
     //QSimpleServer server;
@@ -135,7 +139,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     //+++++++++++++++ ОТкрываем порт Open_Port_Signal(QString portname); ttyUSB0
-    emit Open_Port_Signal("ttyUSB1");
+    emit Open_Port_Signal("ttyUSB0");
     //make_json_answer();
 
 
@@ -148,7 +152,7 @@ MainWindow::~MainWindow()
     GUI_Write_To_Log(0xffff, "Program is going to be closed");
     delete ui;
     delete Robot;
-    delete TheWeb;
+
 
 }
 //+++++++++++++++++++++++++++++++++++++++
@@ -453,6 +457,8 @@ void MainWindow::on_getXYButton_clicked()
 //            str += "NOT DETECTED";
 //        }
 //      }//if (readSocket.GetState(&state) == 0)
+
+    /*
       GUI_Write_To_Log(0xf233, "Have got X,Y ");
       X = 500; Y=500;
       str += QString::number(X); str += ", ";
@@ -467,6 +473,19 @@ void MainWindow::on_getXYButton_clicked()
       ui->All_Servos_lineEdit->setText(str);
       GUI_Write_To_Log(0xf233, "No go to Kinematic !");
       emit FW_Kinemaic_Signal(48, 25, 133, RMath->el1, RMath->el2, RMath->el3 ); //1190, 356
+*/
+
+   // str = "sdklfjlk";
+    make_json_answer();
+
+    if (server.isListening ()) {
+
+        str = "Listening on address "; str += server.serverAddress().toString();
+        str += " and port "; str += QString::number(server.serverPort());//QString::number(server.tcpport);
+
+        GUI_Write_To_Log(0000, str);
+    }
+
 
 }
 //++++++++++++++++++++++void Return_XY_Slot(float EL)
@@ -563,7 +582,7 @@ void MainWindow::on_trainButton_clicked()
 //    if (ui->servo_1_lineEdit->text().toInt() > 0){ ui->servo_1_lineEdit->setText("0"); Servos[0]=0;}
 //    else {ui->servo_1_lineEdit->setText("160"); Servos[0]=160;}
     Servos[0]=0;
-    update_LineDits_from_servos();
+  //  update_LineDits_from_servos();
 
     if (readSocket.GetState(&state) == 0)
       {
@@ -619,20 +638,38 @@ if (DETECTED)
    memcpy(dd.data(), Servos, 6);
    dd.insert(6, 0x31); // Движение "Туда"
    this->send_Data(BEFORE_LAST); //0xE9, NOT_LAST ==C8
-   //+++++++++++++++++++++ 4  Unclamp the gripper
+   //+++++++++++++++++++++ 4.1  Unclamp the gripper
    //on_clampButton_clicked();
    if (ui->servo_1_spinBox->value () > 0){ ui->servo_1_spinBox->setValue (0); Servos[0]=0;}
    else {ui->servo_1_spinBox->setValue (90); Servos[0]=90;}
    this->send_Data(NOT_LAST);
+   //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   //+++++++++++++++++++++ 4.2  Clamp back the gripper - не надо, может кубик сдвинуть.
+//   if (ui->servo_1_spinBox->value () > 0){ ui->servo_1_spinBox->setValue (0); Servos[0]=0;}
+//   else {ui->servo_1_spinBox->setValue (90); Servos[0]=90;}
+//   this->send_Data(NOT_LAST);
+
+      //+++++++++++++++++++++++++++++++++ 5 Приподнять хват, чтобы не задеть тележку.
+//      this->update_LineDits_from_position (after_put_position);
+//      this->repaint();
+//      update_Servos_from_LineEdits ();
+//      memcpy(dd.data(), Servos, 6);
+//      dd.insert(6, 0x30); // Движение "Обратно"
+//      this->send_Data(AFTER_PUT);
+
+
 
    //+++++++++++++++++++++ 6 go back to start position
    //on_stand_upButton_clicked();
    this->update_LineDits_from_position(hwr_Start_position);
    this->repaint();
    this->update_Servos_from_LineEdits();
-   dd.insert(6, 0x30); // Движение "Обратно"
-   this->send_Data(LASTONE); // The last command
+   memcpy(dd.data(), Servos, 6);
+   dd.insert(parcel_size-2, 0x30); // Движение "Обратно"
+   dd.insert(parcel_size-1, LASTONE);
 
+   // this->ssend_Data(dd); // The last command
+   Robot->GoToPosition(dd);
 
 //   //+++++++++++++++++++++ 3 put the cube
 //   this->update_LineDits_from_position (put_position);
@@ -677,26 +714,54 @@ void MainWindow::send_Data(unsigned char thelast)
     QByteArray dd ;
     dd.resize(parcel_size);
     memcpy(dd.data(), Servos, 6);
-    dd.insert(parcel_size-2, 0x31); // Движение "Туда"
+    dd.insert(parcel_size-2, 0x31); // А вот зачем это было нужно ????
     dd.insert(parcel_size-1, thelast);
     //dd.append(0x31);
     //dd.resize(64);
     //QByteArray dd = QByteArray::fromRawData(Servos, 6);
     Robot->GoToPosition(dd);
 }
+
+void MainWindow::ssend_Data(QByteArray position)
+{
+    Robot->GoToPosition(position);
+}
+//+++++++++++++++++++++++++++++++++++++
+
+
 //+++++++++++++++++++++++++++++++++
 // подготовка json-строки с полями ответа в TCP сокет.
 void MainWindow::make_json_answer()
 {
   int value = 0x1111;
-  QString jsn_str = "{"; jsn_str += "\"status\":";
+  QString jsn_str = "{";
+  jsn_str += "\r\n";
+  jsn_str += "\"status\":";
   jsn_str += "\"";
   jsn_str += Robot->current_status;
-  jsn_str += "\",";
+  jsn_str += "\","; jsn_str += "\r\n";
+  jsn_str += "\"return_code\":";
+  jsn_str += "\"";
+  jsn_str +="0";
+  jsn_str += "\","; jsn_str += "\r\n";
+  jsn_str += "\"active_command\":";
+  jsn_str += "\"";
+  jsn_str +="TheCommand";
+
+  jsn_str += "\","; jsn_str += "\r\n";
+  jsn_str += "\"comment\":";
+  jsn_str += "\"";
+  jsn_str +="Some helpful data";
+  jsn_str += "\"";
+  jsn_str += "\r\n";
+  jsn_str += "}";
 
   QString str = "Строка ответа в формате json :\n";
   str += jsn_str;
   GUI_Write_To_Log(value, str);
+
+  // Строку подготовили, отправляем в TcpServer
+ this->rAnswer = jsn_str;
  }
 
 //++++++++++++++++++++++++++
@@ -772,8 +837,16 @@ void MainWindow::Info_2_Log_Slot(QString message)
 
    if (substr == "status") {
        //str = Robot->GetCurrentStatus ();
-       str = Robot->current_status;
+     //  str = Robot->current_status;
        //str = "status_from_robot";
+      // str="Абырвалг";
+
+       //make_json_answer (); // Формируем ответ в переменной rAnswer
+       //emit Write_2_Client_Signal (this->rAnswer);
+      // str  = "{\n\t\"status\":\"";
+       str = Robot->current_status;
+     //  str += "\"\n}";
+
        emit Write_2_Client_Signal (str);
    }
 
@@ -866,7 +939,6 @@ void MainWindow::newConnection_Slot()
 void MainWindow::Moving_Done_Slot()
 {
     GUI_Write_To_Log(0xFAAA, "Demo cycle finished !!!");
-    strcpy(TheWeb->status_buffer,"done");
     // Меняем статус, теперь "done"
     std::cout<<"Set DONE to Robot!" << std::endl;
     Robot->SetCurrentStatus ("done");
@@ -886,7 +958,8 @@ void MainWindow::server_New_Connect_Slot()
     ;
 }
 
-
+//+++++++++++++++++
+// отладка процесса возврата после поклажи кубика на транспортировщика
 void MainWindow::on_getBackButton_clicked()
 {
     QByteArray dd ;
@@ -914,4 +987,83 @@ void MainWindow::on_getBackButton_clicked()
     dd.insert(6, 0x30); // Движение "Обратно"
     this->send_Data(LASTONE); // The last command
 
+}
+
+void MainWindow::on_fixButton_clicked()
+{
+    int value = 0x4444;
+    DetectorState state;
+    QString str = "";
+
+    Servos[0] = 0;
+    if (readSocket.GetState(&state) == 0)
+      {
+        if (state.isDetected){
+           // try_mcinfer(state.objectX, state.objectY); // Тут меняем current_status = "inprogress". Команда 0 - Переместить открытый хват к кубику.
+            X = state.objectX;                        //  Хват открывается в процессе движения робота, а не отдельной командой.
+            Y = state.objectY;
+
+            str += QString::number(state.objectX);
+            str += ", ";
+            str += QString::number(state.objectY);
+            str += ", ";
+            DETECTED = true;
+
+        } else {
+            str += "NOT DETECTED";
+        }
+
+       str += ui->All_Servos_lineEdit->text();
+       //std::cout <<  str.toStdString() << std::endl;
+       //Robot->Write_To_Log(0xf014, str);
+       GUI_Write_To_Log(0xf014, str);
+       Robot->Write_To_Source (value, str);
+    }
+
+
+
+
+//    str += ui->All_Servos_lineEdit->text ();
+//    Robot->Write_To_Source (value, str);
+}
+
+void MainWindow::on_PUTButton_clicked()
+{
+    QByteArray dd;
+    //+++++++++++++++++++++ 3 put the cube
+    // {60, 93, 100, 35, 145, 35};
+    this->update_LineDits_from_position (put_position);
+    this->repaint();
+    update_Servos_from_LineEdits ();
+    memcpy(dd.data(), Servos, 6);
+    dd.insert(6, 0x31); // Движение "Туда"
+    this->send_Data(BEFORE_LAST); //0xE9, NOT_LAST ==C8
+    //+++++++++++++++++++++ 4  Unclamp the gripper
+    //on_clampButton_clicked();
+    if (ui->servo_1_spinBox->value () > 0){ ui->servo_1_spinBox->setValue (0); Servos[0]=0;}
+    else {ui->servo_1_spinBox->setValue (90); Servos[0]=90;}
+    this->send_Data(NOT_LAST);
+
+    //+++++++++++++++++++++ 6 go back to start position
+    //on_stand_upButton_clicked();
+    this->update_LineDits_from_position(hwr_Start_position);
+    this->repaint();
+    this->update_Servos_from_LineEdits();
+    dd.insert(6, 0x30); // Движение "Обратно"
+    this->send_Data(LASTONE); // The last command
+
+}
+//++++++++++++++++++++++++++++++++++++++++++++
+// Данные обратно из qspinboxes to LineEdit
+void MainWindow::on_GetBackFromServoButton_clicked()
+{
+   QString str = "";
+    for (int i =0; i< DOF; i++)
+    {
+        str += QString::number((qspb_list[i]->value()));
+        str += ", ";
+    }
+    str.truncate(str.lastIndexOf(","));
+    GUI_Write_To_Log(0xf016, str);
+    ui->All_Servos_lineEdit->setText(str);
 }

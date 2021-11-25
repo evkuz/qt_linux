@@ -1,3 +1,8 @@
+/*
+ *
+ * Класс QSimpleServer - для объекта сервер QTcpServer
+ *
+*/
 #ifndef QSIMPLESERVER_H
 #define QSIMPLESERVER_H
 
@@ -33,18 +38,17 @@ public:
 
 signals:
     // Сигнал на отправку данных наверх, уже роботу.
-    void Info_2_Log_Signal(QString);
+    void Data_From_TcpClient_Signal(QString);
     // Сигнал на отправку данных вниз, в сокет
-    void Data_2_Client_Signal(QString);
+    void Data_2_TcpClient_Signal(QString);
 
 
 public slots:
-//    void onReadyRead();
-//    void onDisconnected();
     // Слот принятия строки для отправки клиенту в сокет
-    //сигнал сверху  Write_2_Client_Signal(QString)
-    void Write_2_Client_SLot(QString);
+    // Обработчик сигнала сверху  Write_2_Client_Signal(QString)
+    void Write_2_TcpClient_SLot(QString);
     //Слот отправки наверх команды на выполнение
+    // Срабатывает по сигналу ommand_4_Parsing_Signal(QString);
     void Command_4_Parsing_Slot(QString);
     //Added by Miksarus
     void SetCurrentState(QString);

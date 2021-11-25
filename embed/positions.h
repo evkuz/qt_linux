@@ -1,11 +1,16 @@
+/*
+ * Разные Углы начальной/стартовой позиции
+ * Заданные положения манипулятора
+ *
+*/
 #ifndef POSITIONS_H
 #define POSITIONS_H
-/*Координаты начальной/стартовой позиции*/
+
 #include <QtCore>
 
-const char hwr_Start_position [6] = {93, 93, 93, 93, 93, 93}; // servo1,,,servo6
-const char sit_down_position [6] = {93, 93, 93, 48, 48, 93} ; // Поза сидя. Сдвинуты 4,5 приводы (относительно 93)
-const char sit_45_position [6] = {93, 93, 5, 5, 10, 45};
+unsigned char hwr_Start_position [6] = {93, 93, 93, 93, 93, 93}; // servo1,,,servo6
+unsigned char sit_down_position [6] = {93, 93, 93, 48, 48, 93} ; // Поза сидя. Сдвинуты 4,5 приводы (относительно 93)
+unsigned char sit_45_position [6] = {93, 93, 5, 5, 10, 45};
 unsigned char train_position [6] = {0, 93, 78, 25, 145, 148}; // координаты : 301, 553,
 //unsigned char put_position [6] = {93, 93, 78, 25, 145, 45}; //60, 93, 100, 35, 145, 35
 unsigned char put_position [6] = {60, 93, 90, 40, 140, 30};

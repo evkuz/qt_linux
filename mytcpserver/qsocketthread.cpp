@@ -18,24 +18,7 @@ QSocketThread::~QSocketThread()
  *  method.
 */
 
-//void QSocketThread::run()
-//{
-//    //Создание объекта сокета
-//    socket = new QTcpSocket();
-//    //Сопоставление объекта сокета с системным сокетом через дескриптор
-//    socket->setSocketDescriptor(socketDescriptor);
-
-//    //Соединение сигналов со слотами
-//    connect(socket, SIGNAL(readyRead()), this, SLOT(onReadyRead()),Qt::DirectConnection);
-//    connect(socket, SIGNAL(disconnected()), this, SLOT(onDisconnected()),Qt::DirectConnection);
-
-//    //Остановка потока на 1 сек (для иммитации долгого выполнения запроса)
-//    sleep(1);
-
-//    //Запуск цикла обработки событий
-//    exec();
-//}
-////++++++++++++++++++ главный event looop потока
+//++++++++++++++++++ главный event loop потока
 void QSocketThread::process_TheSocket()
 {
     //Создание объекта сокета
@@ -46,12 +29,6 @@ void QSocketThread::process_TheSocket()
     //Соединение сигналов со слотами
     connect(socket, SIGNAL(readyRead()), this, SLOT(onReadyRead()),Qt::QueuedConnection);
     connect(socket, SIGNAL(disconnected()), this, SLOT(onDisconnected()),Qt::AutoConnection);
-
-     //Остановка потока на 1 сек (для иммитации долгого выполнения запроса)
-    //msleep(200);
-  //  while(true){;}
-    //Запуск цикла обработки событий
-   //emit finished();
 
 }
 //+++++++++++++++++++++++++++++++++++++
@@ -78,5 +55,5 @@ void QSocketThread::onDisconnected()
     //Завершение потока
     emit finished();
    //this->quit();
-   // this->deleteLater();
+    // this->deleteLater();
 }
