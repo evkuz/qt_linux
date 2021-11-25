@@ -10,7 +10,7 @@ class CameraDetector(object):
         self.last_access = 0  # time of last client access to the camera
         #self.color_range = ((83, 198, 207), (151, 241, 251)) #((18, 120, 131), (43, 150, 158))
         #self.color_range = ((0, 0, 140), (10, 25, 183))
-        self.color_range = ((0, 230, 115), (8, 255, 183))
+        self.color_range = ((0, 230, 110), (20, 255, 190))
 
         self.port = camPort
         self.FrameWidth = width
