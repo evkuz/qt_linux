@@ -9,13 +9,20 @@
 //#include <QtGui>
 #include <chrono>
 #include <thread>
+//#include "nlohmann/json.hpp"
+
 //(QObject *parent)
+
+using json = nlohmann::json;
 
 MainProcess::MainProcess(QObject *parent)
     : QObject(parent)
 //    , readSocket("../../simpledetector_cpp/iqr.socket")
 
 {
+
+    //json jsncommand; // Команду извне упакуем в json
+    json jsnAnswer;  // ответ tcp-клменту в json
 
     DETECTED = false;
     new_get_request = false;
@@ -72,7 +79,7 @@ MainProcess::MainProcess(QObject *parent)
 
 //    connect(RMath, SIGNAL (Pass_String_Signal(QString)), this, SLOT(Pass_String_Slot(QString)));
     //#################### Signal to web-server
-    connect( Robot, SIGNAL (Moving_Done_Signal()), this, SLOT (Moving_Done_Slot()));;;
+    connect( Robot, &HiWonder::Moving_Done_Signal, this, &MainProcess::Moving_Done_Slot);
 
 
     // ============================================== Создаем поток 1 - web-server

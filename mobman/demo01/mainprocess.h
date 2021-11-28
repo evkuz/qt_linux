@@ -17,12 +17,14 @@
 #include "hiwonder.h"  // hiwonder class
 #include "qsimpleserver.h"
 //#include "SocketClient.h"
+//#include "jsoncpp/json/json.h"
+//#include "${EXTLIBS}/nlohmann/json.hpp"
+#include "nlohmann/json.hpp"
 
 
-
-QT_BEGIN_NAMESPACE
-namespace Ui { class MainProcess; }
-QT_END_NAMESPACE
+//QT_BEGIN_NAMESPACE
+//namespace Ui { class MainProcess; }
+//QT_END_NAMESPACE
 
 class MainProcess : public QObject
 {

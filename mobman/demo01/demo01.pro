@@ -7,9 +7,11 @@ CONFIG -= app_bundle
 
 TEMPLATE = app
 
+INCLUDEPATH += $$(EXTLIBS)
+#INCLUDEPATH += $$system( echo $EXTLIBS )
 SOURCES += main.cpp \
     hiwonder.cpp \
-    neuron.cpp \
+    #neuron.cpp \
     qsimpleserver.cpp \
     qsocketthread.cpp \
 #    SocketClient.cpp \
@@ -30,4 +32,6 @@ HEADERS += \
     qsimpleserver.h \
     qsocketthread.h \
 #    SocketClient.h \
-    mainprocess.h
+    mainprocess.h \
+#    ${EXTLIBS}/nlohmann/json.hpp
+
