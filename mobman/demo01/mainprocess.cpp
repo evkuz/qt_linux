@@ -644,6 +644,11 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
        str = Robot->current_status;
      //  str += "\"\n}";
 
+//       QDateTime dt(QDateTime::currentDateTime());
+//       //dt.toLocalTime();
+//       str = "Current SecsSinceEpoch is ";
+//       str += QString::number(dt.toSecsSinceEpoch());
+//       GUI_Write_To_Log (value, str);
        emit Write_2_TcpClient_Signal (str);
    }
 

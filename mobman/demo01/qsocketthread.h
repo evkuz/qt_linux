@@ -13,6 +13,7 @@
 #include <QTcpSocket>
 #include <QDebug>
 #include <QTime>
+#include <QDateTime>
 
 //Пользовательский класс потока
 // Только вместо public QThread делаем public QObject

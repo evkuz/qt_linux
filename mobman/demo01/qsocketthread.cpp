@@ -83,6 +83,8 @@ void QSocketThread::Data_2_TcpClient_Slot(QString data)
 {
     // Готовим ответ.
     //socket->write(response.arg(QTime::currentTime().toString()).toLatin1());
+    QDateTime dt(QDateTime::currentDateTime());
+   // qint64 tval;
     data2Client = data.toUtf8();
     QString response = "HTTP/1.1 200 OK\r\n";
     response += "content-type: application/json\r\n";
@@ -108,11 +110,11 @@ void QSocketThread::Data_2_TcpClient_Slot(QString data)
     response += "\"Get the cube and put it somewhere\", ";
     response += "\"st_time\": ";
     //response += "\"";
-    response += "2222222"; response +=", ";
+    response += QString::number(dt.toSecsSinceEpoch()); response +=", ";
    // response += "\"";
     response += "\"fin_time\": ";
     //response += "\"";
-    response += "3333333"; response +=", ";
+    response +=  QString::number(dt.toSecsSinceEpoch() + 1000000); response +=", ";
     //response += "\"";
     response += "\"result\": ";
    // response += "\"";
@@ -129,12 +131,12 @@ void QSocketThread::Data_2_TcpClient_Slot(QString data)
     response += "\"Change state to DONE after moving cube\", ";
     response += "\"st_time\": ";
     //response += "\"";
-    response += "4444444";
+    response +=  QString::number(dt.toSecsSinceEpoch() + 2000000);
     //response += "\", ";
     response +=", ";
     response += "\"fin_time\": ";
     //response += "\"";
-    response += "5555555";
+    response +=  QString::number(dt.toSecsSinceEpoch() + 5000000);
     response += ", ";
     response += "\"result\": ";
     //response += "\"";
