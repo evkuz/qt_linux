@@ -88,62 +88,63 @@ void QSocketThread::Data_2_TcpClient_Slot(QString data)
     response += "content-type: application/json\r\n";
     response += "Access-Control-Allow-Origin: *\r\n";
     response += "\r\n";
-    response += "{\n\t";
-    response += "\"name\":\""; response += "\"mobman\"";
-    response += "\"rc\":\""; response += "777";  //must be some integer
-    response += "\"info\":\"";
-    response += "\"text interpretation of return code\"";
-    response += "\"state\":\"";
+    //response += "{\n\t";
+    response += "{\"name\": "; response += "\"mobman\", ";
+    response += "\"rc\":"; response += "777"; response +=", ";  //must be some integer
+    response += "\"info\": ";
+    response += "\"text interpretation of return code\", ";
+    response += "\"state\": ";
 //    response += "\"status\":\"";
     response += "\""; response += data2Client; //global device status
-    response += "\"";
+    response += "\", ";
 
-    response += "\"action_list\":\" [";
-    response += "{\n\t";
-    response += "\"name\":\"";
-    response += "\"start\""; // action == 'start'
-    response += "\"state\":\"";
-    response += "\"succsess\"";
-    response += "\"info\":\"";
-    response += "\"Get the cube and put it somewhere\"";
-    response += "\"st_time\":";
-    response += "\"";
-    response += "2222222";
-    response += "\"";
-    response += "\"fin_time\":";
-    response += "\"";
-    response += "3333333";
-    response += "\"";
-    response += "\"result\":\"";
-    response += "\"";
+    response += "\"action_list\": [{";
+    //response += "{\n\t";
+    response += "\"name\": ";
+    response += "\"start\", "; // action == 'start'
+    response += "\"state\": ";
+    response += "\"succsess\", ";
+    response += "\"info\": ";
+    response += "\"Get the cube and put it somewhere\", ";
+    response += "\"st_time\": ";
+    //response += "\"";
+    response += "2222222"; response +=", ";
+   // response += "\"";
+    response += "\"fin_time\": ";
+    //response += "\"";
+    response += "3333333"; response +=", ";
+    //response += "\"";
+    response += "\"result\": ";
+   // response += "\"";
     response += "0";
-    response += "\"";
-    response += "\"\n},";
+  //  response += "\" ";
+    response += "},";
 
-    response += "{\n\t";
-    response += "\"name\":\"";
-    response += "\"reset\""; // action == 'reset'
-    response += "\"state\":\"";
-    response += "\"done\"";
-    response += "\"info\":\"";
-    response += "\"Change state to DONE after moving cube\"";
-    response += "\"st_time\":";
-    response += "\"";
+    response += "{";//\n\t";
+    response += "\"name\": ";
+    response += "\"reset\", "; // action == 'reset'
+    response += "\"state\": ";
+    response += "\"done\", ";
+    response += "\"info\": ";
+    response += "\"Change state to DONE after moving cube\", ";
+    response += "\"st_time\": ";
+    //response += "\"";
     response += "4444444";
-    response += "\"";
-    response += "\"fin_time\":";
-    response += "\"";
+    //response += "\", ";
+    response +=", ";
+    response += "\"fin_time\": ";
+    //response += "\"";
     response += "5555555";
-    response += "\"";
-    response += "\"result\":\"";
-    response += "\"";
+    response += ", ";
+    response += "\"result\": ";
+    //response += "\"";
     response += "0";
-    response += "\"";
-    response += "\"\n}";
+    //response += " \n";
+    response += "}";
 
     response += "]"; //end of action_list
 
-    response += "\"\n}"; //main bracket
+    response += "\n}"; //main bracket
 
     socket->write(response.toUtf8());
 
