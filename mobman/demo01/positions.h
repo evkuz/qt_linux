@@ -19,11 +19,32 @@ unsigned char after_put_position [6] = {0, 93, 90, 45, 135, 30};
 
 unsigned char mob_parking_position [4] = {45,90,90,160};//,45,45,49,222
 
-unsigned char mob_pos_22 [4] = {35,90,145,50};
+
+unsigned char mob_pos_10 [4] = {35,90,120,60};
+unsigned char mob_pos_11 [4] = {35,90,105,70};
+unsigned char mob_pos_12 [4] = {35,90,105,70};
+unsigned char mob_pos_13 [4] = {35,90,86,75};
+
+
+unsigned char mob_pos_14 [4] = {35,90,100,70};
+unsigned char mob_pos_15 [4] = {35,90,105,70};
+unsigned char mob_pos_16 [4] = {35,90,112,65};
+unsigned char mob_pos_17 [4] = {35,90,120,60};
+
+unsigned char mob_pos_18 [4] = {35,90,125,60};
+unsigned char mob_pos_19 [4] = {35,90,135,55};
+unsigned char mob_pos_20 [4] = {35,90,140,50};
+unsigned char mob_pos_21 [4] = {35,90,145,50}; // 21 см. от края кубика до камеры. Центр кубика при этом на 23см.
+unsigned char mob_pos_22 [4] = {35,90,168,35};
+unsigned char mob_pos_23 [4] = {35,90,172,35}; //35,90,175,32 - тоже подойдет
 
 // moving position 75,90,0,180
 //servos=90,90,90,160,45,45,49,222&
 //servos=35,90,145,50,45,45,49,222&
+//servos=35,90,165,40,45,45,49,222&
+//  servos=35,90,168,35,45,45,49,222&
+
+//servos=35,90,86,75,45,45,49,222&
 
 
 //93, 93, 100, 50, 120, 30
