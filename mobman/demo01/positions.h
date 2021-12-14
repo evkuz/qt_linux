@@ -20,17 +20,15 @@ unsigned char after_put_position [6] = {0, 93, 90, 45, 135, 30};
 unsigned char mob_parking_position [4] = {45,90,90,160};//,45,45,49,222
 
 
-unsigned char mob_pos_10 [4] = {35,90,120,60};
+//unsigned char mob_pos_10 [4] = {35,90,120,60};
 unsigned char mob_pos_11 [4] = {35,90,105,70};
 unsigned char mob_pos_12 [4] = {35,90,105,70};
+
 unsigned char mob_pos_13 [4] = {35,90,86,75};
-
-
 unsigned char mob_pos_14 [4] = {35,90,100,70};
 unsigned char mob_pos_15 [4] = {35,90,105,70};
 unsigned char mob_pos_16 [4] = {35,90,112,65};
 unsigned char mob_pos_17 [4] = {35,90,120,60};
-
 unsigned char mob_pos_18 [4] = {35,90,125,60};
 unsigned char mob_pos_19 [4] = {35,90,135,55};
 unsigned char mob_pos_20 [4] = {35,90,140,50};

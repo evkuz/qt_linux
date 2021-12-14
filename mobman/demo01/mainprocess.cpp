@@ -701,6 +701,11 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 
    }
 
+   if (substr == "pos_11") { memcpy(Servos, mob_pos_11, DOF);  this->send_Data(LASTONE); }
+   if (substr == "pos_12") { memcpy(Servos, mob_pos_12, DOF);  this->send_Data(LASTONE); }
+   if (substr == "pos_13") { memcpy(Servos, mob_pos_13, DOF);  this->send_Data(LASTONE); }
+   if (substr == "pos_14") { memcpy(Servos, mob_pos_14, DOF);  this->send_Data(LASTONE); }
+
    if (substr == "pos_15") { memcpy(Servos, mob_pos_15, DOF);  this->send_Data(LASTONE); }
    if (substr == "pos_16") { memcpy(Servos, mob_pos_16, DOF);  this->send_Data(LASTONE); }
    if (substr == "pos_17") { memcpy(Servos, mob_pos_17, DOF);  this->send_Data(LASTONE); }
@@ -732,6 +737,28 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 
        this->send_Data(NOT_LAST);
    }
+//+++++++++++++++++++ action  "get_box" ++++++++++++++++++++++++++++++++++++++++++++
+int jsn_answer_rc;
+QString jsn_answer_name;
+QString jsn_answer_info;
+   if (substr == "get_box") {
+       jsn_answer_info = Robot->current_status;
+       str = "Current status value is ";
+       str += jsn_answer_info;
+       GUI_Write_To_Log(value, str);
+       // Проверяем статус, не запущен ли уже такой action ?
+       if (Robot->current_status == "inprogress"){jsn_answer_rc = -3;}
+       else{
+           Robot->current_status = "inprogress";
+           jsn_answer_rc = 0;
+           jsn_answer_info = "Action started";
+           jsn_answer_name = "get_box";
+
+       }
+
+       on_clampButton_clicked();
+   }//"sit"
+
 
 }
 

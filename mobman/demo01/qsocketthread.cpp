@@ -103,7 +103,7 @@ void QSocketThread::Data_2_TcpClient_Slot(QString data)
     response += "\"action_list\": [{";
     //response += "{\n\t";
     response += "\"name\": ";
-    response += "\"start\", "; // action == 'start'
+    response += "\"get_box\", "; // action == 'start'
     response += "\"state\": ";
     response += "\"succsess\", ";
     response += "\"info\": ";
