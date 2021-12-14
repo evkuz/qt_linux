@@ -12,6 +12,7 @@ INCLUDEPATH += $$(EXTLIBS)
 SOURCES += main.cpp \
     hiwonder.cpp \
     #neuron.cpp \
+    json_answer.cpp \
     qsimpleserver.cpp \
     qsocketthread.cpp \
 #    SocketClient.cpp \

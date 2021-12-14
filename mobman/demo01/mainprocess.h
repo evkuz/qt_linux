@@ -26,6 +26,8 @@
 //namespace Ui { class MainProcess; }
 //QT_END_NAMESPACE
 
+using json = nlohmann::json;
+
 class MainProcess : public QObject
 {
     Q_OBJECT
@@ -55,6 +57,8 @@ public:
 
     QString rAnswer; // Ответ робота - статус, return_code, etc
 
+    json  jsnStatus;
+
 
 #define parcel_size 8
 #define FORWARD     0X31 //049
@@ -62,6 +66,14 @@ public:
 #define LASTONE     0xDE //222  // Последняя команда роботу при комплексном движении
 #define BEFORE_LAST 0xE9 //233  // Предпоследняя команда - положить кубик на тележку.
 #define AFTER_PUT   0xF4 //244  Кубик на тележку положили, теперь грамотно убираем манипулятор.
+
+//++++++++++++++++++++++ JSON data
+
+#define DEV_NAME "MOBMAN"   // device name - mobile manipulator
+#define RC_SUCCESS 0        // запрос выполнен успешно
+#define RC_WRONG_PARAM -1   // неверные параметры
+#define RC_UNDEFINED -2     // action с таким именем не найден
+
 
     //int parcel_size; // размер посылки в байтах от ПК к роботу
 
@@ -83,6 +95,7 @@ public:
 
     void send_Data(unsigned char thelast);
     void make_json_answer();   // подготовка json-строки с полями ответа в TCP сокет.
+    void init_json();
 
 
 private:
