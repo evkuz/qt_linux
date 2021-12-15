@@ -592,11 +592,67 @@ void MainProcess::init_json()
 {
      jsnStatus = {
         {"name", DEV_NAME},
-        {"rc", RC_SUCCESS},
+        {"rc", RC_UNDEFINED}, //RC_SUCCESS
         {"info", "Request Accepted"},
         {"state", "Wait"},
-        {"action_list", "list"}
+        {"action_list", {
+           {
+            {"name", "GET_BOX"},
+            {"state", "none | init | run | succsess | fail"},
+            {"info", "Get the box by clamper, ascing CV about distance in advance"},
+            {"rc", "int - action return code"}
+           },
+           {
+            {"name", "RESET"},
+            {"state", "succsess | fail"},
+            {"info", "Set device status as <Wait>"},
+            {"rc", "int - action return code"}
+           }
+           } //list
+         }//action_list-field
+
      }; // jsnStatus
+
+//     QJsonObject qjsnStatus  {
+//         {"name", DEV_NAME},
+//         {"rc", RC_UNDEFINED}, //RC_SUCCESS
+//         {"info", "Request Accepted"},
+//         {"state", "Wait"},
+//         {"action_list", {
+//            {
+//             {"name", "GET_BOX"},
+//             {"state", "none | init | run | succsess | fail"},
+//             {"info", "Get the box by clamper, ascing CV about distance in advance"},
+//             {"rc", "int - action return code"}
+//            },
+//            {
+//             {"name", "RESET"},
+//             {"state", "succsess | fail"},
+//             {"info", "Set device status as <Wait>"},
+//             {"rc", "int - action return code"}
+//            }
+//            } //list
+//          }//action_list-field
+
+//      }; // jsnStatus
+
+
+
+     //     jsnAction = {[
+     //         {"name", "GET_BOX"},
+     //         {"rc", RC_UNDEFINED}, //RC_SUCCESS
+     //         {"info", "Request Accepted"},
+     //         {"state", "Wait"},
+     //         {"action_list", "list"},
+
+     //         {}
+
+     //                  ]
+
+
+     //     }
+
+
 }//init_json()
 
 
@@ -657,16 +713,22 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
    if (substr == "status") {
       // str  = "{\n\t\"status\":\"";
        str = Robot->current_status;
-       jsnStatus["state"] = "Wait";
-      // jsnStatus[3] = str;
+       //std::string s2
+       //jsnStatus["state"] = "Wait";
+       jsnStatus["state"] = str.toStdString();
+       jsnStatus["rc"] = RC_SUCCESS;
+       //jsnStatus[""]
 
-       int indent = 4;
+       // serialization with pretty printing
+       // pass in the amount of spaces to indent
+       int indent = 3;
        std::string s2 = jsnStatus.dump(indent);
+
        GUI_Write_To_Log(value, "!!!!!!!!!!! Current STATUS is ");
        GUI_Write_To_Log(value, QString::fromStdString(s2));
 
        str = QString::fromStdString(s2);
-     //  str += "\"\n}";
+      // str = QJsonDocument(jsnStatus).toJson(QJsonDocument::Compact);
 
 //       QDateTime dt(QDateTime::currentDateTime());
 //       //dt.toLocalTime();

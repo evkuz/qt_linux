@@ -41,6 +41,7 @@ public:
 
 
     QList<QString> statuslst = { "wait", "init", "inprogress", "done" };
+    QList<QString> actionlst = {"GET_BOX", "RESET", "ASC_CV"};
     // Ответ робота состоит из 4 полей
     QString current_status; // Текущий статус
     QString return_code;    // результат обработки запроса - понял/не понял

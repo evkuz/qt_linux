@@ -20,13 +20,17 @@
 //#include "jsoncpp/json/json.h"
 //#include "${EXTLIBS}/nlohmann/json.hpp"
 #include "nlohmann/json.hpp"
-
+#include <QJsonObject>
+#include <QJsonDocument>
 
 //QT_BEGIN_NAMESPACE
 //namespace Ui { class MainProcess; }
 //QT_END_NAMESPACE
 
-using json = nlohmann::json;
+
+//
+//using json = nlohmann::json;
+using ordered_json = nlohmann::ordered_json;
 
 class MainProcess : public QObject
 {
@@ -57,7 +61,9 @@ public:
 
     QString rAnswer; // Ответ робота - статус, return_code, etc
 
-    json  jsnStatus;
+    ordered_json jsnStatus; // Ответ на запрос статуса в формате json
+    ordered_json jsnAction;  // Ответ на команду Action в формате json
+    //QJsonObject qjsnStatus;
 
 
 #define parcel_size 8
@@ -67,12 +73,17 @@ public:
 #define BEFORE_LAST 0xE9 //233  // Предпоследняя команда - положить кубик на тележку.
 #define AFTER_PUT   0xF4 //244  Кубик на тележку положили, теперь грамотно убираем манипулятор.
 
-//++++++++++++++++++++++ JSON data
+//++++++++++++++++++++++ JSON data +++++++++++++++++++++++++++++++++++++++++++++
 
 #define DEV_NAME "MOBMAN"   // device name - mobile manipulator
 #define RC_SUCCESS 0        // запрос выполнен успешно
-#define RC_WRONG_PARAM -1   // неверные параметры
+#define RC_WRONG_VALUE -1   // неверные параметры
 #define RC_UNDEFINED -2     // action с таким именем не найден
+
+#define AC_RUNNING 0        // action запущен
+#define AC_WRONG_VALUE -1   // action с таким именем не найден
+#define AC_FAILURE -2       // action с таким именем не запустился
+#define AC_ALREADY_HAVE -3  // action с таким именем уже запущен
 
 
     //int parcel_size; // размер посылки в байтах от ПК к роботу
