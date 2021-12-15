@@ -362,11 +362,11 @@ int main(int argc, char* argv[])
 	Miksarus::ParseProgramOptions(argc, argv, options_list);
 	
 	// getting my IP
-    //char ip_addr[80];
-    //if (get_my_ip(ip_addr) != 0) {
-    //	return -1;
-    //}
-    const char* ip_addr = "192.168.1.175";
+    char ip_addr[80];
+    if (get_my_ip(ip_addr) != 0) {
+    	return -1;
+    }
+    //const char* ip_addr = "192.168.1.175";
 
 	VideoCapture capture;
 	capture.open(cameraId);
@@ -473,6 +473,9 @@ int main(int argc, char* argv[])
 			Mat view0;
 			capture >> view0;
 			view0.copyTo(frame);
+			// view0 = imread("frame4.png", 1);
+			// double coef = 800. / view0.cols;
+			// resize(view0, frame, cv::Size(view0.cols * coef,view0.rows * coef), 0, 0, cv::INTER_LINEAR);
 
 			Rect pos = detector(frame, image, color_lower, color_upper);
 			int area = pos.width*pos.height;
