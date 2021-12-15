@@ -16,13 +16,16 @@
 #include <QList>
 #include "hiwonder.h"  // hiwonder class
 #include "qsimpleserver.h"
+
 //#include "SocketClient.h"
 //#include "jsoncpp/json/json.h"
 //#include "${EXTLIBS}/nlohmann/json.hpp"
 #include "nlohmann/json.hpp"
-#include <QJsonObject>
-#include <QJsonDocument>
+//#include <QJsonObject>
+//#include <QJsonDocument>
 
+
+#include <QTcpSocket>
 //QT_BEGIN_NAMESPACE
 //namespace Ui { class MainProcess; }
 //QT_END_NAMESPACE
@@ -55,6 +58,7 @@ public:
     //QTcpServer* m_pTCPServer;
 
     QSimpleServer server;
+    QTcpSocket* socketCV;
 
     //+++++++++++++++++++++++++++++ Threads +++++++++++++++
     int thread_counter ;
@@ -107,6 +111,7 @@ public:
     void send_Data(unsigned char thelast);
     void make_json_answer();   // подготовка json-строки с полями ответа в TCP сокет.
     void init_json();
+    void request_CV();
 
 
 private:
@@ -118,6 +123,11 @@ void Data_From_TcpClient_Slot(QString);
 
 void newConnection_Slot();
 void server_New_Connect_Slot();
+
+void onSocketConnected_Slot(); // Слот обработки сигнала void QAbstractSocket::connected()
+void CV_onReadyRead_Slot();    // Слот обработка сигнала readyRead()
+void CV_onDisconnected();      // Слот обработки сигнала
+
 
 private slots:
     void on_openButton_clicked();

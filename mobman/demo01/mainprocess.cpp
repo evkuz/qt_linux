@@ -13,7 +13,7 @@
 
 //(QObject *parent)
 
-using json = nlohmann::json;
+//using json = nlohmann::json;
 
 MainProcess::MainProcess(QObject *parent)
     : QObject(parent)
@@ -22,7 +22,7 @@ MainProcess::MainProcess(QObject *parent)
 {
 
     //json jsncommand; // Команду извне упакуем в json
-    json jsnAnswer;  // ответ tcp-клменту в json
+//    json jsnAnswer;  // ответ tcp-клменту в json
   //  json jsnStatus;
 
     init_json(); // Инициализируем json_status
@@ -63,12 +63,11 @@ MainProcess::MainProcess(QObject *parent)
     //connect(&server, SIGNAL(Info_2_Log_Signal(QString)), this, SLOT(Info_2_Log_Slot(QString))); // Not working
     connect(&server, &QSimpleServer::Data_From_TcpClient_Signal, this, &MainProcess::Data_From_TcpClient_Slot);
 
+   // connect(this, socketCV::QTcpSocket::connected, this, &MainProcess::onSocketConnected_Slot);
 
-
-    //connect(Robot, SIGNAL(StatusChangedSignal(QString)), &server, SLOT(SetCurrentState(QString)));
-    //connect(this, SIGNAL(StartTakeAndPutSignal()), this, SLOT(TakeAndPutSlot()));
 
    // connect(&server, &QTcpServer::newConnection, this, &MainProcess::newConnection_Slot);
+
     //################### SERIAL SIGNAL/SLOTS ############################
     connect( this, &MainProcess::Open_Port_Signal, Robot, &HiWonder::Open_Port_Slot);
     connect( &Robot->serial, &QSerialPort::readyRead, Robot, &HiWonder::ReadFromSerial_Slot);  //&QSerialPort::
@@ -653,6 +652,19 @@ void MainProcess::init_json()
      //     }
 
 
+}
+//++++++++++++++++++++++++++++++++++++++++++
+// СОздаем сокет, посылаем запрос, считываем ответ.
+void MainProcess::request_CV()
+{
+    socketCV = new QTcpSocket();
+    //Соединение сигналов со слотами
+    connect(socketCV, SIGNAL(readyRead()), this, SLOT(CV_onReadyRead_Slot()),Qt::QueuedConnection);
+    connect(socketCV, SIGNAL(disconnected()), this, SLOT(CV_onDisconnected()),Qt::AutoConnection);
+
+    connect (this->socketCV, &QTcpSocket::connected, this, &MainProcess::onSocketConnected_Slot);
+    socketCV->connectToHost("192.168.1.201", 5001);
+
 }//init_json()
 
 
@@ -828,22 +840,21 @@ int jsn_answer_rc;
 QString jsn_answer_name;
 QString jsn_answer_info;
    if (substr == "get_box") {
-       jsn_answer_info = Robot->current_status;
-       str = "Current status value is ";
-       str += jsn_answer_info;
-       GUI_Write_To_Log(value, str);
-       // Проверяем статус, не запущен ли уже такой action ?
-       if (Robot->current_status == "inprogress"){jsn_answer_rc = -3;}
-       else{
-           Robot->current_status = "inprogress";
-           jsn_answer_rc = 0;
-           jsn_answer_info = "Action started";
-           jsn_answer_name = "get_box";
+//       jsn_answer_info = Robot->current_status;
+//       str = "Current status value is ";
+//       str += jsn_answer_info;
+//       GUI_Write_To_Log(value, str);
+//       // Проверяем статус, не запущен ли уже такой action ?
+//       if (Robot->current_status == "inprogress"){jsn_answer_rc = -3;}
+//       else{
+//           Robot->current_status = "inprogress";
+//           jsn_answer_rc = 0;
+//           jsn_answer_info = "Action started";
+//           jsn_answer_name = "get_box";
+//       }
 
-       }
-
-       on_clampButton_clicked();
-   }//"sit"
+       request_CV();
+   }//substr == "get_box"
 
 
 }
@@ -878,6 +889,82 @@ void MainProcess::Moving_Done_Slot()
 void MainProcess::server_New_Connect_Slot()
 {
     ;
+}
+//++++++++++++++++++++++++++ Слот сигнала Connected()
+void MainProcess::onSocketConnected_Slot()
+{
+ QString str = "CV connection established";
+ GUI_Write_To_Log(0x7777, str);
+
+ // А вот теперь готовим команду "/service?name=getposition"
+ QString response = "GET ";
+ response += "/service?name=getposition";
+ response += " HTTP/1.1";
+ response += "\r\nHost: ";
+ response += "192.168.1.201:5001\r\n";
+ response += "Accept: */*\r\n";
+// response += "Access-Control-Allow-Origin: *\r\n";
+
+ response += "content-type: application/json\r\n";
+ response += "Access-Control-Allow-Origin: *\r\n";
+ response += "\r\n";
+
+// response += "";
+
+ GUI_Write_To_Log(0xfefe, "The following Data is going to be sent to CV :");
+ GUI_Write_To_Log(0xfefe, response.toUtf8());
+ socketCV->write(response.toUtf8());
+
+ //Отсоединение от удаленнного сокета
+ //socketCV->disconnectFromHost();
+
+
+}
+//+++++++++++++++++++++++++++++++++++
+// СЛот сигнала QIODevice::readyRead()
+void MainProcess::CV_onReadyRead_Slot()
+{
+    int value = 0xfafa;
+    //Чтение информации из сокета и вывод в консоль
+    QByteArray qbmessage;
+    qbmessage = socketCV->readAll();
+    qDebug() << qbmessage;
+   // qDebug() << "!!!!!!!!!!!!!!!!!!!!!11 Get Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!!1";
+
+    //Парсим команду.
+    QString str, message, substr;
+    message = QString(qbmessage);
+   // int sPosition, ePosition; // Индекс строки run в запросе.
+   // sPosition = message.indexOf("/run?cmd=");
+
+//   QString  wrong_mess = "/favicon.ico HTTP/1.1";
+
+//    if (!message.contains (wrong_mess))
+//    {
+        GUI_Write_To_Log(value, "!!!!!!!!!!!!!!!!! There are some  data from CV device !!!!!!!!!!!!!!!!!!!!");
+        GUI_Write_To_Log(value, qbmessage);
+        //Отсоединение от удаленнного сокета
+       // socketCV->disconnectFromHost();
+
+        // Дальше надо парсить JSON формат
+
+        int sPosition, ePosition; // Индекс строки run в запросе.
+        sPosition = message.indexOf("distance");
+        sPosition += 11;
+        ePosition = message.indexOf("}", sPosition);
+        substr = message.mid(sPosition, (ePosition - sPosition));
+
+        str = "!!!!!!!!!!!!!!!!! The distance is : ";
+        str += substr; str += " mm";
+
+        GUI_Write_To_Log(value, str);
+
+}
+//++++++++++++++++++++++++++++++++++++++
+// Слот обработки сигнала
+void MainProcess::CV_onDisconnected()
+{
+    socketCV->close();
 }
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++
