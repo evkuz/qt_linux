@@ -30,6 +30,10 @@ MainProcess::MainProcess(QObject *parent)
     DETECTED = false;
     new_get_request = false;
     thread_counter = 0;
+    currentTcpdata = "";
+    socketCV = new QTcpSocket(this);
+    in.setDevice(socketCV);
+
 
     target_name = QFileInfo(QCoreApplication::applicationFilePath()).fileName();
     //QByteArray ba = target_name.toLocal8Bit();
@@ -596,17 +600,25 @@ void MainProcess::init_json()
         {"state", "Wait"},
         {"action_list", {
            {
-            {"name", "GET_BOX"},
-            {"state", "none | init | run | succsess | fail"},
+            {"name", "get_box"},
+            {"state", "inprogress | done | fail"},
             {"info", "Get the box by clamper, ascing CV about distance in advance"},
             {"rc", "int - action return code"}
            },
            {
-            {"name", "RESET"},
+            {"name", "reset"},
             {"state", "succsess | fail"},
             {"info", "Set device status as <Wait>"},
             {"rc", "int - action return code"}
-           }
+           },
+           {
+             {"name", "parking"},
+             {"state", "inprogress | done | fail"},
+             {"info", "Set device's clamper in transporting position"},
+             {"rc", "int - action return code"}
+            }
+
+
            } //list
          }//action_list-field
 
@@ -657,14 +669,26 @@ void MainProcess::init_json()
 // СОздаем сокет, посылаем запрос, считываем ответ.
 void MainProcess::request_CV()
 {
-    socketCV = new QTcpSocket();
+    /*
+     * Now, TCP is based on sending a stream of data, so we cannot expect to get the entire fortune in one go.
+     * Especially on a slow network, the data can be received in several small fragments. QTcpSocket buffers up all incoming data
+     * and emits readyRead() for every new block that arrives, and it is our job to ensure that we have received all the data
+     * we need before we start parsing.
+ */
+
     //Соединение сигналов со слотами
-    connect(socketCV, SIGNAL(readyRead()), this, SLOT(CV_onReadyRead_Slot()),Qt::QueuedConnection);
+    connect(socketCV, &QIODevice::readyRead, this, &MainProcess::CV_onReadyRead_Slot);//, Qt::QueuedConnection);
     connect(socketCV, SIGNAL(disconnected()), this, SLOT(CV_onDisconnected()),Qt::AutoConnection);
 
     connect (this->socketCV, &QTcpSocket::connected, this, &MainProcess::onSocketConnected_Slot);
-    socketCV->connectToHost("192.168.1.201", 5001);
+    socketCV->connectToHost(CVDev_IP, CVDev_Port);
 
+}
+//++++++++++++++++++++++++++++++++++++++++++++++++
+void MainProcess::request_New_CV()
+{
+    socketCV->abort();
+    socketCV->connectToHost(CVDev_IP, CVDev_Port);
 }//init_json()
 
 
@@ -893,6 +917,7 @@ void MainProcess::server_New_Connect_Slot()
 //++++++++++++++++++++++++++ Слот сигнала Connected()
 void MainProcess::onSocketConnected_Slot()
 {
+ in.setDevice(socketCV);
  QString str = "CV connection established";
  GUI_Write_To_Log(0x7777, str);
 
@@ -924,16 +949,45 @@ void MainProcess::onSocketConnected_Slot()
 // СЛот сигнала QIODevice::readyRead()
 void MainProcess::CV_onReadyRead_Slot()
 {
+
+    /*
+     * Now, TCP is based on sending a stream of data, so we cannot expect to get the entire fortune in one go. Especially on a slow network,
+     * the data can be received in several small fragments. QTcpSocket buffers up all incoming data and emits readyRead() for every new block that arrives,
+     * and it is our job to ensure that we have received all the data we need before we start parsing.
+     */
     int value = 0xfafa;
+
+    in.startTransaction();
+
+    QString nextTcpdata;
+
+    in >> nextTcpdata;
+
+    if(!in.commitTransaction()){
+        GUI_Write_To_Log(value, "commitTransaction exit, complete data reading from socket");
+        return;
+       }
+
+    if (nextTcpdata == currentTcpdata){
+
+        GUI_Write_To_Log(value, "Data still not readed");
+        QTimer::singleShot(0, this, &MainProcess::request_CV);
+        return;
+    }
+    currentTcpdata = nextTcpdata;
+
     //Чтение информации из сокета и вывод в консоль
-    QByteArray qbmessage;
-    qbmessage = socketCV->readAll();
-    qDebug() << qbmessage;
-   // qDebug() << "!!!!!!!!!!!!!!!!!!!!!11 Get Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!!1";
+
+//    QByteArray qbmessage;
+//    qbmessage = socketCV->readAll();
+//    qDebug() << qbmessage;
+//   // qDebug() << "!!!!!!!!!!!!!!!!!!!!!11 Get Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!!1";
 
     //Парсим команду.
     QString str, message, substr;
-    message = QString(qbmessage);
+   //message = QString(qbmessage);
+    message = nextTcpdata;
+
    // int sPosition, ePosition; // Индекс строки run в запросе.
    // sPosition = message.indexOf("/run?cmd=");
 
@@ -942,9 +996,7 @@ void MainProcess::CV_onReadyRead_Slot()
 //    if (!message.contains (wrong_mess))
 //    {
         GUI_Write_To_Log(value, "!!!!!!!!!!!!!!!!! There are some  data from CV device !!!!!!!!!!!!!!!!!!!!");
-        GUI_Write_To_Log(value, qbmessage);
-        //Отсоединение от удаленнного сокета
-       // socketCV->disconnectFromHost();
+        GUI_Write_To_Log(value, message);
 
         // Дальше надо парсить JSON формат
 
@@ -958,6 +1010,21 @@ void MainProcess::CV_onReadyRead_Slot()
         str += substr; str += " mm";
 
         GUI_Write_To_Log(value, str);
+
+        double cvdistance = substr.toDouble();
+        str = "!!!!!!!!!!!!!!!!! The distance as double value : ";
+        substr =  QString::number(cvdistance);
+        str += substr;
+        GUI_Write_To_Log(value, str);
+
+        int cvd = round(cvdistance);
+        str = "!!!!!!!!!!!!!!!!! The distance as int value : ";
+        substr =  QString::number(cvd);
+        str += substr;
+        GUI_Write_To_Log(value, str);
+
+        //Отсоединение от удаленнного сокета
+        //socketCV->disconnectFromHost();
 
 }
 //++++++++++++++++++++++++++++++++++++++

@@ -32,7 +32,7 @@ public:
     QThread   *thread_A;
     QSocketThread *tcpthread;
     quint16 tcpport = 8383;  // Порт, который слушает QTcpServer
-    quint16 tcpportCV = 5001; // POrt for data exchange with CV
+    quint16 tcpportCV = 5001; // Port for data exchange with CV
     QByteArray tcpdata;
     //Метод, вызываемый при подключении нового соединения
     void incomingConnection(qintptr sDescriptor) override;

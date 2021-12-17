@@ -89,6 +89,13 @@ public:
 #define AC_FAILURE -2       // action с таким именем не запустился
 #define AC_ALREADY_HAVE -3  // action с таким именем уже запущен
 
+//+++++++++++++++++++++ CV device
+
+#define CVDev_IP     "192.168.1.201"
+#define CVDev_Port   5001
+
+    QString currentTcpdata; //Нужно, чтоб была глобальная.
+    QDataStream in; // НА считывание данных из сокета CV
 
     //int parcel_size; // размер посылки в байтах от ПК к роботу
 
@@ -112,6 +119,7 @@ public:
     void make_json_answer();   // подготовка json-строки с полями ответа в TCP сокет.
     void init_json();
     void request_CV();
+    void request_New_CV();
 
 
 private:
