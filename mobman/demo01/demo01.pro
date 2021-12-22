@@ -10,6 +10,7 @@ TEMPLATE = app
 INCLUDEPATH += $$(EXTLIBS)
 #INCLUDEPATH += $$system( echo $EXTLIBS )
 SOURCES += main.cpp \
+    cvdevice.cpp \
     hiwonder.cpp \
     #neuron.cpp \
     json_answer.cpp \
@@ -24,6 +25,7 @@ else: unix:!android: target.path = /home/pi/qt_projects/$${TARGET}
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
+    cvdevice.h \
     evkuz.h \
     hiwonder.h \
     mcinfer.h \

@@ -26,12 +26,13 @@ public:
 
     // http://localhost:8383/run?cmd=status&
     // http://192.168.1.175:8383/run?cmd=status&
-#define  wifi_ADDRESS "192.168.1.175" // local address
-#define  ipv4_ADDRESS "159.93.84.44"  // public address
+#define  wifi_ADDRESS "192.168.1.175" // local PC address
+#define  ipv4_ADDRESS "159.93.84.44"  // PC public address
 
     QThread   *thread_A;
     QSocketThread *tcpthread;
     quint16 tcpport = 8383;  // Порт, который слушает QTcpServer
+    quint16 tcpportCV = 5001; // Port for data exchange with CV
     QByteArray tcpdata;
     //Метод, вызываемый при подключении нового соединения
     void incomingConnection(qintptr sDescriptor) override;

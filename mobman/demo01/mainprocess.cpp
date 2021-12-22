@@ -13,7 +13,7 @@
 
 //(QObject *parent)
 
-using json = nlohmann::json;
+//using json = nlohmann::json;
 
 MainProcess::MainProcess(QObject *parent)
     : QObject(parent)
@@ -22,7 +22,7 @@ MainProcess::MainProcess(QObject *parent)
 {
 
     //json jsncommand; // Команду извне упакуем в json
-    json jsnAnswer;  // ответ tcp-клменту в json
+//    json jsnAnswer;  // ответ tcp-клменту в json
   //  json jsnStatus;
 
     init_json(); // Инициализируем json_status
@@ -30,6 +30,10 @@ MainProcess::MainProcess(QObject *parent)
     DETECTED = false;
     new_get_request = false;
     thread_counter = 0;
+    currentTcpdata = "";
+    socketCV = new QTcpSocket(this);
+    in.setDevice(socketCV);
+
 
     target_name = QFileInfo(QCoreApplication::applicationFilePath()).fileName();
     //QByteArray ba = target_name.toLocal8Bit();
@@ -63,12 +67,11 @@ MainProcess::MainProcess(QObject *parent)
     //connect(&server, SIGNAL(Info_2_Log_Signal(QString)), this, SLOT(Info_2_Log_Slot(QString))); // Not working
     connect(&server, &QSimpleServer::Data_From_TcpClient_Signal, this, &MainProcess::Data_From_TcpClient_Slot);
 
+   // connect(this, socketCV::QTcpSocket::connected, this, &MainProcess::onSocketConnected_Slot);
 
-
-    //connect(Robot, SIGNAL(StatusChangedSignal(QString)), &server, SLOT(SetCurrentState(QString)));
-    //connect(this, SIGNAL(StartTakeAndPutSignal()), this, SLOT(TakeAndPutSlot()));
 
    // connect(&server, &QTcpServer::newConnection, this, &MainProcess::newConnection_Slot);
+
     //################### SERIAL SIGNAL/SLOTS ############################
     connect( this, &MainProcess::Open_Port_Signal, Robot, &HiWonder::Open_Port_Slot);
     connect( &Robot->serial, &QSerialPort::readyRead, Robot, &HiWonder::ReadFromSerial_Slot);  //&QSerialPort::
@@ -597,17 +600,25 @@ void MainProcess::init_json()
         {"state", "Wait"},
         {"action_list", {
            {
-            {"name", "GET_BOX"},
-            {"state", "none | init | run | succsess | fail"},
+            {"name", "get_box"},
+            {"state", "inprogress | done | fail"},
             {"info", "Get the box by clamper, ascing CV about distance in advance"},
             {"rc", "int - action return code"}
            },
            {
-            {"name", "RESET"},
+            {"name", "reset"},
             {"state", "succsess | fail"},
             {"info", "Set device status as <Wait>"},
             {"rc", "int - action return code"}
-           }
+           },
+           {
+             {"name", "parking"},
+             {"state", "inprogress | done | fail"},
+             {"info", "Set device's clamper in transporting position"},
+             {"rc", "int - action return code"}
+            }
+
+
            } //list
          }//action_list-field
 
@@ -652,6 +663,44 @@ void MainProcess::init_json()
 
      //     }
 
+
+}
+//++++++++++++++++++++++++++++++++++++++++++
+// СОздаем сокет, посылаем запрос, считываем ответ.
+void MainProcess::request_CV()
+{
+    /*
+     * Now, TCP is based on sending a stream of data, so we cannot expect to get the entire fortune in one go.
+     * Especially on a slow network, the data can be received in several small fragments. QTcpSocket buffers up all incoming data
+     * and emits readyRead() for every new block that arrives, and it is our job to ensure that we have received all the data
+     * we need before we start parsing.
+ */
+
+    //Соединение сигналов со слотами
+    connect(socketCV, &QIODevice::readyRead, this, &MainProcess::CV_onReadyRead_Slot);//, Qt::QueuedConnection);
+    connect(socketCV, SIGNAL(disconnected()), this, SLOT(CV_onDisconnected()),Qt::AutoConnection);
+
+    connect (this->socketCV, &QTcpSocket::connected, this, &MainProcess::onSocketConnected_Slot);
+    socketCV->connectToHost(CVDev_IP, CVDev_Port);
+
+}
+//++++++++++++++++++++++++++++++++++++++++++++++++
+void MainProcess::request_New_CV()
+{
+    socketCV->abort();
+    socketCV->connectToHost(CVDev_IP, CVDev_Port);
+}
+//+++++++++++++++++++++++++++++++++++++++++++++++++++
+int MainProcess::my_round(int n)
+{
+    // Smaller multiple
+        int a = (n / 10) * 10;
+
+        // Larger multiple
+        int b = a + 10;
+
+        // Return of closest of two
+        return (n - a > b - n)? b : a;
 
 }//init_json()
 
@@ -828,22 +877,21 @@ int jsn_answer_rc;
 QString jsn_answer_name;
 QString jsn_answer_info;
    if (substr == "get_box") {
-       jsn_answer_info = Robot->current_status;
-       str = "Current status value is ";
-       str += jsn_answer_info;
-       GUI_Write_To_Log(value, str);
-       // Проверяем статус, не запущен ли уже такой action ?
-       if (Robot->current_status == "inprogress"){jsn_answer_rc = -3;}
-       else{
-           Robot->current_status = "inprogress";
-           jsn_answer_rc = 0;
-           jsn_answer_info = "Action started";
-           jsn_answer_name = "get_box";
+//       jsn_answer_info = Robot->current_status;
+//       str = "Current status value is ";
+//       str += jsn_answer_info;
+//       GUI_Write_To_Log(value, str);
+//       // Проверяем статус, не запущен ли уже такой action ?
+//       if (Robot->current_status == "inprogress"){jsn_answer_rc = -3;}
+//       else{
+//           Robot->current_status = "inprogress";
+//           jsn_answer_rc = 0;
+//           jsn_answer_info = "Action started";
+//           jsn_answer_name = "get_box";
+//       }
 
-       }
-
-       on_clampButton_clicked();
-   }//"sit"
+       request_CV();
+   }//substr == "get_box"
 
 
 }
@@ -878,6 +926,167 @@ void MainProcess::Moving_Done_Slot()
 void MainProcess::server_New_Connect_Slot()
 {
     ;
+}
+//++++++++++++++++++++++++++ Слот сигнала Connected()
+// Формируем HTTP-запрос в CV, отправляем его в CV
+void MainProcess::onSocketConnected_Slot()
+{
+ in.setDevice(socketCV);
+ QString str = "CV connection established";
+ GUI_Write_To_Log(0x7777, str);
+
+ // А вот теперь готовим команду "/service?name=getposition"
+ QString response = "GET ";
+ response += "/service?name=getposition";
+ response += " HTTP/1.1";
+ response += "\r\nHost: ";
+ response += "192.168.1.201:5001\r\n";
+ response += "Accept: */*\r\n";
+// response += "Access-Control-Allow-Origin: *\r\n";
+
+ response += "content-type: application/json\r\n";
+ response += "Access-Control-Allow-Origin: *\r\n";
+ response += "\r\n";
+
+// response += "";
+
+ GUI_Write_To_Log(0xfefe, "The following Data is going to be sent to CV :");
+ GUI_Write_To_Log(0xfefe, response.toUtf8());
+ socketCV->write(response.toUtf8());
+
+ //Отсоединение от удаленнного сокета
+ //socketCV->disconnectFromHost();
+
+
+}
+//+++++++++++++++++++++++++++++++++++
+// СЛот сигнала QIODevice::readyRead()
+void MainProcess::CV_onReadyRead_Slot()
+{
+
+    /*
+     * Now, TCP is based on sending a stream of data, so we cannot expect to get the entire fortune in one go. Especially on a slow network,
+     * the data can be received in several small fragments. QTcpSocket buffers up all incoming data and emits readyRead() for every new block that arrives,
+     * and it is our job to ensure that we have received all the data we need before we start parsing.
+     */
+    int value = 0xfafa;
+
+//    in.startTransaction();
+
+    QString nextTcpdata;
+
+//    in >> nextTcpdata;
+
+//    if(!in.commitTransaction()){
+//        GUI_Write_To_Log(value, "commitTransaction exit, complete data reading from socket");
+//        return;
+//       }
+
+    nextTcpdata = socketCV->readAll();
+
+
+
+    if (nextTcpdata == currentTcpdata){
+
+        GUI_Write_To_Log(value, "Data still not readed");
+        QTimer::singleShot(0, this, &MainProcess::request_CV);
+        return;
+    }
+
+
+
+    currentTcpdata = nextTcpdata;
+
+    //Чтение информации из сокета и вывод в консоль
+
+//    QByteArray qbmessage;
+//    qbmessage = socketCV->readAll();
+//    qDebug() << qbmessage;
+//   // qDebug() << "!!!!!!!!!!!!!!!!!!!!!11 Get Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!!1";
+
+    //Парсим команду.
+    QString str, message, substr;
+   //message = QString(qbmessage);
+    message = nextTcpdata;
+
+   // int sPosition, ePosition; // Индекс строки run в запросе.
+   // sPosition = message.indexOf("/run?cmd=");
+
+//   QString  wrong_mess = "/favicon.ico HTTP/1.1";
+
+//    if (!message.contains (wrong_mess))
+//    {
+        GUI_Write_To_Log(value, "!!!!!!!!!!!!!!!!! There are some  data from CV device !!!!!!!!!!!!!!!!!!!!");
+        GUI_Write_To_Log(value, message);
+
+        // Дальше надо парсить JSON формат
+
+        int sPosition, ePosition; // Индекс строки run в запросе.
+        sPosition = message.indexOf("distance");
+        sPosition += 11;
+        ePosition = message.indexOf("}", sPosition);
+        substr = message.mid(sPosition, (ePosition - sPosition));
+
+        str = "!!!!!!!!!!!!!!!!! The distance is : ";
+        str += substr; str += " mm";
+
+        GUI_Write_To_Log(value, str);
+
+        double cvdistance = substr.toDouble();
+        str = "!!!!!!!!!!!!!!!!! The distance as double value : ";
+        substr =  QString::number(cvdistance);
+        str += substr;
+        GUI_Write_To_Log(value, str);
+
+        int cvd = round(cvdistance);
+        // Получили значение с точностью до 1мм, а нам надо округлить до 10мм.
+
+        // Теперь сопоставляем значение cvd с числами в массиве
+        str = "!!!!!!!!!!!!!!!!! The distance as int value : ";
+        substr =  QString::number(cvd);
+        str += substr;
+        GUI_Write_To_Log(value, str);
+
+        int rDistance = my_round(cvd);
+        str = "!!!!!!!!!!!!!!!!! The distance as rounded to closest 10x int value : ";
+        substr =  QString::number(rDistance);
+        str += substr;
+        GUI_Write_To_Log(value, str);
+
+
+        switch (cvd)
+        {
+       // unsigned char ptr;
+
+          case 137:
+
+            memcpy(Servos, mob_pos_14, DOF);  this->send_Data(LASTONE);
+            GUI_Write_To_Log(value, "!!!!! position 137 !!!!");
+            break;
+
+          case 138:
+            GUI_Write_To_Log(value, "!!!!! position 138 !!!!");
+            memcpy(Servos, mob_pos_14, DOF);  this->send_Data(LASTONE);
+          break;
+
+
+
+          default:
+            GUI_Write_To_Log(value, "!!!!! Unrecognized position !!!!");
+            break;
+
+        }
+
+
+        //Отсоединение от удаленнного сокета
+        //socketCV->disconnectFromHost();
+
+}
+//++++++++++++++++++++++++++++++++++++++
+// Слот обработки сигнала
+void MainProcess::CV_onDisconnected()
+{
+    socketCV->close();
 }
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++

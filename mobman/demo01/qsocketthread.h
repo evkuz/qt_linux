@@ -48,6 +48,7 @@ private:
     int socketDescriptor;
     //Объект сокета
     QTcpSocket* socket;
+    //QTcpSocket* socketCV; // Socket for data exchange with computer vision device (web camera)
 };
 
 #endif // QSOCKETTHREAD_H

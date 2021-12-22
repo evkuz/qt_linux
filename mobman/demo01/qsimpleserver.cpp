@@ -12,12 +12,17 @@ QSimpleServer::QSimpleServer(QObject *parent) :
     // Так не слушает даже localhost, а только указанный ip
     // if(listen(QHostAddress("192.168.1.175"), tcpport))
 
-    // Запускаем слушание порта
+    // Запускаем слушание порта 8383
     if(listen(QHostAddress::AnyIPv4, tcpport)){
-        qDebug() << "Listening...";
-    //current_status = "wait";
-
+        qDebug() << "Listening client on port " << tcpport ;
     }
+//    // Запускаем слушание порта CV (5001)
+//    if(listen(QHostAddress::AnyIPv4, tcpportCV)){
+//        qDebug() << "Listening Computer Vision Device on port " << tcpportCV ;
+//    }
+
+
+
 }
 
 //++++++++++++++++++++++++++++++++++++++++++

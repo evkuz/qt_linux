@@ -78,7 +78,7 @@ void QSocketThread::onDisconnected()
 }
 //+++++++++++++++++
 // ПРишли данные от робота на отправку в сокет.
-
+// Слот сигнала Data_2_TcpClient_Signal
 void QSocketThread::Data_2_TcpClient_Slot(QString data)
 {
     // Готовим ответ.
