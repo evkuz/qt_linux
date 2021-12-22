@@ -120,6 +120,7 @@ public:
     void init_json();
     void request_CV();
     void request_New_CV();
+    int my_round(int n); // Округление целого числа до ближайшего кратного 10
 
 
 private:

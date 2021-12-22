@@ -689,6 +689,19 @@ void MainProcess::request_New_CV()
 {
     socketCV->abort();
     socketCV->connectToHost(CVDev_IP, CVDev_Port);
+}
+//+++++++++++++++++++++++++++++++++++++++++++++++++++
+int MainProcess::my_round(int n)
+{
+    // Smaller multiple
+        int a = (n / 10) * 10;
+
+        // Larger multiple
+        int b = a + 10;
+
+        // Return of closest of two
+        return (n - a > b - n)? b : a;
+
 }//init_json()
 
 
@@ -915,6 +928,7 @@ void MainProcess::server_New_Connect_Slot()
     ;
 }
 //++++++++++++++++++++++++++ Слот сигнала Connected()
+// Формируем HTTP-запрос в CV, отправляем его в CV
 void MainProcess::onSocketConnected_Slot()
 {
  in.setDevice(socketCV);
@@ -957,16 +971,20 @@ void MainProcess::CV_onReadyRead_Slot()
      */
     int value = 0xfafa;
 
-    in.startTransaction();
+//    in.startTransaction();
 
     QString nextTcpdata;
 
-    in >> nextTcpdata;
+//    in >> nextTcpdata;
 
-    if(!in.commitTransaction()){
-        GUI_Write_To_Log(value, "commitTransaction exit, complete data reading from socket");
-        return;
-       }
+//    if(!in.commitTransaction()){
+//        GUI_Write_To_Log(value, "commitTransaction exit, complete data reading from socket");
+//        return;
+//       }
+
+    nextTcpdata = socketCV->readAll();
+
+
 
     if (nextTcpdata == currentTcpdata){
 
@@ -974,6 +992,9 @@ void MainProcess::CV_onReadyRead_Slot()
         QTimer::singleShot(0, this, &MainProcess::request_CV);
         return;
     }
+
+
+
     currentTcpdata = nextTcpdata;
 
     //Чтение информации из сокета и вывод в консоль
@@ -1018,10 +1039,44 @@ void MainProcess::CV_onReadyRead_Slot()
         GUI_Write_To_Log(value, str);
 
         int cvd = round(cvdistance);
+        // Получили значение с точностью до 1мм, а нам надо округлить до 10мм.
+
+        // Теперь сопоставляем значение cvd с числами в массиве
         str = "!!!!!!!!!!!!!!!!! The distance as int value : ";
         substr =  QString::number(cvd);
         str += substr;
         GUI_Write_To_Log(value, str);
+
+        int rDistance = my_round(cvd);
+        str = "!!!!!!!!!!!!!!!!! The distance as rounded to closest 10x int value : ";
+        substr =  QString::number(rDistance);
+        str += substr;
+        GUI_Write_To_Log(value, str);
+
+
+        switch (cvd)
+        {
+       // unsigned char ptr;
+
+          case 137:
+
+            memcpy(Servos, mob_pos_14, DOF);  this->send_Data(LASTONE);
+            GUI_Write_To_Log(value, "!!!!! position 137 !!!!");
+            break;
+
+          case 138:
+            GUI_Write_To_Log(value, "!!!!! position 138 !!!!");
+            memcpy(Servos, mob_pos_14, DOF);  this->send_Data(LASTONE);
+          break;
+
+
+
+          default:
+            GUI_Write_To_Log(value, "!!!!! Unrecognized position !!!!");
+            break;
+
+        }
+
 
         //Отсоединение от удаленнного сокета
         //socketCV->disconnectFromHost();
