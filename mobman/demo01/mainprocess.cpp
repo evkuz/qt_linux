@@ -190,9 +190,10 @@ void MainProcess::Servos_To_Log(QString message)
 
 //+++++++++++++++++++++++++++++++++++++++
 // open Serial port
+/*
 void MainProcess::on_openButton_clicked()
 {
-QString portname = "Some Serial"; //ui->comL->currentText();
+QString portname = "ttyACM0"; //ui->comL->currentText();
 emit Open_Port_Signal(portname);
 //    serial.setPortName(ui->comL->currentText());
 //    serial.open(QIODevice::ReadWrite);
@@ -202,7 +203,7 @@ emit Open_Port_Signal(portname);
 //    serial.setStopBits(QSerialPort::OneStop);
 //    serial.setFlowControl(QSerialPort::NoFlowControl);
 
-
+*/
 
    /*
     if (!serial.open(QIODevice::ReadWrite)) {
@@ -240,8 +241,9 @@ emit Open_Port_Signal(portname);
                      .arg(serial.portName()).arg(serial.error()));
         return;
     }
-    */
+
 }
+*/
 //+++++++++++++++++++++++++
 // Go to "sit" position
 void MainProcess::on_sitButton_clicked()

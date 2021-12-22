@@ -139,7 +139,7 @@ void CV_onDisconnected();      // Слот обработки сигнала
 
 
 private slots:
-    void on_openButton_clicked();
+    //void on_openButton_clicked();
 
     void on_sitButton_clicked();
 

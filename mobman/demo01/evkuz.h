@@ -16,6 +16,13 @@
  * Путь к Supervisor-у
  * file:///home/ubuntu/iqr_lit/supervisor/index.html
  *
+ * //+++++++++++++++++++++++++++++++++++++++++++
+ * 22.12.2021
+ * Убрал ф-цию "void on_openButton_clicked();"
+ * Сейчас для открытия порта эмиттируем сигнал &MainProcess::Open_Port_Signal(portname);
+ * Его обрабатывает слот &HiWonder::Open_Port_Slot(QString portname);
+ * Т.к. serialPort - часть робота.
+ *
  *
  * //+++++++++++++++++++++++++++++++++++++++++++
  * 21.12.2021
