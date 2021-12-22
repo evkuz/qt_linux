@@ -28,6 +28,7 @@ HEADERS += \
     hiwonder.h \
     mcinfer.h \
     neuron.h \
+    newsocket.h \
     positions.h \
     protocol.h \
     qsimpleserver.h \
