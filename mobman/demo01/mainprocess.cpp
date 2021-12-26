@@ -882,9 +882,9 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
        this->send_Data(NOT_LAST);
    }
 //+++++++++++++++++++ action  "get_box" ++++++++++++++++++++++++++++++++++++++++++++
-int jsn_answer_rc;
-QString jsn_answer_name;
-QString jsn_answer_info;
+//int jsn_answer_rc;
+//QString jsn_answer_name;
+//QString jsn_answer_info;
    if (substr == "get_box") {
 //       jsn_answer_info = Robot->current_status;
 //       str = "Current status value is ";
@@ -1062,30 +1062,33 @@ void MainProcess::CV_onReadyRead_Slot()
         str += substr;
         GUI_Write_To_Log(value, str);
 
-
+        unsigned char *arrPtr = mob_parking_position;
         switch (cvd)
         {
        // unsigned char ptr;
 
-          case 137:
+          case 130:
 
-            memcpy(Servos, mob_pos_14, DOF);  this->send_Data(LASTONE);
-            GUI_Write_To_Log(value, "!!!!! position 137 !!!!");
+            arrPtr = mob_pos_13;
+            memcpy(Servos, mob_pos_13, DOF);  this->send_Data(LASTONE);
+            GUI_Write_To_Log(value, "!!!!! position 130 !!!!");
             break;
 
-          case 138:
-            GUI_Write_To_Log(value, "!!!!! position 138 !!!!");
+          case 14:
+            arrPtr = mob_pos_14;
+            GUI_Write_To_Log(value, "!!!!! position 140 !!!!");
             memcpy(Servos, mob_pos_14, DOF);  this->send_Data(LASTONE);
           break;
 
 
 
           default:
-            GUI_Write_To_Log(value, "!!!!! Unrecognized position !!!!");
+            GUI_Write_To_Log(value, "!!!!! Unrecognized position, Go to Parking !!!!");
             break;
 
         }
 
+        memcpy(Servos, arrPtr, DOF);  this->send_Data(LASTONE);
 
         //Отсоединение от удаленнного сокета
         //socketCV->disconnectFromHost();
