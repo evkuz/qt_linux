@@ -1,6 +1,6 @@
 /*
  * Класс hiwonder - для объекта робот. Написан под робота LeArm или, в более поздней версии, - Hiwonder.
- *
+ * В этом проекте - Плата Arduino Mega - управление сервоприводами
 */
 
 #ifndef HIWONDER_H
@@ -25,7 +25,7 @@ public:
 
 #define serial_speed Baud115200
 #define robot_buffer_SIZE 32
-#define Log_File_Name        "./hiwonder.log"
+#define Log_File_Name       "./hiwonder.log"
 #define SOURCE_POINTS_FILE  "../source_points.xls"
 #define DOF 4     // mobman
 #define szData 8 //Размер посылки в байтах

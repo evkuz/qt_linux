@@ -16,6 +16,8 @@
 #include <QList>
 #include "hiwonder.h"  // hiwonder class
 #include "qsimpleserver.h"
+#include "cvdevice.h"
+
 
 //#include "SocketClient.h"
 //#include "jsoncpp/json/json.h"
@@ -59,6 +61,7 @@ public:
 
     QSimpleServer server;
     QTcpSocket* socketCV;
+    CVDevice* CVdevice;
 
     //+++++++++++++++++++++++++++++ Threads +++++++++++++++
     int thread_counter ;
@@ -136,6 +139,7 @@ void onSocketConnected_Slot(); // Слот обработки сигнала voi
 void CV_onReadyRead_Slot();    // Слот обработка сигнала readyRead()
 void CV_onDisconnected();      // Слот обработки сигнала
 
+void data_from_CVDevice_Slot(QString);
 
 private slots:
     void on_openButton_clicked();

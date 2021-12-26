@@ -35,6 +35,13 @@ MainProcess::MainProcess(QObject *parent)
     in.setDevice(socketCV);
 
 
+    CVdevice = new CVDevice(CVDev_IP, CVDev_Port);
+//            : QObject(parent)
+//            , CVDev_IP
+//            , CVDev_Port
+
+    connect (CVdevice, &CVDevice::data_from_CVDevice_Signal, this, &MainProcess::data_from_CVDevice_Slot);
+
     target_name = QFileInfo(QCoreApplication::applicationFilePath()).fileName();
     //QByteArray ba = target_name.toLocal8Bit();
     //g/const char *c_str = ba.data();
@@ -1028,11 +1035,24 @@ void MainProcess::CV_onReadyRead_Slot()
 
 }
 //++++++++++++++++++++++++++++++++++++++
-// Слот обработки сигнала
+// Слот обработки сигнала Disconnected
 void MainProcess::CV_onDisconnected()
 {
     socketCV->close();
 }
+//++++++++++++++++++++++++++++++++++++++
+// Слот обработки сигнала data_from_CVDevice_Signal
+void MainProcess::data_from_CVDevice_Slot(QString message)
+{
+    int value = 0xCCCC;
+    QString str = "Data from CV Device :";
+    str += message;
+    GUI_Write_To_Log(value, str);
+    // Парсинг данных, а это json...
+
+}
+//++++++++++++++++++++++++++++++++++++++
+
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++
 
