@@ -123,6 +123,7 @@ public:
     void init_json();
     void request_CV();
     void request_New_CV();
+    int my_round(int n); // Округление целого числа до ближайшего кратного 10
 
 
 private:
@@ -142,7 +143,7 @@ void CV_onDisconnected();      // Слот обработки сигнала
 void data_from_CVDevice_Slot(QString);
 
 private slots:
-    void on_openButton_clicked();
+    //void on_openButton_clicked();
 
     void on_sitButton_clicked();
 
