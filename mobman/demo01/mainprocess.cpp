@@ -1063,32 +1063,46 @@ void MainProcess::CV_onReadyRead_Slot()
         GUI_Write_To_Log(value, str);
 
         unsigned char *arrPtr = mob_parking_position;
+
+        // Выбираем массив углов через switch, потом попробуем через словарь, т.е. ключ - значение, где значением будет массив
         switch (cvd)
         {
        // unsigned char ptr;
 
-          case 130:
+            case 130:
 
-            arrPtr = mob_pos_13;
-            memcpy(Servos, mob_pos_13, DOF);  this->send_Data(LASTONE);
-            GUI_Write_To_Log(value, "!!!!! position 130 !!!!");
+                arrPtr = mob_pos_13;
+//            memcpy(Servos, mob_pos_13, DOF);  this->send_Data(LASTONE);
+//            GUI_Write_To_Log(value, "!!!!! position 130 !!!!");
             break;
 
-          case 14:
-            arrPtr = mob_pos_14;
-            GUI_Write_To_Log(value, "!!!!! position 140 !!!!");
-            memcpy(Servos, mob_pos_14, DOF);  this->send_Data(LASTONE);
-          break;
+            case 140:
+                arrPtr = mob_pos_14;
+                memcpy(Servos, mob_pos_14, DOF);  this->send_Data(LASTONE);
+            break;
+
+            case 150: arrPtr = mob_pos_15; break;
+            case 160: arrPtr = mob_pos_16; break;
+            case 170: arrPtr = mob_pos_17; break;
+            case 180: arrPtr = mob_pos_18; break;
+            case 190: arrPtr = mob_pos_19; break;
+            case 200: arrPtr = mob_pos_20; break;
 
 
 
           default:
             GUI_Write_To_Log(value, "!!!!! Unrecognized position, Go to Parking !!!!");
-            break;
+            arrPtr = mob_parking_position; break;
+          break;
 
         }
 
         memcpy(Servos, arrPtr, DOF);  this->send_Data(LASTONE);
+
+        str =  "!!!!! position "; str += QString::number(cvd); str += "mm !!!!";
+
+        GUI_Write_To_Log(value, str);
+
 
         //Отсоединение от удаленнного сокета
         //socketCV->disconnectFromHost();
