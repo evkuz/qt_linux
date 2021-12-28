@@ -1,6 +1,6 @@
 #ifndef POSITIONS_H
 #define POSITIONS_H
-/*Координаты начальной/стартовой позиции*/
+/*Координаты начальной/стартовой позиции и прочих других*/
 #include <QtCore>
 
 const char hwr_Start_position [6] = {93, 93, 93, 93, 93, 93}; // servo1,,,servo6
