@@ -776,14 +776,9 @@ void MainWindow::send_Data(unsigned char thelast)
     QByteArray dd ;
     dd.resize(parcel_size);
     memcpy(dd.data(), Servos, 6);
-<<<<<<< HEAD
-    //dd.insert(parcel_size-2, 0x31); // Движение "Туда"
     if (newYearMode) {dd.insert(parcel_size-2, NEWYEAR_MV);} // Режим "НГ"
     else {dd.insert(parcel_size-2, FORWARD_MV);} // Движение "Туда"
 
-=======
-    dd.insert(parcel_size-2, 0x31); // А вот зачем это было нужно ????
->>>>>>> a71ecd71e95d400b360d7e53784042e5c3cdd165
     dd.insert(parcel_size-1, thelast);
     //dd.append(0x31);
     //dd.resize(64);
@@ -791,6 +786,8 @@ void MainWindow::send_Data(unsigned char thelast)
     Robot->GoToPosition(dd);
 }
 
+//+++++++++++++++++++++++++++++++
+// В перспективе можно избавиться от этой ф-ции, сразу запускать Robot->GoToPosition(position), а посылку формировать на этапе парсинга.
 void MainWindow::ssend_Data(QByteArray position)
 {
     Robot->GoToPosition(position);
