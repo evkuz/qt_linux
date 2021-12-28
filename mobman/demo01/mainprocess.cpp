@@ -20,6 +20,7 @@ MainProcess::MainProcess(QObject *parent)
 //    , readSocket("../../simpledetector_cpp/iqr.socket")
 
 {
+    parcel_size  = 6;
 
     //json jsncommand; // Команду извне упакуем в json
 //    json jsnAnswer;  // ответ tcp-клменту в json
@@ -554,9 +555,12 @@ void MainProcess::send_Data(unsigned char thelast)
 {
    // QString str;
 
-
+    int value = 0xcdcd;
     QByteArray dd ;
     dd.resize(parcel_size);
+    QString mystr = "Current Parcel Size is "; mystr += QString::number(parcel_size); // Без этой записи никогда бы не докопался до истины :)
+    GUI_Write_To_Log(value, mystr);
+
     memcpy(dd.data(), Servos, DOF);
     dd.insert(parcel_size-2, 0x31); // Движение "Туда"
     dd.insert(parcel_size-1, thelast);
@@ -823,6 +827,12 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
         this->send_Data(LASTONE);
    }
 
+
+   if (substr == "ready")
+   {
+       memcpy(Servos, mob_ready_position, DOF);
+       this->send_Data(LASTONE);
+   }
 
    if (substr == "servo2_20")
    {

@@ -73,7 +73,7 @@ public:
     //QJsonObject qjsnStatus;
 
 
-#define parcel_size 8
+//#define
 #define FORWARD     0X31 //049
 #define NOT_LAST    0xC8 //200  // Не последняя команда
 #define LASTONE     0xDE //222  // Последняя команда роботу при комплексном движении
@@ -94,7 +94,7 @@ public:
 
 //+++++++++++++++++++++ CV device
 
-#define CVDev_IP     "192.168.1.201"
+#define CVDev_IP     "192.168.1.201"//"192.168.1.201"
 #define CVDev_Port   5001
 
     QString currentTcpdata; //Нужно, чтоб была глобальная.
@@ -105,6 +105,7 @@ public:
     int X, Y;//Координаты x,y
     bool DETECTED; // Флаг, показывающий, сработал ли захват изображения.
 
+    int parcel_size ;
     unsigned char Servos [DOF] = {93,93,93,93};
 
     //void update_data_from_sliders(int index, int value);
