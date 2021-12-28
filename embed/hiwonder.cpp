@@ -13,7 +13,7 @@
 //HiWonder::HiWonder(QObject *parent) : QObject(parent)
 HiWonder::HiWonder()
 {
-    // Инициализируем буфер данными QByteArray
+    // Инициализируем буфер данными "0хЕЕ" QByteArray
     memset(byInputBuffer, 0xEE, robot_buffer_SIZE); //sizeof(byInputBuffer)
     MOVEMENT_DONE = true;
     qbuf.resize (robot_buffer_SIZE);

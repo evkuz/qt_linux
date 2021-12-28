@@ -45,6 +45,7 @@
 //#include "model/model3.h"
 //#include "model/new_05_10.h"
 #include "model/new2_05_10.h"
+// #include "model/kb2_sug_min2_bp.h"
 
 //+++++++++++++++++ Вспомогательные переменные
 

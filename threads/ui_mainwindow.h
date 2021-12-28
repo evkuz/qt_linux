@@ -54,6 +54,7 @@ public:
     QPushButton *getBackButton;
     QPushButton *fixButton;
     QPushButton *PUTButton;
+    QPushButton *GetBackFromServoButton;
 
     void setupUi(QWidget *MainWindow)
     {
@@ -83,43 +84,43 @@ public:
 
         clampButton = new QPushButton(MainWindow);
         clampButton->setObjectName(QString::fromUtf8("clampButton"));
-        clampButton->setGeometry(QRect(520, 200, 89, 51));
+        clampButton->setGeometry(QRect(370, 160, 89, 51));
         set_posButton = new QPushButton(MainWindow);
         set_posButton->setObjectName(QString::fromUtf8("set_posButton"));
-        set_posButton->setGeometry(QRect(130, 200, 341, 61));
+        set_posButton->setGeometry(QRect(20, 150, 341, 61));
         stand_upButton = new QPushButton(MainWindow);
         stand_upButton->setObjectName(QString::fromUtf8("stand_upButton"));
         stand_upButton->setGeometry(QRect(510, 70, 141, 61));
         S1_label = new QLabel(MainWindow);
         S1_label->setObjectName(QString::fromUtf8("S1_label"));
-        S1_label->setGeometry(QRect(40, 270, 61, 17));
+        S1_label->setGeometry(QRect(40, 240, 61, 17));
         S2_label = new QLabel(MainWindow);
         S2_label->setObjectName(QString::fromUtf8("S2_label"));
-        S2_label->setGeometry(QRect(190, 270, 61, 17));
+        S2_label->setGeometry(QRect(190, 240, 61, 17));
         S3_label = new QLabel(MainWindow);
         S3_label->setObjectName(QString::fromUtf8("S3_label"));
-        S3_label->setGeometry(QRect(360, 270, 61, 17));
+        S3_label->setGeometry(QRect(360, 240, 61, 17));
         S4_label = new QLabel(MainWindow);
         S4_label->setObjectName(QString::fromUtf8("S4_label"));
-        S4_label->setGeometry(QRect(530, 270, 181, 17));
+        S4_label->setGeometry(QRect(530, 240, 181, 17));
         S5_label = new QLabel(MainWindow);
         S5_label->setObjectName(QString::fromUtf8("S5_label"));
-        S5_label->setGeometry(QRect(680, 270, 61, 17));
+        S5_label->setGeometry(QRect(680, 240, 61, 17));
         S6_label = new QLabel(MainWindow);
         S6_label->setObjectName(QString::fromUtf8("S6_label"));
-        S6_label->setGeometry(QRect(840, 270, 61, 17));
+        S6_label->setGeometry(QRect(840, 240, 61, 17));
         sitButton = new QPushButton(MainWindow);
         sitButton->setObjectName(QString::fromUtf8("sitButton"));
         sitButton->setGeometry(QRect(20, 80, 131, 51));
         getXYButton = new QPushButton(MainWindow);
         getXYButton->setObjectName(QString::fromUtf8("getXYButton"));
-        getXYButton->setGeometry(QRect(750, 240, 151, 25));
+        getXYButton->setGeometry(QRect(510, 150, 151, 25));
         socketButton = new QPushButton(MainWindow);
         socketButton->setObjectName(QString::fromUtf8("socketButton"));
-        socketButton->setGeometry(QRect(760, 140, 151, 71));
+        socketButton->setGeometry(QRect(750, 110, 151, 71));
         servo_1_spinBox = new QSpinBox(MainWindow);
         servo_1_spinBox->setObjectName(QString::fromUtf8("servo_1_spinBox"));
-        servo_1_spinBox->setGeometry(QRect(10, 300, 121, 61));
+        servo_1_spinBox->setGeometry(QRect(10, 270, 121, 61));
         QFont font;
         font.setPointSize(24);
         servo_1_spinBox->setFont(font);
@@ -134,7 +135,7 @@ public:
         servo_1_spinBox->setValue(90);
         servo_2_spinBox = new QSpinBox(MainWindow);
         servo_2_spinBox->setObjectName(QString::fromUtf8("servo_2_spinBox"));
-        servo_2_spinBox->setGeometry(QRect(170, 300, 121, 61));
+        servo_2_spinBox->setGeometry(QRect(170, 270, 121, 61));
         servo_2_spinBox->setFont(font);
         servo_2_spinBox->setStyleSheet(QString::fromUtf8("QSpinBox::down-button{\n"
 "    width: 50\n"
@@ -147,7 +148,7 @@ public:
         servo_2_spinBox->setValue(90);
         servo_3_spinBox = new QSpinBox(MainWindow);
         servo_3_spinBox->setObjectName(QString::fromUtf8("servo_3_spinBox"));
-        servo_3_spinBox->setGeometry(QRect(330, 300, 121, 61));
+        servo_3_spinBox->setGeometry(QRect(330, 270, 121, 61));
         servo_3_spinBox->setFont(font);
         servo_3_spinBox->setStyleSheet(QString::fromUtf8("QSpinBox::down-button{\n"
 "    width: 50\n"
@@ -160,7 +161,7 @@ public:
         servo_3_spinBox->setValue(90);
         servo_4_spinBox = new QSpinBox(MainWindow);
         servo_4_spinBox->setObjectName(QString::fromUtf8("servo_4_spinBox"));
-        servo_4_spinBox->setGeometry(QRect(490, 300, 121, 61));
+        servo_4_spinBox->setGeometry(QRect(490, 270, 121, 61));
         servo_4_spinBox->setFont(font);
         servo_4_spinBox->setStyleSheet(QString::fromUtf8("QSpinBox::down-button{\n"
 "    width: 50\n"
@@ -173,7 +174,7 @@ public:
         servo_4_spinBox->setValue(90);
         servo_5_spinBox = new QSpinBox(MainWindow);
         servo_5_spinBox->setObjectName(QString::fromUtf8("servo_5_spinBox"));
-        servo_5_spinBox->setGeometry(QRect(650, 300, 121, 61));
+        servo_5_spinBox->setGeometry(QRect(650, 270, 121, 61));
         servo_5_spinBox->setFont(font);
         servo_5_spinBox->setStyleSheet(QString::fromUtf8("QSpinBox::down-button{\n"
 "    width: 50\n"
@@ -186,7 +187,7 @@ public:
         servo_5_spinBox->setValue(90);
         servo_6_spinBox = new QSpinBox(MainWindow);
         servo_6_spinBox->setObjectName(QString::fromUtf8("servo_6_spinBox"));
-        servo_6_spinBox->setGeometry(QRect(810, 300, 121, 61));
+        servo_6_spinBox->setGeometry(QRect(810, 270, 121, 61));
         servo_6_spinBox->setFont(font);
         servo_6_spinBox->setStyleSheet(QString::fromUtf8("QSpinBox::down-button{\n"
 "    width: 50\n"
@@ -212,7 +213,7 @@ public:
         submitButton->setStyleSheet(QString::fromUtf8(""));
         trainButton = new QPushButton(MainWindow);
         trainButton->setObjectName(QString::fromUtf8("trainButton"));
-        trainButton->setGeometry(QRect(660, 380, 211, 91));
+        trainButton->setGeometry(QRect(730, 380, 211, 91));
         QFont font2;
         font2.setPointSize(18);
         font2.setItalic(false);
@@ -222,18 +223,21 @@ public:
         threadlabel->setGeometry(QRect(20, 20, 91, 31));
         getBackButton = new QPushButton(MainWindow);
         getBackButton->setObjectName(QString::fromUtf8("getBackButton"));
-        getBackButton->setGeometry(QRect(190, 80, 261, 101));
+        getBackButton->setGeometry(QRect(190, 80, 261, 51));
         fixButton = new QPushButton(MainWindow);
         fixButton->setObjectName(QString::fromUtf8("fixButton"));
-        fixButton->setGeometry(QRect(690, 30, 211, 91));
+        fixButton->setGeometry(QRect(700, 0, 211, 91));
         QFont font3;
         font3.setPointSize(18);
         font3.setItalic(true);
         fixButton->setFont(font3);
         PUTButton = new QPushButton(MainWindow);
         PUTButton->setObjectName(QString::fromUtf8("PUTButton"));
-        PUTButton->setGeometry(QRect(620, 140, 99, 121));
+        PUTButton->setGeometry(QRect(50, 10, 99, 51));
         PUTButton->setFont(font3);
+        GetBackFromServoButton = new QPushButton(MainWindow);
+        GetBackFromServoButton->setObjectName(QString::fromUtf8("GetBackFromServoButton"));
+        GetBackFromServoButton->setGeometry(QRect(590, 390, 131, 61));
 
         retranslateUi(MainWindow);
 
@@ -263,6 +267,7 @@ public:
         getBackButton->setText(QCoreApplication::translate("MainWindow", "GetBack", nullptr));
         fixButton->setText(QCoreApplication::translate("MainWindow", "Fix Data", nullptr));
         PUTButton->setText(QCoreApplication::translate("MainWindow", "PUT", nullptr));
+        GetBackFromServoButton->setText(QCoreApplication::translate("MainWindow", "BACK FROM SpB", nullptr));
     } // retranslateUi
 
 };

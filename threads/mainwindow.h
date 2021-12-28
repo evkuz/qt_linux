@@ -92,6 +92,8 @@ public:
     void update_LineDits_from_position(unsigned char *pos);
     void update_Servos_from_LineEdits(void);
     void send_Data(unsigned char thelast);
+    void ssend_Data(QByteArray position);
+
     void make_json_answer();   // подготовка json-строки с полями ответа в TCP сокет.
 
 
@@ -163,6 +165,8 @@ private slots:
     void on_fixButton_clicked();
 
     void on_PUTButton_clicked();
+
+    void on_GetBackFromServoButton_clicked();
 
 signals:
     void Open_Port_Signal(QString portname); // Сигнал даем по нажатию кнопки "OPEN"

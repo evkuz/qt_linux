@@ -44,11 +44,11 @@ MainProcess::MainProcess(QObject *parent)
 
     //+++++++++++++++++++++++++++++++++  signal/slot of Get Request to webserver
     // Отправка данных от сервера клиенту (в  ЦУП)
-    connect(this, &MainProcess::Write_2_Client_Signal, &server, &QSimpleServer::Write_2_Client_SLot); // works ?
+    connect(this, &MainProcess::Write_2_TcpClient_Signal, &server, &QSimpleServer::Write_2_TcpClient_SLot); // works ?
 
     // Чтение данных от клиента серверу (из ЦУП)
     //connect(&server, SIGNAL(Info_2_Log_Signal(QString)), this, SLOT(Info_2_Log_Slot(QString))); // Not working
-    connect(&server, &QSimpleServer::Info_2_Log_Signal, this, &MainProcess::Info_2_Log_Slot);
+    connect(&server, &QSimpleServer::Data_From_TcpClient_Signal, this, &MainProcess::Data_From_TcpClient_Slot);
 
 
 
@@ -441,25 +441,30 @@ if (DETECTED)
    this->send_Data(NOT_LAST);
    //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
    //+++++++++++++++++++++++++++++++++ 5 Приподнять хват, чтобы не задеть тележку.
-      this->update_Servos_from_position(after_put_position);
-      memcpy(dd.data(), Servos, 6);
-      dd.insert(6, 0x30); // Движение "Туда"
-      this->send_Data(AFTER_PUT);
+//      this->update_Servos_from_position(after_put_position);
+//      memcpy(dd.data(), Servos, 6);
+//      dd.insert(6, 0x30); // Движение "Туда"
+//      this->send_Data(AFTER_PUT);
 
 
 
    //+++++++++++++++++++++ 6 go back to start position
    //on_stand_upButton_clicked();
    this->update_Servos_from_position(hwr_Start_position);
-   dd.insert(6, 0x30); // Движение "Обратно"
-   this->send_Data(LASTONE); // The last command
+//   dd.insert(6, 0x30); // Движение "Обратно"
+  // this->send_Data(LASTONE); // The last command
+   memcpy(dd.data(), Servos, 6);
+   dd.insert(parcel_size-2, 0x30); // Движение "Обратно"
+   dd.insert(parcel_size-1, LASTONE);
+
+   // this->ssend_Data(dd); // The last command
+   Robot->GoToPosition(dd);
 
 
 
   }// if (DETECTED)
 
    DETECTED = false;
-   Robot->current_status = "done"; // Тут еще рано, команды только отправлены.
 
 
 }//
@@ -524,8 +529,8 @@ void MainProcess::Data_From_Web_SLot(QString message)
  //this->ui->threadlabel->setText(QString::number(thread_counter));
 }
 //+++++++++++++++++++++++++++++++++++++++++++++++++++
-//+++++++ Получили запрос от клиента. Парсим его.
-void MainProcess::Info_2_Log_Slot(QString message)
+//+++++++ Получили данне (запрос) от клиента. Парсим.
+void MainProcess::Data_From_TcpClient_Slot(QString message)
 {
     QString str, substr;
     int value = 0xf00f;
@@ -534,34 +539,22 @@ void MainProcess::Info_2_Log_Slot(QString message)
     str = "From TCP Get new command : "; str += message;
     GUI_Write_To_Log(0xf00f, str);
 
-//    int sPosition, ePosition; // Индекс строки run в запросе.
-//    sPosition = message.indexOf("/run?cmd=");
-
-//   QString  wrong_mess = "/favicon.ico HTTP/1.1";
-
-//    if (!message.contains (wrong_mess))
-//    {
-//        sPosition += 9;
-//        ePosition = message.indexOf("&", sPosition);
-//        substr = message.mid(sPosition, (ePosition - sPosition));
-
-
-//        str = "Получена команда : "; str += substr;
-//        GUI_Write_To_Log(0xf00f, str);
-
         substr = message;
 
         // changed by Miksarus
         if (substr == "start") {
             //on_clampButton_clicked ();
-            Robot->SetCurrentStatus ("init");
+            Robot->SetCurrentStatus ("init"); // Перед запуском распознавания
             //emit StartTakeAndPutSignal();
 
             // Движение только начинаем, поэтому обнулим значение LASTONE
             emit on_trainButton_clicked ();
+            str = "Robot current status is ";
+            str += Robot->current_status;
+            Robot->Write_To_Log(0xf00F, str);
+
             str = Robot->current_status;
-            //str = "status_from_robot";
-            emit Write_2_Client_Signal (str);
+            emit Write_2_TcpClient_Signal (str);
          }
 
         if (substr == "reset") {
@@ -573,7 +566,7 @@ void MainProcess::Info_2_Log_Slot(QString message)
                 GUI_Write_To_Log (value, str);
                 str = Robot->current_status;
                 //str = "status_from_robot";
-                emit Write_2_Client_Signal (str);
+                emit Write_2_TcpClient_Signal (str);
             }
          }
 //         ///run?cmd=status&123
@@ -584,7 +577,7 @@ void MainProcess::Info_2_Log_Slot(QString message)
        str = Robot->current_status;
      //  str += "\"\n}";
 
-       emit Write_2_Client_Signal (str);
+       emit Write_2_TcpClient_Signal (str);
    }
 
    if (substr == "sit") {

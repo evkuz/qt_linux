@@ -35,19 +35,23 @@
 #define sBufSize 32   // Размер буфера компорта в плате NANO - 64 байта.
 #define szParcel 8
 Servo servo1, servo2, servo3,servo4,servo5,servo6;
-Servo servos [6] = {servo1, servo2, servo3,servo4,servo5,servo6};
+Servo servos [6] = {servo1, servo2, servo3,servo4,servo5,servo6}; // Текущие значения углов
 
 
 int *s1, *s2, *s3, *s4, *s5, *s6;
 byte current_s [6]; // Текущее значение угла для соответстующего привода 0-180
 byte readed_pos[6];
 byte delta [6];     // Разница (между текущим и целевым положением) в угле для соответствующего привода 0 - 180
+                    // индекс элемента соответствует номеру привода, с поправкой, что индексы начинаются с 0
 //String message, number;//, s_pos;
 char *s_pos;
 char buf[sBufSize];
 
-byte ints[sBufSize]; // Данные, полученные по serial
-short DF [6] ={1, 1, 1, 1, 1, 1};
+byte ints[sBufSize]; // Данные, полученные по serial, заданные позиции сервоприводов
+short DF [6] ={1, 1, 1, 1, 1, 1}; // Значения приращений угла в градусах для приводов, т.е. 1 - увеличиваем на 1 градус,
+                                  // а (-1) - уменьшаем на 1 градус.
+                                  // При значении 1 - движение робота максимально плавное
+                                  // Направление изменений - увеличение/уменьшение
 
 byte myDELAY = 25; //Задержка поворота приводов по умолчанию
 
@@ -62,6 +66,7 @@ void setup() {
     }
 // attach servos to correspondent pin
   for (int i=0; i<= serv_number -1; i++)  { servos[i].attach(i+2); } //, 500, 2500;
+  smoothStart();
 
 //  move_servo_together(hwr_Start_position, 1, 6);
   delay(1000);
@@ -109,7 +114,7 @@ void to_fix_position(byte *pos) { for (int i=0; i<= serv_number -1; i++) { servo
 //void start_pozition() { to_fix_position(hwr_Start_position); }//start_pozition
 //+++++++++++++++++++++++++++++++++++
 /*
-Получить значения углов для всех приводов
+Получить текущие значения углов для всех приводов
 параметр when означает - ДО начала движения и В КОНЦЕ движения
 */
 void get_all_servos(String when)
@@ -131,7 +136,7 @@ void get_all_servos(String when)
 
 //+++++++++++++++++++++++++++++++++++
 /*
-  Задаем значения приращения угла и направление для всех приводов для текущей и целевой позиции
+  Задаем значения приращения угла (массив delta) и направление (массив - DF) для всех приводов для текущей и целевой позиции
 */
 void get_curr_delta (byte *pos)
 {
@@ -160,60 +165,30 @@ void parse_command ()
 {
     String message;
 
-//    static byte prevAm = 0;
-//    static uint32_t tmr = 0;
-//    byte am = Serial.available();
-//    if (am != prevAm){
-//        prevAm = am;
-//        tmr = millis();
-//    }
-//    if ((((am & millis()) - tmr) >10) || am >60){
-//        uint32_t us = micros();
-
-
-//    }
 
     if (Serial.available()) {
       //byte ints[64];           // массив для численных данных, у нас 6 приводов
       byte numReaded;
       
       numReaded=Serial.readBytes(ints, szParcel);
-      //Serial.print(numReaded);
-     // Serial.write(numReaded);
-      //message = "Robot just got data : ";
       message = "";
       for (int i=0; i<numReaded; i++)
-      {          message += String(ints[i]); message += " ";
-
+      {
+          message += String(ints[i]); message += " ";
       }
 
       message.remove(message.length()-1);
       strcpy(buf, message.c_str());
       Serial.print(buf);
 
-      //Serial.println(message);
-      //Serial.println("Old macDonald have a farm 12345 very very well !!!!"); //51
-      //Serial.flush();
-
-      //move_servo_together(ints, numReaded);
       Go_To_Position(ints);
+
       /*Now send current servo data to PC*/
      // get_all_servos();
 
     }//if (serial.available())
 
-/*
-    switch (data) {
 
-    case 0x55:
-        clamp();
-        break;
-    default:
-        message = "Wrong data !!!";
-        Serial.println(message);
-        Serial.flush();
-    }
-*/
 }//parse_command
 //++++++++++++++++++++++
 void Go_To_Position(byte *pos)
@@ -238,14 +213,11 @@ void Go_To_Position(byte *pos)
             delay(500);
             move_servo_together (ints, 5, 5);
             delay(1000);
-            move_servo_together (ints, 1, 1);
+            move_servo_together (ints, 1, 1); // Открываем или закрываем хват
             delay(1000);
-//            move_servo_together (ints, 3, 3);
-//            delay(1000);
-
         }
 
-        else {
+        else {  // Обычный порядок - двжиение за кубиком при создании обучающей выборки
            move_servo_together (ints, 4, 6);
            delay(1000);
            move_servo_together (ints, 1, 1);
@@ -258,36 +230,38 @@ void Go_To_Position(byte *pos)
 
           
     case 0x30: // Движение "Обратно"
-    myDELAY = 10;
+        myDELAY = 10;
+        
           if (pos[7]==0xC8) 
           {// Не последняя команда, то как обычно
 
-          move_servo_together (ints, 3, 3);
+          move_servo_together (ints, 3, 3); // поднимаем дальнюю половину
           delay(1000);
-          move_servo_together (ints, 1, 1);
+          move_servo_together (ints, 1, 1); // закрываем/хват
           delay(1000);
           move_servo_together (ints, 4, 6);
           delay(1000);
           }
 
-           if (pos[7]==0xF4){
+           if (pos[7]==0xF4){ // Кубик на тележку положили, теперь грамотно убираем манипулятор (не задевая транспортир).
                move_servo_together (ints, 3, 5);
                delay(500);
                move_servo_together (ints, 1, 6);
                delay(500);
-
            }
 
 
-          if (pos[7]==0xDE)
+          if (pos[7]==0xDE) // Последняя команда роботу при комплексном движении
           {// Последняя команда, может быть и одиночой, но на случай работы с кубиком делаем так
-            
-          move_servo_together (ints, 3, 4);
-          delay(1000);
 
-          move_servo_together (ints, 5, 6);
-          delay(500);
-          move_servo_together (ints, 1, 1);
+          move_servo_together (ints, 3, 5);
+          delay(1000);
+//          move_servo_together (ints, 3, 4);
+//          delay(1000);
+
+          move_servo_together (ints, 1, 6);
+//          delay(300);
+//          move_servo_together (ints, 6, 6);
 
           }   
      break; //case 0x30:
@@ -302,7 +276,6 @@ void Go_To_Position(byte *pos)
     default:
         message = "Wrong data !!!";
         Serial.println(message);
-        //Serial.flush();
         
     }//switch (pos[6])
 
@@ -311,14 +284,9 @@ if (pos[7]==0xDE) {
    message = "Robot movement DONE! LAST !!"; 
   }
   else {
-   message = "Robot movement DONE! Total!!"; //28 bytes  //message += String(numBytes);}
+   message = "Robot current movement DONE!"; //28 bytes  //message += String(numBytes);}
   }
     
-   // message = "Robot movement DONE! I like to move it move it";
-//    byte mystrlen = message.length();
-
-    //Serial.println(message);
-    //Serial.write(message, 28); //sizeof(message)
 
     strcpy(buf, message.c_str());
     Serial.print(buf);
