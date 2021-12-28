@@ -50,6 +50,9 @@ public:
     bool new_get_request; // Флаг сигнализирует, что есть неотвеченный GET-запрос от webserver.
     //QTcpServer* m_pTCPServer;
 
+    bool newYearMode; // Снимаем НГ-поздравление. Кое-где надо медленнее двигаться.
+    int moving_mode;  // Режим движения (быстро/медленно)
+
     QSimpleServer server;
 
     //+++++++++++++++++++++++++++++ Threads +++++++++++++++
@@ -59,6 +62,15 @@ public:
 
 
 #define parcel_size 8
+
+
+// 7й байт
+
+#define FORWARD_MV 0X31    // Движение "Туда"
+#define BACKWAWARD_MV 0x30 // Движение "Обратно"
+#define NEWYEAR_MV    0X35 // Движение в режиме "НГ" - медленно, задержка  передается отдельным байтом
+
+// 8й байт
 #define NOT_LAST    0xC8 //200  // Не последняя команда
 #define LASTONE     0xDE //222  // Последняя команда роботу при комплексном движении
 #define BEFORE_LAST 0xE9 //233  // Предпоследняя команда - положить кубик на тележку.

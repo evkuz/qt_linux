@@ -20,6 +20,7 @@ MainWindow::MainWindow(QWidget *parent)
     //QList ports = QSerialPortInfo
 
 
+    newYearMode = false;
     //parcel_size = 8;
     DETECTED = false;
     new_get_request = false;
@@ -232,9 +233,70 @@ void MainWindow::on_sitButton_clicked()
     this->update_LineDits_from_position(sit_down_position);
     this->repaint();
 
-    QByteArray dd = QByteArray::fromRawData(sit_down_position, 6);
-    dd.append(0x31); // Движение "Туда"
-    Robot->GoToPosition(dd);//, sit_down_position
+    //QByteArray dd = QByteArray::fromRawData(sit_down_position, 6);
+    //dd.append(0x31); // Движение "Туда"
+    //Robot->GoToPosition(dd);//, sit_down_position
+
+    unsigned char test1[] = {23, 23, 23, 20, 23, 160};
+    unsigned char test2[] = {123, 123, 123, 120, 123, 23};
+    unsigned char test3[] = {93, 93, 93, 20, 93, 160};
+    unsigned char test4[] = {93, 93, 93, 20, 93, 23};
+    unsigned char test5[] = {93, 93, 93, 20, 93, 160};
+    unsigned char test6[] = {93, 93, 93, 20, 93, 23};
+
+    unsigned char rtest1[] = {93, 93, 33, 48, 93, 16};
+
+
+
+
+    unsigned char pos1[] = {93, 93, 93, 48, 48, 93};
+    unsigned char pos2[] = {0, 93, 25, 45, 93, 165};
+    unsigned char pos3[] = {63, 93, 25, 45, 93, 165};
+    unsigned char pos4[] = {63, 93, 65, 45, 93, 165};
+    //unsigned char pos5[] = {63, 93, 65, 45, 135, 40};
+
+    QByteArray dd ;
+    dd.resize(parcel_size);
+    dd.insert(parcel_size-2, 0x31);
+    dd.insert(parcel_size-1, LASTONE);
+
+    memcpy(dd.data(), test1, 6);
+    Robot->GoToPosition(dd);
+
+    memcpy(dd.data(), test2, 6);
+    Robot->GoToPosition(dd);
+
+//    memcpy(dd.data(), test3, 6);
+//    Robot->GoToPosition(dd);
+
+//    memcpy(dd.data(), test4, 6);
+//    Robot->GoToPosition(dd);
+
+//    memcpy(dd.data(), test5, 6);
+//    Robot->GoToPosition(dd);
+
+//    memcpy(dd.data(), test6, 6);
+//    Robot->GoToPosition(dd);
+
+
+//    memcpy(dd.data(), pos1, 6);
+//    Robot->GoToPosition(dd);
+
+//    memcpy(dd.data(), pos2, 6);
+//    Robot->GoToPosition(dd);
+
+//    memcpy(dd.data(), pos3, 6);
+//    Robot->GoToPosition(dd);
+
+//    memcpy(dd.data(), pos4, 6);
+//    Robot->GoToPosition(dd);
+
+//    memcpy(dd.data(), pos5, 6);
+//    Robot->GoToPosition(dd);
+
+    //dd.insert(parcel_size-2, 0x31); // Движение "Туда"
+    //dd.insert(parcel_size-1, LASTONE);
+
    // update_LineDits_from_servos();
 //    for (int i = 0; i<= 57; i++)
 //    {
@@ -706,7 +768,10 @@ void MainWindow::send_Data(unsigned char thelast)
     QByteArray dd ;
     dd.resize(parcel_size);
     memcpy(dd.data(), Servos, 6);
-    dd.insert(parcel_size-2, 0x31); // Движение "Туда"
+    //dd.insert(parcel_size-2, 0x31); // Движение "Туда"
+    if (newYearMode) {dd.insert(parcel_size-2, NEWYEAR_MV);} // Режим "НГ"
+    else {dd.insert(parcel_size-2, FORWARD_MV);} // Движение "Туда"
+
     dd.insert(parcel_size-1, thelast);
     //dd.append(0x31);
     //dd.resize(64);
@@ -1014,26 +1079,48 @@ void MainWindow::on_fixButton_clicked()
 void MainWindow::on_PUTButton_clicked()
 {
     QByteArray dd;
-    //+++++++++++++++++++++ 3 put the cube
+    //+++++++++++++++++++++ 3 put the cube, NW_1st
     // {60, 93, 100, 35, 145, 35};
-    this->update_LineDits_from_position (put_position);
-    this->repaint();
+    //this->update_LineDits_from_position (put_position);
+    //this->update_LineDits_from_position(nw_1st_position);
+    this->update_LineDits_from_position(mv_01_tree_position);   this->repaint();
     update_Servos_from_LineEdits ();
     memcpy(dd.data(), Servos, 6);
-    dd.insert(6, 0x31); // Движение "Туда"
-    this->send_Data(BEFORE_LAST); //0xE9, NOT_LAST ==C8
+    //dd.insert(6, 0x31); // Движение "Туда"
+    dd.insert(6, FORWARD_MV); // Движение в режиме "НГ"
+    this->send_Data(LASTONE); //0xE9, NOT_LAST ==C8
     //+++++++++++++++++++++ 4  Unclamp the gripper
     //on_clampButton_clicked();
-    if (ui->servo_1_spinBox->value () > 0){ ui->servo_1_spinBox->setValue (0); Servos[0]=0;}
-    else {ui->servo_1_spinBox->setValue (90); Servos[0]=90;}
-    this->send_Data(NOT_LAST);
+//    if (ui->servo_1_spinBox->value () > 0){ ui->servo_1_spinBox->setValue (0); Servos[0]=0;}
+//    else {ui->servo_1_spinBox->setValue (90); Servos[0]=90;}
+//    this->send_Data(NOT_LAST);
 
     //+++++++++++++++++++++ 6 go back to start position
     //on_stand_upButton_clicked();
-    this->update_LineDits_from_position(hwr_Start_position);
+    //this->update_LineDits_from_position(hwr_Start_position);
+    this->update_LineDits_from_position(mv_02_tree_position);
     this->repaint();
     this->update_Servos_from_LineEdits();
-    dd.insert(6, 0x30); // Движение "Обратно"
+    //dd.insert(6, 0x30); // Движение "Обратно"
+    dd.insert(6, FORWARD_MV); // Движение в режиме "НГ"
+    //this->send_Data(LASTONE); // The last command
+    this->send_Data(LASTONE);
+    //+++++++++++++++++++++++++++++++++++++++++++++++
+    this->update_LineDits_from_position(mv_03_tree_position);  this->repaint(); this->update_Servos_from_LineEdits();
+    dd.insert(6, FORWARD_MV); // Движение в режиме "НГ"
     this->send_Data(LASTONE); // The last command
+    //++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    this->update_LineDits_from_position(mv_04_tree_position);  this->repaint(); this->update_Servos_from_LineEdits();
+    dd.insert(6, FORWARD_MV); // Движение в режиме "НГ"
+    this->send_Data(LASTONE); // The last command
+    //++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    this->update_LineDits_from_position(mv_05_tree_position);  this->repaint(); this->update_Servos_from_LineEdits();
+    dd.insert(6, FORWARD_MV); // Движение в режиме "НГ"
+    this->send_Data(LASTONE); // The last command
+    //++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    this->update_LineDits_from_position(hwr_Start_position);  this->repaint(); this->update_Servos_from_LineEdits();
+    dd.insert(6, FORWARD_MV); // Движение в режиме "НГ"
+    this->send_Data(LASTONE); // The last command
+
 
 }

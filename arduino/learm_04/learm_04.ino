@@ -49,6 +49,8 @@ char buf[sBufSize];
 byte ints[sBufSize]; // Данные, полученные по serial
 short DF [6] ={1, 1, 1, 1, 1, 1};
 
+byte myDELAY = 25; //Задержка поворота приводов по умолчанию
+
 //++++++++++++++++++++++++ setup
 void setup() {
   Serial.begin(115200);
@@ -227,7 +229,7 @@ void Go_To_Position(byte *pos)
     switch (pos[6]) {
 
     case 0x31: // Движение "Туда"
-
+        myDELAY = 10;
         if (pos[7]==0xE9) //0xE9==233  // Предпоследняя команда - положить кубик на тележку.
         {
             move_servo_together (ints, 6, 6);
@@ -256,6 +258,7 @@ void Go_To_Position(byte *pos)
 
           
     case 0x30: // Движение "Обратно"
+    myDELAY = 10;
           if (pos[7]==0xC8) 
           {// Не последняя команда, то как обычно
 
@@ -290,7 +293,11 @@ void Go_To_Position(byte *pos)
      break; //case 0x30:
 
 
+    case 0x35: // Движение "НГ"
+        myDELAY = 25; //Меняем задержку
+        move_servo_together (ints, 6, 1);
 
+    break;
 
     default:
         message = "Wrong data !!!";
@@ -298,7 +305,8 @@ void Go_To_Position(byte *pos)
         //Serial.flush();
         
     }//switch (pos[6])
-    
+
+// Проверяем, последняя ли команда
 if (pos[7]==0xDE) {
    message = "Robot movement DONE! LAST !!"; 
   }
