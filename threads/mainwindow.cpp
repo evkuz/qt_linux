@@ -239,20 +239,20 @@ void MainWindow::on_sitButton_clicked()
 
     unsigned char test1[] = {23, 23, 23, 20, 23, 160};
     unsigned char test2[] = {123, 123, 123, 120, 123, 23};
-    unsigned char test3[] = {93, 93, 93, 20, 93, 160};
-    unsigned char test4[] = {93, 93, 93, 20, 93, 23};
-    unsigned char test5[] = {93, 93, 93, 20, 93, 160};
-    unsigned char test6[] = {93, 93, 93, 20, 93, 23};
+//    unsigned char test3[] = {93, 93, 93, 20, 93, 160};
+//    unsigned char test4[] = {93, 93, 93, 20, 93, 23};
+//    unsigned char test5[] = {93, 93, 93, 20, 93, 160};
+//    unsigned char test6[] = {93, 93, 93, 20, 93, 23};
 
-    unsigned char rtest1[] = {93, 93, 33, 48, 93, 16};
-
-
+//    unsigned char rtest1[] = {93, 93, 33, 48, 93, 16};
 
 
-    unsigned char pos1[] = {93, 93, 93, 48, 48, 93};
-    unsigned char pos2[] = {0, 93, 25, 45, 93, 165};
-    unsigned char pos3[] = {63, 93, 25, 45, 93, 165};
-    unsigned char pos4[] = {63, 93, 65, 45, 93, 165};
+
+
+//    unsigned char pos1[] = {93, 93, 93, 48, 48, 93};
+//    unsigned char pos2[] = {0, 93, 25, 45, 93, 165};
+//    unsigned char pos3[] = {63, 93, 25, 45, 93, 165};
+//    unsigned char pos4[] = {63, 93, 65, 45, 93, 165};
     //unsigned char pos5[] = {63, 93, 65, 45, 135, 40};
 
     QByteArray dd ;
@@ -563,7 +563,7 @@ void MainWindow::Return_FW_Kinematic_XYZ_Slot(int X, int Y, int Z, float EL)
     QString str = "Cube coordinates X, Y, L : ";
     str += QString::number(X); str += ", ";
     str += QString::number(Y); str += ", ";
-    //str += QString::number(Z); str += ", ";
+    str += QString::number(Z); str += ", ";
     str += QString::number(EL);
     GUI_Write_To_Log(0xf1122, str);
     str = "But should be as follows : ";
@@ -775,7 +775,7 @@ void MainWindow::send_Data(unsigned char thelast)
 
     QByteArray dd ;
     dd.resize(parcel_size);
-    memcpy(dd.data(), Servos, 6);
+    memcpy(dd.data(), Servos, DOF);
     if (newYearMode) {dd.insert(parcel_size-2, NEWYEAR_MV);} // Режим "НГ"
     else {dd.insert(parcel_size-2, FORWARD_MV);} // Движение "Туда"
 
@@ -915,10 +915,21 @@ void MainWindow::Info_2_Log_Slot(QString message)
 
        emit Write_2_Client_Signal (str);
    }
+//++++++++++++++++++ Если команда длинная, а для распознавания
+// достаточно первые несколько символов, то выделяем по ним
 
+   if (substr.startsWith("setservos=")){
+       substr = substr.remove("setservos=");
+       QStringList list1 = substr.split(QLatin1Char(','));
+       for (int i=0; i<DOF; ++i)
+       {
+           Servos[i] = list1.at(i).toUInt();
+       }//for
+           this->send_Data(NOT_LAST);
+   }
 }
 
-
+//++++++++++++++++++++++++++++++++++
 // added by Miksarus
 void MainWindow::TakeAndPutSlot()
 {
@@ -1082,8 +1093,8 @@ void MainWindow::on_fixButton_clicked()
        str += ui->All_Servos_lineEdit->text();
        //std::cout <<  str.toStdString() << std::endl;
        //Robot->Write_To_Log(0xf014, str);
-       GUI_Write_To_Log(0xf014, str);
-       Robot->Write_To_Source (value, str);
+       GUI_Write_To_Log(value, str);
+       Robot->Write_To_Source (str);
     }
 
 
@@ -1154,4 +1165,17 @@ void MainWindow::on_GetBackFromServoButton_clicked()
     str.truncate(str.lastIndexOf(","));
     GUI_Write_To_Log(0xf016, str);
     ui->All_Servos_lineEdit->setText(str);
+}
+//+++++++++++++++++++++++++++++++++++++++++++
+//Выполняет последовательность позиций из файла
+void MainWindow::on_fromFileButton_clicked()
+{// Открываем файл, читаем построчно, копируем в массив Servos, отправляем в SerialPort
+    QString str;
+    int value = 0xCACA;
+    Robot->Command_List_File_Open(COMMAND_LIST_FILE);
+    str = Robot->CommandFile.readLine();
+    GUI_Write_To_Log(value, "There are following data in command file ");
+    GUI_Write_To_Log(value, str);
+
+    Robot->CommandFile.close();
 }

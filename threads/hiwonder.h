@@ -22,13 +22,14 @@ public:
 #define robot_buffer_SIZE 32
 #define Log_File_Name        "./hiwonder.log"
 #define SOURCE_POINTS_FILE  "../source_points.xls"
+#define COMMAND_LIST_FILE   "./command.lst"
 #define DOF 6
 #define szData 8 //Размер посылки в байтах
     unsigned char outputData [szData];
     QSerialPort serial;
     QByteArray byInputBuffer[robot_buffer_SIZE];
     char byOutputBuffer[robot_buffer_SIZE];
-    QFile       LogFile, SourceFile;
+    QFile       LogFile, SourceFile, CommandFile;
 
     QByteArray qbuf;
     bool MOVEMENT_DONE;  // Флаг показывает, что получено сообщение от робота о заврешении цикла движения
@@ -46,10 +47,12 @@ public:
     int readFrom(char *buf_data, int buf_size); // Считывает данные из порта в ПК (от робота)
 
     void Log_File_Open(QString lname);
-    void Source_Points_File_Open (QString fname);
+    void Source_Points_File_Open (QString fname); // Файл точек, для ускорения набора, при создании выборки
+    void Command_List_File_Open (QString lstname);// Файл списка позиций,
+    // включая служебные байты, куда нужно попасть при комплексном движении
 
     void Write_To_Log (int value, QString log_message);
-    void Write_To_Source(int value, QString points_data); // Запись в файл координат кубика и 6 приводов в виде строки.
+    void Write_To_Source(QString points_data); // Запись в файл координат кубика и 6 приводов в виде строки.
 
     void GoToPosition(QByteArray &position); //, const char *servo Оправляет данные для новой позиции приводов в порт (Роботу)
 

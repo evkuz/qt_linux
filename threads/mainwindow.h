@@ -66,9 +66,9 @@ public:
 
 // 7й байт
 
-#define FORWARD_MV 0X31    // Движение "Туда"
-#define BACKWAWARD_MV 0x30 // Движение "Обратно"
-#define NEWYEAR_MV    0X35 // Движение в режиме "НГ" - медленно, задержка  передается отдельным байтом
+#define FORWARD_MV    0x31 // 49 // Движение "Туда"
+#define BACKWAWARD_MV 0x30 // 48 // Движение "Обратно"
+#define NEWYEAR_MV    0x35 // 53 // Движение в режиме "НГ" - медленно, задержка  передается отдельным байтом
 
 // 8й байт
 #define NOT_LAST    0xC8 //200  // Не последняя команда
@@ -167,6 +167,8 @@ private slots:
     void on_PUTButton_clicked();
 
     void on_GetBackFromServoButton_clicked();
+
+    void on_fromFileButton_clicked();
 
 signals:
     void Open_Port_Signal(QString portname); // Сигнал даем по нажатию кнопки "OPEN"

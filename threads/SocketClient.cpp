@@ -63,6 +63,7 @@ int SocketClient::GetState(DetectorState *state) {
   write(sockfd, buffer, strlen(buffer));
 
   n = read(sockfd, buffer, 80);
+  if (n==0) {;}
   int isDetected(0);
   int x(0), y(0);
   try {

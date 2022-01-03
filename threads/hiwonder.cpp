@@ -14,7 +14,7 @@
 HiWonder::HiWonder()
 {
     // Инициализируем буфер данными
-    memset(byInputBuffer, 0xEE, robot_buffer_SIZE); //sizeof(byInputBuffer)
+    memset(byInputBuffer, 0xEE, robot_buffer_SIZE*1); //sizeof(byInputBuffer)
     MOVEMENT_DONE = true;
     qbuf.resize (robot_buffer_SIZE);
     memset(outputData, 0xDD, szData); //Инициализация массива с данными для отправки
@@ -39,6 +39,15 @@ void HiWonder::Source_Points_File_Open(QString fname)
     SourceFile.open(QIODevice::ReadWrite | QIODevice::Append | QIODevice::Text);
 
 }
+
+void HiWonder::Command_List_File_Open(QString lstname)
+{
+    CommandFile.setFileName(lstname);
+    CommandFile.open(QIODevice::ReadOnly | QIODevice::Text);
+
+}
+
+
 //++++++++++++++++++++++++++++++
 void HiWonder::Write_To_Log (int value, QString log_message)
 {
@@ -56,22 +65,9 @@ void HiWonder::Write_To_Log (int value, QString log_message)
 
 }
 
-void HiWonder::Write_To_Source(int value, QString points_data)
+void HiWonder::Write_To_Source(QString points_data)
 {
-    QDateTime curdate ;
-    QTextStream uin(&SourceFile);
-
-    QString str, str2;
-    //int value = 0xf000;
-    curdate = QDateTime::currentDateTime();
-
-    //str = curdate.toString("yyyy-MM-dd__hh:mm:ss:z").toLocal8Bit(); str.append(" > ");
-   // str = "X, Y";
-    //str2 = QString("0x%1: ").arg(value, 4, 16, QChar('0'));
-
-    uin << points_data << "\n";
-
-
+    QTextStream uin(&SourceFile); uin << points_data << "\n";
 }
 //++++++++++++++++ REMEMBER WHILE OPENING PORT !!!!!
 /*
