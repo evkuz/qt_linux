@@ -47,7 +47,7 @@ public slots:
     //Слот отправки наверх команды на выполнение
     void Command_4_Parsing_Slot(QString);
     //Added by Miksarus
-    void SetCurrentState(QString);
+   // void SetCurrentState(QString);
 
 };
 

@@ -313,6 +313,7 @@ int GetResult(fuzzy_model *model,float *output)
 	counter j,idx,start;
 	float a,b,x;
 	float c,n,t;
+
 #endif
 
 
@@ -355,6 +356,7 @@ int GetResult(fuzzy_model *model,float *output)
 			a=0;
 			b=0;
 			start=0;
+            n=0;
 
 			// find first non-singleton distribution
 			for(j=start;j<model->out_mf_num[i];j++,start++)

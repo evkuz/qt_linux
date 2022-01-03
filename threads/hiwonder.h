@@ -27,7 +27,7 @@ public:
 #define szData 8 //Размер посылки в байтах
     unsigned char outputData [szData];
     QSerialPort serial;
-    QByteArray byInputBuffer[robot_buffer_SIZE];
+  //  QByteArray byInputBuffer[robot_buffer_SIZE];
     char byOutputBuffer[robot_buffer_SIZE];
     QFile       LogFile, SourceFile, CommandFile;
 

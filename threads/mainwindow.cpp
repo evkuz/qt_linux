@@ -140,7 +140,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     //+++++++++++++++ ОТкрываем порт Open_Port_Signal(QString portname); ttyUSB0
-    emit Open_Port_Signal("ttyUSB0");
+ //   emit Open_Port_Signal("ttyUSB0");
     //make_json_answer();
 
 
@@ -1172,10 +1172,38 @@ void MainWindow::on_fromFileButton_clicked()
 {// Открываем файл, читаем построчно, копируем в массив Servos, отправляем в SerialPort
     QString str;
     int value = 0xCACA;
+
+    QByteArray dd ;
+    dd.resize(parcel_size);
+
     Robot->Command_List_File_Open(COMMAND_LIST_FILE);
-    str = Robot->CommandFile.readLine();
-    GUI_Write_To_Log(value, "There are following data in command file ");
-    GUI_Write_To_Log(value, str);
+    QTextStream in(&Robot->CommandFile);
+    QString line;
+    QStringList list1;
+    while (!in.atEnd())
+    {
+       line = in.readLine();
+       list1 = str.split(QLatin1Char(','));
+       for (int i=0; i<szData; ++i)
+       {
+         //Servos[i] = list1.at(i).toUInt();
+         dd.insert(i, list1.at(i).toStdString().c_str());  //convert a QString to a const char *
+       }//for
+           //this->send_Data(NOT_LAST);
+       //memcpy(dd.data(), Servos, DOF);
+       //Robot->GoToPosition(dd);
+           GUI_Write_To_Log(value, "There are following data in command file ");
+           GUI_Write_To_Log(value, line);
+
+
+    }
+
+
+//    str = Robot->CommandFile.readLine();
+//    GUI_Write_To_Log(value, "There are following data in command file ");
+//    GUI_Write_To_Log(value, str);
+
+
 
     Robot->CommandFile.close();
 }

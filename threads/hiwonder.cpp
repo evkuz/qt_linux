@@ -14,7 +14,7 @@
 HiWonder::HiWonder()
 {
     // Инициализируем буфер данными
-    memset(byInputBuffer, 0xEE, robot_buffer_SIZE*1); //sizeof(byInputBuffer)
+   // memset(byInputBuffer, 0xEE, 32); //sizeof(byInputBuffer)  robot_buffer_SIZE*1
     MOVEMENT_DONE = true;
     qbuf.resize (robot_buffer_SIZE);
     memset(outputData, 0xDD, szData); //Инициализация массива с данными для отправки

@@ -33,7 +33,7 @@
 using namespace std;
 
 SocketClient::SocketClient(const char *socketPath) {
-  int pathLength = strlen(socketPath);
+  size_t pathLength = strlen(socketPath);
   _serverPath = new char[pathLength];
   strncpy(_serverPath, socketPath, pathLength);
 }
@@ -60,8 +60,8 @@ int SocketClient::GetState(DetectorState *state) {
   }
 
   sprintf(buffer, "%i", ServerCommand::ACT_SEND_COORDS);
-  write(sockfd, buffer, strlen(buffer));
-
+  ssize_t wr_result = write(sockfd, buffer, strlen(buffer));
+  if (wr_result==0) {;}
   n = read(sockfd, buffer, 80);
   if (n==0) {;}
   int isDetected(0);
