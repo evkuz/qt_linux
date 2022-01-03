@@ -18,7 +18,7 @@ SOURCES += main.cpp \
     qsocketthread.cpp \
 #    SocketClient.cpp \
     mainprocess.cpp \
-    mcinfer.cpp
+    tcpParcing.cpp
 
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /home/pi/qt_projects/$${TARGET}
@@ -28,7 +28,6 @@ HEADERS += \
     cvdevice.h \
     evkuz.h \
     hiwonder.h \
-    mcinfer.h \
     neuron.h \
     newsocket.h \
     positions.h \
