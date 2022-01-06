@@ -13,7 +13,9 @@
 //HiWonder::HiWonder(QObject *parent) : QObject(parent)
 HiWonder::HiWonder()
 {
-    // Инициализируем буфер данными
+//    DOF = 6;
+//    szData = 8;
+//    // Инициализируем буфер данными
    // memset(byInputBuffer, 0xEE, 32); //sizeof(byInputBuffer)  robot_buffer_SIZE*1
     MOVEMENT_DONE = true;
     qbuf.resize (robot_buffer_SIZE);

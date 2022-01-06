@@ -12,6 +12,14 @@
  * file:///home/ubuntu/iqr_lit/supervisor/index.html
  *
  * //++++++++++++++++++++++++++++++++++++
+ * 06.01.2021
+ * Объявил переменные DOF, szData как static const (вместо #define).
+ * Теперь так
+ * static const int robot_buffer_SIZE = 32;
+ * static const int DOF = 6;
+ * static const int szData = 8;
+
+ * //++++++++++++++++++++++++++++++++++++
  * 03.01.2022
  * - Добавил кнопку "fromFileButton" - выполнение списка движений/позиций из файла.
  * Слот нажатия кнопки - MainWindow::on_fromFileButton_clicked()

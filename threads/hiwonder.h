@@ -19,13 +19,17 @@ public:
     ~HiWonder();
 
 #define serial_speed Baud115200
-#define robot_buffer_SIZE 32
+//#define robot_buffer_SIZE 32
 #define Log_File_Name        "./hiwonder.log"
 #define SOURCE_POINTS_FILE  "../source_points.xls"
 #define COMMAND_LIST_FILE   "./command.lst"
-#define DOF 6
-#define szData 8 //Размер посылки в байтах
-    unsigned char outputData [szData];
+//unsigned int  DOF;
+//unsigned int  szData; //Размер посылки в байтах
+
+static const int robot_buffer_SIZE = 32;
+static const int DOF = 6;
+static const int szData = 8;
+unsigned char outputData [szData];
     QSerialPort serial;
   //  QByteArray byInputBuffer[robot_buffer_SIZE];
     char byOutputBuffer[robot_buffer_SIZE];

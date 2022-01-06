@@ -81,7 +81,7 @@ public:
     int X, Y;//Координаты x,y
     bool DETECTED; // Флаг, показывающий, сработал ли захват изображения.
 
-    unsigned char Servos [DOF] = {93,93,93,93,93,93};
+    unsigned char Servos [HiWonder::DOF] = {93,93,93,93,93,93};
  //   unsigned char
 
     void update_data_from_sliders(int index, int value);

@@ -428,7 +428,7 @@ void MainWindow::on_clampButton_clicked()
 //++++++++++++++++++++++++++++++++++++++
 void MainWindow::update_LineDits_from_servos(void)
 {
-    for (int i =0; i<= DOF -1; i++)
+    for (int i =0; i<= Robot->DOF -1; i++)
     {
        // qle_list[i]->setText(QString::number(Servos[i]));
         qspb_list[i]->setValue((Servos[i]));
@@ -438,7 +438,7 @@ void MainWindow::update_LineDits_from_servos(void)
 //+++++++++++++++++++++++++++++++++++++
 void MainWindow::update_LineDits_from_position(const char *pos)
 {
-    for (int i =0; i<= DOF -1; i++)
+    for (int i =0; i<= Robot->DOF -1; i++)
     {
         //qle_list[i]->setText(QString::number(pos[i]));
         qspb_list[i]->setValue(pos[i]);
@@ -448,7 +448,7 @@ void MainWindow::update_LineDits_from_position(const char *pos)
 //+++++++++++++++++++++++++++++++++++++
 void MainWindow::update_LineDits_from_position(unsigned char *pos)
 {
-    for (int i =0; i<= DOF -1; i++)
+    for (int i =0; i<= Robot->DOF -1; i++)
     {
         //qle_list[i]->setText(QString::number(pos[i]));
         qspb_list[i]->setValue(pos[i]);
@@ -458,7 +458,7 @@ void MainWindow::update_LineDits_from_position(unsigned char *pos)
 //+++++++++++++++++++++++++++++++++++++
 void MainWindow::update_Servos_from_LineEdits(void)
 {
-    for (int i =0; i<= DOF -1; i++)
+    for (int i =0; i<= Robot->DOF -1; i++)
     {
        // Servos[i] = qle_list[i]->text().toInt();
         Servos[i] = qspb_list[i]->value();
@@ -593,7 +593,7 @@ void MainWindow::on_submitButton_clicked()
   //  QStringList list = {"100", "100", "100", "100", "100", "100" };
     list = data.split(rx, Qt::SkipEmptyParts);
     num = list.size (); //Число элементов, начиная с 1
-    if (num < DOF) {
+    if (num < Robot->DOF) {
         str = "Данных НЕДОСТАТОЧНО !!! Передано всего "; str.append (QString::number(list.size()));
         //Если данных недостаточно, то меняем цвет кнопки и строки ввода, для подсказки
         GUI_Write_To_Log(0xf010, str);
@@ -604,10 +604,10 @@ void MainWindow::on_submitButton_clicked()
         ui->All_Servos_lineEdit->setStyleSheet (str);
 
     }
-    if (num == DOF)
+    if (num == Robot->DOF)
       {
         // А теперь все это в qle_list
-        for (int i =0; i<= DOF -1; i++)
+        for (int i =0; i< Robot->DOF; i++)
         {
             //qle_list[i]->setText(QString::number(Servos[i]));
             qspb_list[i]->setValue(list.at(i).toInt());
@@ -775,7 +775,7 @@ void MainWindow::send_Data(unsigned char thelast)
 
     QByteArray dd ;
     dd.resize(parcel_size);
-    memcpy(dd.data(), Servos, DOF);
+    memcpy(dd.data(), Servos, Robot->DOF);
     if (newYearMode) {dd.insert(parcel_size-2, NEWYEAR_MV);} // Режим "НГ"
     else {dd.insert(parcel_size-2, FORWARD_MV);} // Движение "Туда"
 
@@ -921,7 +921,7 @@ void MainWindow::Info_2_Log_Slot(QString message)
    if (substr.startsWith("setservos=")){
        substr = substr.remove("setservos=");
        QStringList list1 = substr.split(QLatin1Char(','));
-       for (int i=0; i<DOF; ++i)
+       for (int i=0; i<Robot->DOF; ++i)
        {
            Servos[i] = list1.at(i).toUInt();
        }//for
@@ -1157,7 +1157,7 @@ void MainWindow::on_PUTButton_clicked()
 void MainWindow::on_GetBackFromServoButton_clicked()
 {
    QString str = "";
-    for (int i =0; i< DOF; i++)
+    for (int i =0; i< Robot->DOF; i++)
     {
         str += QString::number((qspb_list[i]->value()));
         str += ", ";
@@ -1174,29 +1174,44 @@ void MainWindow::on_fromFileButton_clicked()
     int value = 0xCACA;
 
     QByteArray dd ;
-    dd.resize(parcel_size);
+    dd.resize(Robot->DOF);
 
+    GUI_Write_To_Log(value, "Before opening command file");
     Robot->Command_List_File_Open(COMMAND_LIST_FILE);
+    GUI_Write_To_Log(value, "After opening command file");
+
     QTextStream in(&Robot->CommandFile);
     QString line;
     QStringList list1;
     while (!in.atEnd())
     {
        line = in.readLine();
-       list1 = str.split(QLatin1Char(','));
-       for (int i=0; i<szData; ++i)
+       GUI_Write_To_Log(value, line);
+       list1 = line.split(QLatin1Char(','));
+//       str = "РАзмер списка : "; str += QString::number(list1.size());
+//       GUI_Write_To_Log(value, str);
+
+       for (int i=0; i < list1.size(); i++)
+       {GUI_Write_To_Log(value, list1.at(i).toLocal8Bit().constData()); }
+
+//       GUI_Write_To_Log(value, "Now start insert to qbyteArray");
+       for (int i=0; i< Robot->szData; ++i)
        {
          //Servos[i] = list1.at(i).toUInt();
          dd.insert(i, list1.at(i).toStdString().c_str());  //convert a QString to a const char *
        }//for
-           //this->send_Data(NOT_LAST);
+       //this->send_Data(NOT_LAST);
+       // Записали значения углов. Еще 2 байта надо записать
+       dd.insert(Robot->DOF -2, FORWARD_MV); // Движение "Туда"
+       dd.insert(Robot->DOF -1, LASTONE);
+
        //memcpy(dd.data(), Servos, DOF);
        //Robot->GoToPosition(dd);
            GUI_Write_To_Log(value, "There are following data in command file ");
            GUI_Write_To_Log(value, line);
 
 
-    }
+    }//while (!in.atEnd())
 
 
 //    str = Robot->CommandFile.readLine();
