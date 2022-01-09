@@ -106,7 +106,7 @@ private:
 
 public slots:
 void Data_From_Web_SLot(QString message);
-void Info_2_Log_Slot(QString);
+void Info_2_Log_Slot(QString); // Исправить на  Data_From_TcpClient_Slot(QString message)
 
 void newConnection_Slot();
 void server_New_Connect_Slot();
