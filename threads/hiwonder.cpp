@@ -141,6 +141,7 @@ void HiWonder::GoToPosition(QByteArray &position)//, const char *servo)
         str+= ", ";
 
     }
+    str.truncate(str.lastIndexOf(","));
     this->Write_To_Log(0xF001, str);
 //    serial.waitForReadyRead();
 
