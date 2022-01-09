@@ -3,7 +3,9 @@
 
 
 /*
-  Ветка threads.
+ * Ветка threads. Стационарный манипулятор.
+ * Управление и через ЦУП и через GUI
+ *
  *  https://mayaposch.wordpress.com/2011/11/01/how-to-really-truly-use-qthreads-the-full-explanation/
  *
  *
