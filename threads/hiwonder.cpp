@@ -154,7 +154,8 @@ void HiWonder::GoToPosition(QByteArray &position)//, const char *servo)
 
 }
 //+++++++++++++++++++++++++++++++
-// code From Robot :
+// Слот сигнала QSerialPort::readyRead()
+// DATA From Robot :
 void HiWonder::ReadFromSerial_Slot ()
 {
     QString str;
@@ -197,8 +198,8 @@ void HiWonder::ReadFromSerial_Slot ()
 //   if (this->MOVEMENT_DONE) this->Write_To_Log(0xF001, "Robot finished");
 //
 
-}
-
+} // ReadFromSerial_Slot
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 void HiWonder::SetCurrentStatus(QString newStatus) {
     this->current_status = newStatus;
 //    emit this->StatusChangedSignal(newStatus);
