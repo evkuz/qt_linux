@@ -9,7 +9,7 @@
  *  https://mayaposch.wordpress.com/2011/11/01/how-to-really-truly-use-qthreads-the-full-explanation/
  *
  *
- **
+ *
  * //++++++++++++++++++++++++++++++++++++++++++++
  * Путь к Supervisor-у
  * file:///home/ubuntu/iqr_lit/supervisor/index.html
@@ -17,8 +17,8 @@
    //++++++++++++++++++++++++++++++++++++
    09.01.2022
    - Убрать ф-цию MainWindow::update_data_from_sliders(int index, int value)
-   - Заменить переменную parcel_size на аналогичную из класса HiWonder
-   - Поправить строку i<= Robot->DOF -1;
+   + Заменить (18 замен) переменную parcel_size на аналогичную из класса HiWonder
+   + Поправить строку i<= Robot->DOF -1;
    - Убрать из ф-ции MainWindow::on_getXYButton_clicked() запуск socket-сервера, было сделано для теста,  это  не ошибка, но сейчас - совсем лишнее !
    - Убрать комментарии в ф-ции MainWindow::on_trainButton_clicked()
    - ДОбавить комменты касательно MainWindow::send_Data(unsigned char thelast), ssend_data(...)
