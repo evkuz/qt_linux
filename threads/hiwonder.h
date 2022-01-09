@@ -76,7 +76,7 @@ signals:
 
 public slots:
     void Open_Port_Slot(QString portname);
-    void ReadFromSerial_Slot();
+    void ReadFromSerial_Slot(); // Слот сигнала QSerialPort::readyRead()
 };
 
 #endif // HIWONDER_H
