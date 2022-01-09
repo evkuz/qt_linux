@@ -3,6 +3,7 @@
 
 
 /*
+  Ветка threads.
  *  https://mayaposch.wordpress.com/2011/11/01/how-to-really-truly-use-qthreads-the-full-explanation/
  *
  *
@@ -11,6 +12,18 @@
  * Путь к Supervisor-у
  * file:///home/ubuntu/iqr_lit/supervisor/index.html
  *
+   //++++++++++++++++++++++++++++++++++++
+   09.01.2022
+   - Убрать ф-цию MainWindow::update_data_from_sliders(int index, int value)
+   - Заменить переменную parcel_size на аналогичную из класса HiWonder
+   - Поправить строку i<= Robot->DOF -1;
+   - Убрать из ф-ции MainWindow::on_getXYButton_clicked() запуск socket-сервера, было сделано для теста,  это  не ошибка, но сейчас - совсем лишнее !
+   - Убрать комментарии в ф-ции MainWindow::on_trainButton_clicked()
+   - ДОбавить комменты касательно MainWindow::send_Data(unsigned char thelast), ssend_data(...)
+   - Переименовать слот MainWindow::Info_2_Log_Slot(QString message) как в проекте mobman (embed)
+   - Добавить комменты в ф-цию MainWindow::on_fixButton_clicked()
+
+
  * //++++++++++++++++++++++++++++++++++++
  * 06.01.2021
  * Объявил переменные DOF, szData как static const (вместо #define).
