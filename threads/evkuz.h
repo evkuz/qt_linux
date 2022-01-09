@@ -6,8 +6,10 @@
  * Ветка threads. Стационарный манипулятор.
  * Управление и через ЦУП и через GUI
  *
- *  https://mayaposch.wordpress.com/2011/11/01/how-to-really-truly-use-qthreads-the-full-explanation/
- *
+ * https://mayaposch.wordpress.com/2011/11/01/how-to-really-truly-use-qthreads-the-full-explanation/
+ * В к. 406Б использую kit : Qt 5.15.2 (gcc_64)
+ * В к. 240Б использую       Qt 5.15.2 (gcc_64)for Desktop
+ * На x542bp использую       Qt 5.15.2 (gcc_64)for Desktop
  *
  *
  * //++++++++++++++++++++++++++++++++++++++++++++
@@ -16,10 +18,10 @@
  *
    //++++++++++++++++++++++++++++++++++++
    09.01.2022
-   - Убрать ф-цию MainWindow::update_data_from_sliders(int index, int value)
+   + Убрать ф-цию MainWindow::update_data_from_sliders(int index, int value)
    + Заменить (18 замен) переменную parcel_size на аналогичную из класса HiWonder
    + Поправить строку i<= Robot->DOF -1;
-   - Убрать из ф-ции MainWindow::on_getXYButton_clicked() запуск socket-сервера, было сделано для теста,  это  не ошибка, но сейчас - совсем лишнее !
+   + Убрать из ф-ции MainWindow::on_getXYButton_clicked() запуск socket-сервера, было сделано для теста,  это  не ошибка, но сейчас - совсем лишнее !
    - Убрать комментарии в ф-ции MainWindow::on_trainButton_clicked()
    - ДОбавить комменты касательно MainWindow::send_Data(unsigned char thelast), ssend_data(...)
    - Переименовать слот MainWindow::Info_2_Log_Slot(QString message) как в проекте mobman (embed)

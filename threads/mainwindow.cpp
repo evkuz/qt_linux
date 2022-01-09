@@ -323,24 +323,6 @@ void MainWindow::on_stand_upButton_clicked()
 }
 //+++++++++++++++++++++++++++++++
 //++++++++++++++++++++++++++++++++++++++++++++++
-void MainWindow::update_data_from_sliders(int index, int value)
-{
-    Servos[index]   = value;
-    on_set_posButton_clicked();
-//    const char *   pchar;
-//    pchar = static_cast<const char *>(static_cast<char *>(Servos));
-//    QByteArray dd = QByteArray::fromRawData(pchar, 6);
-//    QString str = "Servos before write to serial ";
-//    for (int i=0; i<= DOF - 1; i++){
-//        str += QString::number(Servos[i]);
-//        str+= ", ";
-//    }
-//    GUI_Write_To_Log(0xf002,str);
-//    Robot->GoToPosition(dd, pchar);
-
-
-}
-//++++++++++++++++++++++++++++++++++++++++++++++
 void MainWindow::on_closeButton_clicked()
 {
     Robot->serial.close();
@@ -503,22 +485,7 @@ void MainWindow::on_servo_6_spinBox_valueChanged(int arg1)
 void MainWindow::on_getXYButton_clicked()
 {
     QString str;
-//    DetectorState state;
-//    if (readSocket.GetState(&state) == 0)
-//      {
-//        if (state.isDetected){
-//            X = state.objectX;
-//            Y = state.objectY;
-//            str+="DETECTED: ";
-//            str += QString::number(state.objectX);
-//            str += ", ";
-//            str += QString::number(state.objectY);
 
-
-//        } else {
-//            str += "NOT DETECTED";
-//        }
-//      }//if (readSocket.GetState(&state) == 0)
 
     /*
       GUI_Write_To_Log(0xf233, "Have got X,Y ");
@@ -539,15 +506,6 @@ void MainWindow::on_getXYButton_clicked()
 
    // str = "sdklfjlk";
     make_json_answer();
-
-    if (server.isListening ()) {
-
-        str = "Listening on address "; str += server.serverAddress().toString();
-        str += " and port "; str += QString::number(server.serverPort());//QString::number(server.tcpport);
-
-        GUI_Write_To_Log(0000, str);
-    }
-
 
 }
 //++++++++++++++++++++++void Return_XY_Slot(float EL)

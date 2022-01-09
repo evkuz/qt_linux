@@ -61,7 +61,7 @@ public:
     QString rAnswer; // Ответ робота - статус, return_code, etc
 
 
-#define parcel_size 8
+//#define parcel_size 8
 
 
 // 7й байт
@@ -82,9 +82,6 @@ public:
     bool DETECTED; // Флаг, показывающий, сработал ли захват изображения.
 
     unsigned char Servos [HiWonder::DOF] = {93,93,93,93,93,93};
- //   unsigned char
-
-    void update_data_from_sliders(int index, int value);
 
     void GUI_Write_To_Log (int value, QString log_message); //Пишет в лог-файл номер ошибки value и сообщение message
     void try_mcinfer(int x, int y);
