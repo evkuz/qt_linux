@@ -56,7 +56,7 @@ unsigned char outputData [szData];
     // включая служебные байты, куда нужно попасть при комплексном движении
 
     void Write_To_Log (int value, QString log_message);
-    void Write_To_Source(QString points_data); // Запись в файл координат кубика и 6 приводов в виде строки.
+    void Write_To_Source(QString points_data); // Запись в файл обучающей выборки координат кубика и 6 приводов в виде строки. Для ускорения процесса.
 
     void GoToPosition(QByteArray &position); //, const char *servo Оправляет данные для новой позиции приводов в порт (Роботу)
 

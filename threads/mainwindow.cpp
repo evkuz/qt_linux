@@ -85,7 +85,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Fixed by E.Kuznetsov
     connect(this, &MainWindow::Write_2_Client_Signal, &server, &QSimpleServer::Write_2_Client_SLot);
-    connect(&server, SIGNAL(Info_2_Log_Signal(QString)), this, SLOT(Info_2_Log_Slot(QString)));
+    connect(&server, SIGNAL(Data_From_TcpClient_Signal(QString)), this, SLOT(Data_From_TcpClient_Slot(QString)));
     //connect(Robot, SIGNAL(StatusChangedSignal(QString)), &server, SLOT(SetCurrentState(QString)));
     //connect(this, SIGNAL(StartTakeAndPutSignal()), this, SLOT(TakeAndPutSlot()));
 
@@ -588,12 +588,6 @@ this->repaint();
 //++++++++++++++++++++++++++
 void MainWindow::on_trainButton_clicked()
 {
-//    for (int i =0; i<= DOF -1; i++)
-//    {
-//       Servos[i] = train_position[i];
-//    }
-//    update_LineDits_from_servos ();
-
 
     DetectorState state;
     QString str;
@@ -632,10 +626,6 @@ if (DETECTED)
 
     QByteArray dd ;
     dd.resize(HiWonder::DOF);
-//    memcpy(dd.data(), Servos, 6);
-//    dd.insert(6, 0x31); // Движение "Туда"
-//    Robot->GoToPosition(dd);
-////    while (!Robot->MOVEMENT_DONE) {;}
    str = "Next movement to robot";
    this->GUI_Write_To_Log (0xF055, str);
    //+++++++++++++++++ 1 make clamp
@@ -664,19 +654,6 @@ if (DETECTED)
    else {ui->servo_1_spinBox->setValue (90); Servos[0]=90;}
    this->send_Data(NOT_LAST);
    //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-   //+++++++++++++++++++++ 4.2  Clamp back the gripper - не надо, может кубик сдвинуть.
-//   if (ui->servo_1_spinBox->value () > 0){ ui->servo_1_spinBox->setValue (0); Servos[0]=0;}
-//   else {ui->servo_1_spinBox->setValue (90); Servos[0]=90;}
-//   this->send_Data(NOT_LAST);
-
-      //+++++++++++++++++++++++++++++++++ 5 Приподнять хват, чтобы не задеть тележку.
-//      this->update_LineDits_from_position (after_put_position);
-//      this->repaint();
-//      update_Servos_from_LineEdits ();
-//      memcpy(dd.data(), Servos, 6);
-//      dd.insert(6, 0x30); // Движение "Обратно"
-//      this->send_Data(AFTER_PUT);
-
 
 
    //+++++++++++++++++++++ 6 go back to start position
@@ -721,11 +698,10 @@ if (DETECTED)
   }// if (DETECTED)
 
    DETECTED = false;
-   //Robot->current_status = "done"; // Тут еще рано, команды только отправлены.
-
 
 }
 //++++++++++++++++++++++++++++++++++++
+// Тут массив Servos преобразуется в массив QByteArray, с добавлением 2 с лужебных байт
 void MainWindow::send_Data(unsigned char thelast)
 {
    // QString str;
@@ -745,13 +721,6 @@ void MainWindow::send_Data(unsigned char thelast)
 }
 
 //+++++++++++++++++++++++++++++++
-// В перспективе можно избавиться от этой ф-ции, сразу запускать Robot->GoToPosition(position), а посылку формировать на этапе парсинга.
-void MainWindow::ssend_Data(QByteArray position)
-{
-    Robot->GoToPosition(position);
-}
-//+++++++++++++++++++++++++++++++++++++
-
 
 //+++++++++++++++++++++++++++++++++
 // подготовка json-строки с полями ответа в TCP сокет.
@@ -799,28 +768,13 @@ void MainWindow::Data_From_Web_SLot(QString message)
 }
 //+++++++++++++++++++++++++++++++++++++++++++++++++++
 //+++++++ Получили запрос от клиента. Парсим его.
-void MainWindow::Info_2_Log_Slot(QString message)
+void MainWindow::Data_From_TcpClient_Slot(QString message)
 {
     QString str, substr;
     int value = 0xf00f;
     new_get_request = true;
     str = "Get new command : "; str += message;
     GUI_Write_To_Log(0xf00f, str);
-
-//    int sPosition, ePosition; // Индекс строки run в запросе.
-//    sPosition = message.indexOf("/run?cmd=");
-
-//   QString  wrong_mess = "/favicon.ico HTTP/1.1";
-
-//    if (!message.contains (wrong_mess))
-//    {
-//        sPosition += 9;
-//        ePosition = message.indexOf("&", sPosition);
-//        substr = message.mid(sPosition, (ePosition - sPosition));
-
-
-//        str = "Получена команда : "; str += substr;
-//        GUI_Write_To_Log(0xf00f, str);
 
         substr = message;
 
@@ -849,28 +803,10 @@ void MainWindow::Info_2_Log_Slot(QString message)
                 emit Write_2_Client_Signal (str);
             }
          }
-//         ///run?cmd=status&123
-//        if (substr == "status") {
-//            //str = Robot->GetCurrentStatus ();
-//            str = Robot->current_status;
-//            str = "superpuper";
-//            emit Write_2_Client_Signal (str);
-//        }
-//     }
 
 
    if (substr == "status") {
-       //str = Robot->GetCurrentStatus ();
-     //  str = Robot->current_status;
-       //str = "status_from_robot";
-      // str="Абырвалг";
-
-       //make_json_answer (); // Формируем ответ в переменной rAnswer
-       //emit Write_2_Client_Signal (this->rAnswer);
-      // str  = "{\n\t\"status\":\"";
        str = Robot->current_status;
-     //  str += "\"\n}";
-
        emit Write_2_Client_Signal (str);
    }
 //++++++++++++++++++ Если команда длинная, а для распознавания
@@ -1023,7 +959,11 @@ void MainWindow::on_getBackButton_clicked()
     this->send_Data(LASTONE); // The last command
 
 }
-
+//++++++++++++++++++++++++++++++++++++++++++++
+// По нажатию кнопки "Fix data" происходит запись в файл обучающей выборки координаты точки с камеры CV,
+// и все позиции приводов, соответствующие даннным координатам.
+// Позиции приводов берутся из строки Line_Edit - "ui->All_Servos_lineEdit", а не из массива Servos
+// Так намного быстрее протекает набор точек.
 void MainWindow::on_fixButton_clicked()
 {
     int value = 0x4444;
@@ -1058,9 +998,8 @@ void MainWindow::on_fixButton_clicked()
 
 
 
-//    str += ui->All_Servos_lineEdit->text ();
-//    Robot->Write_To_Source (value, str);
-}
+}// on_fixButton_clicked()
+//+++++++++++++++++++++++++++++++++++++++++++
 
 void MainWindow::on_PUTButton_clicked()
 {

@@ -33,7 +33,7 @@ public:
 
 signals:
     // Сигнал на отправку данных наверх, уже роботу.
-    void Info_2_Log_Signal(QString);
+    void Data_From_TcpClient_Signal(QString);
     // Сигнал на отправку данных вниз, в сокет
     void Data_2_Client_Signal(QString);
 

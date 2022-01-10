@@ -54,7 +54,7 @@ void QSimpleServer::Write_2_Client_SLot(QString data)
 // ОТправляем команду наверх, роботу на выполнение.
 void QSimpleServer::Command_4_Parsing_Slot(QString message)
 {
-  emit Info_2_Log_Signal(message);
+  emit Data_From_TcpClient_Signal(message);
 }
 
 

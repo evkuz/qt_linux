@@ -16,16 +16,21 @@
  * Путь к Supervisor-у
  * file:///home/ubuntu/iqr_lit/supervisor/index.html
  *
+ *
+ * //++++++++++++++++++++++++++++++++++++
+ * 10.01.2022
+ * + Переименовать сигнал Info_2_Log_Signal как в проекте mobman - Data_From_TcpClient_Signal
+ *
    //++++++++++++++++++++++++++++++++++++
    09.01.2022
    + Убрать ф-цию MainWindow::update_data_from_sliders(int index, int value)
-   + Заменить (18 замен) переменную parcel_size на аналогичную из класса HiWonder
+   + Заменить (18 замен) переменную parcel_size на аналогичную из класса HiWonder - HiWonder:DOF
    + Поправить строку i<= Robot->DOF -1;
    + Убрать из ф-ции MainWindow::on_getXYButton_clicked() запуск socket-сервера, было сделано для теста,  это  не ошибка, но сейчас - совсем лишнее !
-   - Убрать комментарии в ф-ции MainWindow::on_trainButton_clicked()
-   - ДОбавить комменты касательно MainWindow::send_Data(unsigned char thelast), ssend_data(...)
-   - Переименовать слот MainWindow::Info_2_Log_Slot(QString message) как в проекте mobman (embed)
-   - Добавить комменты в ф-цию MainWindow::on_fixButton_clicked()
+   + Убрать комментарии в ф-ции MainWindow::on_trainButton_clicked()
+   + ДОбавить комменты касательно MainWindow::send_Data(unsigned char thelast), ssend_data(...) [ssend_data(...) - удалил ф-цию, заменена на GoToPosition]
+   + Переименовать слот MainWindow::Info_2_Log_Slot(QString message) как в проекте mobman (embed) - Data_From_TcpClient_Slot
+   + Добавить комменты в ф-цию MainWindow::on_fixButton_clicked()
 
 
  * //++++++++++++++++++++++++++++++++++++
@@ -121,7 +126,7 @@
  * 1140, 499 - координаты на момент ухода домой в конце дня. [Утром было 1140, 510]
  * Посмотрим, какие будут завтра с утра.
  *
- * ДОбавил кнопку  "Fix Data", которая записывает в файл точек координаты точки с камеры и позиции приводов.
+ * ДОбавил кнопку  "Fix Data", которая записывает в файл обучающей выборки координаты точки с камеры CV и позиции приводов.
  * Так намного быстрее протекает набор точек.
  *
  * Набрал за сегодня 130 точек. (час примерно добавлял кнопку со всем ф-ционалом, + в 12.00 собрание было.)
