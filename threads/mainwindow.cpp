@@ -42,7 +42,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     target_name = QFileInfo(QCoreApplication::applicationFilePath()).fileName();
     //QByteArray ba = target_name.toLocal8Bit();
-    //g/const char *c_str = ba.data();
+    //const char *c_str = ba.data();
     //printf("Appname : %s", c_str);
     Robot = new HiWonder(); // Без этого будет "The program has unexpectedly finished", хотя в начале нговорила, что это ambiguous
 
@@ -60,41 +60,12 @@ MainWindow::MainWindow(QWidget *parent)
 
         GUI_Write_To_Log(0000, str);
     }
-    //QSimpleServer server;
-    //server.startTCP();
-
-//    if (server.listen(QHostAddress::AnyIPv4, 8383))
-//       { GUI_Write_To_Log(0000, "Listening...");
-//        //server.LISTENING = true;
-//       }
-//    else {
-//          str = "Error while starting: ";
-//          str += server.errorString();
-//          GUI_Write_To_Log(0000, str);
-//    }
-//    str = " The value of LISTENING IS ";
-//    //str += QVariant(server.LISTENING).toString();
-//    GUI_Write_To_Log(0000,str);
 
 
     //+++++++++++++++++++++++++++++++++  signal/slot of Get Request to webserver
-    //connect( TheWeb, SIGNAL(Data_TO_Log_Signal(QString)), this, SLOT(Data_From_Web_SLot(QString))); // Работает
-    //connect(this, SIGNAL(Write_2_Client_Signal()), TheWeb, SLOT(Write_2_Client_Slot()));
-    // Fixed By Miksarus
-    //connect(this, &MainWindow::Write_2_Client_Signal, &server, &QSimpleServer::Write_2_Client_SLot);
-
-    // Fixed by E.Kuznetsov
-    connect(this, &MainWindow::Write_2_Client_Signal, &server, &QSimpleServer::Write_2_Client_SLot);
+    connect(this, &MainWindow::Write_2_TcpClient_Signal, &server, &QSimpleServer::Write_2_TcpClient_Slot);
     connect(&server, SIGNAL(Data_From_TcpClient_Signal(QString)), this, SLOT(Data_From_TcpClient_Slot(QString)));
-    //connect(Robot, SIGNAL(StatusChangedSignal(QString)), &server, SLOT(SetCurrentState(QString)));
-    //connect(this, SIGNAL(StartTakeAndPutSignal()), this, SLOT(TakeAndPutSlot()));
 
-    //TheWeb->openSocket();
-    //server = new QSimpleServer();
-
-    //#########################################
-
-   // connect(&server, &QTcpServer::newConnection, this, &MainWindow::newConnection_Slot);
     //################### SERIAL SIGNAL/SLOTS ############################
     connect( this, SIGNAL (Open_Port_Signal(QString)), Robot, SLOT(Open_Port_Slot(QString)));
     connect( &Robot->serial, SIGNAL (readyRead()), Robot, SLOT(ReadFromSerial_Slot()));  //&QSerialPort::
@@ -140,7 +111,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     //+++++++++++++++ ОТкрываем порт Open_Port_Signal(QString portname); ttyUSB0
- //   emit Open_Port_Signal("ttyUSB0");
+    //emit Open_Port_Signal("ttyUSB0");
     //make_json_answer();
 
 
@@ -788,7 +759,7 @@ void MainWindow::Data_From_TcpClient_Slot(QString message)
             emit on_trainButton_clicked ();
             str = Robot->current_status;
             //str = "status_from_robot";
-            emit Write_2_Client_Signal (str);
+            emit Write_2_TcpClient_Signal (str);
          }
 
         if (substr == "reset") {
@@ -800,14 +771,14 @@ void MainWindow::Data_From_TcpClient_Slot(QString message)
                 GUI_Write_To_Log (value, str);
                 str = Robot->current_status;
                 //str = "status_from_robot";
-                emit Write_2_Client_Signal (str);
+                emit Write_2_TcpClient_Signal (str);
             }
          }
 
 
    if (substr == "status") {
        str = Robot->current_status;
-       emit Write_2_Client_Signal (str);
+       emit Write_2_TcpClient_Signal (str);
    }
 //++++++++++++++++++ Если команда длинная, а для распознавания
 // достаточно первые несколько символов, то выделяем по ним
@@ -915,7 +886,7 @@ void MainWindow::Moving_Done_Slot()
     Robot->SetCurrentStatus ("done");
     if (new_get_request) // Тогда даем сигнал серверу на отправку данных клиенту. Данные уже в буфере TheWeb->status_buffer
     {
-     // emit Write_2_Client_Signal(Robot->current_status);
+     // emit Write_2_TcpClient_Signal(Robot->current_status);
       new_get_request = false;
     }
 

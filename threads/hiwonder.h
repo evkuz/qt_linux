@@ -19,7 +19,6 @@ public:
     ~HiWonder();
 
 #define serial_speed Baud115200
-//#define robot_buffer_SIZE 32
 #define Log_File_Name        "./hiwonder.log"
 #define SOURCE_POINTS_FILE  "../source_points.xls"
 #define COMMAND_LIST_FILE   "./command.lst"
@@ -29,9 +28,8 @@ public:
 static const int robot_buffer_SIZE = 32;
 static const int DOF = 6;
 static const int szData = 8;
-unsigned char outputData [szData];
+    unsigned char outputData [szData];
     QSerialPort serial;
-  //  QByteArray byInputBuffer[robot_buffer_SIZE];
     char byOutputBuffer[robot_buffer_SIZE];
     QFile       LogFile, SourceFile, CommandFile;
 
@@ -62,8 +60,6 @@ unsigned char outputData [szData];
 
     void Write_Status(QByteArray &status);
 
-private:
-    //QString current_status;
 
 public:
     QString GetCurrentStatus() { return this->current_status; }
@@ -71,7 +67,6 @@ public:
 
 signals:
     void Moving_Done_Signal();
-//    void StatusChangedSignal(QString);
 
 
 public slots:

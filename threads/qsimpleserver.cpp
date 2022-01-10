@@ -45,7 +45,7 @@ void QSimpleServer::incomingConnection(qintptr sDescriptor)
 }
 //++++++++++++++++
 // Слот отправки данных от робота клиенту в сокет
-void QSimpleServer::Write_2_Client_SLot(QString data)
+void QSimpleServer::Write_2_TcpClient_Slot(QString data)
 {
     // Передаем данные дальше вниз в qtcpsocket
     emit Data_2_Client_Signal(data);

@@ -20,7 +20,8 @@
  * //++++++++++++++++++++++++++++++++++++
  * 10.01.2022
  * + Переименовать сигнал Info_2_Log_Signal как в проекте mobman - Data_From_TcpClient_Signal
- *
+ * + Переименовать сигнал &MainWindow::Write_2_Client_Signal в Write_2_TcpClient_Signal
+ * + Соответственно переименовать слот &QSimpleServer::Write_2_Client_SLot в Write_2_TcpClient_Slot
    //++++++++++++++++++++++++++++++++++++
    09.01.2022
    + Убрать ф-цию MainWindow::update_data_from_sliders(int index, int value)

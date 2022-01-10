@@ -13,14 +13,9 @@
 //HiWonder::HiWonder(QObject *parent) : QObject(parent)
 HiWonder::HiWonder()
 {
-//    DOF = 6;
-//    szData = 8;
-//    // Инициализируем буфер данными
-   // memset(byInputBuffer, 0xEE, 32); //sizeof(byInputBuffer)  robot_buffer_SIZE*1
     MOVEMENT_DONE = true;
     qbuf.resize (robot_buffer_SIZE);
     memset(outputData, 0xDD, szData); //Инициализация массива с данными для отправки
-   // this->SetCurrentStatus ("wait");
     this->current_status = "wait";
 }
 //+++++++++++++++++
@@ -109,49 +104,28 @@ void HiWonder::Open_Port_Slot(QString portname)
 
 }
 //++++++++++++++++++++++
+// Задаем роботу углы для нужной позиции - отправляем данные для углов в Serial port
 void HiWonder::GoToPosition(QByteArray &position)//, const char *servo)
 {
-    QString str;
-//    int sz = position.size();
-//    if (sz > robot_buffer_SIZE) sz = robot_buffer_SIZE;
-    this->MOVEMENT_DONE = false;
+   QString str;
+   this->MOVEMENT_DONE = false;
    position.resize (szData);
    serial.write(position);
    serial.waitForBytesWritten();
-
-   //serial.flush(); // Пробуем очистить буфер совсем
- //  serial.waitForBytesWritten();
-
-    // Для проверки
-//    str = "To Robot in hex: ";
-//    str += QString(position.toHex());
-//    //str = str + str2;
-//    this->Write_To_Log(0xF001, str);
 
 //    void *const tmp = const_cast<char*>(servo);
 //    unsigned char* sData = static_cast<unsigned char*>(tmp);
    //unsigned char sData [7]= {0,0,0,0,0,0,0};
    memcpy(&outputData, position,szData);
+   // Данные роботу отправили, теперь запись в лог об этом
 
     str = "To Robot: ";
     for (int i=0; i< szData; i++){
-    //    str += QString::number(sData[i]);
-        //str+= QString::number(position.at(i));
         str+= QString::number(outputData[i]);
         str+= ", ";
-
     }
     str.truncate(str.lastIndexOf(","));
     this->Write_To_Log(0xF001, str);
-//    serial.waitForReadyRead();
-
-//    str = "Ready to read data from robot";
-//    this->Write_To_Log(0xF001, str);
-//    qbuf = serial.readAll();
-//    //qbuf = "askdjhfakjhfak";
-//    str = "From Robot :";
-//    str += QString(qbuf);
-//    this->Write_To_Log(0xF001, str);
 
 }
 //+++++++++++++++++++++++++++++++
@@ -169,7 +143,6 @@ void HiWonder::ReadFromSerial_Slot ()
         this->Write_To_Log(0xF001, str);
 
         qbuf = serial.readAll();
-    //    //qbuf = "askdjhfakjhfak";
         str = "From Robot : ";
         str += QString(qbuf);
         this->Write_To_Log(0xF001, str);
@@ -177,12 +150,6 @@ void HiWonder::ReadFromSerial_Slot ()
 
         std::cout<<"From Serial:" << str.toStdString ()<< std::endl;
         QStringList list_str = str.split(QLatin1Char(' '), Qt::SkipEmptyParts);
-//        for (int i=0; i< list_str.size (); i++){
-//            this->Write_To_Log(0xF001, list_str.at (i));
-//            str = list_str.at (i);
-//            if ( str == "DONE!"){this->MOVEMENT_DONE = true;}
-
-//        }
         str="DONE!";
         if (list_str.contains (str)) {this->MOVEMENT_DONE = true; this->Write_To_Log(0xF001, "Robot finished"); }
         else this->Write_To_Log(0xF001, "Robot still running");
@@ -196,8 +163,6 @@ void HiWonder::ReadFromSerial_Slot ()
             emit this->Moving_Done_Signal();
         }
 
-//   if (this->MOVEMENT_DONE) this->Write_To_Log(0xF001, "Robot finished");
-//
 
 } // ReadFromSerial_Slot
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++

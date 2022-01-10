@@ -39,11 +39,9 @@ signals:
 
 
 public slots:
-//    void onReadyRead();
-//    void onDisconnected();
     // Слот принятия строки для отправки клиенту в сокет
-    //сигнал сверху  Write_2_Client_Signal(QString)
-    void Write_2_Client_SLot(QString);
+    // Обработчик сигнала сверху  Write_2_Client_Signal(QString)
+    void Write_2_TcpClient_Slot(QString);
     //Слот отправки наверх команды на выполнение
     void Command_4_Parsing_Slot(QString);
     //Added by Miksarus
