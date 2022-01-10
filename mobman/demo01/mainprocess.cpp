@@ -1,4 +1,4 @@
-#include "mainprocess.h"
+﻿#include "mainprocess.h"
 //#include "ui_MainProcess.h"
 #include "positions.h"
 //#include "hiwonder.h"
@@ -33,16 +33,16 @@ MainProcess::MainProcess(QObject *parent)
     new_get_request = false;
     thread_counter = 0;
     currentTcpdata = "";
-    socketCV = new QTcpSocket(this);
-    in.setDevice(socketCV);
+//    socketCV = new QTcpSocket(this);
+//    in.setDevice(socketCV);
 
 
-    CVdevice = new CVDevice(CVDev_IP, CVDev_Port);
+//    CVdevice = new CVDevice(CVDev_IP, CVDev_Port);
 //            : QObject(parent)
 //            , CVDev_IP
 //            , CVDev_Port
 
-    connect (CVdevice, &CVDevice::data_from_CVDevice_Signal, this, &MainProcess::data_from_CVDevice_Slot);
+  //  connect (CVdevice, &CVDevice::data_from_CVDevice_Signal, this, &MainProcess::data_from_CVDevice_Slot);
 
     target_name = QFileInfo(QCoreApplication::applicationFilePath()).fileName();
     //QByteArray ba = target_name.toLocal8Bit();
@@ -153,7 +153,7 @@ MainProcess::MainProcess(QObject *parent)
  QThread::sleep(1);
 
 
-}
+} //MainProcess
 //++++++++++++++++++++++++++++++++++++++++++++++
 MainProcess::~MainProcess()
 {
@@ -697,6 +697,13 @@ void MainProcess::request_CV()
      * we need before we start parsing.
  */
 
+
+    QString str = "Going to create socket for CVDevice";
+    GUI_Write_To_Log(0xC1C1, str);
+    socketCV = new QTcpSocket(this);
+    socketCV->setSocketOption(QAbstractSocket::KeepAliveOption, true);
+    in.setDevice(socketCV);
+
     //Соединение сигналов со слотами
     connect(socketCV, &QIODevice::readyRead, this, &MainProcess::CV_onReadyRead_Slot);//, Qt::QueuedConnection);
     connect(socketCV, SIGNAL(disconnected()), this, SLOT(CV_onDisconnected()),Qt::AutoConnection);
@@ -962,27 +969,34 @@ void MainProcess::onSocketConnected_Slot()
  QString str = "CV connection established";
  GUI_Write_To_Log(0x7777, str);
 
+ str = "Current socket state is ";
+
+ if (socketCV->state() == QTcpSocket::ConnectedState){str += " Connected State";}
+ else {str += " Some OTHER than Connected State !!!!";}
+
+GUI_Write_To_Log(0x7777, str);
+
  // А вот теперь готовим команду "/service?name=getposition"
- QString response = "GET ";
- response += "/service?name=getposition";
- response += " HTTP/1.1";
- response += "\r\nHost: ";
- response += "192.168.1.201:5001\r\n";
- response += "Accept: */*\r\n";
-// response += "Access-Control-Allow-Origin: *\r\n";
+ QString request = "GET ";
+ request += "/service?name=getposition";
+ request += " HTTP/1.1";
+ request += "\r\nHost: ";
+ request += "192.168.1.201:5001\r\n";
+ request += "Accept: */*\r\n";
+// request += "Access-Control-Allow-Origin: *\r\n";
 
- response += "content-type: application/json\r\n";
- response += "Access-Control-Allow-Origin: *\r\n";
- response += "\r\n";
+ request += "content-type: application/json\r\n";
+ request += "Access-Control-Allow-Origin: *\r\n";
+ request += "\r\n";
 
-// response += "";
+// request += "";
 
  GUI_Write_To_Log(0xfefe, "The following Data is going to be sent to CV :");
- GUI_Write_To_Log(0xfefe, response.toUtf8());
- socketCV->write(response.toUtf8());
+ GUI_Write_To_Log(0xfefe, request.toUtf8());
+ socketCV->write(request.toUtf8());
 
- //Отсоединение от удаленнного сокета
- //socketCV->disconnectFromHost();
+ // Запрос серверу отправили.
+ // Ответ от сервера в слоте CV_onReadyRead_Slot()
 
 
 }
@@ -1000,7 +1014,7 @@ void MainProcess::CV_onReadyRead_Slot()
 
 //    in.startTransaction();
 
-    QString nextTcpdata;
+    QString nextTcpdata, str;
 
 //    in >> nextTcpdata;
 
@@ -1008,10 +1022,16 @@ void MainProcess::CV_onReadyRead_Slot()
 //        GUI_Write_To_Log(value, "commitTransaction exit, complete data reading from socket");
 //        return;
 //       }
-
+int befbytes = socketCV->bytesAvailable();
     nextTcpdata = socketCV->readAll();
+int afterbytes = socketCV->bytesAvailable();
+
+str = "Bytes before reading "; str += QString::number(befbytes); GUI_Write_To_Log(value, str);
+
+str = "Bytes after reading  "; str += QString::number(afterbytes); GUI_Write_To_Log(value, str);
 
 
+    if (nextTcpdata.contains("HTTP/1.0 200 OK")) return;
 
     if (nextTcpdata == currentTcpdata){
 
@@ -1032,7 +1052,7 @@ void MainProcess::CV_onReadyRead_Slot()
 //   // qDebug() << "!!!!!!!!!!!!!!!!!!!!!11 Get Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!!1";
 
     //Парсим команду.
-    QString str, message, substr;
+    QString message, substr;
    //message = QString(qbmessage);
     message = nextTcpdata;
 
@@ -1050,6 +1070,8 @@ void MainProcess::CV_onReadyRead_Slot()
 
         int sPosition, ePosition; // Индекс строки run в запросе.
         sPosition = message.indexOf("distance");
+        if (sPosition <0) return; // Когда сообщение приходит  частями и в этой части нет слова distance, нам такакя часть неинтересна.
+
         sPosition += 11;
         ePosition = message.indexOf("}", sPosition);
         substr = message.mid(sPosition, (ePosition - sPosition));
@@ -1083,7 +1105,7 @@ void MainProcess::CV_onReadyRead_Slot()
         unsigned char *arrPtr = mob_parking_position;
 
         // Выбираем массив углов через switch, потом попробуем через словарь, т.е. ключ - значение, где значением будет массив
-        switch (cvd)
+        switch (rDistance)
         {
        // unsigned char ptr;
 
@@ -1107,7 +1129,6 @@ void MainProcess::CV_onReadyRead_Slot()
             case 200: arrPtr = mob_pos_20; break;
 
 
-
           default:
             GUI_Write_To_Log(value, "!!!!! Unrecognized position, Go to Parking !!!!");
             arrPtr = mob_parking_position; break;
@@ -1123,7 +1144,7 @@ void MainProcess::CV_onReadyRead_Slot()
 
 
         //Отсоединение от удаленнного сокета
-        //socketCV->disconnectFromHost();
+        socketCV->disconnectFromHost();
 
 }
 //++++++++++++++++++++++++++++++++++++++
