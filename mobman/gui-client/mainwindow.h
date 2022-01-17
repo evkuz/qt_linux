@@ -54,6 +54,8 @@ private slots:
 
     void on_GetStatusButton_clicked();
 
+    void on_GetReadyButton_clicked();
+
 private:
     Ui::MainWindow *ui;
 };

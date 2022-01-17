@@ -312,11 +312,19 @@ void MainWindow::on_GetStatusButton_clicked()
     connect(socketARM, &QIODevice::readyRead, this, &MainWindow::onARMSocketReadyRead_Slot);//, Qt::QueuedConnection);
     connect(socketARM, SIGNAL(disconnected()), this, SLOT(CV_onDisconnected()),Qt::AutoConnection);
 
-    connect (this->socketARM, &QTcpSocket::connected, this, &MainWindow::onARMSocketConnected_Slot);
+    connect (this->socketARM, &QTcpSocket::connected, this, &MainWindow::onARMSocketConnected_Slot); // Send "status" command
 
     in.setDevice(socketARM);
     in.setVersion(QDataStream::Qt_5_12);
     socketARM->connectToHost(CVDev_IP, ARM_Port);
+
+}
+
+//++++++++++++++++++++++++++++++++++++++++++++++
+// - prepare HTTP request  http://192.168.1.201:8383/run?cmd=ready&
+
+void MainWindow::on_GetReadyButton_clicked()
+{
 
 }
 
