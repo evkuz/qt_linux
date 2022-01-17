@@ -31,8 +31,12 @@ public:
     QString     target_name;
     QTcpSocket *socketCV = nullptr;
     QTcpSocket *socketARM = nullptr;
+    QTcpSocket *socketDEV = nullptr;
+
 
     QFile       LogFile;
+
+    QString request; // GET request via socket
 
     QString currentTcpdata; //Нужно, чтоб была глобальная.
     QDataStream in; // НА считывание данных из сокета CV
@@ -40,14 +44,18 @@ public:
 
     void Log_File_Open(QString lname);
     void GUI_Write_To_Log (int value, QString log_message);
+    void makeSocket(QString ipaddress, quint16 port);
 
 public slots:
     void onSocketConnected_Slot();
     void onSocketReadyRead_Slot();
 
     void onARMSocketConnected_Slot();
+    void onDEVSocketConnected_Slot();
     void onARMSocketReadyRead_Slot();
+    void onDEVSocketReadyRead_Slot();
 
+    void socketDEV_onDisconnected_Slot();
 
 private slots:
     void on_GetDistanceButton_clicked();
@@ -55,6 +63,8 @@ private slots:
     void on_GetStatusButton_clicked();
 
     void on_GetReadyButton_clicked();
+
+    void on_GetParkingButton_clicked();
 
 private:
     Ui::MainWindow *ui;

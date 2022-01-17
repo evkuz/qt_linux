@@ -44,6 +44,23 @@ void MainWindow::GUI_Write_To_Log(int value, QString log_message)
     uin << str << str2 << log_message << "\n";
 
 }
+//++++++++++++++++++++++++++++++++++++++++
+// Create socket, than connect to host
+void MainWindow::makeSocket(QString ipaddress, quint16 port)
+{
+    socketDEV = new QTcpSocket(this);
+    socketDEV->setSocketOption(QAbstractSocket::KeepAliveOption, true);
+
+    //Соединение сигналов со слотами
+    connect(socketDEV, &QIODevice::readyRead, this, &MainWindow::onDEVSocketReadyRead_Slot);//, Qt::QueuedConnection);
+    connect(socketDEV, SIGNAL(disconnected()), this, SLOT(socketDEV_onDisconnected_Slot()),Qt::AutoConnection);
+
+    connect (this->socketDEV, &QTcpSocket::connected, this, &MainWindow::onDEVSocketConnected_Slot); // Send "status" command
+
+    socketDEV->connectToHost(ipaddress, port);
+
+
+}
 //+++++++++++++++++++++++++++++++++++++++
 // After socket becoming in state "connected", the connected() signal
 // is emitted. Here is the slot for that signal.
@@ -68,7 +85,7 @@ void MainWindow::onSocketConnected_Slot()
 
      GUI_Write_To_Log(0xfefe, "The following Data is going to be sent to CV :");
      GUI_Write_To_Log(0xfefe, request.toUtf8());
-     socketCV->write(request.toUtf8());
+     socketCV->write(request.toUtf8());// Тут это QByteArray
 
 
 
@@ -233,11 +250,12 @@ void MainWindow::onSocketReadyRead_Slot()
             socketCV->disconnectFromHost();
 
 }
-
+//++++++++++++++++++++++++++++
+// Пока оставим как есть, для сохранения работоспособности кода.
 void MainWindow::onARMSocketConnected_Slot()
 {
     // Раз сокет готов отправляем ему запрос, предварительно подготовив.
-    // А вот теперь готовим команду "/service?name=getposition"
+    // А вот теперь готовим команду "/run?cmd=status&"
      QString request = "GET ";
      request += "/run?cmd=status&";
      request += " HTTP/1.1";
@@ -256,6 +274,16 @@ void MainWindow::onARMSocketConnected_Slot()
      GUI_Write_To_Log(0xfefe, request.toUtf8());
      socketARM->write(request.toUtf8());
 
+
+}
+//+++++++++++++++++++++++++++++
+// slot for "connected" signal for socketDEV
+// data for GET request are already in "request" variable
+void MainWindow::onDEVSocketConnected_Slot()
+{
+    GUI_Write_To_Log(0xf7f7, "The following Data is going to be sent to SOCKET Device :");
+    GUI_Write_To_Log(0xf7f7, request.toUtf8());
+    socketDEV->write(request.toUtf8());
 
 }
 //++++++++++++++++++++++++++++++++++++++++++++++
@@ -281,23 +309,71 @@ void MainWindow::onARMSocketReadyRead_Slot()
 
 }
 
+void MainWindow::onDEVSocketReadyRead_Slot()
+{
+    QString nextTcpdata, str;
+    int value = 0xf9f9;
+    int befbytes = socketDEV->bytesAvailable();
+        nextTcpdata = socketDEV->readAll();
+    int realbytes = nextTcpdata.size();
+    int afterbytes = socketDEV->bytesAvailable();
+
+    str = "Bytes before reading "; str += QString::number(befbytes); GUI_Write_To_Log(value, str);
+    str = QString::number(realbytes); str += " bytes has been readed"; GUI_Write_To_Log(value, str);
+
+    str = "Bytes after reading  "; str += QString::number(afterbytes); GUI_Write_To_Log(value, str);
+
+    GUI_Write_To_Log(value, "!!!!!!!!!!!!!!!!! There are some  data from SOCKET device !!!!!!!!!!!!!!!!!!!!");
+    GUI_Write_To_Log(value, nextTcpdata);
+    //ВСе данные получили Отсоединение от удаленнного сокета
+    socketDEV->disconnectFromHost();
+
+}
+
+void MainWindow::socketDEV_onDisconnected_Slot()
+{
+  int value = 0xf1f1;
+  GUI_Write_To_Log(value, "!!!!!!!!!!!!!!!!! Connection closed to SOCKET device !!!!!!!!!!!!!!!!!!!!");
+}
+
 //++++++++++++++++++++++++++++++++++
 // - create qtcpsocket with signal/slot configuration
 // - connect to host with CV
 void MainWindow::on_GetDistanceButton_clicked()
 {
-    socketCV = new QTcpSocket(this);
-    socketCV->setSocketOption(QAbstractSocket::KeepAliveOption, true);
 
-    //Соединение сигналов со слотами
-    connect(socketCV, &QIODevice::readyRead, this, &MainWindow::onSocketReadyRead_Slot);//, Qt::QueuedConnection);
-    connect(socketCV, SIGNAL(disconnected()), this, SLOT(CV_onDisconnected()),Qt::AutoConnection);
+    // Формируем запрос, "кнопка Get Distance"
+    // готовим команду "/service?name=getposition"
+     request = "GET ";
+     request += "/service?name=getposition";
+     request += " HTTP/1.1";
+     request += "\r\nHost: ";
+     request += "192.168.1.201:5001\r\n";
+     request += "Accept: */*\r\n";
+    // request += "Access-Control-Allow-Origin: *\r\n";
 
-    connect (this->socketCV, &QTcpSocket::connected, this, &MainWindow::onSocketConnected_Slot);
+     request += "content-type: application/json\r\n";
+     request += "Access-Control-Allow-Origin: *\r\n";
+     request += "\r\n";
 
-    in.setDevice(socketCV);
-    in.setVersion(QDataStream::Qt_5_12);
-    socketCV->connectToHost(CVDev_IP, CVDev_Port);
+    makeSocket(CVDev_IP, CVDev_Port);
+
+
+
+
+
+//    socketCV = new QTcpSocket(this);
+//    socketCV->setSocketOption(QAbstractSocket::KeepAliveOption, true);
+
+//    //Соединение сигналов со слотами
+//    connect(socketCV, &QIODevice::readyRead, this, &MainWindow::onSocketReadyRead_Slot);//, Qt::QueuedConnection);
+//    connect(socketCV, SIGNAL(disconnected()), this, SLOT(CV_onDisconnected()),Qt::AutoConnection);
+
+//    connect (this->socketCV, &QTcpSocket::connected, this, &MainWindow::onSocketConnected_Slot);
+
+//    in.setDevice(socketCV);
+//    in.setVersion(QDataStream::Qt_5_12);
+//    socketCV->connectToHost(CVDev_IP, CVDev_Port);
     // После успешного socketCV->connectToHost() будет сигнал connected
 
 }
@@ -305,26 +381,59 @@ void MainWindow::on_GetDistanceButton_clicked()
 // - prepare HTTP request  http://192.168.1.201:8383/run?cmd=status&
 void MainWindow::on_GetStatusButton_clicked()
 {
-    socketARM = new QTcpSocket(this);
-    socketARM->setSocketOption(QAbstractSocket::KeepAliveOption, true);
+    // Формируем запрос, "кнопка Get Status"
+    // А вот теперь готовим команду "/run?cmd=status&"
+     request = "GET ";
+     request += "/run?cmd=status&";
+     request += " HTTP/1.1";
+     request += "\r\nHost: ";
+     request += "192.168.1.201:8383\r\n";
+     request += "Accept: */*\r\n";
+     request += "Access-Control-Allow-Origin: *\r\n";
+     request += "\r\n";
 
-    //Соединение сигналов со слотами
-    connect(socketARM, &QIODevice::readyRead, this, &MainWindow::onARMSocketReadyRead_Slot);//, Qt::QueuedConnection);
-    connect(socketARM, SIGNAL(disconnected()), this, SLOT(CV_onDisconnected()),Qt::AutoConnection);
-
-    connect (this->socketARM, &QTcpSocket::connected, this, &MainWindow::onARMSocketConnected_Slot); // Send "status" command
-
-    in.setDevice(socketARM);
-    in.setVersion(QDataStream::Qt_5_12);
-    socketARM->connectToHost(CVDev_IP, ARM_Port);
+     QString myipaddress = CVDev_IP;
+     quint16 myport = ARM_Port;
+     makeSocket(myipaddress, myport);
 
 }
 
 //++++++++++++++++++++++++++++++++++++++++++++++
 // - prepare HTTP request  http://192.168.1.201:8383/run?cmd=ready&
-
 void MainWindow::on_GetReadyButton_clicked()
 {
+    // Формируем запрос, "кнопка Get Ready"
+    // А вот теперь готовим команду "/run?cmd=ready&"
+     request = "GET ";
+     request += "/run?cmd=ready&";
+     request += " HTTP/1.1";
+     request += "\r\nHost: ";
+     request += "192.168.1.201:8383\r\n";
+     request += "Accept: */*\r\n";
+     request += "Access-Control-Allow-Origin: *\r\n";
+     request += "\r\n";
+
+     makeSocket(CVDev_IP, ARM_Port);
+
+}
+
+//++++++++++++++++++++++++++++++++++++++++++++++
+// - prepare HTTP request  http://192.168.1.201:8383/run?cmd=parking&
+
+void MainWindow::on_GetParkingButton_clicked()
+{
+    // Формируем запрос, "кнопка Parking"
+    // А вот теперь готовим команду "/run?cmd=parking&"
+     request = "GET ";
+     request += "/run?cmd=parking&";
+     request += " HTTP/1.1";
+     request += "\r\nHost: ";
+     request += "192.168.1.201:8383\r\n";
+     request += "Accept: */*\r\n";
+     request += "Access-Control-Allow-Origin: *\r\n";
+     request += "\r\n";
+
+     makeSocket(CVDev_IP, ARM_Port);
 
 }
 

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>800</width>
-    <height>284</height>
+    <height>351</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -31,7 +31,7 @@
     <property name="geometry">
      <rect>
       <x>450</x>
-      <y>60</y>
+      <y>10</y>
       <width>171</width>
       <height>61</height>
      </rect>
@@ -44,13 +44,26 @@
     <property name="geometry">
      <rect>
       <x>450</x>
-      <y>140</y>
+      <y>100</y>
       <width>171</width>
       <height>61</height>
      </rect>
     </property>
     <property name="text">
      <string>Get Ready</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="GetParkingButton">
+    <property name="geometry">
+     <rect>
+      <x>450</x>
+      <y>190</y>
+      <width>171</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Parking</string>
     </property>
    </widget>
   </widget>
