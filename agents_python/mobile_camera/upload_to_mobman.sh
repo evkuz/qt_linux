@@ -8,4 +8,7 @@ if [[ $cur_dir != "mobile_camera" ]]; then
 fi
 
 cd ../../
-rsync -av --exclude '__pycache__' --exclude '.venv' agents_python pi@192.168.1.201:~/ 
+rsync -av --exclude '__pycache__' --exclude '.venv' agents_python pi@192.168.1.201:~/
+
+ssh pi@192.168.1.201 'sudo systemctl restart robot.camera.service'
+echo $?
