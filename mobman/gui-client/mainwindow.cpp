@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
@@ -66,10 +66,16 @@ void MainWindow::makeSocket(QString ipaddress, quint16 port)
 void MainWindow::parseJSON(QString jsnData)
 {
     int value = 0xC7C7;
-    QString str;
+    QString str, substr;
 
-  str = jsnData; // Но тут еще надо обрезать HTTP-заголовки
-  str = "{\" rc\": 0, \"info\": \"success\",\"name\": \"getposition\", \"data\": {\"detected\": true, \"x\": -15.0, \"y\": -60.0, \"width\": 113, \"height\": 108, \"err_angle\": -1.38117702629722, \"distance\": 209.21150512634233}}";
+    int sPosition, ePosition; // Индекс строки run в запросе.
+    sPosition = jsnData.indexOf("{");
+    substr = jsnData.mid(sPosition);
+
+  GUI_Write_To_Log(value, "Http headers cutted, so data are as follows !");
+  str = substr; // jsnData; // Но тут еще надо обрезать HTTP-заголовки. ОБрезаем все до первого символа '{'
+  GUI_Write_To_Log(value, str);
+ // str = "{\" rc\": 0, \"info\": \"success\",\"name\": \"getposition\", \"data\": {\"detected\": true, \"x\": -15.0, \"y\": -60.0, \"width\": 113, \"height\": 108, \"err_angle\": -1.38117702629722, \"distance\": 209.21150512634233}}";
   //Assign the json text to a JSON object
   jsnDoc = QJsonDocument::fromJson(str.toUtf8());
   if(jsnDoc.isObject() == false) GUI_Write_To_Log(value,"It is not a JSON object");
@@ -84,10 +90,26 @@ void MainWindow::parseJSON(QString jsnData)
   foreach(const QString& key, jsnObj.keys()) {
       QJsonValue jvalue = jsnObj.value(key);
       //qDebug() << "Key = " << key << ", Value = " << jvalue.toString();
-      str +=  "Key = "; str += key; str += ", Value = "; str += jvalue.toString();
-      GUI_Write_To_Log(value, str);
-      str = "";
-  }
+
+      if(!jvalue.isObject() )
+        {
+          str +=  "Key = "; str += key; str += ", Value = "; str += jvalue.toString();
+          GUI_Write_To_Log(value, str);
+          str = "";
+
+        }
+      else{
+            str = "";
+            str += "Nested Key = ";  str += key;
+            GUI_Write_To_Log(value, str);
+            str = "";
+
+              }
+
+//      str +=  "Key = "; str += key; str += ", Value = "; str += jvalue.toString();
+//      GUI_Write_To_Log(value, str);
+//      str = "";
+  }//foreach
 
 
 
@@ -458,3 +480,22 @@ void MainWindow::on_GetBoxButton_clicked()
 
 }
 
+//+++++++++++++++++++++++++++++++
+//Ф-ция рекурсивно парсит JSON в случае вложенных объектов.
+
+
+void MainWindow::traversJson(QJsonObject json_obj){
+    foreach(const QString& key, json_obj.keys()) {
+
+        QJsonValue value = json_obj.value(key);
+        if(!value.isObject() ){
+          qDebug() << "Key = " << key << ", Value = " << value;
+         }
+        else{
+             qDebug() << "Nested Key = " << key;
+             traversJson(value.toObject());
+        }
+
+    }
+
+};

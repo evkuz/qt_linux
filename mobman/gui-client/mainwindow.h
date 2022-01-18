@@ -54,6 +54,7 @@ public:
     void GUI_Write_To_Log (int value, QString log_message);
     void makeSocket(QString ipaddress, quint16 port);
     void parseJSON(QString jsnData); // Парсинг JSON из HTTP
+    void traversJson(QJsonObject json_obj); // Рекурсивный Парсинг JSON
 
 public slots:
     void onSocketConnected_Slot();
