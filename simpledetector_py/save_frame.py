@@ -27,6 +27,7 @@ if __name__ == '__main__':
         exit(1)
         
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1024)
+    frame_num = 0
 
     while(True):
         ret, frame = cap.read()
@@ -39,7 +40,8 @@ if __name__ == '__main__':
         key = cv2.waitKey(1)
         
         if key & 0xFF == ord('s'):
-            cv2.imwrite("frame.png", frame)
+            cv2.imwrite(f"frame_{frame_num:03d}.png", frame)
+            frame_num += 1
 	   
         if key & 0xFF == ord('q'):
             break
