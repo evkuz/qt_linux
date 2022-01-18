@@ -32,6 +32,9 @@ class CamDetectorService(BaseService):
 
     def calc_angle(self, distance, x, cube_width):
         #real_width = 38 # mm
+        if cube_width == 0:
+            return 180
+
         x_mm = x * (38. / cube_width)
         return atan2(x_mm, distance)*180. / pi
     
