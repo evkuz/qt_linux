@@ -1109,17 +1109,9 @@ str = "Bytes after reading  "; str += QString::number(afterbytes); GUI_Write_To_
         {
        // unsigned char ptr;
 
-            case 130:
+            case 130: arrPtr = mob_pos_13; break;
 
-                arrPtr = mob_pos_13;
-//            memcpy(Servos, mob_pos_13, DOF);  this->send_Data(LASTONE);
-//            GUI_Write_To_Log(value, "!!!!! position 130 !!!!");
-            break;
-
-            case 140:
-                arrPtr = mob_pos_14;
-                memcpy(Servos, mob_pos_14, DOF);  this->send_Data(LASTONE);
-            break;
+            case 140: arrPtr = mob_pos_14; break;
 
             case 150: arrPtr = mob_pos_15; break;
             case 160: arrPtr = mob_pos_16; break;
@@ -1127,6 +1119,9 @@ str = "Bytes after reading  "; str += QString::number(afterbytes); GUI_Write_To_
             case 180: arrPtr = mob_pos_18; break;
             case 190: arrPtr = mob_pos_19; break;
             case 200: arrPtr = mob_pos_20; break;
+            case 210: arrPtr = mob_pos_21; break;
+            case 220: arrPtr = mob_pos_21; break;
+            case 230: arrPtr = mob_pos_23; break;
 
 
           default:
@@ -1144,7 +1139,7 @@ str = "Bytes after reading  "; str += QString::number(afterbytes); GUI_Write_To_
 
 
         //Отсоединение от удаленнного сокета
-        socketCV->disconnectFromHost();
+        //socketCV->disconnectFromHost();
 
 }
 //++++++++++++++++++++++++++++++++++++++

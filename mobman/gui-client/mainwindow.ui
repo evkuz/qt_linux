@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>800</width>
-    <height>351</height>
+    <height>459</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -64,6 +64,19 @@
     </property>
     <property name="text">
      <string>Parking</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="GetBoxButton">
+    <property name="geometry">
+     <rect>
+      <x>450</x>
+      <y>280</y>
+      <width>171</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Get Box</string>
     </property>
    </widget>
   </widget>

@@ -61,6 +61,39 @@ void MainWindow::makeSocket(QString ipaddress, quint16 port)
 
 
 }
+//+++++++++++++++++++++++++++++++++++++++++
+// Парсим JSON-ответ от девайсов
+void MainWindow::parseJSON(QString jsnData)
+{
+    int value = 0xC7C7;
+    QString str;
+
+  str = jsnData; // Но тут еще надо обрезать HTTP-заголовки
+  str = "{\" rc\": 0, \"info\": \"success\",\"name\": \"getposition\", \"data\": {\"detected\": true, \"x\": -15.0, \"y\": -60.0, \"width\": 113, \"height\": 108, \"err_angle\": -1.38117702629722, \"distance\": 209.21150512634233}}";
+  //Assign the json text to a JSON object
+  jsnDoc = QJsonDocument::fromJson(str.toUtf8());
+  if(jsnDoc.isObject() == false) GUI_Write_To_Log(value,"It is not a JSON object");
+
+  //Get the main JSON object and get the datas in it
+  jsnObj = jsnDoc.object();
+
+
+//  str = "JSON data :\n";
+//  QJsonValue name= jsnObj.value("name");
+  str = "";
+  foreach(const QString& key, jsnObj.keys()) {
+      QJsonValue jvalue = jsnObj.value(key);
+      //qDebug() << "Key = " << key << ", Value = " << jvalue.toString();
+      str +=  "Key = "; str += key; str += ", Value = "; str += jvalue.toString();
+      GUI_Write_To_Log(value, str);
+      str = "";
+  }
+
+
+
+
+
+}
 //+++++++++++++++++++++++++++++++++++++++
 // After socket becoming in state "connected", the connected() signal
 // is emitted. Here is the slot for that signal.
@@ -254,27 +287,7 @@ void MainWindow::onSocketReadyRead_Slot()
 // Пока оставим как есть, для сохранения работоспособности кода.
 void MainWindow::onARMSocketConnected_Slot()
 {
-    // Раз сокет готов отправляем ему запрос, предварительно подготовив.
-    // А вот теперь готовим команду "/run?cmd=status&"
-     QString request = "GET ";
-     request += "/run?cmd=status&";
-     request += " HTTP/1.1";
-     request += "\r\nHost: ";
-     request += "192.168.1.201:8383\r\n";
-     request += "Accept: */*\r\n";
-    // request += "Access-Control-Allow-Origin: *\r\n";
-
-    // request += "content-type: application/json\r\n";
-     request += "Access-Control-Allow-Origin: *\r\n";
-     request += "\r\n";
-
-    // request += "";
-
-     GUI_Write_To_Log(0xfefe, "The following Data is going to be sent to ARM Device :");
-     GUI_Write_To_Log(0xfefe, request.toUtf8());
-     socketARM->write(request.toUtf8());
-
-
+;
 }
 //+++++++++++++++++++++++++++++
 // slot for "connected" signal for socketDEV
@@ -289,26 +302,11 @@ void MainWindow::onDEVSocketConnected_Slot()
 //++++++++++++++++++++++++++++++++++++++++++++++
 void MainWindow::onARMSocketReadyRead_Slot()
 {
-    QString nextTcpdata, str;
-    int value = 0xf5f5;
-    int befbytes = socketARM->bytesAvailable();
-        nextTcpdata = socketARM->readAll();
-    int realbytes = nextTcpdata.size();
-    int afterbytes = socketARM->bytesAvailable();
-
-    str = "Bytes before reading "; str += QString::number(befbytes); GUI_Write_To_Log(value, str);
-    str = QString::number(realbytes); str += " bytes has been readed"; GUI_Write_To_Log(value, str);
-
-    str = "Bytes after reading  "; str += QString::number(afterbytes); GUI_Write_To_Log(value, str);
-
-    GUI_Write_To_Log(value, "!!!!!!!!!!!!!!!!! There are some  data from ARM device !!!!!!!!!!!!!!!!!!!!");
-    GUI_Write_To_Log(value, nextTcpdata);
-    //ВСе данные получили Отсоединение от удаленнного сокета
-    socketARM->disconnectFromHost();
-
+;
 
 }
-
+//++++++++++++++++++++++++++++++++++++++++++++++
+// ОБщий слот на все устройства
 void MainWindow::onDEVSocketReadyRead_Slot()
 {
     QString nextTcpdata, str;
@@ -327,6 +325,9 @@ void MainWindow::onDEVSocketReadyRead_Slot()
     GUI_Write_To_Log(value, nextTcpdata);
     //ВСе данные получили Отсоединение от удаленнного сокета
    // socketDEV->disconnectFromHost();
+
+    // Запускаю JSON-парсинг
+    parseJSON(nextTcpdata);
 
 }
 //+++++++++++++++++++++++++++++++++++++++
@@ -435,6 +436,25 @@ void MainWindow::on_GetParkingButton_clicked()
      request += "\r\n";
 
      makeSocket(CVDev_IP, ARM_Port);
+
+}
+
+//+++++++++++++++++++++++++++++++++++++++
+// Формируем запрос, "кнопка Get Box"
+// готовим команду "/run?cmd=get_box&"
+
+void MainWindow::on_GetBoxButton_clicked()
+{
+    request = "GET ";
+    request += "/run?cmd=get_box&";
+    request += " HTTP/1.1";
+    request += "\r\nHost: ";
+    request += "192.168.1.201:8383\r\n";
+    request += "Accept: */*\r\n";
+    request += "Access-Control-Allow-Origin: *\r\n";
+    request += "\r\n";
+
+    makeSocket(CVDev_IP, ARM_Port);
 
 }
 

@@ -34,13 +34,14 @@ void QSocketThread::process_TheSocket()
 }
 //+++++++++++++++++++++++++++++++++++++
 //Данные считываем, готовим ответ.
+// Слот сигнала readyRead
 void QSocketThread::onReadyRead()
 {
     //Чтение информации из сокета и вывод в консоль
     QByteArray qbmessage;
     qbmessage = socket->readAll();
     qDebug() << qbmessage;
-   // qDebug() << "!!!!!!!!!!!!!!!!!!!!!11 Get Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!!1";
+   // qDebug() << "!!!!!!!!!!!!!!!!!!!!!!! Get Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!!!";
 
     //Парсим команду.
     QString message, substr;
