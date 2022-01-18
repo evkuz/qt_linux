@@ -326,10 +326,11 @@ void MainWindow::onDEVSocketReadyRead_Slot()
     GUI_Write_To_Log(value, "!!!!!!!!!!!!!!!!! There are some  data from SOCKET device !!!!!!!!!!!!!!!!!!!!");
     GUI_Write_To_Log(value, nextTcpdata);
     //ВСе данные получили Отсоединение от удаленнного сокета
-    socketDEV->disconnectFromHost();
+   // socketDEV->disconnectFromHost();
 
 }
-
+//+++++++++++++++++++++++++++++++++++++++
+// Закрытие соединения производится со стороны отправителя. Сюда попадаем, когда приходит сигнал "disconnected"
 void MainWindow::socketDEV_onDisconnected_Slot()
 {
   int value = 0xf1f1;
