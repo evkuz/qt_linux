@@ -33,9 +33,10 @@
 using namespace std;
 
 SocketClient::SocketClient(const char *socketPath) {
-  size_t pathLength = strlen(socketPath);
-  _serverPath = new char[pathLength];
+  int pathLength = strlen(socketPath);
+  _serverPath = new char[pathLength+1];
   strncpy(_serverPath, socketPath, pathLength);
+  _serverPath[pathLength] = '\0';
 }
 
 SocketClient::~SocketClient() { delete[] this->_serverPath; }

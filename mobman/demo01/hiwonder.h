@@ -28,8 +28,9 @@ public:
 #define Log_File_Name       "./hiwonder.log"
 #define SOURCE_POINTS_FILE  "../source_points.xls"
 #define DOF 4     // mobman
-#define szData 8 //Размер посылки в байтах
-    unsigned char outputData [szData];
+//#define szData 6 //Размер посылки в байтах
+    int szData = 6;
+    unsigned char outputData [6];
     QSerialPort serial;
     QByteArray byInputBuffer[robot_buffer_SIZE];
     char byOutputBuffer[robot_buffer_SIZE];

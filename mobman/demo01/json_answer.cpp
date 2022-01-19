@@ -55,4 +55,39 @@ response += "}";
 response += "]"; //end of action_list
 
 response += "\n}"; //main bracket
+//++++++++++++++++++++++++++++++++++++++++++++++++
+
+CV device JSON answer
+{
+"rc": 0,
+"info": "success",
+"name": "getposition",
+"data": {
+"detected": true,
+"x": -75,
+"y": -58,
+"width": 105,
+"height": 104,
+"err_angle": -7.128930216417201,
+"distance": 217.02240483137268
+}
+}
+
+//++++++++++++++++++++++++++++++++++++++++++++++++
+{"rc": 0, "info": "success", "name": "getposition", "data": {"detected": true, "x": -46.0, "y": -70.0, "width": 158, "height": 154, "err_angle": -4.2654448889627625, "distance": 148.3335127743527}}
+//+++++++++++++++++++++++++++++++++++++++++++++++
+{
+\"rc\": 0,
+\"info\": "success",
+\"name\": "getposition",
+\"data\": {
+\"detected\": true,
+\"x\": -75,
+\"y\": -58,
+\"width\": 105,
+\"height\": 104,
+\"err_angle\": -7.128930216417201,
+\"distance\": 217.02240483137268
+}
+}
 */

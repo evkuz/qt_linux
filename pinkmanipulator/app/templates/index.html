@@ -1,0 +1,20 @@
+<html>
+  <head>
+    <title>Pink Manipulator http server</title>
+  </head>
+  <body>
+    <h1>Pink Manipulator http server</h1>
+    <img src="{{ url_for('video_feed') }}">
+    <h2>Send command</h2>
+    <p><strong>/run?cmd=ACTION_NAME</strong>&nbsp;-&nbsp;run action</p>
+      <p>Available actions:</p>
+        <ul>
+        <li><b>catchcube</b> -robot will try to catch cube</li>
+        <li><b>putcube</b> - robot put cube</li>
+        <li><b>reset</b> - stop actions and go to start position</li>
+        <li><b>status</b> - will return status</li>
+        <li><b>camcalib</b> - will return status</li>
+      </ul>
+    <p><strong>/status</strong> - ask for state</p>
+  </body>
+</html>

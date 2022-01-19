@@ -34,13 +34,14 @@ void QSocketThread::process_TheSocket()
 }
 //+++++++++++++++++++++++++++++++++++++
 //Данные считываем, готовим ответ.
+// Слот сигнала readyRead
 void QSocketThread::onReadyRead()
 {
     //Чтение информации из сокета и вывод в консоль
     QByteArray qbmessage;
     qbmessage = socket->readAll();
     qDebug() << qbmessage;
-   // qDebug() << "!!!!!!!!!!!!!!!!!!!!!11 Get Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!!1";
+   // qDebug() << "!!!!!!!!!!!!!!!!!!!!!!! Get Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!!!";
 
     //Парсим команду.
     QString message, substr;
@@ -83,14 +84,13 @@ void QSocketThread::Data_2_TcpClient_Slot(QString data)
 {
     // Готовим ответ.
     //socket->write(response.arg(QTime::currentTime().toString()).toLatin1());
-    QDateTime dt(QDateTime::currentDateTime());
+    //QDateTime dt(QDateTime::currentDateTime());
    // qint64 tval;
     data2Client = data.toUtf8();
     QString response = "HTTP/1.1 200 OK\r\n";
     response += "content-type: application/json\r\n";
     response += "Access-Control-Allow-Origin: *\r\n";
     response += "\r\n";
-    //response += "{\n\t";
     response += data;
     socket->write(response.toUtf8());
 
