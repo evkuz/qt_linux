@@ -50,6 +50,9 @@ public:
     bool new_get_request; // Флаг сигнализирует, что есть неотвеченный GET-запрос от webserver.
     //QTcpServer* m_pTCPServer;
 
+    bool newYearMode; // Снимаем НГ-поздравление. Кое-где надо медленнее двигаться.
+    int moving_mode;  // Режим движения (быстро/медленно)
+
     QSimpleServer server;
 
     //+++++++++++++++++++++++++++++ Threads +++++++++++++++
@@ -58,7 +61,16 @@ public:
     QString rAnswer; // Ответ робота - статус, return_code, etc
 
 
-#define parcel_size 8
+//#define parcel_size 8
+
+
+// 7й байт
+
+#define FORWARD_MV    0x31 // 49 // Движение "Туда"
+#define BACKWAWARD_MV 0x30 // 48 // Движение "Обратно"
+#define NEWYEAR_MV    0x35 // 53 // Движение в режиме "НГ" - медленно, задержка  передается отдельным байтом
+
+// 8й байт
 #define NOT_LAST    0xC8 //200  // Не последняя команда
 #define LASTONE     0xDE //222  // Последняя команда роботу при комплексном движении
 #define BEFORE_LAST 0xE9 //233  // Предпоследняя команда - положить кубик на тележку.
@@ -69,9 +81,7 @@ public:
     int X, Y;//Координаты x,y
     bool DETECTED; // Флаг, показывающий, сработал ли захват изображения.
 
-    unsigned char Servos [6] = {93,93,93,93,93,93};
-
-    void update_data_from_sliders(int index, int value);
+    unsigned char Servos [HiWonder::DOF] = {93,93,93,93,93,93};
 
     void GUI_Write_To_Log (int value, QString log_message); //Пишет в лог-файл номер ошибки value и сообщение message
     void try_mcinfer(int x, int y);
@@ -80,7 +90,6 @@ public:
     void update_LineDits_from_position(unsigned char *pos);
     void update_Servos_from_LineEdits(void);
     void send_Data(unsigned char thelast);
-    void ssend_Data(QByteArray position);
 
     void make_json_answer();   // подготовка json-строки с полями ответа в TCP сокет.
 
@@ -93,7 +102,7 @@ private:
 
 public slots:
 void Data_From_Web_SLot(QString message);
-void Info_2_Log_Slot(QString);
+void Data_From_TcpClient_Slot(QString); // Исправить на  Data_From_TcpClient_Slot(QString message)
 
 void newConnection_Slot();
 void server_New_Connect_Slot();
@@ -156,11 +165,13 @@ private slots:
 
     void on_GetBackFromServoButton_clicked();
 
+    void on_fromFileButton_clicked();
+
 signals:
     void Open_Port_Signal(QString portname); // Сигнал даем по нажатию кнопки "OPEN"
     void Pass_XY_Signal(int x_pix, int y_pix); //Сигнал по нажатию кнопки "Get_XY"
     void FW_Kinemaic_Signal(int S3, int S4, int S5, int l1, int l2, int l3); // Углы приводов, длины соответствующих звеньев.
-    void Write_2_Client_Signal(QString); // Сигнал вебсерверу, - пересылка данных в сокет на отправку.
+    void Write_2_TcpClient_Signal(QString); // Сигнал вебсерверу, - пересылка данных в сокет на отправку.
 //    void StartTakeAndPutSignal();
 
 private:

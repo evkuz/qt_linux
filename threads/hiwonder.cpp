@@ -13,12 +13,9 @@
 //HiWonder::HiWonder(QObject *parent) : QObject(parent)
 HiWonder::HiWonder()
 {
-    // Инициализируем буфер данными
-    memset(byInputBuffer, 0xEE, robot_buffer_SIZE); //sizeof(byInputBuffer)
     MOVEMENT_DONE = true;
     qbuf.resize (robot_buffer_SIZE);
     memset(outputData, 0xDD, szData); //Инициализация массива с данными для отправки
-   // this->SetCurrentStatus ("wait");
     this->current_status = "wait";
 }
 //+++++++++++++++++
@@ -39,6 +36,15 @@ void HiWonder::Source_Points_File_Open(QString fname)
     SourceFile.open(QIODevice::ReadWrite | QIODevice::Append | QIODevice::Text);
 
 }
+
+void HiWonder::Command_List_File_Open(QString lstname)
+{
+    CommandFile.setFileName(lstname);
+    CommandFile.open(QIODevice::ReadOnly | QIODevice::Text);
+
+}
+
+
 //++++++++++++++++++++++++++++++
 void HiWonder::Write_To_Log (int value, QString log_message)
 {
@@ -56,22 +62,9 @@ void HiWonder::Write_To_Log (int value, QString log_message)
 
 }
 
-void HiWonder::Write_To_Source(int value, QString points_data)
+void HiWonder::Write_To_Source(QString points_data)
 {
-    QDateTime curdate ;
-    QTextStream uin(&SourceFile);
-
-    QString str, str2;
-    //int value = 0xf000;
-    curdate = QDateTime::currentDateTime();
-
-    //str = curdate.toString("yyyy-MM-dd__hh:mm:ss:z").toLocal8Bit(); str.append(" > ");
-   // str = "X, Y";
-    //str2 = QString("0x%1: ").arg(value, 4, 16, QChar('0'));
-
-    uin << points_data << "\n";
-
-
+    QTextStream uin(&SourceFile); uin << points_data << "\n";
 }
 //++++++++++++++++ REMEMBER WHILE OPENING PORT !!!!!
 /*
@@ -111,52 +104,33 @@ void HiWonder::Open_Port_Slot(QString portname)
 
 }
 //++++++++++++++++++++++
+// Задаем роботу углы для нужной позиции - отправляем данные для углов в Serial port
 void HiWonder::GoToPosition(QByteArray &position)//, const char *servo)
 {
-    QString str;
-//    int sz = position.size();
-//    if (sz > robot_buffer_SIZE) sz = robot_buffer_SIZE;
-    this->MOVEMENT_DONE = false;
+   QString str;
+   this->MOVEMENT_DONE = false;
    position.resize (szData);
    serial.write(position);
    serial.waitForBytesWritten();
-
-   //serial.flush(); // Пробуем очистить буфер совсем
- //  serial.waitForBytesWritten();
-
-    // Для проверки
-//    str = "To Robot in hex: ";
-//    str += QString(position.toHex());
-//    //str = str + str2;
-//    this->Write_To_Log(0xF001, str);
 
 //    void *const tmp = const_cast<char*>(servo);
 //    unsigned char* sData = static_cast<unsigned char*>(tmp);
    //unsigned char sData [7]= {0,0,0,0,0,0,0};
    memcpy(&outputData, position,szData);
+   // Данные роботу отправили, теперь запись в лог об этом
 
     str = "To Robot: ";
     for (int i=0; i< szData; i++){
-    //    str += QString::number(sData[i]);
-        //str+= QString::number(position.at(i));
         str+= QString::number(outputData[i]);
         str+= ", ";
-
     }
+    str.truncate(str.lastIndexOf(","));
     this->Write_To_Log(0xF001, str);
-//    serial.waitForReadyRead();
-
-//    str = "Ready to read data from robot";
-//    this->Write_To_Log(0xF001, str);
-//    qbuf = serial.readAll();
-//    //qbuf = "askdjhfakjhfak";
-//    str = "From Robot :";
-//    str += QString(qbuf);
-//    this->Write_To_Log(0xF001, str);
 
 }
 //+++++++++++++++++++++++++++++++
-// code From Robot :
+// Слот сигнала QSerialPort::readyRead()
+// DATA From Robot :
 void HiWonder::ReadFromSerial_Slot ()
 {
     QString str;
@@ -169,7 +143,6 @@ void HiWonder::ReadFromSerial_Slot ()
         this->Write_To_Log(0xF001, str);
 
         qbuf = serial.readAll();
-    //    //qbuf = "askdjhfakjhfak";
         str = "From Robot : ";
         str += QString(qbuf);
         this->Write_To_Log(0xF001, str);
@@ -177,12 +150,6 @@ void HiWonder::ReadFromSerial_Slot ()
 
         std::cout<<"From Serial:" << str.toStdString ()<< std::endl;
         QStringList list_str = str.split(QLatin1Char(' '), Qt::SkipEmptyParts);
-//        for (int i=0; i< list_str.size (); i++){
-//            this->Write_To_Log(0xF001, list_str.at (i));
-//            str = list_str.at (i);
-//            if ( str == "DONE!"){this->MOVEMENT_DONE = true;}
-
-//        }
         str="DONE!";
         if (list_str.contains (str)) {this->MOVEMENT_DONE = true; this->Write_To_Log(0xF001, "Robot finished"); }
         else this->Write_To_Log(0xF001, "Robot still running");
@@ -196,11 +163,9 @@ void HiWonder::ReadFromSerial_Slot ()
             emit this->Moving_Done_Signal();
         }
 
-//   if (this->MOVEMENT_DONE) this->Write_To_Log(0xF001, "Robot finished");
-//
 
-}
-
+} // ReadFromSerial_Slot
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 void HiWonder::SetCurrentStatus(QString newStatus) {
     this->current_status = newStatus;
 //    emit this->StatusChangedSignal(newStatus);

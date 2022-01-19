@@ -26,14 +26,14 @@ void MainWindow::try_mcinfer(int x, int y){
             Servos[5] = (unsigned char)outKB[3];
         // Ограничиваем значения
 //unsigned char* sData = reinterpret_cast<unsigned char*>(Servos);
-            for (int i =0; i<= DOF -3; i++)
+            for (int i =0; i<= Robot->DOF -3; i++)
             {
                 if (Servos[i+2] > 180) {Servos[i+2]= 180;}
                 //else if (Servos[i+2] < 0) {Servos[i+2]= 0;}
             }
 
         str = "NEURON data : ";
-        for (int i =0; i<= DOF -3; i++)
+        for (int i =0; i< Robot->DOF -2; i++)
         {
             str+= QString::number(outKB[i]);
             str += ", ";
@@ -60,7 +60,7 @@ void MainWindow::try_mcinfer(int x, int y){
     str += QString::number(y); str+= ", ";
 
 
-    for (int i=0; i<= DOF - 1; i++){
+    for (int i=0; i< Robot->DOF; i++){
         str += QString::number(Servos[i]);
         str+= ", ";
     }

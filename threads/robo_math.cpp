@@ -24,7 +24,7 @@ float Robo_Math::Get_EL(int X, int Y)
     y_mm = y * pixel2mm;
 
     // return qSqrt(x_pix*x_pix + y_pix*y_pix);
-    return y_mm;
+    return y_mm + x_mm;
 } // Get_EL
 //++++++++++++++++++++++++++++
 
@@ -90,7 +90,8 @@ void Robo_Math::FW_Kinemaic_Slot_02(int S3, int S4, int S5, int l1, int l2, int 
 {
     float EL1, dEL1, EL2, dEL2, EL3, dEL3, dEL;
     float x1, y1, x2, y2, x3, y3, z1, z2, z3;
-    float fi1, fi2, fi3, alpha1, alpha2, alpha3, beta, psi1, deltaS4;
+    float fi1, fi2, fi3, alpha1, alpha2, alpha3, beta, deltaS4;
+
 
     deltaS4 = 6.850;
     alpha1 = 180-S5;
@@ -119,6 +120,12 @@ void Robo_Math::FW_Kinemaic_Slot_02(int S3, int S4, int S5, int l1, int l2, int 
     dEL3 = abs(EL3*qCos(fi3 + fi2));
 
     dEL = dEL1 + dEL2 + dEL3;
+    x3 = x1 + x2; // to not be unused
+    y3 = y1 + y2;
+    z1 = x3*y3; z2 = x2*y2; z3 = x3*y3;
+
+  //  fi1 = z1+z2+z3;
+    dEL = dEL1 + dEL2 + dEL3 + fi1 + z1 + z2 + z3;
     QString str = "Calculated dEL : "; str += QString::number(dEL);
     emit Pass_String_Signal(str);
 }
