@@ -13,7 +13,7 @@
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , readSocket("../../simpledetector_cpp/iqr.socket")
+    , readSocket("../simpledetector_cpp/iqr.socket")
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);

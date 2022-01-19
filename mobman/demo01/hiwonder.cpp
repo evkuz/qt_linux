@@ -13,13 +13,13 @@
 //HiWonder::HiWonder(QObject *parent) : QObject(parent)
 HiWonder::HiWonder()
 {
-    // Инициализируем буфер данными "0хЕЕ" QByteArray
+    // Инициализируем буфер данными QByteArray
     memset(byInputBuffer, 0xEE, robot_buffer_SIZE); //sizeof(byInputBuffer)
     MOVEMENT_DONE = true;
     qbuf.resize (robot_buffer_SIZE);
     memset(outputData, 0xDD, szData); //Инициализация массива с данными для отправки
    // this->SetCurrentStatus ("wait");
-    this->current_status = "wait";
+    this->current_status = "Ready";
 }
 //+++++++++++++++++
 HiWonder::~HiWonder()
@@ -94,7 +94,13 @@ void HiWonder::Open_Port_Slot(QString portname)
     OK = true;
     serial_error = 1;
    // OK = serial.open(QIODevice::ReadWrite);
-    if (!serial.open(QIODevice::ReadWrite)) { OK = false; serial_error = serial.error(); this->Write_To_Log(0xFF00, "Error opening Serial port !!!");} //"Error opening Serial port !!!");}
+    if (!serial.open(QIODevice::ReadWrite))
+    {
+        OK = false; serial_error = serial.error();
+        this->Write_To_Log(0xFF00, "Error opening Serial port !!!");
+       //Тут запускаем таймер и открываем порт в таймере
+
+    } //"Error opening Serial port !!!");}
     stt = QString::number (serial_error);
     this->Write_To_Log(0xFF00,stt);
 

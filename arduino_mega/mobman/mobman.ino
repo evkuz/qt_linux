@@ -20,35 +20,37 @@
 
 #include <Arduino.h>
 #include <Servo.h>
-//#include "/home/evkuz/0_arduino/include/hiwonder_byte.h"
-//#include "move_servos.ino"
-
-///home/evkuz/0_arduino/include/hiwonder_byte.h
-///home/evkuz/lit/learm/include/hiwonder_byte.h
-
-// /home/evkuz/lit/learm/
-/// //../include/hiwonder_byte.h
 #include <stdlib.h>
 
-
-#define serv_number 6 // Количество приводов под управлением
+//for (byte i = 0; i < 10; i++) {
+//        detach();
+//        delay(75);
+//        attach();
+//        writeUs(_servoCurrentPos);
+//        delay(25);
+//    }  
+//
+#define serv_number 4 // Количество приводов под управлением
 #define sBufSize 32   // Размер буфера компорта в плате NANO - 64 байта.
-#define szParcel 8
+#define szParcel 6
 Servo servo1, servo2, servo3,servo4,servo5,servo6;
-Servo servos [6] = {servo1, servo2, servo3,servo4,servo5,servo6}; // Текущие значения углов
+Servo servos [serv_number] = {servo1, servo2, servo3,servo4};//,servo5,servo6}; // Текущие значения углов
+
+//ServoSmooth servo1, servo2, servo3,servo4,servo5,servo6;
+//ServoSmooth servos [serv_number] = {servo1, servo2, servo3,servo4,servo5,servo6}; // Текущие значения углов
 
 
-int *s1, *s2, *s3, *s4, *s5, *s6;
-byte current_s [6]; // Текущее значение угла для соответстующего привода 0-180
-byte readed_pos[6];
-byte delta [6];     // Разница (между текущим и целевым положением) в угле для соответствующего привода 0 - 180
+//int *s1, *s2, *s3, *s4, *s5, *s6;
+byte current_s [serv_number]; // Текущее значение угла для соответстующего привода 0-180
+byte readed_pos[serv_number];
+byte delta [serv_number];     // Разница (между текущим и целевым положением) в угле для соответствующего привода 0 - 180
                     // индекс элемента соответствует номеру привода, с поправкой, что индексы начинаются с 0
 //String message, number;//, s_pos;
 char *s_pos;
 char buf[sBufSize];
 
 byte ints[sBufSize]; // Данные, полученные по serial, заданные позиции сервоприводов
-short DF [6] ={1, 1, 1, 1, 1, 1}; // Значения приращений угла в градусах для приводов, т.е. 1 - увеличиваем на 1 градус,
+short DF [serv_number] ={1, 1, 1, 1};//, 1, 1}; // Значения приращений угла в градусах для приводов, т.е. 1 - увеличиваем на 1 градус,
                                   // а (-1) - уменьшаем на 1 градус.
                                   // При значении 1 - движение робота максимально плавное
                                   // Направление изменений - увеличение/уменьшение
@@ -63,11 +65,23 @@ void setup() {
 
     }
 // attach servos to correspondent pin
-  for (int i=0; i<= serv_number -1; i++)  { servos[i].attach(i+2); } //, 500, 2500;
-  smoothStart();
+  //for (int i=0; i<= serv_number -1; i++)  { servos[i].attach(i+2); } //, 500, 2500;
+  
+  servos[0].attach(2);
+  servos[1].attach(3);
+  servos[2].attach(4);
+  servos[3].attach(7);
+  
+  //smoothStart();
 
 //  move_servo_together(hwr_Start_position, 1, 6);
   delay(1000);
+
+
+servos[0].write(35);
+servos[1].write(1);
+servos[2].write(45);
+servos[3].write(90);
 
 
   for (byte i=0; i< sBufSize; i++){
@@ -80,6 +94,7 @@ void setup() {
 void loop() {
 
 //int inByte;
+
 parse_command();
 
 /*
@@ -168,8 +183,8 @@ void parse_command ()
       //byte ints[64];           // массив для численных данных, у нас 6 приводов
       byte numReaded;
       
-      numReaded=Serial.readBytes(ints, szParcel);
-      message = "";
+      numReaded=Serial.readBytes(ints, szParcel); // Считали данные из Serial в массив ints
+      message = ""; 
       for (int i=0; i<numReaded; i++)
       {
           message += String(ints[i]); message += " ";
@@ -199,31 +214,34 @@ void Go_To_Position(byte *pos)
   * потом открываем захват, и потом уже 4 и 3 приводы до конца.
 
 */
-    switch (pos[6]) {
+    switch (pos[szParcel-2]) {
 
 
 
     case 0x31: // Движение "Туда"
 // Особый и различный порядок движения приводов в разных ситуациях
-        if (pos[7]==0xE9) //0xE9==233  // Предпоследняя команда - положить кубик на тележку. Тут особый порядок.
+        if (pos[szParcel-1]==0xE9) //0xE9==233  // Предпоследняя команда - положить кубик на тележку. Тут особый порядок.
         {
-            move_servo_together (ints, 6, 6);
+            move_servo_together (ints, 4, 4);
             delay(500);
-            move_servo_together (ints, 3, 4);
+            move_servo_together (ints, 2, 3);
             delay(500);
-            move_servo_together (ints, 5, 5);
-            delay(1000);
             move_servo_together (ints, 1, 1); // Открываем или закрываем хват
             delay(1000);
         }
 
         else {  // Обычный порядок - двжиение за кубиком при создании обучающей выборки
-           move_servo_together (ints, 4, 6);
-           delay(1000);
-           move_servo_together (ints, 1, 1);
-           delay(1000);
-           move_servo_together (ints, 3, 3);
-           delay(1000);
+//           move_servo_together (ints, 4, 4);
+//           delay(1000);
+//           move_servo_together (ints, 1, 2);
+//           delay(1000);
+//           move_servo_together (ints, 3, 3);
+//           delay(1000);
+
+            //move_servos(ints);
+            move_servo_together (ints, 1, 4);
+            delay(1000);
+
         }
 
       break;
@@ -231,18 +249,18 @@ void Go_To_Position(byte *pos)
           
     case 0x30: // Движение "Обратно"
           // Смотрим крайний, 8-й байт
-          if (pos[7]==0xC8) // обычная команда
+          if (pos[szParcel-1]==0xC8) // обычная команда
           {// Не последняя команда
 
           move_servo_together (ints, 3, 3); // поднимаем дальнюю половину
           delay(1000);
           move_servo_together (ints, 1, 1); // закрываем/хват
           delay(1000);
-          move_servo_together (ints, 4, 6);
+          move_servo_together (ints, 4, 4);
           delay(1000);
           }
 
-           if (pos[7]==0xF4){ // Кубик на тележку положили, теперь грамотно убираем манипулятор (не задевая транспортир).
+           if (pos[szParcel-1]==0xF4){ // Кубик на тележку положили, теперь грамотно убираем манипулятор (не задевая транспортир).
                move_servo_together (ints, 3, 5);
                delay(500);
                move_servo_together (ints, 1, 6);
@@ -250,15 +268,16 @@ void Go_To_Position(byte *pos)
            }
 
 
-          if (pos[7]==0xDE) // Последняя команда роботу при комплексном движении
+          if (pos[szParcel-1]==0xDE) // Последняя команда роботу при комплексном движении
           {// Последняя команда, может быть и одиночой, но на случай работы с кубиком делаем так
 
-          move_servo_together (ints, 3, 5);
+        //  move_servo_together (ints, 3, 4);
+          move_servos(ints);
           delay(1000);
-//          move_servo_together (ints, 3, 4);
+//          move_servo_together (ints, 1, 2);
 //          delay(1000);
 
-          move_servo_together (ints, 1, 6);
+//          move_servo_together (ints, 1, 2);
 //          delay(300);
 //          move_servo_together (ints, 6, 6);
 
@@ -274,7 +293,7 @@ void Go_To_Position(byte *pos)
         
     }//switch (pos[6])
     
-if (pos[7]==0xDE) {
+if (pos[szParcel-1]==0xDE) {
    message = "Robot movement DONE! LAST !!"; 
   }
   else {

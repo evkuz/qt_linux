@@ -382,7 +382,7 @@ int main(int argc, char* argv[])
 	double frame_width = capture.get( CAP_PROP_FRAME_WIDTH );
 	double frame_height = capture.get( CAP_PROP_FRAME_HEIGHT );
 	
-	Mat frame, image;
+	Mat frame, image, frame_orig;
 	printf("[i] press 's' for capture image and 'Esc' or 'q' for quit!\n\n");
 	namedWindow( windowName, 1 );
 
@@ -472,10 +472,8 @@ int main(int argc, char* argv[])
 		{
 			Mat view0;
 			capture >> view0;
-			view0.copyTo(frame);
-			// view0 = imread("frame4.png", 1);
-			// double coef = 800. / view0.cols;
-			// resize(view0, frame, cv::Size(view0.cols * coef,view0.rows * coef), 0, 0, cv::INTER_LINEAR);
+			view0.copyTo(frame_orig);
+			frame_orig.copyTo(frame);
 
 			Rect pos = detector(frame, image, color_lower, color_upper);
 			int area = pos.width*pos.height;
@@ -526,7 +524,7 @@ int main(int argc, char* argv[])
 
 			char key = (char)waitKey(capture.isOpened() ? 50 : 500);
 			if( key == 115 ) {
-				imwrite("frame.png", frame);
+				imwrite("frame.png", frame_orig);
 				printf("Image was saved to file 'frame.png'");
 			}
 			
