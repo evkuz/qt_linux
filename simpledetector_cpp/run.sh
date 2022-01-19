@@ -2,5 +2,5 @@
 
 __build_dir="build"
 
-${__build_dir}'/simpledetector'
+${__build_dir}'/simpledetector' $@
 
