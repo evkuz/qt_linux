@@ -53,7 +53,8 @@ public:
     QDataStream in; // НА считывание данных из сокета CV
 
     QJsonDocument jsnDoc; // json-данные, полученные по tcp
-    QJsonObject   jsnObj;
+    QJsonObject   jsnObj, jsndataObj;
+    QJsonParseError jsonError;
 
     ordered_json jsnAnswer;  // Ответ от девайса
 

@@ -70,7 +70,7 @@ void MainWindow::parseJSON(QString jsnData)
     int value = 0xC7C7;
     QString str, substr;
 
-    int sPosition, ePosition; // Индекс строки run в запросе.
+    int sPosition; // Индекс строки run в запросе. , ePosition
     sPosition = jsnData.indexOf("{");
     substr = jsnData.mid(sPosition);
 
@@ -91,8 +91,12 @@ void MainWindow::parseJSON(QString jsnData)
   GUI_Write_To_Log(value, str);
  // str = "{\" rc\": 0, \"info\": \"success\",\"name\": \"getposition\", \"data\": {\"detected\": true, \"x\": -15.0, \"y\": -60.0, \"width\": 113, \"height\": 108, \"err_angle\": -1.38117702629722, \"distance\": 209.21150512634233}}";
   //Assign the json text to a JSON object
-  jsnDoc = QJsonDocument::fromJson(str.toUtf8());
+  jsnDoc = QJsonDocument::fromJson(str.toUtf8(), &jsonError);
   if(jsnDoc.isObject() == false) GUI_Write_To_Log(value,"It is not a JSON object");
+  if(jsonError.error != QJsonParseError::NoError){
+          str = "Error: "; str += jsonError.errorString();
+          GUI_Write_To_Log(value, str);
+   }       //return;
 
   //Get the main JSON object and get the datas in it
   jsnObj = jsnDoc.object();
@@ -502,23 +506,46 @@ void MainWindow::on_GetBoxButton_clicked()
 
 void MainWindow::traversJson(QJsonObject json_obj){
     QString str;
-
+    bool isDetected;
+    int thevalue = 0x5555;
     foreach(const QString& key, json_obj.keys()) {
         str = "";
         QJsonValue value = json_obj.value(key);
         if(!value.isObject() ){
-                      str +=  "Key = "; str += key; str += ", Value = "; str += value.toString();
+                      str +=  "Key = "; str += key; str += ", Value = ";
+
+                      if (value.isBool()) {str += QVariant(value).toString();}
+                      if (value.isString()) {str += QVariant(value).toString();}
+                      if (value.isDouble()) {str += QString::number( QVariant(value).toDouble());}
+
+                     // str += value.toString();
                       GUI_Write_To_Log(0x5555, str);
                       str = "";
 
           //qDebug() << "Key = " << key << ", Value = " << value;
          }
         else{
-             str = "";
-             str +=  "Nested Key = "; str += key; str += ", Value = "; str += value.toString();
-             traversJson(value.toObject());
+            // А теперь определяем тип данных поля.
+             //jsndataObj = json_obj["data"].toObject(); // Так тоже работает, но уже есть привязка к конкретному случаю.
+             jsndataObj = value.toObject(); // В нашем случае объект единственный - "data"
+             isDetected = jsndataObj.value("detected").toBool();
 
-        }
+             str = "Detected value is ";
+             str += QVariant(isDetected).toString();
+             GUI_Write_To_Log(thevalue, str);
+
+             if (!isDetected){
+                 GUI_Write_To_Log(thevalue, "!!!!!! Exit. Try Again !!!!!!!!!!!");
+                 return;
+             }
+//             str = "";
+//             str +=  "Nested Key = "; str += key; str += ", Value = "; str += value.toString();
+
+             //traversJson(value.toObject());
+             traversJson(jsndataObj);
+
+
+        }//else
 
         GUI_Write_To_Log(0x5555, str);
 
