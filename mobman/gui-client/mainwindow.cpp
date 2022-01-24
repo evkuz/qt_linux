@@ -63,6 +63,8 @@ void MainWindow::makeSocket(QString ipaddress, quint16 port)
 }
 //+++++++++++++++++++++++++++++++++++++++++
 // Парсим JSON-ответ от девайсов
+// 0x20 (пробел), 0x09 (табуляцию), 0x0A (перевод строки) и 0x0D (возврат каретки).
+// Пробелы допускаются до и после «структурных символов» (structural characters) []{}:,
 void MainWindow::parseJSON(QString jsnData)
 {
     int value = 0xC7C7;
@@ -71,6 +73,18 @@ void MainWindow::parseJSON(QString jsnData)
     int sPosition, ePosition; // Индекс строки run в запросе.
     sPosition = jsnData.indexOf("{");
     substr = jsnData.mid(sPosition);
+
+
+   // jsnAnswer = ordered_json::parse(substr.toStdString());
+   // str.toStdString() = jsnAnswer.value("name");
+    //std::stringstream(substr.toStdString()) >> jsnAnswer;
+
+
+//    str = "Data to be extracted from JSON name field ";
+//    GUI_Write_To_Log(value, str);
+   // str = QString(jsnAnswer["name"]);
+  // GUI_Write_To_Log(value, jsnAnswer["name"]);
+
 
   GUI_Write_To_Log(value, "Http headers cutted, so data are as follows !");
   str = substr; // jsnData; // Но тут еще надо обрезать HTTP-заголовки. ОБрезаем все до первого символа '{'
@@ -86,30 +100,32 @@ void MainWindow::parseJSON(QString jsnData)
 
 //  str = "JSON data :\n";
 //  QJsonValue name= jsnObj.value("name");
-  str = "";
-  foreach(const QString& key, jsnObj.keys()) {
-      QJsonValue jvalue = jsnObj.value(key);
-      //qDebug() << "Key = " << key << ", Value = " << jvalue.toString();
 
-      if(!jvalue.isObject() )
-        {
-          str +=  "Key = "; str += key; str += ", Value = "; str += jvalue.toString();
-          GUI_Write_To_Log(value, str);
-          str = "";
+  GUI_Write_To_Log(value, "!!!!!!!!!!!!!!!!!!!! Go to recursive parsing !!!!!!!!!!!!!!!!!!!!");
+  traversJson(jsnObj);
+//+++++++++++++++++++++++++++++++++++++++++++++++++  go to recursive function instead
+//  str = "";
+//  foreach(const QString& key, jsnObj.keys()) {
+//      QJsonValue jvalue = jsnObj.value(key);
+//      //qDebug() << "Key = " << key << ", Value = " << jvalue.toString();
 
-        }
-      else{
-            str = "";
-            str += "Nested Key = ";  str += key;
-            GUI_Write_To_Log(value, str);
-            str = "";
+//      if(!jvalue.isObject() )
+//        {
+//          str +=  "Key = "; str += key; str += ", Value = "; str += jvalue.toString();
+//          GUI_Write_To_Log(value, str);
+//          str = "";
 
-              }
+//        }
+//      else{
+//            str = "";
+//            str += "Nested Key = ";  str += key;
+//            GUI_Write_To_Log(value, str);
+//            str = "";
 
-//      str +=  "Key = "; str += key; str += ", Value = "; str += jvalue.toString();
-//      GUI_Write_To_Log(value, str);
-//      str = "";
-  }//foreach
+//              }
+
+//  }//foreach
+//+++++++++++++++++++++++++++++++++++++
 
 
 
@@ -485,17 +501,28 @@ void MainWindow::on_GetBoxButton_clicked()
 
 
 void MainWindow::traversJson(QJsonObject json_obj){
-    foreach(const QString& key, json_obj.keys()) {
+    QString str;
 
+    foreach(const QString& key, json_obj.keys()) {
+        str = "";
         QJsonValue value = json_obj.value(key);
         if(!value.isObject() ){
-          qDebug() << "Key = " << key << ", Value = " << value;
+                      str +=  "Key = "; str += key; str += ", Value = "; str += value.toString();
+                      GUI_Write_To_Log(0x5555, str);
+                      str = "";
+
+          //qDebug() << "Key = " << key << ", Value = " << value;
          }
         else{
-             qDebug() << "Nested Key = " << key;
+             str = "";
+             str +=  "Nested Key = "; str += key; str += ", Value = "; str += value.toString();
              traversJson(value.toObject());
+
         }
 
-    }
+        GUI_Write_To_Log(0x5555, str);
+
+
+    }//foreach
 
 };

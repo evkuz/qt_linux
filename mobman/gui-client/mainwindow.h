@@ -17,9 +17,14 @@
 #include <QJsonValue>
 #include <QJsonArray>
 
+#include "nlohmann/json.hpp"
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
+
+//using json = nlohmann::json;
+using ordered_json = nlohmann::ordered_json;
 
 class MainWindow : public QMainWindow
 {
@@ -49,6 +54,8 @@ public:
 
     QJsonDocument jsnDoc; // json-данные, полученные по tcp
     QJsonObject   jsnObj;
+
+    ordered_json jsnAnswer;  // Ответ от девайса
 
     void Log_File_Open(QString lname);
     void GUI_Write_To_Log (int value, QString log_message);
