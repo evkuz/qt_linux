@@ -85,8 +85,10 @@ void MainWindow::parseJSON(QString jsnData)
    // str = QString(jsnAnswer["name"]);
   // GUI_Write_To_Log(value, jsnAnswer["name"]);
 
-
+  GUI_Write_To_Log(value, "\n");
   GUI_Write_To_Log(value, "Http headers cutted, so data are as follows !");
+  GUI_Write_To_Log(value, "\n");
+
   str = substr; // jsnData; // Но тут еще надо обрезать HTTP-заголовки. ОБрезаем все до первого символа '{'
   GUI_Write_To_Log(value, str);
  // str = "{\" rc\": 0, \"info\": \"success\",\"name\": \"getposition\", \"data\": {\"detected\": true, \"x\": -15.0, \"y\": -60.0, \"width\": 113, \"height\": 108, \"err_angle\": -1.38117702629722, \"distance\": 209.21150512634233}}";
@@ -107,6 +109,13 @@ void MainWindow::parseJSON(QString jsnData)
 
   GUI_Write_To_Log(value, "!!!!!!!!!!!!!!!!!!!! Go to recursive parsing !!!!!!!!!!!!!!!!!!!!");
   traversJson(jsnObj);
+  GUI_Write_To_Log(value, "!!!!!!!!!!!!!!!!!!!! Get back from recursive parsing !!!!!!!!!!!!!!!!!!!!");
+
+  double cvdistance = jsndataObj.value("distance").toDouble();
+  str = "Got distance value as double : ";
+  str += QString::number(cvdistance);
+
+  GUI_Write_To_Log(value, str);
 //+++++++++++++++++++++++++++++++++++++++++++++++++  go to recursive function instead
 //  str = "";
 //  foreach(const QString& key, jsnObj.keys()) {
