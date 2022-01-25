@@ -615,7 +615,7 @@ void MainProcess::init_json()
         {"action_list", {
            {
             {"name", "get_box"},
-            {"state", "inprogress | done | fail"},
+            {"state", {"noDetection", "inprogress", "done", "fail"}},
             {"info", "Get the box by clamper, ascing CV about distance in advance"},
             {"rc", "int - action return code"}
            },
@@ -1002,6 +1002,8 @@ GUI_Write_To_Log(0x7777, str);
 }
 //+++++++++++++++++++++++++++++++++++
 // СЛот сигнала QIODevice::readyRead()
+// Cчитываем из сокета ответ от камеры CV - это JSON-объект.
+// Парсим JSON-ответ, ищем данные о состоянии CV - детекция, расстояние и т.д.
 void MainProcess::CV_onReadyRead_Slot()
 {
 

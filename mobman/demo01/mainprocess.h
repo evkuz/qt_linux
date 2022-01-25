@@ -113,10 +113,6 @@ public:
     void GUI_Write_To_Log (int value, QString log_message); //Пишет в лог-файл номер ошибки value и сообщение message
     void Servos_To_Log(QString message);
     void try_mcinfer(int x, int y);
-//    void update_LineDits_from_servos(void);
-//    void update_LineDits_from_position(const char *pos);
-//    void update_LineDits_from_position(unsigned char *pos);
-//    void update_Servos_from_LineEdits(void);
     void update_Servos_from_position(unsigned char *pos);
 
     void send_Data(unsigned char thelast);
@@ -124,7 +120,7 @@ public:
     void init_json();
     void request_CV();
     void request_New_CV();
-    int my_round(int n); // Округление целого числа до ближайшего кратного 10
+     int my_round(int n); // Округление целого числа до ближайшего кратного 10
 
 
 private:

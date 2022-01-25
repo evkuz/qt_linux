@@ -17,9 +17,14 @@
 #include <QJsonValue>
 #include <QJsonArray>
 
+#include "nlohmann/json.hpp"
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
+
+//using json = nlohmann::json;
+using ordered_json = nlohmann::ordered_json;
 
 class MainWindow : public QMainWindow
 {
@@ -47,8 +52,13 @@ public:
     QString currentTcpdata; //Нужно, чтоб была глобальная.
     QDataStream in; // НА считывание данных из сокета CV
 
-    QJsonDocument jsnDoc; // json-данные, полученные по tcp
-    QJsonObject   jsnObj;
+    QJsonDocument jsnDoc;    // json-данные, полученные по tcp
+    QJsonObject   jsnObj;    // ОБъект, хранящий весь JSON ответ от девайса
+    QJsonObject   jsndataObj;// ОБъект, хранящий вложенный JSON-объект (вложенный в весь ответ) \
+                             // \ Тут как раз данные о distance
+    QJsonParseError jsonError; // ОШибка, если полученные данные - не JSON-объект
+
+    ordered_json jsnAnswer;  // Ответ от девайса
 
     void Log_File_Open(QString lname);
     void GUI_Write_To_Log (int value, QString log_message);

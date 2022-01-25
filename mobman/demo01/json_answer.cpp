@@ -1,15 +1,18 @@
 /*
+ *
+ *
+// 0x20 (пробел), 0x09 (табуляцию), 0x0A (перевод строки) и 0x0D (возврат каретки).
+// Пробелы допускаются до и после «структурных символов» (structural characters) []{}:,
+
 response += "{\"name\": "; response += "\"mobman\", ";
 response += "\"rc\":"; response += "777"; response +=", ";  //must be some integer
 response += "\"info\": ";
 response += "\"text interpretation of return code\", ";
 response += "\"state\": ";
-//    response += "\"status\":\"";
 response += "\""; response += data2Client; //global device status
 response += "\", ";
 
 response += "\"action_list\": [{";
-//response += "{\n\t";
 response += "\"name\": ";
 response += "\"get_box\", "; // action == 'start'
 response += "\"state\": ";
@@ -17,17 +20,11 @@ response += "\"succsess\", ";
 response += "\"info\": ";
 response += "\"Get the cube and put it somewhere\", ";
 response += "\"st_time\": ";
-//response += "\"";
 response += QString::number(dt.toSecsSinceEpoch()); response +=", ";
-// response += "\"";
 response += "\"fin_time\": ";
-//response += "\"";
 response +=  QString::number(dt.toSecsSinceEpoch() + 1000000); response +=", ";
-//response += "\"";
 response += "\"result\": ";
-// response += "\"";
 response += "0";
-//  response += "\" ";
 response += "},";
 
 response += "{";//\n\t";
@@ -38,19 +35,14 @@ response += "\"done\", ";
 response += "\"info\": ";
 response += "\"Change state to DONE after moving cube\", ";
 response += "\"st_time\": ";
-//response += "\"";
 response +=  QString::number(dt.toSecsSinceEpoch() + 2000000);
-//response += "\", ";
 response +=", ";
 response += "\"fin_time\": ";
-//response += "\"";
 response +=  QString::number(dt.toSecsSinceEpoch() + 5000000);
 response += ", ";
 response += "\"result\": ";
-//response += "\"";
 response += "0";
-//response += " \n";
-response += "}";
+ response += "}";
 
 response += "]"; //end of action_list
 
