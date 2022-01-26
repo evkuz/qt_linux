@@ -16,6 +16,7 @@ HiWonder::HiWonder()
     // Инициализируем буфер данными QByteArray
     memset(byInputBuffer, 0xEE, robot_buffer_SIZE); //sizeof(byInputBuffer)
     MOVEMENT_DONE = true;
+    SerialIsOpened = false;
     qbuf.resize (robot_buffer_SIZE);
     memset(outputData, 0xDD, szData); //Инициализация массива с данными для отправки
    // this->SetCurrentStatus ("wait");
@@ -92,18 +93,24 @@ void HiWonder::Open_Port_Slot(QString portname)
 
     serial.setPortName(portname); //portname == "ttyUSB0"
     OK = true;
-    serial_error = 1;
+    serial_error = 777;
    // OK = serial.open(QIODevice::ReadWrite);
     if (!serial.open(QIODevice::ReadWrite))
     {
         OK = false; serial_error = serial.error();
         this->Write_To_Log(0xFF00, "Error opening Serial port !!!");
+        SerialIsOpened = false;
+        stt = "Error code is ";
+        stt += QString::number (serial_error);
+        if (serial_error == 1) { stt += " - Device NOT found.";}
+        this->Write_To_Log(0xFF00,stt);
+
+        return;
        //Тут запускаем таймер и открываем порт в таймере
 
     } //"Error opening Serial port !!!");}
-    stt = QString::number (serial_error);
-    this->Write_To_Log(0xFF00,stt);
 
+    SerialIsOpened = true;
     // https://www.linuxhowtos.org/data/6/perror.txt
 //    if (!serial.open(QIODevice::ReadWrite)) {
 //        processError(tr("Can't open %1, error code %2")
@@ -123,8 +130,10 @@ void HiWonder::Open_Port_Slot(QString portname)
 // Задаем роботу углы для нужной позиции - отправляем данные для углов в Serial port
 void HiWonder::GoToPosition(QByteArray &position)//, const char *servo)
 {
-    QString str;
-    this->MOVEMENT_DONE = false;
+   QString str;
+   this->MOVEMENT_DONE = false;
+
+   if (!SerialIsOpened) {str = "WARNING !!!! Serial port is NOT opened ! The data has NOT been sent."; this->Write_To_Log(0xF001, str); return;}
    position.resize (szData);
    serial.write(position);
    serial.waitForBytesWritten();
