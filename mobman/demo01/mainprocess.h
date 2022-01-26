@@ -18,6 +18,12 @@
 #include "qsimpleserver.h"
 #include "cvdevice.h"
 
+#include <QJsonDocument>
+#include <QJsonParseError>
+#include <QJsonObject>
+#include <QJsonValue>
+#include <QJsonArray>
+
 
 //#include "SocketClient.h"
 //#include "jsoncpp/json/json.h"
@@ -70,7 +76,13 @@ public:
 
     ordered_json jsnStatus; // Ответ на запрос статуса в формате json
     ordered_json jsnAction;  // Ответ на команду Action в формате json
-    //QJsonObject qjsnStatus;
+
+    QJsonDocument jsnDoc;    // json-данные, полученные по tcp
+    QJsonObject   jsnObj;    // ОБъект, хранящий весь JSON ответ от девайса
+    QJsonObject   jsndataObj;// ОБъект, хранящий вложенный JSON-объект (вложенный внутри ответа jsnObj) \
+                             // \ Тут как раз данные о distance
+    QJsonParseError jsonError; // ОШибка, если полученные данные - не JSON-объект
+
 
 
 //#define
@@ -122,6 +134,8 @@ public:
     void request_New_CV();
      int my_round(int n); // Округление целого числа до ближайшего кратного 10
 
+   void traversJson(QJsonObject json_obj); // Рекурсивный Парсинг JSON
+   void parseJSON(QString jsnData); // Парсинг JSON из HTTP
 
 private:
 //    SocketClient readSocket;
@@ -136,8 +150,11 @@ void server_New_Connect_Slot();
 void onSocketConnected_Slot(); // Слот обработки сигнала void QAbstractSocket::connected()
 void CV_onReadyRead_Slot();    // Слот обработка сигнала readyRead()
 void CV_onDisconnected();      // Слот обработки сигнала
+void CV_NEW_onReadyRead_Slot();    // Слот обработка сигнала readyRead() включая парсинг JSON
+void get_box(int distance); // Запускаем захват кубика по значению расстояния до него от камеры.
 
-void data_from_CVDevice_Slot(QString);
+
+void data_from_CVDevice_Slot(QString); // class CVDevice - слот обработки сигнала data_from_CVDevice_Signal(QString);
 
 private slots:
     //void on_openButton_clicked();

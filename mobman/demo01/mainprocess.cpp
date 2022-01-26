@@ -605,6 +605,7 @@ void MainProcess::make_json_answer()
   this->rAnswer = jsn_str;
 }
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Это ответ на команду status - общие данные о девайсе.
 void MainProcess::init_json()
 {
      jsnStatus = {
@@ -645,47 +646,10 @@ void MainProcess::init_json()
 
      }; // jsnStatus
 
-//     QJsonObject qjsnStatus  {
-//         {"name", DEV_NAME},
-//         {"rc", RC_UNDEFINED}, //RC_SUCCESS
-//         {"info", "Request Accepted"},
-//         {"state", "Wait"},
-//         {"action_list", {
-//            {
-//             {"name", "GET_BOX"},
-//             {"state", "none | init | run | succsess | fail"},
-//             {"info", "Get the box by clamper, ascing CV about distance in advance"},
-//             {"rc", "int - action return code"}
-//            },
-//            {
-//             {"name", "RESET"},
-//             {"state", "succsess | fail"},
-//             {"info", "Set device status as <Wait>"},
-//             {"rc", "int - action return code"}
-//            }
-//            } //list
-//          }//action_list-field
-
-//      }; // jsnStatus
 
 
 
-     //     jsnAction = {[
-     //         {"name", "GET_BOX"},
-     //         {"rc", RC_UNDEFINED}, //RC_SUCCESS
-     //         {"info", "Request Accepted"},
-     //         {"state", "Wait"},
-     //         {"action_list", "list"},
-
-     //         {}
-
-     //                  ]
-
-
-     //     }
-
-
-}
+} //init_json()
 //++++++++++++++++++++++++++++++++++++++++++
 // СОздаем сокет, посылаем запрос, считываем ответ.
 void MainProcess::request_CV()
@@ -704,8 +668,8 @@ void MainProcess::request_CV()
     socketCV->setSocketOption(QAbstractSocket::KeepAliveOption, true);
     in.setDevice(socketCV);
 
-    //Соединение сигналов со слотами
-    connect(socketCV, &QIODevice::readyRead, this, &MainProcess::CV_onReadyRead_Slot);//, Qt::QueuedConnection);
+    //Соединение сигналов со слотами                        было  CV_onReadyRead_Slot
+    connect(socketCV, &QIODevice::readyRead, this, &MainProcess::CV_NEW_onReadyRead_Slot);//, Qt::QueuedConnection);
     connect(socketCV, SIGNAL(disconnected()), this, SLOT(CV_onDisconnected()),Qt::AutoConnection);
 
     connect (this->socketCV, &QTcpSocket::connected, this, &MainProcess::onSocketConnected_Slot);
@@ -730,8 +694,132 @@ int MainProcess::my_round(int n)
         // Return of closest of two
         return (n - a > b - n)? b : a;
 
-}//init_json()
+}
+//++++++++++++++++++++++++++++++++++++++++++++++++++
+// В конкретном проекте с мобильным манипулятором нужно парсить только ответ от CV, так что
+// пока не претендуем на универсальность.
+void MainProcess::traversJson(QJsonObject json_obj)
+{
+    QString str;
+    bool isDetected, boolValue;
+    int thevalue = 0x5555;
+    foreach(const QString& key, json_obj.keys()) {
+        str = "";
+        QJsonValue value = json_obj.value(key);
+        if(!value.isObject() ){
+                      str +=  "Key = "; str += key; str += ", Value = ";
+                      // Важно. Сначала нужно привести к типу bool
+                      //  QVariant(value).toBool() - не работает
+                      if (value.isBool()) {boolValue = value.toBool(); str += QVariant(boolValue).toString();}
+                      if (value.isString()) {str += QVariant(value).toString();}
+                      if (value.isDouble()) {str += QString::number( QVariant(value).toDouble());}
+                      // Хотя у CV в ответе и нет никакого массива, но все же добавим.
+                      if (value.isArray()) {
+                          QJsonArray jsnArray = value.toArray();
+                          // А еще желательно проверить, что у этого value соответствующий key ==  "action_list":
+                          // Тут выводим элементы массива, точнее только имена экшенов, т.е. значение name
+                          if (key == "action_list") {str += "Many actions, look at output above";}
+                      }
 
+
+                     // str += value.toString();
+                      GUI_Write_To_Log(0x5555, str);
+                      str = "";
+
+          //qDebug() << "Key = " << key << ", Value = " << value;
+         }
+        else{
+            // А теперь определяем тип данных поля.
+             //jsndataObj = json_obj["data"].toObject(); // Так тоже работает, но уже есть привязка к конкретному случаю.
+             jsndataObj = value.toObject(); // В нашем случае объект единственный - "data"
+             // check if there is the key "detected"
+             if (jsndataObj.contains("detected")){
+
+                 isDetected = jsndataObj.value("detected").toBool();
+
+                 str = "Detected value is ";
+                 str += QVariant(isDetected).toString();
+                 GUI_Write_To_Log(thevalue, str);
+
+                 if (!isDetected){
+                     GUI_Write_To_Log(thevalue, "!!!!!! Exit. Try Again !!!!!!!!!!!");
+                     return;
+                 }
+
+                 traversJson(jsndataObj);
+
+             } //if (jsndataObj.contains("detected"))
+
+             //traversJson(value.toObject());
+
+
+        }//else
+
+        GUI_Write_To_Log(0x5555, str);
+
+
+    }//foreach
+
+}//traverseJson
+//++++++++++++++++++++++++++++++++++++++++++++++
+// Парсим JSON-ответ от девайсов
+// 0x20 (пробел), 0x09 (табуляцию), 0x0A (перевод строки) и 0x0D (возврат каретки).
+// Пробелы допускаются до и после «структурных символов» (structural characters) []{}:,
+// QString (данные от CV-Device) -> QJsonDocument -> QJsonObject и вот дальше надо парсить.
+
+void MainProcess::parseJSON(QString jsnData)
+{
+    int value = 0xC7C7;
+    QString str, substr;
+
+    int sPosition; // Индекс строки run в запросе. , ePosition
+    sPosition = jsnData.indexOf("{");
+    substr = jsnData.mid(sPosition);
+
+
+   // jsnAnswer = ordered_json::parse(substr.toStdString());
+   // str.toStdString() = jsnAnswer.value("name");
+    //std::stringstream(substr.toStdString()) >> jsnAnswer;
+
+
+//    str = "Data to be extracted from JSON name field ";
+//    GUI_Write_To_Log(value, str);
+   // str = QString(jsnAnswer["name"]);
+  // GUI_Write_To_Log(value, jsnAnswer["name"]);
+
+  GUI_Write_To_Log(value, "\n");
+  GUI_Write_To_Log(value, "Http headers cutted, so data are as follows !");
+  GUI_Write_To_Log(value, "\n");
+
+  str = substr; // jsnData; // Но тут еще надо обрезать HTTP-заголовки. ОБрезаем все до первого символа '{'
+  GUI_Write_To_Log(value, str);
+ // str = "{\" rc\": 0, \"info\": \"success\",\"name\": \"getposition\", \"data\": {\"detected\": true, \"x\": -15.0, \"y\": -60.0, \"width\": 113, \"height\": 108, \"err_angle\": -1.38117702629722, \"distance\": 209.21150512634233}}";
+  //Assign the json text to a JSON object
+  jsnDoc = QJsonDocument::fromJson(str.toUtf8(), &jsonError);
+  if(jsnDoc.isObject() == false) GUI_Write_To_Log(value,"It is not a JSON object");
+  if(jsonError.error != QJsonParseError::NoError){
+          str = "Error: "; str += jsonError.errorString();
+          GUI_Write_To_Log(value, str);
+   }       //return;
+
+  //Get the main JSON object and get the datas in it
+  jsnObj = jsnDoc.object();
+
+
+//  str = "JSON data :\n";
+//  QJsonValue name= jsnObj.value("name");
+
+  GUI_Write_To_Log(value, "!!!!!!!!!!!!!!!!!!!! Go to recursive parsing !!!!!!!!!!!!!!!!!!!!");
+  traversJson(jsnObj);
+  GUI_Write_To_Log(value, "!!!!!!!!!!!!!!!!!!!! Get back from recursive parsing !!!!!!!!!!!!!!!!!!!!");
+
+//  // Парсинг JSON закончили, получили глобальную переменную  jsndataObj - это объект "data" : {}. Извлекаем из него данные.
+//  double cvdistance = jsndataObj.value("distance").toDouble();
+//  str = "Got distance value as double : ";
+//  str += QString::number(cvdistance);
+
+//  GUI_Write_To_Log(value, str);
+}// parseJSON()
 
 //++++++++++++++++++++++++++
 // Пришел запрос от вебсервера. Весь запрос в message
@@ -1094,7 +1182,7 @@ str = "Bytes after reading  "; str += QString::number(afterbytes); GUI_Write_To_
 
         // Теперь сопоставляем значение cvd с числами в массиве
         str = "!!!!!!!!!!!!!!!!! The distance as int value : ";
-        substr =  QString::number(cvd);
+         substr =  QString::number(cvd);
         str += substr;
         GUI_Write_To_Log(value, str);
 
@@ -1153,6 +1241,65 @@ void MainProcess::CV_onDisconnected()
 {
     socketCV->close();
 }
+//+++++++++++++++++++++++++++++++++++++++++++++++++++
+// Добавляем парсинг JSON-данных от CV
+void MainProcess::CV_NEW_onReadyRead_Slot()
+{
+    int value = 0xfafa;
+    QString nextTcpdata, str, substr;
+
+    int befbytes = socketCV->bytesAvailable();
+    nextTcpdata = socketCV->readAll();
+    int afterbytes = socketCV->bytesAvailable();
+
+    str = "Bytes before reading "; str += QString::number(befbytes); GUI_Write_To_Log(value, str);
+
+    str = "Bytes after reading  "; str += QString::number(afterbytes); GUI_Write_To_Log(value, str);
+
+
+    GUI_Write_To_Log(value, "!!!!!!!!!!!!!!!!! There are some  data from SOCKET device !!!!!!!!!!!!!!!!!!!!");
+    GUI_Write_To_Log(value, nextTcpdata);
+
+    // Запускаю JSON-парсинг
+    parseJSON(nextTcpdata);
+
+    // Теперь получили значение distance, оно осталось в локальной переменной cvdistance в функции parseJSON
+    // Парсинг JSON закончили, получили глобальную переменную  jsndataObj - это объект "data" : {}. Извлекаем из него данные.
+    double cvdistance = jsndataObj.value("distance").toDouble();
+    str = "Got distance in local value as double : ";
+    str += QString::number(cvdistance);
+
+    GUI_Write_To_Log(value, str);
+
+    // Переводим double в int и округляем до ближайшего десятка
+    int cvd = round(cvdistance);
+    // Получили значение с точностью до 1мм, а нам надо округлить до 10мм.
+
+    // Теперь сопоставляем значение cvd с числами в массиве
+    str = "!!!!!!!!!!!!!!!!! The distance as int value : ";
+    substr =  QString::number(cvd);
+    str += substr;
+    GUI_Write_To_Log(value, str);
+
+    int rDistance = my_round(cvd);
+    str = "!!!!!!!!!!!!!!!!! The distance as rounded to closest 10x int value : ";
+    substr =  QString::number(rDistance);
+    str += substr;
+    GUI_Write_To_Log(value, str);
+
+
+
+    // Теперь запускаем захват кубика.
+
+
+
+}
+//+++++++++++++++++++++++++++++++++++++++++
+// catch the cube
+void MainProcess::get_box(int distance)
+{
+
+}// CV_NEW_onReadyRead_Slot()
 //++++++++++++++++++++++++++++++++++++++
 // Слот обработки сигнала data_from_CVDevice_Signal
 void MainProcess::data_from_CVDevice_Slot(QString message)
@@ -1162,6 +1309,8 @@ void MainProcess::data_from_CVDevice_Slot(QString message)
     str += message;
     GUI_Write_To_Log(value, str);
     // Парсинг данных, а это json...
+
+
 
 }
 //++++++++++++++++++++++++++++++++++++++
