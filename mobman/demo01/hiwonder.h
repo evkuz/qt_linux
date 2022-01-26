@@ -39,6 +39,7 @@ public:
     QByteArray qbuf;
     bool MOVEMENT_DONE;  // Флаг показывает, что получено сообщение от робота о заврешении цикла движения
 
+    bool SerialIsOpened; //Флаг показывает, открыт ли Serial port
 
 
     QList<QString> statuslst = { "wait", "init", "inprogress", "done" };

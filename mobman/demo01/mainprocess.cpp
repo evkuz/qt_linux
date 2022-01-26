@@ -1111,10 +1111,12 @@ str = "Bytes after reading  "; str += QString::number(afterbytes); GUI_Write_To_
         {
        // unsigned char ptr;
 
+
+
+            case 110: arrPtr = mob_pos_11; break;
+            case 120: arrPtr = mob_pos_12; break;
             case 130: arrPtr = mob_pos_13; break;
-
             case 140: arrPtr = mob_pos_14; break;
-
             case 150: arrPtr = mob_pos_15; break;
             case 160: arrPtr = mob_pos_16; break;
             case 170: arrPtr = mob_pos_17; break;
@@ -1133,7 +1135,8 @@ str = "Bytes after reading  "; str += QString::number(afterbytes); GUI_Write_To_
 
         }
 
-        memcpy(Servos, arrPtr, DOF);  this->send_Data(LASTONE);
+        memcpy(Servos, arrPtr, DOF);
+        this->send_Data(LASTONE);
 
         str =  "!!!!! position "; str += QString::number(cvd); str += "mm !!!!";
 
