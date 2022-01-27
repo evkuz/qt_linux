@@ -62,11 +62,6 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
        str = QString::fromStdString(s2);
       // str = QJsonDocument(jsnStatus).toJson(QJsonDocument::Compact);
 
-//       QDateTime dt(QDateTime::currentDateTime());
-//       //dt.toLocalTime();
-//       str = "Current SecsSinceEpoch is ";
-//       str += QString::number(dt.toSecsSinceEpoch());
-//       GUI_Write_To_Log (value, str);
        emit Write_2_TcpClient_Signal (str);
    }
 //============================ sit
@@ -170,7 +165,51 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 //           jsn_answer_name = "get_box";
 //       }
 
+       // Создаем сокет для связи с камерой и, в случае успеха, отправляем запрос в камеру.
+       // В ответе будет значение distance, которое сохраняем в глобальной переменной CVDistance
+       // По завершении request_CV получаем объект QJsonObject   jsndataObj, из которого извлекаем distance.
+
+
+
        request_CV();
+
+       // Запускаем захват объекта.  Теперь это значение distance отправляем в ф-цию GetBox
+       this->GetBox(CVDistance);
+       //Команду манипулятору запустили. Задаем статус для ответа http-клиенту через структуру HiWonder::ActionState .
+
+//       Robot->getbox_Action.rc = 0;
+//       Robot->getbox_Action.info = "Is running";
+
+
+//       Robot->getbox_Action.rc = 0;
+//       QJsonValue myvalue;
+       // Заносим данные в структуру
+       Robot->getbox_Action = {"get_box", 0, "In progress"};
+       //myvalue = Robot->getbox_Action.name;
+      // jsnActionAnswer.insert("name", myvalue);
+
+       // А из структуры - в JSON-объект
+       jsnActionAnswer.insert("name", QJsonValue(Robot->getbox_Action.name));
+       jsnActionAnswer.insert("rc", QJsonValue(Robot->getbox_Action.rc));
+       jsnActionAnswer.insert("info", QJsonValue(Robot->getbox_Action.info));
+
+       // И теперь вот этот jsnActionAnswer отправляем http-клиенту в ответ на команду "get_box"
+
+       jsnDoc = QJsonDocument(jsnActionAnswer);
+       int indent = 3;
+
+       str = jsnDoc.toJson(QJsonDocument::Compact);
+       //std::string s2 = jsnDoc.d
+
+       GUI_Write_To_Log(value, "!!!!!!!!!!! Current Answer to GetBox command is ");
+       GUI_Write_To_Log(value, str);
+
+       //str = QString::fromStdString(s2);
+      // str = QJsonDocument(jsnStatus).toJson(QJsonDocument::Compact);
+
+       emit Write_2_TcpClient_Signal (str);
+
+
    }//substr == "get_box"
 
 //+++++++++++++++++++ action  "srvfromfile" +++++

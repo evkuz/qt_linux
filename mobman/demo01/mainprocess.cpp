@@ -1050,6 +1050,7 @@ void MainProcess::server_New_Connect_Slot()
     ;
 }
 //++++++++++++++++++++++++++ Слот сигнала Connected()
+// Как только socket переходит в стату connected, получаем соответствующий сигнал и тут его обрабатываем
 // Формируем HTTP-запрос в CV, отправляем его в CV
 void MainProcess::onSocketConnected_Slot()
 {
@@ -1281,13 +1282,15 @@ void MainProcess::CV_NEW_onReadyRead_Slot()
     str += substr;
     GUI_Write_To_Log(value, str);
 
-    int rDistance = my_round(cvd);
+    unsigned int rDistance = my_round(cvd);
     str = "!!!!!!!!!!!!!!!!! The distance as rounded to closest 10x int value : ";
     substr =  QString::number(rDistance);
     str += substr;
     GUI_Write_To_Log(value, str);
 
-
+    // Вот тут по уму надо передеать rDistance в класс cvdevice;
+    // Но пока заколхозим глобальную переменную.
+    this->CVDistance = rDistance;
 
     // Теперь запускаем захват кубика.
 
@@ -1296,8 +1299,49 @@ void MainProcess::CV_NEW_onReadyRead_Slot()
 }
 //+++++++++++++++++++++++++++++++++++++++++
 // catch the cube
-void MainProcess::get_box(int distance)
+void MainProcess::GetBox(unsigned int distance)
 {
+    int value = 0xA9B9;
+    unsigned char *arrPtr = mob_parking_position;
+
+    // Выбираем массив углов через switch, потом попробуем через словарь, т.е. ключ - значение, где значением будет массив
+    switch (distance)
+    {
+   // unsigned char ptr;
+
+
+
+        case 110: arrPtr = mob_pos_11; break;
+        case 120: arrPtr = mob_pos_12; break;
+        case 130: arrPtr = mob_pos_13; break;
+        case 140: arrPtr = mob_pos_14; break;
+        case 150: arrPtr = mob_pos_15; break;
+        case 160: arrPtr = mob_pos_16; break;
+        case 170: arrPtr = mob_pos_17; break;
+        case 180: arrPtr = mob_pos_18; break;
+        case 190: arrPtr = mob_pos_19; break;
+        case 200: arrPtr = mob_pos_20; break;
+        case 210: arrPtr = mob_pos_21; break;
+        case 220: arrPtr = mob_pos_21; break;
+        case 230: arrPtr = mob_pos_23; break;
+
+
+      default:
+        GUI_Write_To_Log(value, "!!!!! Unrecognized position, Go to Parking !!!!");
+        arrPtr = mob_parking_position; break;
+      break;
+
+    }
+
+    memcpy(Servos, arrPtr, DOF);
+    this->send_Data(LASTONE);
+
+    QString str = "Запущен Action \"get_box\" ";
+    str += Robot->getbox_Action.name;
+    GUI_Write_To_Log(value, str);
+    // А теперь копируем структуру в json
+
+
 
 }// CV_NEW_onReadyRead_Slot()
 //++++++++++++++++++++++++++++++++++++++

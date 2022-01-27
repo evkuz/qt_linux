@@ -21,6 +21,12 @@ HiWonder::HiWonder()
     memset(outputData, 0xDD, szData); //Инициализация массива с данными для отправки
    // this->SetCurrentStatus ("wait");
     this->current_status = "Ready";
+    getbox_Action.name = "get_box";
+    getbox_Action.rc = -4;
+    getbox_Action.info = "waiting";
+
+    ActionState putbox {"putbox", -4, "waiting"};
+
 }
 //+++++++++++++++++
 HiWonder::~HiWonder()

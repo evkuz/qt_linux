@@ -79,8 +79,10 @@ public:
 
     QJsonDocument jsnDoc;    // json-данные, полученные по tcp
     QJsonObject   jsnObj;    // ОБъект, хранящий весь JSON ответ от девайса
-    QJsonObject   jsndataObj;// ОБъект, хранящий вложенный JSON-объект (вложенный внутри ответа jsnObj) \
-                             // \ Тут как раз данные о distance
+    QJsonObject   jsndataObj;// ОБъект, хранящий вложенный JSON-объект (вложенный внутри ответа jsnObj)
+                             //   Тут как раз данные о distance
+    QJsonObject   jsnActionAnswer; // Ответ на команду Action в формате json
+
     QJsonParseError jsonError; // ОШибка, если полученные данные - не JSON-объект
 
 
@@ -120,6 +122,8 @@ public:
     int parcel_size ;
     unsigned char Servos [DOF] = {93,93,93,93};
 
+    unsigned int CVDistance;
+
     //void update_data_from_sliders(int index, int value);
 
     void GUI_Write_To_Log (int value, QString log_message); //Пишет в лог-файл номер ошибки value и сообщение message
@@ -151,7 +155,7 @@ void onSocketConnected_Slot(); // Слот обработки сигнала voi
 void CV_onReadyRead_Slot();    // Слот обработка сигнала readyRead()
 void CV_onDisconnected();      // Слот обработки сигнала
 void CV_NEW_onReadyRead_Slot();    // Слот обработка сигнала readyRead() включая парсинг JSON
-void get_box(int distance); // Запускаем захват кубика по значению расстояния до него от камеры.
+void GetBox(unsigned int distance); // Запускаем захват кубика по значению расстояния до него от камеры.
 
 
 void data_from_CVDevice_Slot(QString); // class CVDevice - слот обработки сигнала data_from_CVDevice_Signal(QString);
