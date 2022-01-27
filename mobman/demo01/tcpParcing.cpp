@@ -171,6 +171,9 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 //       }
 
        request_CV();
+       Robot->getbox.rc = 0;
+       Robot->getbox = {"get_box", 0, "In progress"};
+
    }//substr == "get_box"
 
 //+++++++++++++++++++ action  "srvfromfile" +++++
