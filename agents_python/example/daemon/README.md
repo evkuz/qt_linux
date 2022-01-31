@@ -13,9 +13,9 @@ You need to copy at least two directories:
 Please copy both folders to one separated directory, for example:
 
 |- ~/
-    |-- /agents
-        |-- /iqrdevice
-        |-- /example
+    |-- agents/
+        |-- iqrdevice/
+        |-- example/
     |-- ...
 
 ## Installing packages

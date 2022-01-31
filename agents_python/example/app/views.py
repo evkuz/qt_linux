@@ -1,4 +1,4 @@
-from features import app, device, cam
+from . import app, device, cam
 from flask import render_template, request, jsonify, make_response
 from flask.wrappers import Response
 

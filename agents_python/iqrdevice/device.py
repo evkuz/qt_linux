@@ -102,11 +102,11 @@ class IQRDevice:
     def run_action(self, action:str, params:dict={}) -> ActionResponce:
         for a in self.__actions:
             if a.Name == action:
-                rc = a.run_action(**params)
+                rc = a.run(**params)
                 if rc == 0:
-                    ActionResponce(action, 0, "action started")
+                    return ActionResponce(action, 0, "action started")
                 else:
-                    ActionResponce(action, -3, "action is already running")
+                    return ActionResponce(action, -3, "action is already running")
 
         return ActionResponce(action, -1,  "action with this name wasn't found")                
                 
