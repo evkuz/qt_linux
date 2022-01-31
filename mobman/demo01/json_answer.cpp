@@ -87,7 +87,7 @@ CV device JSON answer
         {"action_list", {
            {
             {"name", "get_box"},
-            {"state", {"noDetection", "inprogress", "done", "fail"}},
+            {"state", {"waiting","noDetection", "inprogress", "done", "fail"}},
             {"info", "Get the box by clamper, ascing CV about distance in advance"},
             {"st_time", "int - timestamp of last start"},
             {"fin_time", "int - timestamp of finish"},

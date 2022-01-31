@@ -619,7 +619,7 @@ void MainProcess::init_json()
         {"action_list", {
            {
             {"name", "get_box"},
-            {"state", {"noDetection", "inprogress", "done", "fail"}},
+            {"state", {"waiting","noDetection", "inprogress", "done", "fail"}},
             {"info", "Get the box by clamper, ascing CV about distance in advance"},
             {"st_time", "int - timestamp of last start"},
             {"fin_time", "int - timestamp of finish"},
@@ -685,7 +685,7 @@ void MainProcess::init_json()
          {"action_list", {
             {
              {"name", "get_box"},
-             {"state", {"noDetection", "inprogress", "done", "fail"}},
+             {"state", {"waiting","noDetection", "inprogress", "done", "fail"}},
              {"info", "Get the box by clamper, ascing CV about distance in advance"},
              {"st_time", "int - timestamp of last start"},
              {"fin_time", "int - timestamp of finish"},
@@ -716,6 +716,14 @@ void MainProcess::init_json()
           }//action_list-field
 
      };//jsnGetActionsAnswer
+
+jsnStatusActionAnswer.insert("name", QJsonValue("get_box"));
+jsnStatusActionAnswer.insert("state", QJsonValue("waiting"));
+jsnStatusActionAnswer.insert("info", QJsonValue("Get the object via CV"));
+jsnStatusActionAnswer.insert("st_time", QJsonValue(0));
+jsnStatusActionAnswer.insert("fin_time", QJsonValue(0));
+jsnStatusActionAnswer.insert("result", QJsonValue(-5));
+
 
 } //init_json()
 //++++++++++++++++++++++++++++++++++++++++++
@@ -1251,94 +1259,4 @@ void MainProcess::update_Servos_from_position(unsigned char *pos)
 }
 
 
-//void MainProcess::on_getBackButton_clicked()
-//{
-//    QByteArray dd ;
-//    dd.resize(parcel_size);
 
-//    //+++++++++++++++++++++ 3 put the cube
-//    // {60, 93, 100, 35, 145, 35};
-//    this->update_LineDits_from_position (put_position);
-//    //   this->repaint();
-//    update_Servos_from_LineEdits ();
-//    memcpy(dd.data(), Servos, 6);
-//    dd.insert(6, 0x31); // Движение "Туда"
-//    this->send_Data(BEFORE_LAST); //0xE9, NOT_LAST ==C8
-//    //+++++++++++++++++++++ 4  Unclamp the gripper
-//    //on_clampButton_clicked();
-//    if (ui->servo_1_spinBox->value () > 0){ ui->servo_1_spinBox->setValue (0); Servos[0]=0;}
-//    else {ui->servo_1_spinBox->setValue (90); Servos[0]=90;}
-//    this->send_Data(NOT_LAST);
-
-//    //+++++++++++++++++++++ 6 go back to start position
-//    //on_stand_upButton_clicked();
-//    this->update_LineDits_from_position(hwr_Start_position);
-//    //   this->repaint();
-//    this->update_Servos_from_LineEdits();
-//    dd.insert(6, 0x30); // Движение "Обратно"
-//    this->send_Data(LASTONE); // The last command
-
-//}
-
-//void MainProcess::on_fixButton_clicked()
-//{
-//    int value = 0x4444;
-//    DetectorState state;
-//    QString str = "";
-
-//    Servos[0] = 0;
-//    if (readSocket.GetState(&state) == 0)
-//      {
-//        if (state.isDetected){
-//            try_mcinfer(state.objectX, state.objectY); // Тут меняем current_status = "inprogress". Команда 0 - Переместить открытый хват к кубику.
-//            X = state.objectX;                        //  Хват открывается в процессе движения робота, а не отдельной командой.
-//            Y = state.objectY;
-
-//            str += QString::number(state.objectX);
-//            str += ", ";
-//            str += QString::number(state.objectY);
-//            str += ", ";
-//            DETECTED = true;
-
-//        } else {
-//            str += "NOT DETECTED";
-//        }
-
-//       std::cout <<  str.toStdString() << std::endl;
-//       Robot->Write_To_Log(0xf014, str);
-//       GUI_Write_To_Log(0xf014, str);
-//    }
-
-
-
-
-//    str += ui->All_Servos_lineEdit->text ();
-//    Robot->Write_To_Source (value, str);
-//}
-
-//void MainProcess::on_PUTButton_clicked()
-//{
-//    QByteArray dd;
-//    //+++++++++++++++++++++ 3 put the cube
-//    // {60, 93, 100, 35, 145, 35};
-//    this->update_LineDits_from_position (put_position);
-//    //   this->repaint();
-//    update_Servos_from_LineEdits ();
-//    memcpy(dd.data(), Servos, 6);
-//    dd.insert(6, 0x31); // Движение "Туда"
-//    this->send_Data(BEFORE_LAST); //0xE9, NOT_LAST ==C8
-//    //+++++++++++++++++++++ 4  Unclamp the gripper
-//    //on_clampButton_clicked();
-//    if (ui->servo_1_spinBox->value () > 0){ ui->servo_1_spinBox->setValue (0); Servos[0]=0;}
-//    else {ui->servo_1_spinBox->setValue (90); Servos[0]=90;}
-//    this->send_Data(NOT_LAST);
-
-//    //+++++++++++++++++++++ 6 go back to start position
-//    //on_stand_upButton_clicked();
-//    this->update_LineDits_from_position(hwr_Start_position);
-//    //   this->repaint();
-//    this->update_Servos_from_LineEdits();
-//    dd.insert(6, 0x30); // Движение "Обратно"
-//    this->send_Data(LASTONE); // The last command
-
-//}

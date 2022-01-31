@@ -169,28 +169,47 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 //           jsn_answer_name = "get_box";
 //       }
 
-
-        switch (Robot->getbox_Action.rc)
+       // Этот же ответ при конкретном запросе статуса экшена "get_box"
+         switch (Robot->getbox_Action.rc)
         {
 
             case -4: // (ожидание) -> Запускаем
-
+             // А вот тут можно найти индекс этой команды в списке и присвоить
+             // Переменной HiWonder::active_command, тогда не надо держать
+             // в голове значения индексов
+               Robot->active_command = Robot->actionlst.at(0);
                Robot->getbox_Action.rc = 0;
                str = "Action "; str += substr; str += "Успешно запущен";
+
+               // Заносим данные в структуру
+               Robot->getbox_Action = {"get_box", 0, "In progress"};
+               // И еще в структуру для "status?action=getbox"
+
+            break;
+
+            case 0: // (уже запущен) -> Выходим
+                Robot->getbox_Action.rc = -3;
+                str = "Action "; str += substr; str += "Уже запущен";
+                // Заносим данные в структуру
+                Robot->getbox_Action = {"get_box", -3, "Already In progress"};
+
             break;
 
             case -3: // (уже запущен) -> Выходим
 
-                str = "Action "; str += substr; str += "Уже запущен";
+              str = "Action "; str += substr; str += "Уже запущен";
+              Robot->getbox_Action = {"get_box", -3, "Already In progress"};
             break;
 
             case -2: // (не запустился) -> Выходим
 
                 str = "Action "; str += substr; str += "Не запустился"; // Serial PORT Error
                 // - Проверяем октрытие SerialPort
+                Robot->getbox_Action = {"get_box", -2, "Failed"};
             break;
             default:
-                Robot->getbox_Action.rc = 0;
+                Robot->getbox_Action.rc = -4;
+                str = "Action "; str += substr; str += "В ожидании";
             break;
 
 
@@ -219,8 +238,10 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 
 //       Robot->getbox_Action.rc = 0;
 //       QJsonValue myvalue;
+
        // Заносим данные в структуру
-       Robot->getbox_Action = {"get_box", 0, "In progress"};
+       //Robot->getbox_Action = {"get_box", 0, "In progress"};
+
        //myvalue = Robot->getbox_Action.name;
       // jsnActionAnswer.insert("name", myvalue);
 
@@ -281,6 +302,13 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 
    }//substr == "getactions"
 //+++++++++++++++++++++++++++++++++++++++++++++    /status?action=get_box
+// Вот тут задаем статус {"waiting","noDetection", "inprogress", "done", "fail"}
+   if (substr == "status?action=getbox"){;}
+
+
+
+
+
 
 }//Data_From_TcpClient_Slot
 //++++++++++++++++++++++++++++++++++++++++++++++++++++

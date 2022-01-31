@@ -87,6 +87,8 @@ public:
     QJsonObject   jsndataObj;// ОБъект, хранящий вложенный JSON-объект (вложенный внутри ответа jsnObj)
                              //   Тут как раз данные о distance
     QJsonObject   jsnActionAnswer; // Ответ на команду Action в формате json
+    QJsonObject   jsnStatusActionAnswer; // Ответ на команду "status?action=getbox" в формате json
+
     //QJsonObject   jsnGetServicesAnswer; // Ответ на команду "/service?name=service_name"
 
     QJsonParseError jsonError; // ОШибка, если полученные данные - не JSON-объект

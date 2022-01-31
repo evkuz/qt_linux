@@ -30,6 +30,7 @@ HiWonder::HiWonder()
 
     ManipulatorState.action = "Nothhing";
     ManipulatorState.state = statuslst.at(0); // "init" state
+    active_command = this->actionlst.at(1); // "nothing"
 
 }
 //+++++++++++++++++

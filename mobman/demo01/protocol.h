@@ -7,6 +7,7 @@
  * <ip-address>:8383/run?cmd=<name>
  *
  * http://192.168.1.201:8383/run?cmd=status&
+ * http://192.168.1.201:8383/run?cmd=status?action=getbox&
  *
  *
  *
@@ -43,38 +44,38 @@
 
         //servos=35,90,145,50,0,0,125,222&
 
-
-//{"action_list", {
-//   {
-//    {"name", "get_box"},
-//    {"state", {"noDetection", "inprogress", "done", "fail"}},
-//    {"info", "Get the box by clamper, ascing CV about distance in advance"},
-//    {"rc", "int - action return code"}
-//   },
-//   {
-//    {"name", "reset"},
-//    {"state", "succsess | fail"},
-//    {"info", "Set device status as <Wait>"},
-//    {"rc", "int - action return code"}
-//   },
-//   {
-//     {"name", "parking"},
-//     {"state", "inprogress | done | fail"},
-//     {"info", "Set device's clamper in transporting position"},
-//     {"rc", "int - action return code"}
-//    },
-//   {
-//     {"name", "setservos="},
-//     {"state", "inprogress | done | fail"},
-//     {"info", "Set device's servos at angles specified by the command"},
-//     {"rc", "int - action return code"}
-//   }
-
-
-
-//   } //list
-// }//action_list-field
+/*
+{"action_list", {
+   {
+    {"name", "get_box"},
+    {"state", {"waiting","noDetection", "inprogress", "done", "fail"}},
+    {"info", "Get the box by clamper, ascing CV about distance in advance"},
+    {"rc", "int - action return code"}
+   },
+   {
+    {"name", "reset"},
+    {"state", "succsess | fail"},
+    {"info", "Set device status as <Wait>"},
+    {"rc", "int - action return code"}
+   },
+   {
+     {"name", "parking"},
+     {"state", "inprogress | done | fail"},
+     {"info", "Set device's clamper in transporting position"},
+     {"rc", "int - action return code"}
+    },
+   {
+     {"name", "setservos="},
+     {"state", "inprogress | done | fail"},
+     {"info", "Set device's servos at angles specified by the command"},
+     {"rc", "int - action return code"}
+   }
 
 
+
+   } //list
+ }//action_list-field
+
+*/
 
 #endif // PROTOCOL_H
