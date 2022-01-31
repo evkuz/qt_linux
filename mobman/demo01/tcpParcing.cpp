@@ -209,9 +209,6 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 
 
        request_CV();
-       Robot->getbox.rc = 0;
-       Robot->getbox = {"get_box", 0, "In progress"};
-
        // Запускаем захват объекта.  Теперь это значение distance отправляем в ф-цию GetBox
        this->GetBox(CVDistance);
        //Команду манипулятору запустили. Задаем статус для ответа http-клиенту через структуру HiWonder::ActionState .
