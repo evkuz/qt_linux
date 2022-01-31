@@ -31,6 +31,9 @@ class TestRobotAction (BaseAction):
         if 'duration' in kwargs:
              duration = float(kwargs['duration'])
         
+        # The method from parent class, that change value of state's field 'info' 
+        self._set_state_info(f"Action was performed with duration {duration}")
+        
         sleep(duration)
         return 0
 
