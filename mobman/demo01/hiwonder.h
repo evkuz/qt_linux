@@ -42,13 +42,15 @@ public:
     bool SerialIsOpened; //Флаг показывает, открыт ли Serial port
 
 
-    QList<QString> statuslst = { "wait", "init", "inprogress", "done" };
-    QList<QString> actionlst = {"GET_BOX", "RESET", "ASC_CV"};
+    QList<QString> statuslst = { "init", "wait", "inprogress", "done" };
+    QList<QString> actionlst = {"get_box", "reset", "getposition", "ready", "parking"};
     // Ответ робота состоит из 4 полей
     QString current_status; // Текущий статус
     QString return_code;    // результат обработки запроса - понял/не понял
     QString active_command; // команда, которая сейчас исполняется
     QString comment;        // любые дополнительные данные
+
+    //QString CurrentState;
 
     int writeTo(char *OutBuffer, int numbytes); // Запись данных из ПК в порт (роботу)
     int readFrom(char *buf_data, int buf_size); // Считывает данные из порта в ПК (от робота)
@@ -77,12 +79,20 @@ public:
     ActionState getbox_Action;
 
 
+    struct CurrentState {
+        QString state;
+        QString action;
+
+    };
+
+CurrentState ManipulatorState;
 private:
     //QString current_status;
 
 public:
     QString GetCurrentStatus() { return this->current_status; }
     void SetCurrentStatus(QString);
+    QString ActiveAction;
 
 signals:
     void Moving_Done_Signal();

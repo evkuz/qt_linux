@@ -551,3 +551,38 @@ void MainWindow::traversJson(QJsonObject json_obj){
     }//foreach
 
 }
+//++++++++++++++++++++++++++++++++++++++++++++
+
+void MainWindow::on_GetServicesButton_clicked()
+{
+    request = "GET ";
+    request += "/service?name=getservices&";
+    request += " HTTP/1.1";
+    request += "\r\nHost: ";
+    request += "192.168.1.201:8383\r\n";
+    request += "Accept: */*\r\n";
+    request += "Access-Control-Allow-Origin: *\r\n";
+    request += "\r\n";
+
+    makeSocket(CVDev_IP, ARM_Port);
+
+}
+
+//++++++++++++++++++++++++++++++++++++++++++++
+
+
+void MainWindow::on_GetActionsButton_clicked()
+{
+    request = "GET ";
+    request += "/service?name=getactions&";
+    request += " HTTP/1.1";
+    request += "\r\nHost: ";
+    request += "192.168.1.201:8383\r\n";
+    request += "Accept: */*\r\n";
+    request += "Access-Control-Allow-Origin: *\r\n";
+    request += "\r\n";
+
+    makeSocket(CVDev_IP, ARM_Port);
+
+}
+

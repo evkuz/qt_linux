@@ -76,12 +76,16 @@ public:
 
     ordered_json jsnStatus; // Ответ на запрос статуса в формате json
     ordered_json jsnAction;  // Ответ на команду Action в формате json
+    ordered_json jsnGetServicesAnswer; // Ответ на команду "/service?name=getservices"
+    ordered_json jsnGetActionsAnswer; // Ответ на команду "/service?name=getactions"
+
 
     QJsonDocument jsnDoc;    // json-данные, полученные по tcp
     QJsonObject   jsnObj;    // ОБъект, хранящий весь JSON ответ от девайса
     QJsonObject   jsndataObj;// ОБъект, хранящий вложенный JSON-объект (вложенный внутри ответа jsnObj)
                              //   Тут как раз данные о distance
     QJsonObject   jsnActionAnswer; // Ответ на команду Action в формате json
+    //QJsonObject   jsnGetServicesAnswer; // Ответ на команду "/service?name=service_name"
 
     QJsonParseError jsonError; // ОШибка, если полученные данные - не JSON-объект
 

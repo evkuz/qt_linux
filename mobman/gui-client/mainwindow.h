@@ -88,6 +88,10 @@ private slots:
 
     void on_GetBoxButton_clicked();
 
+    void on_GetServicesButton_clicked();
+
+    void on_GetActionsButton_clicked();
+
 private:
     Ui::MainWindow *ui;
 };

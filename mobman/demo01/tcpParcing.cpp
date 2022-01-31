@@ -1,6 +1,8 @@
 #include "mainprocess.h"
 #include "positions.h"
 
+
+
 //+++++++ Получили данные (запрос) от клиента. Парсим.
 void MainProcess::Data_From_TcpClient_Slot(QString message)
 {
@@ -196,7 +198,7 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
        // И теперь вот этот jsnActionAnswer отправляем http-клиенту в ответ на команду "get_box"
 
        jsnDoc = QJsonDocument(jsnActionAnswer);
-       int indent = 3;
+//       int indent = 3;
 
        str = jsnDoc.toJson(QJsonDocument::Compact);
        //std::string s2 = jsnDoc.d
@@ -217,4 +219,34 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
    if (substr == "srvfromfile") {
        ;
    }//substr == "srvfromfile"
-}
+
+
+//++++++++++++++++   Запрос информации из service
+
+   if (substr == "getservices") {
+
+       int indent = 3;
+       std::string s2 = jsnGetServicesAnswer.dump(indent);
+       str = QString::fromStdString(s2);
+       GUI_Write_To_Log(value, "!!!!!!!!!!! Current Services LIST is ");
+       GUI_Write_To_Log(value, str);
+
+       emit Write_2_TcpClient_Signal (str);
+
+   }//substr == "getservices"
+//++++++++++++++ /service?name=getactions
+   if (substr == "getactions") {
+
+       int indent = 3;
+       std::string s2 = jsnGetActionsAnswer.dump(indent);
+       str = QString::fromStdString(s2);
+       GUI_Write_To_Log(value, "!!!!!!!!!!! Current Services LIST is ");
+       GUI_Write_To_Log(value, str);
+
+       emit Write_2_TcpClient_Signal (str);
+
+   }//substr == "getactions"
+
+
+}//Data_From_TcpClient_Slot
+//++++++++++++++++++++++++++++++++++++++++++++++++++++
