@@ -14,6 +14,8 @@
 #include <stdint.h>
 #include <QFile>
 #include <QList>
+#include <QDateTime>
+#include <QTime>
 #include "hiwonder.h"  // hiwonder class
 #include "qsimpleserver.h"
 #include "cvdevice.h"
@@ -104,11 +106,13 @@ public:
 #define RC_SUCCESS 0        // запрос выполнен успешно
 #define RC_WRONG_VALUE -1   // неверные параметры
 #define RC_UNDEFINED -2     // action с таким именем не найден
+#define RC_FAIL      -3     // Ошибка самого манипулятора, не открыт serial port
 
 #define AC_RUNNING 0        // action запущен
 #define AC_WRONG_VALUE -1   // action с таким именем не найден
 #define AC_FAILURE -2       // action с таким именем не запустился
 #define AC_ALREADY_HAVE -3  // action с таким именем уже запущен
+
 
 //+++++++++++++++++++++ CV device
 

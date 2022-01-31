@@ -37,6 +37,8 @@ void QSocketThread::process_TheSocket()
 // Слот сигнала readyRead
 void QSocketThread::onReadyRead()
 {
+    QList<QString>  strcommand = { "/run?cmd=", "/service?name=", "/status?action="};
+
     //Чтение информации из сокета и вывод в консоль
     QByteArray qbmessage;
     qbmessage = socket->readAll();
@@ -47,6 +49,15 @@ void QSocketThread::onReadyRead()
     QString message, substr, searchstr;
     message = QString(qbmessage);
     int sPosition, ePosition; // Индекс строки run в запросе.
+
+    // Теперь идем по индексам strcommand, перебираем все подряд, пока не найдем совпадение.
+
+    for ( int i =0; i< strcommand.size();  ++i)
+    {
+         sPosition = message.indexOf(strcommand.at(i));
+         if (sPosition != -1) {return;} //Нашли, выходим.
+
+    }
 
     searchstr = "/run?cmd=";
     sPosition = message.indexOf(searchstr);

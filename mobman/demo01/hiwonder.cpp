@@ -20,7 +20,8 @@ HiWonder::HiWonder()
     qbuf.resize (robot_buffer_SIZE);
     memset(outputData, 0xDD, szData); //Инициализация массива с данными для отправки
    // this->SetCurrentStatus ("wait");
-    this->current_status = statuslst.at(0); // "init" state //"Ready";
+    current_st_index = 0;
+    this->current_status = statuslst.at(current_st_index); // "init" state //"Ready";
     getbox_Action.name = "get_box";
     getbox_Action.rc = -4;
     getbox_Action.info = "waiting";

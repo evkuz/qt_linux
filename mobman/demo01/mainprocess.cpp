@@ -27,7 +27,7 @@ MainProcess::MainProcess(QObject *parent)
 //    json jsnAnswer;  // ответ tcp-клменту в json
   //  json jsnStatus;
 
-    init_json(); // Инициализируем json_status
+//    init_json(); // Инициализируем json_status
 
     DETECTED = false;
     new_get_request = false;
@@ -121,6 +121,9 @@ MainProcess::MainProcess(QObject *parent)
     // Arduino NANO виден как ttyUSB0
     // Arduino Mega - как
     emit Open_Port_Signal("ttyACM0"); //"ttyUSB0"
+    if (!Robot->SerialIsOpened) { Robot->current_st_index = 4;} // Robot->current_status = statuslst.at(4)
+    init_json(); // Инициализируем json_status
+
     //make_json_answer();
 
     //+++++++++ Проверяем, что работает QSerialPort
@@ -618,7 +621,9 @@ void MainProcess::init_json()
             {"name", "get_box"},
             {"state", {"noDetection", "inprogress", "done", "fail"}},
             {"info", "Get the box by clamper, ascing CV about distance in advance"},
-            {"rc", "int - action return code"}
+            {"st_time", "int - timestamp of last start"},
+            {"fin_time", "int - timestamp of finish"},
+            {"result", "int - action return code"}
            },
            {
             {"name", "reset"},
@@ -682,7 +687,9 @@ void MainProcess::init_json()
              {"name", "get_box"},
              {"state", {"noDetection", "inprogress", "done", "fail"}},
              {"info", "Get the box by clamper, ascing CV about distance in advance"},
-             {"rc", "int - action return code"}
+             {"st_time", "int - timestamp of last start"},
+             {"fin_time", "int - timestamp of finish"},
+             {"result", "int - action return code"}
             },
             {
              {"name", "reset"},

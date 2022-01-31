@@ -1,8 +1,14 @@
 #include "mainprocess.h"
 #include "positions.h"
-
-
-
+/*
+преобразование строки параметров
+?a=12&a=12432354&b=123&c=1241234
+в массив ['a', '12'] ['a', '12432354'] ['b', '123'] ['c', '1241234']
+        lst = str(request.args)
+        lst2 = lst.find('[')
+        a = lst[lst2:-1].replace('\'','\"').replace('(','[').replace(')',']')
+        aa = json.loads(a)
+*/
 //+++++++ Получили данные (запрос) от клиента. Парсим.
 void MainProcess::Data_From_TcpClient_Slot(QString message)
 {
@@ -46,9 +52,8 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 //============================ status
    if (substr == "status") {
       // str  = "{\n\t\"status\":\"";
+       Robot->current_status = Robot->statuslst.at(Robot->current_st_index);
        str = Robot->current_status;
-       //std::string s2
-       //jsnStatus["state"] = "Wait";
        jsnStatus["state"] = str.toStdString();
        jsnStatus["rc"] = RC_SUCCESS;
        //jsnStatus[""]
@@ -86,7 +91,7 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 
    if (substr == "parking")
    {
-        //str = "Before parking memcpy "; Servos_To_Log(str);
+       // str = "Before parking memcpy "; Servos_To_Log(str);
         memcpy(Servos, mob_parking_position, DOF);
         //str = "After parking memcpy "; Servos_To_Log(str);
         this->send_Data(LASTONE);
@@ -150,9 +155,6 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
        this->send_Data(NOT_LAST);
    }
 //+++++++++++++++++++ action  "get_box" ++++++++++++++++++++++++++++++++++++++++++++
-//int jsn_answer_rc;
-//QString jsn_answer_name;
-//QString jsn_answer_info;
    if (substr == "get_box") {
 //       jsn_answer_info = Robot->current_status;
 //       str = "Current status value is ";
@@ -166,6 +168,39 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 //           jsn_answer_info = "Action started";
 //           jsn_answer_name = "get_box";
 //       }
+
+
+        switch (Robot->getbox_Action.rc)
+        {
+
+            case -4: // (ожидание) -> Запускаем
+
+               Robot->getbox_Action.rc = 0;
+               str = "Action "; str += substr; str += "Успешно запущен";
+            break;
+
+            case -3: // (уже запущен) -> Выходим
+
+                str = "Action "; str += substr; str += "Уже запущен";
+            break;
+
+            case -2: // (не запустился) -> Выходим
+
+                str = "Action "; str += substr; str += "Не запустился"; // Serial PORT Error
+                // - Проверяем октрытие SerialPort
+            break;
+            default:
+                Robot->getbox_Action.rc = 0;
+            break;
+
+
+        }
+        GUI_Write_To_Log(value, str);
+
+
+        // Фиксируем время начала выполнения.
+        QDateTime dt(QDateTime::currentDateTime());
+        QString st_time = QString::number(dt.toSecsSinceEpoch());
 
        // Создаем сокет для связи с камерой и, в случае успеха, отправляем запрос в камеру.
        // В ответе будет значение distance, которое сохраняем в глобальной переменной CVDistance
@@ -246,7 +281,7 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
        emit Write_2_TcpClient_Signal (str);
 
    }//substr == "getactions"
-
+//+++++++++++++++++++++++++++++++++++++++++++++    /status?action=get_box
 
 }//Data_From_TcpClient_Slot
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
