@@ -50,14 +50,24 @@ void QSocketThread::onReadyRead()
     message = QString(qbmessage);
     int sPosition, ePosition; // Индекс строки run в запросе.
 
+    bool matched = false;
+    int i = 0;
+    while (!matched and i< strcommand.size()){
+        sPosition = message.indexOf(strcommand.at(i));
+        if (sPosition != -1) {matched = true; qDebug() << "Inside sPosition is " << sPosition;}
+        ++i;
+    }
+    qDebug() << "Index value is" << --i;
+    qDebug() << "Matched command sPosition is " << sPosition;
+    if (i>=0) {qDebug() << "Matched string is " << strcommand.at(i);}
     // Теперь идем по индексам strcommand, перебираем все подряд, пока не найдем совпадение.
 
-    for ( int i =0; i< strcommand.size();  ++i)
-    {
-         sPosition = message.indexOf(strcommand.at(i));
-         if (sPosition != -1) {return;} //Нашли, выходим.
+//    for ( int i =0; i< strcommand.size();  ++i)
+//    {
+//         sPosition = message.indexOf(strcommand.at(i));
+//         if (sPosition != -1) {return;} //Нашли, выходим.
 
-    }
+//    }
 
     searchstr = "/run?cmd=";
     sPosition = message.indexOf(searchstr);
