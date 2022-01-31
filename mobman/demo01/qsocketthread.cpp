@@ -37,6 +37,8 @@ void QSocketThread::process_TheSocket()
 // Слот сигнала readyRead
 void QSocketThread::onReadyRead()
 {
+    QList<QString>  strcommand = { "/run?cmd=", "/service?name=", "/status?action="};
+
     //Чтение информации из сокета и вывод в консоль
     QByteArray qbmessage;
     qbmessage = socket->readAll();
@@ -44,16 +46,34 @@ void QSocketThread::onReadyRead()
    // qDebug() << "!!!!!!!!!!!!!!!!!!!!!!! Get Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!!!";
 
     //Парсим команду.
-    QString message, substr;
+    QString message, substr, searchstr;
     message = QString(qbmessage);
     int sPosition, ePosition; // Индекс строки run в запросе.
-    sPosition = message.indexOf("/run?cmd=");
 
+    // Теперь идем по индексам strcommand, перебираем все подряд, пока не найдем совпадение.
+
+    for ( int i =0; i< strcommand.size();  ++i)
+    {
+         sPosition = message.indexOf(strcommand.at(i));
+         if (sPosition != -1) {return;} //Нашли, выходим.
+
+    }
+
+    searchstr = "/run?cmd=";
+    sPosition = message.indexOf(searchstr);
+
+    if (sPosition == -1) {// нет строки "/run?cmd=", ищем другую - про сервисы
+
+        searchstr = "/service?name=";
+
+        sPosition = message.indexOf(searchstr);
+
+    }
    QString  wrong_mess = "/favicon.ico HTTP/1.1";
 
     if (!message.contains (wrong_mess))
     {
-        sPosition += 9;
+        sPosition += searchstr.size();
         ePosition = message.indexOf("&", sPosition);
         substr = message.mid(sPosition, (ePosition - sPosition));
 

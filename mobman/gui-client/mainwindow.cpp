@@ -65,6 +65,8 @@ void MainWindow::makeSocket(QString ipaddress, quint16 port)
 // Парсим JSON-ответ от девайсов
 // 0x20 (пробел), 0x09 (табуляцию), 0x0A (перевод строки) и 0x0D (возврат каретки).
 // Пробелы допускаются до и после «структурных символов» (structural characters) []{}:,
+// QString (данные от CV-Device) -> QJsonDocument -> QJsonObject и вот дальше надо парсить.
+
 void MainWindow::parseJSON(QString jsnData)
 {
     int value = 0xC7C7;
@@ -111,40 +113,14 @@ void MainWindow::parseJSON(QString jsnData)
   traversJson(jsnObj);
   GUI_Write_To_Log(value, "!!!!!!!!!!!!!!!!!!!! Get back from recursive parsing !!!!!!!!!!!!!!!!!!!!");
 
+  // Парсинг JSON закончили, получили глобальную переменную  jsndataObj - это объект "data" : {}. Извлекаем из него данные.
   double cvdistance = jsndataObj.value("distance").toDouble();
   str = "Got distance value as double : ";
   str += QString::number(cvdistance);
 
   GUI_Write_To_Log(value, str);
-//+++++++++++++++++++++++++++++++++++++++++++++++++  go to recursive function instead
-//  str = "";
-//  foreach(const QString& key, jsnObj.keys()) {
-//      QJsonValue jvalue = jsnObj.value(key);
-//      //qDebug() << "Key = " << key << ", Value = " << jvalue.toString();
 
-//      if(!jvalue.isObject() )
-//        {
-//          str +=  "Key = "; str += key; str += ", Value = "; str += jvalue.toString();
-//          GUI_Write_To_Log(value, str);
-//          str = "";
-
-//        }
-//      else{
-//            str = "";
-//            str += "Nested Key = ";  str += key;
-//            GUI_Write_To_Log(value, str);
-//            str = "";
-
-//              }
-
-//  }//foreach
-//+++++++++++++++++++++++++++++++++++++
-
-
-
-
-
-}
+} // parseJSON()
 //+++++++++++++++++++++++++++++++++++++++
 // After socket becoming in state "connected", the connected() signal
 // is emitted. Here is the slot for that signal.
@@ -515,17 +491,26 @@ void MainWindow::on_GetBoxButton_clicked()
 
 void MainWindow::traversJson(QJsonObject json_obj){
     QString str;
-    bool isDetected;
+    bool isDetected, boolValue;
     int thevalue = 0x5555;
     foreach(const QString& key, json_obj.keys()) {
         str = "";
         QJsonValue value = json_obj.value(key);
         if(!value.isObject() ){
                       str +=  "Key = "; str += key; str += ", Value = ";
-
-                      if (value.isBool()) {str += QVariant(value).toString();}
+                      // Важно. Сначала нужно привести к типу bool
+                      //  QVariant(value).toBool() - не работает
+                      if (value.isBool()) {boolValue = value.toBool(); str += QVariant(boolValue).toString();}
                       if (value.isString()) {str += QVariant(value).toString();}
                       if (value.isDouble()) {str += QString::number( QVariant(value).toDouble());}
+                      // Не хватает
+                      if (value.isArray()) {
+                          QJsonArray jsnArray = value.toArray();
+                          // А еще желательно проверить, что у этого value соответствующий key ==  "action_list":
+                          // Тут выводим элементы массива, точнее только имена экшенов, т.е. значение name
+                          if (key == "action_list") {str += "Many actions, look at output above";}
+                      }
+
 
                      // str += value.toString();
                       GUI_Write_To_Log(0x5555, str);
@@ -537,21 +522,25 @@ void MainWindow::traversJson(QJsonObject json_obj){
             // А теперь определяем тип данных поля.
              //jsndataObj = json_obj["data"].toObject(); // Так тоже работает, но уже есть привязка к конкретному случаю.
              jsndataObj = value.toObject(); // В нашем случае объект единственный - "data"
-             isDetected = jsndataObj.value("detected").toBool();
+             // check if there is the key "detected"
+             if (jsndataObj.contains("detected")){
 
-             str = "Detected value is ";
-             str += QVariant(isDetected).toString();
-             GUI_Write_To_Log(thevalue, str);
+                 isDetected = jsndataObj.value("detected").toBool();
 
-             if (!isDetected){
-                 GUI_Write_To_Log(thevalue, "!!!!!! Exit. Try Again !!!!!!!!!!!");
-                 return;
-             }
-//             str = "";
-//             str +=  "Nested Key = "; str += key; str += ", Value = "; str += value.toString();
+                 str = "Detected value is ";
+                 str += QVariant(isDetected).toString();
+                 GUI_Write_To_Log(thevalue, str);
+
+                 if (!isDetected){
+                     GUI_Write_To_Log(thevalue, "!!!!!! Exit. Try Again !!!!!!!!!!!");
+                     return;
+                 }
+
+                 traversJson(jsndataObj);
+
+             } //if (jsndataObj.contains("detected"))
 
              //traversJson(value.toObject());
-             traversJson(jsndataObj);
 
 
         }//else
@@ -561,4 +550,39 @@ void MainWindow::traversJson(QJsonObject json_obj){
 
     }//foreach
 
-};
+}
+//++++++++++++++++++++++++++++++++++++++++++++
+
+void MainWindow::on_GetServicesButton_clicked()
+{
+    request = "GET ";
+    request += "/service?name=getservices&";
+    request += " HTTP/1.1";
+    request += "\r\nHost: ";
+    request += "192.168.1.201:8383\r\n";
+    request += "Accept: */*\r\n";
+    request += "Access-Control-Allow-Origin: *\r\n";
+    request += "\r\n";
+
+    makeSocket(CVDev_IP, ARM_Port);
+
+}
+
+//++++++++++++++++++++++++++++++++++++++++++++
+
+
+void MainWindow::on_GetActionsButton_clicked()
+{
+    request = "GET ";
+    request += "/service?name=getactions&";
+    request += " HTTP/1.1";
+    request += "\r\nHost: ";
+    request += "192.168.1.201:8383\r\n";
+    request += "Accept: */*\r\n";
+    request += "Access-Control-Allow-Origin: *\r\n";
+    request += "\r\n";
+
+    makeSocket(CVDev_IP, ARM_Port);
+
+}
+

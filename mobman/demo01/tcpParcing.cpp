@@ -1,6 +1,14 @@
 #include "mainprocess.h"
 #include "positions.h"
-
+/*
+преобразование строки параметров
+?a=12&a=12432354&b=123&c=1241234
+в массив ['a', '12'] ['a', '12432354'] ['b', '123'] ['c', '1241234']
+        lst = str(request.args)
+        lst2 = lst.find('[')
+        a = lst[lst2:-1].replace('\'','\"').replace('(','[').replace(')',']')
+        aa = json.loads(a)
+*/
 //+++++++ Получили данные (запрос) от клиента. Парсим.
 void MainProcess::Data_From_TcpClient_Slot(QString message)
 {
@@ -44,9 +52,8 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 //============================ status
    if (substr == "status") {
       // str  = "{\n\t\"status\":\"";
+       Robot->current_status = Robot->statuslst.at(Robot->current_st_index);
        str = Robot->current_status;
-       //std::string s2
-       //jsnStatus["state"] = "Wait";
        jsnStatus["state"] = str.toStdString();
        jsnStatus["rc"] = RC_SUCCESS;
        //jsnStatus[""]
@@ -62,11 +69,6 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
        str = QString::fromStdString(s2);
       // str = QJsonDocument(jsnStatus).toJson(QJsonDocument::Compact);
 
-//       QDateTime dt(QDateTime::currentDateTime());
-//       //dt.toLocalTime();
-//       str = "Current SecsSinceEpoch is ";
-//       str += QString::number(dt.toSecsSinceEpoch());
-//       GUI_Write_To_Log (value, str);
        emit Write_2_TcpClient_Signal (str);
    }
 //============================ sit
@@ -89,7 +91,7 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 
    if (substr == "parking")
    {
-        //str = "Before parking memcpy "; Servos_To_Log(str);
+       // str = "Before parking memcpy "; Servos_To_Log(str);
         memcpy(Servos, mob_parking_position, DOF);
         //str = "After parking memcpy "; Servos_To_Log(str);
         this->send_Data(LASTONE);
@@ -153,9 +155,6 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
        this->send_Data(NOT_LAST);
    }
 //+++++++++++++++++++ action  "get_box" ++++++++++++++++++++++++++++++++++++++++++++
-//int jsn_answer_rc;
-//QString jsn_answer_name;
-//QString jsn_answer_info;
    if (substr == "get_box") {
 //       jsn_answer_info = Robot->current_status;
 //       str = "Current status value is ";
@@ -170,9 +169,85 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 //           jsn_answer_name = "get_box";
 //       }
 
+
+        switch (Robot->getbox_Action.rc)
+        {
+
+            case -4: // (ожидание) -> Запускаем
+
+               Robot->getbox_Action.rc = 0;
+               str = "Action "; str += substr; str += "Успешно запущен";
+            break;
+
+            case -3: // (уже запущен) -> Выходим
+
+                str = "Action "; str += substr; str += "Уже запущен";
+            break;
+
+            case -2: // (не запустился) -> Выходим
+
+                str = "Action "; str += substr; str += "Не запустился"; // Serial PORT Error
+                // - Проверяем октрытие SerialPort
+            break;
+            default:
+                Robot->getbox_Action.rc = 0;
+            break;
+
+
+        }
+        GUI_Write_To_Log(value, str);
+
+
+        // Фиксируем время начала выполнения.
+        QDateTime dt(QDateTime::currentDateTime());
+        QString st_time = QString::number(dt.toSecsSinceEpoch());
+
+       // Создаем сокет для связи с камерой и, в случае успеха, отправляем запрос в камеру.
+       // В ответе будет значение distance, которое сохраняем в глобальной переменной CVDistance
+       // По завершении request_CV получаем объект QJsonObject   jsndataObj, из которого извлекаем distance.
+
+
+
        request_CV();
        Robot->getbox.rc = 0;
        Robot->getbox = {"get_box", 0, "In progress"};
+
+       // Запускаем захват объекта.  Теперь это значение distance отправляем в ф-цию GetBox
+       this->GetBox(CVDistance);
+       //Команду манипулятору запустили. Задаем статус для ответа http-клиенту через структуру HiWonder::ActionState .
+
+//       Robot->getbox_Action.rc = 0;
+//       Robot->getbox_Action.info = "Is running";
+
+
+//       Robot->getbox_Action.rc = 0;
+//       QJsonValue myvalue;
+       // Заносим данные в структуру
+       Robot->getbox_Action = {"get_box", 0, "In progress"};
+       //myvalue = Robot->getbox_Action.name;
+      // jsnActionAnswer.insert("name", myvalue);
+
+       // А из структуры - в JSON-объект
+       jsnActionAnswer.insert("name", QJsonValue(Robot->getbox_Action.name));
+       jsnActionAnswer.insert("rc", QJsonValue(Robot->getbox_Action.rc));
+       jsnActionAnswer.insert("info", QJsonValue(Robot->getbox_Action.info));
+
+       // И теперь вот этот jsnActionAnswer отправляем http-клиенту в ответ на команду "get_box"
+
+       jsnDoc = QJsonDocument(jsnActionAnswer);
+//       int indent = 3;
+
+       str = jsnDoc.toJson(QJsonDocument::Compact);
+       //std::string s2 = jsnDoc.d
+
+       GUI_Write_To_Log(value, "!!!!!!!!!!! Current Answer to GetBox command is ");
+       GUI_Write_To_Log(value, str);
+
+       //str = QString::fromStdString(s2);
+      // str = QJsonDocument(jsnStatus).toJson(QJsonDocument::Compact);
+
+       emit Write_2_TcpClient_Signal (str);
+
 
    }//substr == "get_box"
 
@@ -181,4 +256,34 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
    if (substr == "srvfromfile") {
        ;
    }//substr == "srvfromfile"
-}
+
+
+//++++++++++++++++   Запрос информации из service
+
+   if (substr == "getservices") {
+
+       int indent = 3;
+       std::string s2 = jsnGetServicesAnswer.dump(indent);
+       str = QString::fromStdString(s2);
+       GUI_Write_To_Log(value, "!!!!!!!!!!! Current Services LIST is ");
+       GUI_Write_To_Log(value, str);
+
+       emit Write_2_TcpClient_Signal (str);
+
+   }//substr == "getservices"
+//++++++++++++++ /service?name=getactions
+   if (substr == "getactions") {
+
+       int indent = 3;
+       std::string s2 = jsnGetActionsAnswer.dump(indent);
+       str = QString::fromStdString(s2);
+       GUI_Write_To_Log(value, "!!!!!!!!!!! Current Services LIST is ");
+       GUI_Write_To_Log(value, str);
+
+       emit Write_2_TcpClient_Signal (str);
+
+   }//substr == "getactions"
+//+++++++++++++++++++++++++++++++++++++++++++++    /status?action=get_box
+
+}//Data_From_TcpClient_Slot
+//++++++++++++++++++++++++++++++++++++++++++++++++++++

@@ -14,9 +14,17 @@
 #include <stdint.h>
 #include <QFile>
 #include <QList>
+#include <QDateTime>
+#include <QTime>
 #include "hiwonder.h"  // hiwonder class
 #include "qsimpleserver.h"
 #include "cvdevice.h"
+
+#include <QJsonDocument>
+#include <QJsonParseError>
+#include <QJsonObject>
+#include <QJsonValue>
+#include <QJsonArray>
 
 
 //#include "SocketClient.h"
@@ -70,7 +78,19 @@ public:
 
     ordered_json jsnStatus; // Ответ на запрос статуса в формате json
     ordered_json jsnAction;  // Ответ на команду Action в формате json
-    //QJsonObject qjsnStatus;
+    ordered_json jsnGetServicesAnswer; // Ответ на команду "/service?name=getservices"
+    ordered_json jsnGetActionsAnswer; // Ответ на команду "/service?name=getactions"
+
+
+    QJsonDocument jsnDoc;    // json-данные, полученные по tcp
+    QJsonObject   jsnObj;    // ОБъект, хранящий весь JSON ответ от девайса
+    QJsonObject   jsndataObj;// ОБъект, хранящий вложенный JSON-объект (вложенный внутри ответа jsnObj)
+                             //   Тут как раз данные о distance
+    QJsonObject   jsnActionAnswer; // Ответ на команду Action в формате json
+    //QJsonObject   jsnGetServicesAnswer; // Ответ на команду "/service?name=service_name"
+
+    QJsonParseError jsonError; // ОШибка, если полученные данные - не JSON-объект
+
 
 
 //#define
@@ -86,11 +106,13 @@ public:
 #define RC_SUCCESS 0        // запрос выполнен успешно
 #define RC_WRONG_VALUE -1   // неверные параметры
 #define RC_UNDEFINED -2     // action с таким именем не найден
+#define RC_FAIL      -3     // Ошибка самого манипулятора, не открыт serial port
 
 #define AC_RUNNING 0        // action запущен
 #define AC_WRONG_VALUE -1   // action с таким именем не найден
 #define AC_FAILURE -2       // action с таким именем не запустился
 #define AC_ALREADY_HAVE -3  // action с таким именем уже запущен
+
 
 //+++++++++++++++++++++ CV device
 
@@ -108,6 +130,8 @@ public:
     int parcel_size ;
     unsigned char Servos [DOF] = {93,93,93,93};
 
+    unsigned int CVDistance;
+
     //void update_data_from_sliders(int index, int value);
 
     void GUI_Write_To_Log (int value, QString log_message); //Пишет в лог-файл номер ошибки value и сообщение message
@@ -122,6 +146,8 @@ public:
     void request_New_CV();
      int my_round(int n); // Округление целого числа до ближайшего кратного 10
 
+   void traversJson(QJsonObject json_obj); // Рекурсивный Парсинг JSON
+   void parseJSON(QString jsnData); // Парсинг JSON из HTTP
 
 private:
 //    SocketClient readSocket;
@@ -136,8 +162,11 @@ void server_New_Connect_Slot();
 void onSocketConnected_Slot(); // Слот обработки сигнала void QAbstractSocket::connected()
 void CV_onReadyRead_Slot();    // Слот обработка сигнала readyRead()
 void CV_onDisconnected();      // Слот обработки сигнала
+void CV_NEW_onReadyRead_Slot();    // Слот обработка сигнала readyRead() включая парсинг JSON
+void GetBox(unsigned int distance); // Запускаем захват кубика по значению расстояния до него от камеры.
 
-void data_from_CVDevice_Slot(QString);
+
+void data_from_CVDevice_Slot(QString); // class CVDevice - слот обработки сигнала data_from_CVDevice_Signal(QString);
 
 private slots:
     //void on_openButton_clicked();
