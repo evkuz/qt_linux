@@ -3,7 +3,7 @@ import pathlib
 from iqrdevice.actions import ExecuteFileAction
 
 
-script_path = pathlib.Path(__file__).parent.parent.resolve().joinpath("utills/move.sh")
+script_path = pathlib.Path(__file__).parent.parent.resolve().joinpath("utils/move.sh")
 
 
 class MoveToAAction (ExecuteFileAction):

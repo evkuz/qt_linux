@@ -9,7 +9,7 @@ from iqrdevice import device, app
 # создание экземпляра приложения
 app.config.from_object(os.environ.get('FLASK_ENV') or 'config.DevelopementConfig')
 
-from .utills.camera import CameraDetector
+from .utils.camera import CameraDetector
 cam = CameraDetector(app.config['CAMERA_NUM'])
 
 # import views

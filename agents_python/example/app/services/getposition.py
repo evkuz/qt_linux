@@ -1,6 +1,6 @@
 from iqrdevice.service import BaseService
 from .. import device
-from ..utills import camera
+from ..utils import camera
 from math import atan2, pi
 
 

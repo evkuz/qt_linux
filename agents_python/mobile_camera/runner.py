@@ -1,4 +1,4 @@
-from features import app
+from .app import app
 
 import pathlib
 template_path = pathlib.Path(__file__).parent.resolve().joinpath('templates')
