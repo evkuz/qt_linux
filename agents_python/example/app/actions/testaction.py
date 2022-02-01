@@ -34,6 +34,10 @@ class TestRobotAction (BaseAction):
         # The method from parent class, that change value of state's field 'info' 
         self._set_state_info(f"Action was performed with duration {duration}")
         
+        # You can also use properties:
+        # * self._workingFlag
+        # * self._resetFlag
+
         sleep(duration)
         return 0
 

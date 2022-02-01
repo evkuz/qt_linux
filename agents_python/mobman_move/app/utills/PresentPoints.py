@@ -1,17 +1,19 @@
 #!/usr/bin/env python
 # license removed for brevity
 
+import sys
 import rospy
 import actionlib
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 
-a = 0.2 #расстояния в метрах
-b = 0.5
-c = 0.85
-d = -1.0
+ax = 0.2
+ay = 0.5
+
+bx = 0.85
+by = -1.0
 
 
-def movebase_client(a, b, z, w):
+def movebase_client(x, y, z, w):
 
     client = actionlib.SimpleActionClient('move_base',MoveBaseAction)
     print('w8ing server')
@@ -20,8 +22,8 @@ def movebase_client(a, b, z, w):
     goal = MoveBaseGoal()
     goal.target_pose.header.frame_id = "map"
     goal.target_pose.header.stamp = rospy.Time.now()
-    goal.target_pose.pose.position.x = a
-    goal.target_pose.pose.position.y = b
+    goal.target_pose.pose.position.x = x
+    goal.target_pose.pose.position.y = y
     goal.target_pose.pose.position.z = 0.0
     goal.target_pose.pose.orientation.x = 0.0
     goal.target_pose.pose.orientation.y = 0.0
@@ -37,15 +39,23 @@ def movebase_client(a, b, z, w):
         return client.get_result()
 
 if __name__ == '__main__':
+    result = 0
+    print sys.argv
     try:
         rospy.init_node('movebase_client_py')
-        for i in range(10):
-            result = movebase_client(a, b, 0.7, 0.7)
-            rospy.sleep(5)
-            result = movebase_client(c, d, 1.0, 1.0)
-            rospy.sleep(5)
+        if len(sys.argv) < 2:
+            result = -2
+        elif sys.argv[1] == 'a':
+            result = movebase_client(ax, ay, 0.7, 0.7)
+        elif sys.argv[1] == 'b':
+            result = movebase_client(bx, by, 1.0, 1.0)
+        else:
+            print("Unknown point name!")
+            result = -1
 
         if result:
             rospy.loginfo("Goal execution done!")
     except rospy.ROSInterruptException:
         rospy.loginfo("Navigation test finished.")
+
+    exit(result)

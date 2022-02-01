@@ -1,4 +1,4 @@
-from .testaction import MoveToAAction, MoveToBAction
+from .moveactions import MoveToAAction, MoveToBAction
 
 # __all__ = [
 #         'TestRobotAction',

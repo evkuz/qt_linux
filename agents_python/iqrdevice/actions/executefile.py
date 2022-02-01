@@ -15,11 +15,7 @@ class ExecuteFileAction (BaseAction):
         Returns:
             dict: "name": self.Name, ["parameter":"description", ...]
         """ 
-        res = {
-            "name":self.Name,
-            "duration": "(float) - if it was specified the action will be long for this number of seconds"
-        }
-        return res
+        return {"name":self.Name}
 
     def run_action(self, **kwargs) -> int:
         """[return result code]
@@ -27,13 +23,14 @@ class ExecuteFileAction (BaseAction):
         res = 0
         command = [self.program, self.scriptPath] + self.additional_args
         self.__process = Popen(command)
+        self._set_state_info(f"Process was started with PID {self.__process.pid}")
         res = 0
         try:
             res = self.__process.wait()
         except Exception as e:
             print("Error:", e)
             res = -1
-
+        self._set_state_info(f"Process finished")
         self.__process = None
         return res
 

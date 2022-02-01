@@ -73,9 +73,9 @@ class ActionState:
 class BaseAction:
     def __init__(self, name):
         self.__thread = None
-        self._isWorking = False
+        self.__isWorking = False
         self.__state = ActionState(name)
-        self._resetFlag = False
+        self.__isReset = False
 
     @property
     def State(self):
@@ -83,7 +83,7 @@ class BaseAction:
     
     @property
     def IsWorking(self):
-        return self._isWorking or self.__thread is not None
+        return self.__isWorking or self.__thread is not None
 
     @property
     def Name(self):
@@ -100,8 +100,8 @@ class BaseAction:
         if self.__thread is None:
             self.__thread = threading.Thread(target=self.__run_thread_work, kwargs=kwargs)
             self.__state.set_start()
-            self._isWorking = True
-            self._resetFlag = False
+            self.__isWorking = True
+            self.__isReset = False
             self.__thread.start()
             return 0
         return -2
@@ -111,10 +111,10 @@ class BaseAction:
         
         res = self.run_action(**kwargs)
         
-        if not self._resetFlag:
+        if not self.__isReset:
             self.__state.set_success(res)
         self.__thread = None
-        self._isWorking = False
+        self.__isWorking = False
     
     def run_action(self, **kwargs) -> int:
         """[return result code]
@@ -126,9 +126,9 @@ class BaseAction:
 
     def reset(self):
         if self.IsWorking:
-            self._resetFlag = True
+            self._isReset = True
             if self.__thread is not None:
-                self._isWorking = False
+                self.__isWorking = False
             
             self.__state.set_info("reset was send")
             t = threading.Thread(target=self.__reset_thread_work)
@@ -149,6 +149,14 @@ class BaseAction:
 
     def _set_state_info(self, info):
         self.__state.set_info(info)
+
+    @property
+    def _workingFlag(self):
+        return self.__isWorking
+
+    @property
+    def _resetFlag(self):
+        return self.__isReset
 
 
 if __name__ == "__main__":
