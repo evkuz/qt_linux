@@ -77,6 +77,7 @@ void HiWonder::Write_To_Source(int value, QString points_data)
     QString str, str2;
     //int value = 0xf000;
     curdate = QDateTime::currentDateTime();
+    str = QString::number(value); // Убрать варнинг о неиспользуемом value
 
     //str = curdate.toString("yyyy-MM-dd__hh:mm:ss:z").toLocal8Bit(); str.append(" > ");
    // str = "X, Y";

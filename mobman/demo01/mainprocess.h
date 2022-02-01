@@ -19,6 +19,7 @@
 #include "hiwonder.h"  // hiwonder class
 #include "qsimpleserver.h"
 #include "cvdevice.h"
+#include "protocol.h"
 
 #include <QJsonDocument>
 #include <QJsonParseError>
@@ -151,6 +152,8 @@ public:
    void traversJson(QJsonObject json_obj); // Рекурсивный Парсинг JSON
    void parseJSON(QString jsnData); // Парсинг JSON из HTTP
 
+   int getIndexCommand(QString myCommand, QList<QString> theList);
+
 private:
 //    SocketClient readSocket;
 
@@ -217,5 +220,6 @@ signals:
 //    void StartTakeAndPutSignal();
 
 };
+
 
 #endif // MainProcess_H

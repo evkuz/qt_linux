@@ -894,7 +894,35 @@ void MainProcess::parseJSON(QString jsnData)
 //  str = "Got distance value as double : ";
 //  str += QString::number(cvdistance);
 
-//  GUI_Write_To_Log(value, str);
+  //  GUI_Write_To_Log(value, str);
+}
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+int MainProcess::getIndexCommand(QString myCommand, QList<QString> theList)
+{
+    bool matched = false;
+    int i = 0;
+    QString message, str ;
+    message = myCommand;
+    int sPosition; // Индекс искомой строки в тексте.
+    int value = 0x3355;
+
+    while (!matched and i< theList.size()){
+        sPosition = message.indexOf(theList.at(i));
+        if (sPosition != -1) {matched = true; qDebug() << "Inside sPosition is " << sPosition;}
+        ++i;
+    }
+
+    if (!matched) {
+        str = "There is now any Matching in command list !!! Unknown command";
+        GUI_Write_To_Log(value, str);
+        return -1;
+    }
+    qDebug() << "Index value is" << --i;
+    qDebug() << "Matched command sPosition is " << sPosition;
+    if (i>=0) {qDebug() << "Matched string is " << theList.at(i);}
+
+    return i;
+
 }// parseJSON()
 
 //++++++++++++++++++++++++++

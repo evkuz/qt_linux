@@ -1,5 +1,10 @@
 #ifndef PROTOCOL_H
 #define PROTOCOL_H
+
+#include <QString>
+//"getactions",
+ const QList<QString> tcpCommand = {"clamp", "get_box", "parking", "ready", "status", "getservices", "setservos=", "srvfromfile",  "status?action=getbox"};
+
 /*
  * у нас структура запроса получается такая:
  * <address>/run?cmd=<name>&<parameter_name>=<parameter_value>

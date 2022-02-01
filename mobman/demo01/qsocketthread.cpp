@@ -54,10 +54,12 @@ void QSocketThread::onReadyRead()
     int i = 0;
     while (!matched and i< strcommand.size()){
         sPosition = message.indexOf(strcommand.at(i));
-        if (sPosition != -1) {matched = true; qDebug() << "Inside sPosition is " << sPosition;}
+        if (sPosition != -1) {matched = true; qDebug() << "Inside sPosition is " << sPosition;
+             qDebug() << "Inside Index is " << i;
+        }
         ++i;
     }
-    qDebug() << "Index value is" << --i;
+    qDebug() << "Index value is" << i--;
     qDebug() << "Matched command sPosition is " << sPosition;
     if (i>=0) {qDebug() << "Matched string is " << strcommand.at(i);}
     // Теперь идем по индексам strcommand, перебираем все подряд, пока не найдем совпадение.
@@ -69,16 +71,16 @@ void QSocketThread::onReadyRead()
 
 //    }
 
-    searchstr = "/run?cmd=";
-    sPosition = message.indexOf(searchstr);
+//    searchstr = "/run?cmd=";
+//    sPosition = message.indexOf(searchstr);
 
-    if (sPosition == -1) {// нет строки "/run?cmd=", ищем другую - про сервисы
+//    if (sPosition == -1) {// нет строки "/run?cmd=", ищем другую - про сервисы
 
-        searchstr = "/service?name=";
+//        searchstr = "/service?name=";
 
-        sPosition = message.indexOf(searchstr);
+//        sPosition = message.indexOf(searchstr);
 
-    }
+//    }
    QString  wrong_mess = "/favicon.ico HTTP/1.1";
 
     if (!message.contains (wrong_mess))

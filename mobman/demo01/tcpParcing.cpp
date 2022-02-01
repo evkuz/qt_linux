@@ -20,7 +20,21 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
     str = "From TCP Get new command : "; str += message;
     GUI_Write_To_Log(0xf00f, str);
 
-        substr = message;
+    substr = message;
+    int comIndex = getIndexCommand(substr, tcpCommand);
+
+    if (comIndex < 0) {str = "WRONG DATA !!!"; GUI_Write_To_Log(value, str);return;}
+    str = "Index value is "; str += QString::number(comIndex); str += "\n";
+    str += "List value on that index is \""; str += tcpCommand.at(comIndex); str += "\"";
+
+    GUI_Write_To_Log(value, str);
+
+
+
+
+
+
+
 //============================ start
         if (substr == "start") {
             Robot->SetCurrentStatus ("init"); // Перед запуском распознавания
@@ -312,3 +326,6 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 
 }//Data_From_TcpClient_Slot
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
