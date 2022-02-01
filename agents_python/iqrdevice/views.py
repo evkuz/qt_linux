@@ -32,6 +32,15 @@ def status():
 
     return make_my_responce(state)
 
+@app.route('/reset', methods=['get'])
+def reset():
+    #TODO: error if wrong parameters
+    args = request.args.to_dict()
+    action_arg = args.get("action")
+    actions = [] if action_arg is None else action_arg.split(",")
+    resp = device.reset_action(actions)
+
+    return make_my_responce(resp)
 
 @app.route('/action', methods=['get'])
 def action():

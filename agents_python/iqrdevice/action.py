@@ -125,13 +125,16 @@ class BaseAction:
         raise NotImplementedError()
 
     def reset(self):
-        self._resetFlag = True
-        if self.__thread is not None:
-            self._isWorking = False
-        
-        self.__state.set_info("reset was send")
-        t = threading.Thread(target=self.__reset_thread_work)
-        t.start()
+        if self.IsWorking:
+            self._resetFlag = True
+            if self.__thread is not None:
+                self._isWorking = False
+            
+            self.__state.set_info("reset was send")
+            t = threading.Thread(target=self.__reset_thread_work)
+            t.start()
+            return 0
+        return -2
 
     def __reset_thread_work(self):
         if self.__thread is not None: self.__thread.join()

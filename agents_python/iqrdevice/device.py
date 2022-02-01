@@ -77,11 +77,12 @@ class IQRDevice:
             for a in self.__actions:
                 if a.Name in actions:
                     action_list.append(a.State)
-            if len(action_list) == 0:
+            if len(action_list) < len(actions):
                 return StatusResponce(
                     self.__name,
                     self.__state,
-                    -2, "specified actions not exists"
+                    -2, "Not all specified actions are exist",
+                    action_list
                 )
 
         return StatusResponce(
@@ -89,6 +90,31 @@ class IQRDevice:
                     self.__state,
                     0, "success",
                     action_list
+                )
+
+    def reset_action(self, actions=[]) -> ServiceResponce:
+        reset_statuses = {}
+        if len(actions) == 0:
+            for a in self.__actions:
+                if a.IsWorking:
+                    reset_statuses[a.Name] = a.reset()
+        else:
+            for a in self.__actions:
+                if a.Name in actions:
+                    reset_statuses[a.Name] = a.reset()
+
+            if len(reset_statuses.keys()) <  len(actions):
+                return ServiceResponce(
+                    "reset",
+                    -1,
+                    "Not all specified actions are exist",
+                    reset_statuses
+                )
+
+        return ServiceResponce(
+                    "reset",
+                    0, "success",
+                    reset_statuses
                 )
 
     def get_hist(self, type:str, names:list=[], n:int=20) -> HistResponce:
