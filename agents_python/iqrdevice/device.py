@@ -14,7 +14,9 @@ class ListActionsService(BaseService):
         return self.__device.get_list_actions()
 
     def get_info(self) -> dict:
-        return {"name": self.Name}
+        return self.make_info(
+            "Returns list of available actions"
+        )
 
 
 class ListServicesService(BaseService):
@@ -26,7 +28,9 @@ class ListServicesService(BaseService):
         return self.__device.get_list_services()
 
     def get_info(self) -> dict:
-        return {"name": self.Name}
+        return self.make_info(
+            "Returns list of available services"
+        )
 
 
 class IQRDevice:

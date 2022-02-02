@@ -10,16 +10,15 @@ class CamCalibService (BaseService):
         self.cam = cam
 
     def get_info(self) -> dict:
-        res = {
-            "name":self.Name,
-            "parameters": {
+        return self.make_info(
+            "Calibrate camera detection color ranges",
+            {
                 "x1":"(int) - rectungle x1 position in px",
                 "y1":"(int) - rectungle y1 position in px",
                 "x2":"(int) - rectungle x2 position in px",
                 "y2":"(int) - rectungle y2 position in px"
             }
-        }
-        return res
+        )
 
     def get_data(self, **kwargs):
         x1, y1, x2, y2 = None, None, None, None

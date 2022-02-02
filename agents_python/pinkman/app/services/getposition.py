@@ -19,4 +19,6 @@ class GetPositionService(BaseService):
         return res
 
     def get_info(self) -> dict:
-        return {"name": self.Name}
+        return self.make_info(
+            "Returns cube detection result"
+        )
