@@ -72,12 +72,11 @@ public:
         QString name;
         int     rc;    // return code
         QString info;  // text interpretation of return code
-//        0 - action запущен -  "Is running"
+//        - 0 - action запущен -  "Is running"
 //        -1 - action с таким именем не найден
 //        -2 - action с таким именем не запустился, т.е. ошибка ?
 //        -3 - action с таким именем уже запущен
 //        -4 - action с таким именем не запущен (ожидание)
-//        -5 - action с таким именем успешно завершен
 
     };
 

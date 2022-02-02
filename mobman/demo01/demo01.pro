@@ -31,4 +31,5 @@ HEADERS += \
     qsimpleserver.h \
     qsocketthread.h \
     mainprocess.h \
+    workflow.h
 

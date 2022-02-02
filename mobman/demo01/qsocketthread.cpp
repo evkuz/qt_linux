@@ -54,14 +54,19 @@ void QSocketThread::onReadyRead()
     int i = 0;
     while (!matched and i< strcommand.size()){
         sPosition = message.indexOf(strcommand.at(i));
-        if (sPosition != -1) {matched = true; qDebug() << "Inside sPosition is " << sPosition;
+        if (sPosition != -1) {
+             matched = true; qDebug() << "Inside sPosition is " << sPosition;
              qDebug() << "Inside Index is " << i;
         }
         ++i;
     }
     qDebug() << "Index value is" << i--;
+    qDebug() << "Now current Index value is" << i;
     qDebug() << "Matched command sPosition is " << sPosition;
     if (i>=0) {qDebug() << "Matched string is " << strcommand.at(i);}
+    else return;
+
+    searchstr = strcommand.at(i);
     // Теперь идем по индексам strcommand, перебираем все подряд, пока не найдем совпадение.
 
 //    for ( int i =0; i< strcommand.size();  ++i)

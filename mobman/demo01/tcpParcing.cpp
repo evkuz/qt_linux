@@ -23,6 +23,7 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
     GUI_Write_To_Log(0xf00f, str);
 
     substr = message;
+    // Определяем индекс команды в списке tcpCommand
     int comIndex = getIndexCommand(substr, tcpCommand);
 
     if (comIndex < 0) {str = "WRONG DATA !!!"; GUI_Write_To_Log(value, str);return;}
@@ -35,12 +36,17 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 
     switch (comIndex) {
 
-        0: //"clamp"
+        case 0: //"clamp"
             on_clampButton_clicked();
         break;
 
-        1: //"get_box"
+        case 1: //"get_box"  - это экшен (к вопросу о типе)
+                // Поэтому Process Action
+                ProcessAction(&Robot->getbox_Action);
+        break;
 
+    default:
+        ;
         break;
 
 
@@ -245,8 +251,8 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 
 
         // Фиксируем время начала выполнения.
-        QDateTime dt(QDateTime::currentDateTime());
-        QString st_time = QString::number(dt.toSecsSinceEpoch());
+//        QDateTime dt(QDateTime::currentDateTime());
+//        QString st_time = QString::number(dt.toSecsSinceEpoch());
 
        // Создаем сокет для связи с камерой и, в случае успеха, отправляем запрос в камеру.
        // В ответе будет значение distance, которое сохраняем в глобальной переменной CVDistance
@@ -254,9 +260,9 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 
 
 
-       request_CV();
-       // Запускаем захват объекта.  Теперь это значение distance отправляем в ф-цию GetBox
-       this->GetBox(CVDistance);
+//       request_CV();
+//       // Запускаем захват объекта.  Теперь это значение distance отправляем в ф-цию GetBox
+//       this->GetBox(CVDistance);
        //Команду манипулятору запустили. Задаем статус для ответа http-клиенту через структуру HiWonder::ActionState .
 
 //       Robot->getbox_Action.rc = 0;
@@ -273,25 +279,23 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
       // jsnActionAnswer.insert("name", myvalue);
 
        // А из структуры - в JSON-объект
-       jsnActionAnswer.insert("name", QJsonValue(Robot->getbox_Action.name));
-       jsnActionAnswer.insert("rc", QJsonValue(Robot->getbox_Action.rc));
-       jsnActionAnswer.insert("info", QJsonValue(Robot->getbox_Action.info));
+//       jsnActionAnswer.insert("name", QJsonValue(Robot->getbox_Action.name));
+//       jsnActionAnswer.insert("rc", QJsonValue(Robot->getbox_Action.rc));
+//       jsnActionAnswer.insert("info", QJsonValue(Robot->getbox_Action.info));
 
-       // И теперь вот этот jsnActionAnswer отправляем http-клиенту в ответ на команду "get_box"
+//       // И теперь вот этот jsnActionAnswer отправляем http-клиенту в ответ на команду "get_box"
 
-       jsnDoc = QJsonDocument(jsnActionAnswer);
-//       int indent = 3;
+//       jsnDoc = QJsonDocument(jsnActionAnswer);
 
-       str = jsnDoc.toJson(QJsonDocument::Compact);
-       //std::string s2 = jsnDoc.d
+//       str = jsnDoc.toJson(QJsonDocument::Compact);
 
-       GUI_Write_To_Log(value, "!!!!!!!!!!! Current Answer to GetBox command is ");
-       GUI_Write_To_Log(value, str);
+//       GUI_Write_To_Log(value, "!!!!!!!!!!! Current Answer to GetBox command is ");
+//       GUI_Write_To_Log(value, str);
 
        //str = QString::fromStdString(s2);
       // str = QJsonDocument(jsnStatus).toJson(QJsonDocument::Compact);
 
-       emit Write_2_TcpClient_Signal (str);
+//       emit Write_2_TcpClient_Signal (str);
 
 
    }//substr == "get_box"
@@ -322,7 +326,7 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
        int indent = 3;
        std::string s2 = jsnGetActionsAnswer.dump(indent);
        str = QString::fromStdString(s2);
-       GUI_Write_To_Log(value, "!!!!!!!!!!! Current Services LIST is ");
+       GUI_Write_To_Log(value, "!!!!!!!!!!! Current Actions LIST is ");
        GUI_Write_To_Log(value, str);
 
        emit Write_2_TcpClient_Signal (str);

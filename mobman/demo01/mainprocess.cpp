@@ -677,12 +677,13 @@ void MainProcess::init_json()
 
 
 
+     //        -5 - action с таким именем успешно завершен
 
      jsnGetActionsAnswer = {
                              {"name" , "getactions"},
                              {"rc", RC_SUCCESS}, //RC_SUCCESS
                              {"info" , "Request Accepted"},
-         {"action_list", {
+         {"data", {
             {
              {"name", "get_box"},
              {"state", {"waiting","noDetection", "inprogress", "done", "fail"}},
@@ -926,29 +927,89 @@ int MainProcess::getIndexCommand(QString myCommand, QList<QString> theList)
 }// getIndexCommand
 //+++++++++++++++++++++++++++++++++++++++++++++++
 // Выясняем текущее состояние экшена перед запуском.
+// И если еще не запущен, то меняем состояние на "уже запущен"
 void MainProcess::ProcessAction(HiWonder::ActionState *actionName)
 {
     QString str, substr;
+    int theindex, value;
+    value = 0x1122;
+    // Фиксируем время начала выполнения.
+            QDateTime dt(QDateTime::currentDateTime());
+            QString st_time = QString::number(dt.toSecsSinceEpoch());
+
     // Этот же ответ при конкретном запросе статуса экшена "get_box"
+    // Проверяем текущее значение RC (return code)
+
+
       switch (actionName->rc)
      {
 
-         case -4: // (ожидание) -> Запускаем
+         case -4: // (ожидание) -> Запускаем, это "get_box". В списке actionlst это index ==0
           // А вот тут можно найти индекс этой команды в списке и присвоить
           // Переменной HiWonder::active_command, тогда не надо держать
           // в голове значения индексов - т.е. вместо
           // Robot->actionlst.at(0); будет переменная со значеием Robot->actionlst.at(0)
-            Robot->active_command = Robot->actionlst.at(0);
-            actionName->rc = 0;
-            str = "Action "; str += substr; str += "Успешно запущен";
 
-            // Заносим данные в структуру
-            Robot->getbox_Action = {"get_box", 0, "In progress"};
+            theindex = getIndexCommand(actionName->name, Robot->actionlst); //"get_box"
+            Robot->active_command = Robot->actionlst.at(theindex);
+            // -4 -> 0
+
+            // Заносим данные в структуру ( у каждогоо экшена должна быть своя.)
+           // Robot->getbox_Action = {"get_box", 0, "In progress"};
             // И еще в структуру для "status?action=getbox"
 
+            // А теперь все действия, относящиейся к "get_box" или какой там экшен запускается
+
+            // 1. Проверяем, открыт ли SerialPort ? Если нет то
+            //    - Пишем в лог.
+            //    - Ставим actionName->rc == -2: // (не запустился)
+            if (!Robot->SerialIsOpened){
+                str = "Serial port is UNAVAILABLE !!! CAN'T GET BOX !!!";
+
+                Robot->getbox_Action = {"get_box", -2, str}; //"Failed"
+                GUI_Write_To_Log(value, str);
+//                emit Write_2_TcpClient_Signal (str);
+//                return;
+            }
+
+            else {
+                actionName->rc = 0;
+                str = "Action "; str += substr; str += "Успешно запущен";
+                GUI_Write_To_Log(value, str);
+
+           // Создаем сокет для связи с камерой и, в случае успеха, отправляем запрос в камеру.
+           // В ответе будет значение distance, которое сохраняем в глобальной переменной CVDistance
+           // По завершении request_CV получаем объект QJsonObject   jsndataObj, из которого извлекаем distance.
+
+           request_CV();
+           // Запускаем захват объекта.  Теперь это значение distance отправляем в ф-цию GetBox
+           this->GetBox(CVDistance);
+           //Команду манипулятору запустили. Задаем статус для ответа http-клиенту через структуру HiWonder::ActionState .
+           // Заносим данные в структуру - где ?
+            } //else
+
+           // А из структуры - в JSON-объект
+           jsnActionAnswer.insert("name", QJsonValue(Robot->getbox_Action.name));
+           jsnActionAnswer.insert("rc", QJsonValue(Robot->getbox_Action.rc));
+           jsnActionAnswer.insert("info", QJsonValue(Robot->getbox_Action.info));
+
+           // И теперь вот этот jsnActionAnswer отправляем http-клиенту в ответ на команду "get_box"
+
+           jsnDoc = QJsonDocument(jsnActionAnswer);
+
+           str = jsnDoc.toJson(QJsonDocument::Compact);
+
+           GUI_Write_To_Log(value, "!!!!!!!!!!! Current Answer to GetBox command is ");
+           GUI_Write_To_Log(value, str);
+
+           //str = QString::fromStdString(s2);
+          // str = QJsonDocument(jsnStatus).toJson(QJsonDocument::Compact);
+
+           emit Write_2_TcpClient_Signal (str);
          break;
 
-         case 0: // (уже запущен) -> Выходим
+         case 0:
+             // (уже запущен) -> Выходим
              actionName->rc = -3;
              str = "Action "; str += substr; str += "Уже запущен";
              // Заносим данные в структуру
@@ -968,13 +1029,14 @@ void MainProcess::ProcessAction(HiWonder::ActionState *actionName)
              // - Проверяем октрытие SerialPort
              Robot->getbox_Action = {"get_box", -2, "Failed"};
          break;
+
          default:
              actionName->rc = -4;
              str = "Action "; str += substr; str += "В ожидании";
          break;
 
 
-     }
+     }// switch (actionName->rc)
      GUI_Write_To_Log(value, str);
 
 }// ProcessAction
@@ -1073,7 +1135,7 @@ void MainProcess::CV_onReadyRead_Slot()
      * the data can be received in several small fragments. QTcpSocket buffers up all incoming data and emits readyRead() for every new block that arrives,
      * and it is our job to ensure that we have received all the data we need before we start parsing.
      */
-    int value = 0xfafa;
+    int value = 0xeeee;
 
 //    in.startTransaction();
 
@@ -1165,14 +1227,13 @@ str = "Bytes after reading  "; str += QString::number(afterbytes); GUI_Write_To_
         str += substr;
         GUI_Write_To_Log(value, str);
 
-        unsigned char *arrPtr = mob_parking_position;
+        unsigned char *arrPtr;
+        arrPtr = mob_parking_position;
 
         // Выбираем массив углов через switch, потом попробуем через словарь, т.е. ключ - значение, где значением будет массив
         switch (rDistance)
         {
        // unsigned char ptr;
-
-
 
             case 110: arrPtr = mob_pos_11; break;
             case 120: arrPtr = mob_pos_12; break;
@@ -1181,7 +1242,7 @@ str = "Bytes after reading  "; str += QString::number(afterbytes); GUI_Write_To_
             case 150: arrPtr = mob_pos_15; break;
             case 160: arrPtr = mob_pos_16; break;
             case 170: arrPtr = mob_pos_17; break;
-            case 180: arrPtr = mob_pos_18; break;
+            case 180: arrPtr = mob_pos_18; GUI_Write_To_Log(value, "!!!!! Matched Go to position !!!!");break;
             case 190: arrPtr = mob_pos_19; break;
             case 200: arrPtr = mob_pos_20; break;
             case 210: arrPtr = mob_pos_21; break;
@@ -1190,11 +1251,14 @@ str = "Bytes after reading  "; str += QString::number(afterbytes); GUI_Write_To_
 
 
           default:
-            GUI_Write_To_Log(value, "!!!!! Unrecognized position, Go to Parking !!!!");
-            arrPtr = mob_parking_position; break;
+            substr =  QString::number(rDistance);
+            str = "!!!!! Unrecognized position, Go to Parking !!!! ";
+            str += substr;
+            GUI_Write_To_Log(value, str);
+            arrPtr = mob_parking_position;
           break;
 
-        }
+        }// switch (rDistance)
 
         memcpy(Servos, arrPtr, DOF);
         this->send_Data(LASTONE);
@@ -1263,6 +1327,10 @@ void MainProcess::CV_NEW_onReadyRead_Slot()
     // Вот тут по уму надо передеать rDistance в класс cvdevice;
     // Но пока заколхозим глобальную переменную.
     this->CVDistance = rDistance;
+    str = "Saved distsnce in GLOBAL variable, the value is ";
+    str += QString::number(this->CVDistance);
+    GUI_Write_To_Log(value, str);
+
 
     // Теперь запускаем захват кубика.
 
@@ -1273,8 +1341,14 @@ void MainProcess::CV_NEW_onReadyRead_Slot()
 // catch the cube
 void MainProcess::GetBox(unsigned int distance)
 {
+    QString str;
     int value = 0xA9B9;
     unsigned char *arrPtr = mob_parking_position;
+
+    str = "Current distsnce is ";
+    str += QString::number(distance);
+    GUI_Write_To_Log(value, str);
+
 
     // Выбираем массив углов через switch, потом попробуем через словарь, т.е. ключ - значение, где значением будет массив
     switch (distance)
@@ -1308,7 +1382,7 @@ void MainProcess::GetBox(unsigned int distance)
     memcpy(Servos, arrPtr, DOF);
     this->send_Data(LASTONE);
 
-    QString str = "Запущен Action \"get_box\" ";
+    str = "Запущен Action \"get_box\" ";
     str += Robot->getbox_Action.name;
     GUI_Write_To_Log(value, str);
     // А теперь копируем структуру в json
