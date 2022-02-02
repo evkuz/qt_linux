@@ -81,6 +81,7 @@ public:
 
     };
 
+    // НА каждый экшен свой - экземпляр ActionState
     ActionState getbox_Action;
 
 

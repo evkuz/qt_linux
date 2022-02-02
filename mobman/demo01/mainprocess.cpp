@@ -923,7 +923,61 @@ int MainProcess::getIndexCommand(QString myCommand, QList<QString> theList)
 
     return i;
 
-}// parseJSON()
+}// getIndexCommand
+//+++++++++++++++++++++++++++++++++++++++++++++++
+// Выясняем текущее состояние экшена перед запуском.
+void MainProcess::ProcessAction(HiWonder::ActionState *actionName)
+{
+    QString str, substr;
+    // Этот же ответ при конкретном запросе статуса экшена "get_box"
+      switch (actionName->rc)
+     {
+
+         case -4: // (ожидание) -> Запускаем
+          // А вот тут можно найти индекс этой команды в списке и присвоить
+          // Переменной HiWonder::active_command, тогда не надо держать
+          // в голове значения индексов - т.е. вместо
+          // Robot->actionlst.at(0); будет переменная со значеием Robot->actionlst.at(0)
+            Robot->active_command = Robot->actionlst.at(0);
+            actionName->rc = 0;
+            str = "Action "; str += substr; str += "Успешно запущен";
+
+            // Заносим данные в структуру
+            Robot->getbox_Action = {"get_box", 0, "In progress"};
+            // И еще в структуру для "status?action=getbox"
+
+         break;
+
+         case 0: // (уже запущен) -> Выходим
+             actionName->rc = -3;
+             str = "Action "; str += substr; str += "Уже запущен";
+             // Заносим данные в структуру
+             Robot->getbox_Action = {"get_box", -3, "Already In progress"};
+
+         break;
+
+         case -3: // (уже запущен) -> Выходим
+
+           str = "Action "; str += substr; str += "Уже запущен";
+           Robot->getbox_Action = {"get_box", -3, "Already In progress"};
+         break;
+
+         case -2: // (не запустился) -> Выходим
+
+             str = "Action "; str += substr; str += "Не запустился"; // Serial PORT Error
+             // - Проверяем октрытие SerialPort
+             Robot->getbox_Action = {"get_box", -2, "Failed"};
+         break;
+         default:
+             actionName->rc = -4;
+             str = "Action "; str += substr; str += "В ожидании";
+         break;
+
+
+     }
+     GUI_Write_To_Log(value, str);
+
+}// ProcessAction
 
 //++++++++++++++++++++++++++
 // Пришел запрос от вебсервера. Весь запрос в message

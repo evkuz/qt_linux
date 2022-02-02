@@ -10,6 +10,8 @@
         aa = json.loads(a)
 */
 //+++++++ Получили данные (запрос) от клиента. Парсим.
+//{"clamp", "get_box", "parking", "ready", "status", "getservices", "setservos=", "srvfromfile",  "status?action=getbox"};
+
 void MainProcess::Data_From_TcpClient_Slot(QString message)
 {
     QByteArray dd ;
@@ -29,9 +31,20 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 
     GUI_Write_To_Log(value, str);
 
+// So here we've got the index of elemnt representing the command received by TCP
+
+    switch (comIndex) {
+
+        0: //"clamp"
+            on_clampButton_clicked();
+        break;
+
+        1: //"get_box"
+
+        break;
 
 
-
+    }//switch (comIndex)
 
 
 

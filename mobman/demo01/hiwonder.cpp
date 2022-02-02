@@ -26,7 +26,7 @@ HiWonder::HiWonder()
     getbox_Action.rc = -4;
     getbox_Action.info = "waiting";
 
-    ActionState putbox {"putbox", -4, "waiting"};
+    ActionState putbox_Action {"putbox", -4, "waiting"};
 
     ManipulatorState.action = "Nothhing";
     ManipulatorState.state = statuslst.at(0); // "init" state

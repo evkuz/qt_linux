@@ -153,6 +153,7 @@ public:
    void parseJSON(QString jsnData); // Парсинг JSON из HTTP
 
    int getIndexCommand(QString myCommand, QList<QString> theList);
+   void ProcessAction (HiWonder::ActionState * actionName);
 
 private:
 //    SocketClient readSocket;

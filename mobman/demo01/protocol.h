@@ -2,6 +2,7 @@
 #define PROTOCOL_H
 
 #include <QString>
+#include <QList>
 //"getactions",
  const QList<QString> tcpCommand = {"clamp", "get_box", "parking", "ready", "status", "getservices", "setservos=", "srvfromfile",  "status?action=getbox"};
 
