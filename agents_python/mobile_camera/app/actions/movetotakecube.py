@@ -18,7 +18,9 @@ class MoveToTakeCube (BaseAction):
         self.remoteDevice = RemoteDevice(remote_addr)
 
     def get_info(self) -> dict:
-        return {"name":self.Name}
+        return self.make_info(
+            "Checks cube position and sends move commands to robot untill it will be at right position"
+        )
 
     def run_action(self, **kwargs) -> int:
         while self._workingFlag:

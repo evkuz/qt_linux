@@ -15,7 +15,9 @@ class ExecuteFileAction (BaseAction):
         Returns:
             dict: "name": self.Name, ["parameter":"description", ...]
         """ 
-        return {"name":self.Name}
+        return self.make_info(
+            f"Perform script {self.scriptPath} with {self.program}"
+        )
 
     def run_action(self, **kwargs) -> int:
         """[return result code]
