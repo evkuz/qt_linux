@@ -32,20 +32,22 @@ Serial.flush();
 
 
   byte cycle_num =0;
+  int increment = 0;
+
+//  if (start_servo < end_servo) {increment = 1;} // В сторону увеличения
+//  if (start_servo >= end_servo) {increment = -1;} // В сторону уменьшения
 while (maxdt != 100) // Перебираем дельты с наибольшим значением пока таковое не станет нулевым.
   {                    // см. get_max_delta()
 
-     //
     for (byte i=start_servo -1; i< end_servo ; i++) //
     {                                                //
-
         s_pos = servos[i].read();
         if (delta[i] !=0)
         {
             s_pos = s_pos + DF[i];
             servos[i].write(s_pos);
             delta[i] -= 1;
-            delay(10);
+            delay(myDELAY);
         }
 
     }//for (byte i=start_servo -1; // вся текущая макс. дельта
@@ -116,3 +118,20 @@ byte get_max_delta (byte *arr, byte start_servo, byte end_servo)
   return index;
 } //get_max_delta
 //++++++++++++++++++++++++++
+//++++++++++++++++++++++++++
+// Attach all servos. need for smooth start
+void smoothStart()
+{
+    for (byte i=0; i< serv_number; i++) //
+    {
+      for (byte j=0; j< 10; j++) {
+        servos[i].detach();
+        delay(75);
+        servos[i].attach(i+2);
+        // writeUs(_servoCurrentPos);
+        delay(25);
+      }
+
+    }
+
+}

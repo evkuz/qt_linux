@@ -38,4 +38,3 @@ class CamDetectorService(BaseService):
 
         x_mm = x * (38. / cube_width)
         return atan2(x_mm, distance)*180. / pi
-    

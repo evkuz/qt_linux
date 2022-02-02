@@ -55,6 +55,7 @@ public:
     QPushButton *fixButton;
     QPushButton *PUTButton;
     QPushButton *GetBackFromServoButton;
+    QPushButton *fromFileButton;
 
     void setupUi(QWidget *MainWindow)
     {
@@ -117,7 +118,7 @@ public:
         getXYButton->setGeometry(QRect(510, 150, 151, 25));
         socketButton = new QPushButton(MainWindow);
         socketButton->setObjectName(QString::fromUtf8("socketButton"));
-        socketButton->setGeometry(QRect(750, 110, 151, 71));
+        socketButton->setGeometry(QRect(790, 160, 151, 71));
         servo_1_spinBox = new QSpinBox(MainWindow);
         servo_1_spinBox->setObjectName(QString::fromUtf8("servo_1_spinBox"));
         servo_1_spinBox->setGeometry(QRect(10, 270, 121, 61));
@@ -226,7 +227,7 @@ public:
         getBackButton->setGeometry(QRect(190, 80, 261, 51));
         fixButton = new QPushButton(MainWindow);
         fixButton->setObjectName(QString::fromUtf8("fixButton"));
-        fixButton->setGeometry(QRect(700, 0, 211, 91));
+        fixButton->setGeometry(QRect(790, 100, 151, 51));
         QFont font3;
         font3.setPointSize(18);
         font3.setItalic(true);
@@ -238,6 +239,16 @@ public:
         GetBackFromServoButton = new QPushButton(MainWindow);
         GetBackFromServoButton->setObjectName(QString::fromUtf8("GetBackFromServoButton"));
         GetBackFromServoButton->setGeometry(QRect(590, 390, 131, 61));
+        fromFileButton = new QPushButton(MainWindow);
+        fromFileButton->setObjectName(QString::fromUtf8("fromFileButton"));
+        fromFileButton->setGeometry(QRect(790, 30, 151, 51));
+        QFont font4;
+        font4.setPointSize(18);
+        font4.setBold(true);
+        font4.setItalic(false);
+        font4.setWeight(75);
+        font4.setStrikeOut(false);
+        fromFileButton->setFont(font4);
 
         retranslateUi(MainWindow);
 
@@ -268,6 +279,7 @@ public:
         fixButton->setText(QCoreApplication::translate("MainWindow", "Fix Data", nullptr));
         PUTButton->setText(QCoreApplication::translate("MainWindow", "PUT", nullptr));
         GetBackFromServoButton->setText(QCoreApplication::translate("MainWindow", "BACK FROM SpB", nullptr));
+        fromFileButton->setText(QCoreApplication::translate("MainWindow", "From File", nullptr));
     } // retranslateUi
 
 };

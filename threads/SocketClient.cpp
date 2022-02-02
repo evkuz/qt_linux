@@ -34,8 +34,9 @@ using namespace std;
 
 SocketClient::SocketClient(const char *socketPath) {
   int pathLength = strlen(socketPath);
-  _serverPath = new char[pathLength];
+  _serverPath = new char[pathLength+1];
   strncpy(_serverPath, socketPath, pathLength);
+  _serverPath[pathLength] = '\0';
 }
 
 SocketClient::~SocketClient() { delete[] this->_serverPath; }
@@ -60,9 +61,10 @@ int SocketClient::GetState(DetectorState *state) {
   }
 
   sprintf(buffer, "%i", ServerCommand::ACT_SEND_COORDS);
-  write(sockfd, buffer, strlen(buffer));
-
+  ssize_t wr_result = write(sockfd, buffer, strlen(buffer));
+  if (wr_result==0) {;}
   n = read(sockfd, buffer, 80);
+  if (n==0) {;}
   int isDetected(0);
   int x(0), y(0);
   try {

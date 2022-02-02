@@ -1,6 +1,6 @@
 #ifndef POSITIONS_H
 #define POSITIONS_H
-/*Координаты начальной/стартовой позиции*/
+/*Координаты начальной/стартовой позиции и прочих других*/
 #include <QtCore>
 
 const char hwr_Start_position [6] = {93, 93, 93, 93, 93, 93}; // servo1,,,servo6
@@ -11,6 +11,33 @@ unsigned char train_position [6] = {0, 93, 78, 25, 145, 148}; // координ�
 unsigned char put_position [6] = {60, 93, 90, 40, 140, 30};
                             //      60, 93, 100, 35, 145, 35
 unsigned char after_put_position [6] = {0, 93, 90, 45, 135, 30};
+
+unsigned char nw_1st_position[6] = {75, 93, 10, 45, 65, 179};
+unsigned char nw_2nd_position[6] = {75, 93, 10, 45, 65, 20};
+unsigned char nw_3rd_position[6] = {75, 93, 20, 45, 85, 20};
+
+//+++++++++++++++++++++ Позиции для передвижения ёлки
+
+unsigned char mv_01_tree_position[6] = {0, 93, 30, 70, 100, 170};
+unsigned char mv_02_tree_position[6] = {120, 93, 70, 70, 105, 165};
+unsigned char mv_03_tree_position[6] = {120, 93, 70, 70, 105, 20};
+
+
+unsigned char mv_04_tree_position[6] = {0, 93, 70, 70, 135, 20};
+unsigned char mv_05_tree_position[6] = {0, 93, 70, 100, 135, 20};
+
+//++++++++++++++++++++++++++++  Снеговик
+unsigned char olaf_01[6]={0, 93, 45, 45, 93, 165};
+unsigned char olaf_02[6]={0, 93, 15, 45, 93, 165};
+unsigned char olaf_03[6]={0, 93, 25, 45, 93, 165};
+unsigned char olaf_04[6]={63, 93, 25, 45, 93, 165};
+unsigned char olaf_05[6]={63, 93, 65, 45, 93, 165};
+unsigned char olaf_06[6]={63, 93, 65, 45, 135, 40};
+
+
+
+
+
 
 //93, 93, 100, 50, 120, 30
 // 60, 93,90, 40, 145, 30

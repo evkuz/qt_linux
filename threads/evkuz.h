@@ -3,13 +3,68 @@
 
 
 /*
- *  https://mayaposch.wordpress.com/2011/11/01/how-to-really-truly-use-qthreads-the-full-explanation/
+ * Ветка threads. Стационарный манипулятор.
+ * Управление и через ЦУП и через GUI
+ *
+ * https://mayaposch.wordpress.com/2011/11/01/how-to-really-truly-use-qthreads-the-full-explanation/
+ * В к. 406Б использую kit : Qt 5.15.2 (gcc_64)
+ * В к. 240Б использую       Qt 5.15.2 (gcc_64)for Desktop
+ * На x542bp использую       Qt 5.15.2 (gcc_64)for Desktop
  *
  *
- **
  * //++++++++++++++++++++++++++++++++++++++++++++
  * Путь к Supervisor-у
  * file:///home/ubuntu/iqr_lit/supervisor/index.html
+ *
+ *
+ * //++++++++++++++++++++++++++++++++++++
+ * 16.01.2022
+ * Задача https://pm.jinr.ru/issues/8696 - протестировать на стационарном манипуляторе.
+ * Откладываем из-за отсутствия файла command.lst
+ *
+ *
+ * //++++++++++++++++++++++++++++++++++++
+ * 10.01.2022
+ * + Переименовать сигнал Info_2_Log_Signal как в проекте mobman - Data_From_TcpClient_Signal
+ * + Переименовать сигнал &MainWindow::Write_2_Client_Signal в Write_2_TcpClient_Signal
+ * + Соответственно переименовать слот &QSimpleServer::Write_2_Client_SLot в Write_2_TcpClient_Slot
+   //++++++++++++++++++++++++++++++++++++
+   09.01.2022
+   + Убрать ф-цию MainWindow::update_data_from_sliders(int index, int value)
+   + Заменить (18 замен) переменную parcel_size на аналогичную из класса HiWonder - HiWonder:DOF
+   + Поправить строку i<= Robot->DOF -1;
+   + Убрать из ф-ции MainWindow::on_getXYButton_clicked() запуск socket-сервера, было сделано для теста,  это  не ошибка, но сейчас - совсем лишнее !
+   + Убрать комментарии в ф-ции MainWindow::on_trainButton_clicked()
+   + ДОбавить комменты касательно MainWindow::send_Data(unsigned char thelast), ssend_data(...) [ssend_data(...) - удалил ф-цию, заменена на GoToPosition]
+   + Переименовать слот MainWindow::Info_2_Log_Slot(QString message) как в проекте mobman (embed) - Data_From_TcpClient_Slot
+   + Добавить комменты в ф-цию MainWindow::on_fixButton_clicked()
+
+
+ * //++++++++++++++++++++++++++++++++++++
+ * 06.01.2021
+ * Объявил переменные DOF, szData как static const (вместо #define).
+ * Теперь так
+ * static const int robot_buffer_SIZE = 32;
+ * static const int DOF = 6;
+ * static const int szData = 8;
+
+ * //++++++++++++++++++++++++++++++++++++
+ * 03.01.2022
+ * - Добавил кнопку "fromFileButton" - выполнение списка движений/позиций из файла.
+ * Слот нажатия кнопки - MainWindow::on_fromFileButton_clicked()
+ * Файл со списком позиций - ./command.lst
+ *
+ * - Следующая задача считывать файл построчно по команде setservos=,
+ * передавать строки роботу [сделано]
+ *
+ * - Поправил инициализацию fuzzy_model, теперь нет warning-ов
+ * Возился с union _algorithm_data
+ *
+ * // 28.12.2021
+ * К НГ делали видеоролик, пришлось код менять.
+ * Теперь вот свожу с гитом в соответствие.
+ *
+ *
  *
  * //++++++++++++++++++++++++++++++++++++++++++++++
  * 26.10.2021
@@ -78,7 +133,7 @@
  * 1140, 499 - координаты на момент ухода домой в конце дня. [Утром было 1140, 510]
  * Посмотрим, какие будут завтра с утра.
  *
- * ДОбавил кнопку  "Fix Data", которая записывает в файл точек координаты точки с камеры и позиции приводов.
+ * ДОбавил кнопку  "Fix Data", которая записывает в файл обучающей выборки координаты точки с камеры CV и позиции приводов.
  * Так намного быстрее протекает набор точек.
  *
  * Набрал за сегодня 130 точек. (час примерно добавлял кнопку со всем ф-ционалом, + в 12.00 собрание было.)

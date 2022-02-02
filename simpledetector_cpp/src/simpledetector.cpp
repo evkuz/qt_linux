@@ -382,7 +382,7 @@ int main(int argc, char* argv[])
 	double frame_width = capture.get( CAP_PROP_FRAME_WIDTH );
 	double frame_height = capture.get( CAP_PROP_FRAME_HEIGHT );
 	
-	Mat frame, image;
+	Mat frame, image, frame_orig;
 	printf("[i] press 's' for capture image and 'Esc' or 'q' for quit!\n\n");
 	namedWindow( windowName, 1 );
 
@@ -526,7 +526,7 @@ int main(int argc, char* argv[])
 
 			char key = (char)waitKey(capture.isOpened() ? 50 : 500);
 			if( key == 115 ) {
-				imwrite("frame.png", frame);
+				imwrite("frame.png", frame_orig);
 				printf("Image was saved to file 'frame.png'");
 			}
 			
