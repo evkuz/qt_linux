@@ -1,0 +1,14 @@
+{
+"rc": 0,
+"info": "success",
+"name": "getposition",
+"data": {
+"detected": false,
+"x": -40,
+"y": 55,
+"width": 69,
+"height": 22,
+"err_angle": -2.4494185504244363,
+"distance": 514.9789082158295
+}
+}
