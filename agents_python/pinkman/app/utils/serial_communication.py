@@ -61,7 +61,7 @@ class SerialCommunication:
     def open_device(self):
         if not self.__isOpened:
             self.__sp.open()
-            time.sleep(1)
+            time.sleep(2)
             self.__isOpened = True
             self.go_to_start()
 
@@ -104,7 +104,7 @@ if __name__ == '__main__':
 
     s = SerialCommunication(port=ports[0])
     s.open_device()
-    time.sleep(2)
+    time.sleep(1)
     while True:
         print(s.get_state())
         line = input()

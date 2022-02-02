@@ -1,7 +1,7 @@
 #! /bin/bash
 
 if [ ! -d '.venv' ]; then
-  python3 -m venv .venv --prompt='vehicle-http' || {
+  python3 -m venv .venv --prompt='robot-http' || {
       echo "can't create virtual enviroment!"
       exit 1
   }
@@ -17,6 +17,6 @@ source .venv/bin/activate || {
       echo "can't activate virtual enviroment!"
       exit 3
 } && {
-  export FLASK_ENV=config.ProductionConfig
+#  export FLASK_ENV=config.ProductionConfig
   python runner.py
 }

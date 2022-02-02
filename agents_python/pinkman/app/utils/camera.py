@@ -170,7 +170,7 @@ class CameraDetector(object):
         color_lower = [255,255,255]
         color_upper = [0,0,0]
         if self.__actualFrame is None:
-            return
+            return ""
         frameCpy = self.__actualFrame.copy()
         roi = frameCpy[y1:y2,x1:x2,:]
         for i in range(roi.shape[0]):
@@ -229,7 +229,9 @@ class CameraDetector(object):
             color_upper[2] += minValue
 
         self.color_range = (color_lower, color_upper)
-        print(f"(({color_lower[0]}, {color_lower[1]}, {color_lower[2]}), ({color_upper[0]}, {color_upper[1]}, {color_upper[2]}))")
+        res = f"(({color_lower[0]}, {color_lower[1]}, {color_lower[2]}), ({color_upper[0]}, {color_upper[1]}, {color_upper[2]}))"
+        return res
+
 
     def __thread_work(self):
         self.__isWorking = True
