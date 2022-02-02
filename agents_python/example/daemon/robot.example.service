@@ -1,0 +1,21 @@
+[Unit]
+Description=Robot example server daemon
+After=network.target
+
+[Service]
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/agents/example
+ExecStart=/home/pi/agents/.venv/bin/python \
+          /home/pi/agents/example/runner.py >> "/home/pi/agents/example/error.log"
+Type=simple
+ExecReload=/bin/kill -s HUP $MAINPID
+KillMode=mixed
+TimeoutStopSec=5
+PrivateTmp=true
+Restart=always
+Environment="PYTHONPATH=/home/pi/agents/example"
+Environment="FLASK_ENV=config.ProductionConfig"
+
+[Install]
+WantedBy=multi-user.target

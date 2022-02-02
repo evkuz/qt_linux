@@ -1,5 +1,6 @@
 from iqrdevice.service import BaseService
-from features import device, camera
+from .. import device
+from ..utils import camera
 from math import atan2, pi
 
 
@@ -37,4 +38,3 @@ class CamDetectorService(BaseService):
 
         x_mm = x * (38. / cube_width)
         return atan2(x_mm, distance)*180. / pi
-    

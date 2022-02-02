@@ -7,10 +7,18 @@
     <img src="{{ url_for('video_feed') }}">
     <p><strong>Communication links:</strong></p>
     <ul>
-        <li><b><a href="/status">status</a></b></li>
-        <li><b><a href="/service?name=getservices">getservices</a></b></li>
-        <li><b><a href="/service?name=getactions">getactions</a></b></li>
-        <li><b><a href="/service?name=getposition">getposition</a></b></li>
-      </ul>
+      <li><b><a href="/status">status</a></b></li>
+      <li><b><a href="/service?name=getservices">getservices</a></b></li>
+      <li><b><a href="/service?name=getactions">getactions</a></b></li>
+    </ul>
+
+    <p><strong>Useful links:</strong></p>
+    <ul>
+      <li><b><a href="/service?name=getposition">Ask info from GetPosition</a></b></li>
+      <li><b><a href="/action?name=movetotakecube">Move To Take Cube</a></b></li>
+      <li><b><a href="/status?action=movetotakecube">Status of "MoveToTakeCube"</a></b></li>
+      <li><b><a href="/reset">Reset</a></b></li>
+    </ul>
+
   </body>
 </html>
