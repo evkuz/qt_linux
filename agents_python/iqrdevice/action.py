@@ -108,11 +108,17 @@ class BaseAction:
 
     def __run_thread_work(self, **kwargs):
         self.__state.set_run()
-        
-        res = self.run_action(**kwargs)
-        
+        try:
+            res = self.run_action(**kwargs)
+        except Exception as e:
+            res = -10
+            self.__state.set_info(str(e))
+
         if not self.__isReset:
-            self.__state.set_success(res)
+            if res == 0:
+                self.__state.set_success(res)
+            else:
+                self.__state.set_fail(res)
         self.__thread = None
         self.__isWorking = False
     

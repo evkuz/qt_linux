@@ -5,6 +5,12 @@ from iqrdevice.utils import RemoteDevice
 from ..services import CamDetectorService
 
 
+TAKE_CUBE_MIN_DIST = 110
+TAKE_CUBE_MAX_DIST = 220
+TAKE_CUBE_CENTER_DIST = (TAKE_CUBE_MAX_DIST - TAKE_CUBE_MIN_DIST)/2
+
+
+
 class MoveToTakeCube (BaseAction):
     def __init__(self, remote_addr:str, getPosService:CamDetectorService):
         BaseAction.__init__(self, "movetotakecube")
@@ -19,11 +25,11 @@ class MoveToTakeCube (BaseAction):
             pos = self.get_position()
             if pos['detected']:
                 self._set_state_info(f"Cube detected: dist={pos['distance']}, angle={pos['err_angle']}")
-                if abs(pos['err_angle']) < 0.3:
-                    if 140 < pos['distance'] < 200:
+                if abs(pos['err_angle']) < 1:
+                    if TAKE_CUBE_MIN_DIST < pos['distance'] < TAKE_CUBE_MAX_DIST:
                         break
                     else:
-                        dist = (pos['distance'] - 150) * 0.001
+                        dist = (pos['distance'] - TAKE_CUBE_CENTER_DIST) * 0.001
                         self.remoteDevice.manual_request(f"/run?d={dist}")
                         self.remoteDevice.wait_for_action_finished()
                 else:
