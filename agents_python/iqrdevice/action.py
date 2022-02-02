@@ -145,7 +145,12 @@ class BaseAction:
     def __reset_thread_work(self):
         if self.__thread is not None: self.__thread.join()
         self.__state.set_info("reset was sent")
-        res = self.reset_action()
+        try:
+            res = self.reset_action()
+        except Exception as e:
+            res = -1
+            self.__state.set_info("Reset_fail: " + str(e))
+
         self.__state.set_fail(res)
 
     def reset_action(self) -> int:
