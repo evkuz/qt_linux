@@ -14,6 +14,7 @@ by = -1.0
 
 
 def movebase_client(x, y, z, w):
+    result = -1
 
     client = actionlib.SimpleActionClient('move_base',MoveBaseAction)
     print('w8ing server')
@@ -36,7 +37,12 @@ def movebase_client(x, y, z, w):
         rospy.logerr("Action server not available!")
         rospy.signal_shutdown("Action server not available!")
     else:
-        return client.get_result()
+        res = client.get_result()
+        if res is not None:
+            print "MoveBase result:", result
+            result = 0
+    return result
+        
 
 if __name__ == '__main__':
     result = 0
@@ -53,12 +59,9 @@ if __name__ == '__main__':
             print("Unknown point name!")
             result = -1
 
-        if result > 0:
+        if result == 0:
             rospy.loginfo("Goal execution done!")
     except rospy.ROSInterruptException:
         rospy.loginfo("Navigation test finished.")
-
-    if result == 1:
-        result = 0
 
     exit(result)
