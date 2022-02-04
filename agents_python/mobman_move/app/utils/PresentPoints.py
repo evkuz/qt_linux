@@ -6,11 +6,15 @@ import rospy
 import actionlib
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 
-ax = 0.2
-ay = 0.5
+x1 = 0.750
+y1 = 0.90
+z1 = 0.0
+w1 = 1.0
 
-bx = 0.85
-by = -1.0
+x2 = 0.10
+y2 = 0.10
+z2 = -0.7
+w2 = 0.7
 
 
 def movebase_client(x, y, z, w):
@@ -52,9 +56,9 @@ if __name__ == '__main__':
         if len(sys.argv) < 2:
             result = -2
         elif sys.argv[1] == 'a':
-            result = movebase_client(ax, ay, 0.7, 0.7)
+            result = movebase_client(x1,y1,z1,w1)
         elif sys.argv[1] == 'b':
-            result = movebase_client(bx, by, 1.0, 1.0)
+            result = movebase_client(x2,y2,z2,w2)
         else:
             print("Unknown point name!")
             result = -1
