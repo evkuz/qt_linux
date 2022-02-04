@@ -7,3 +7,5 @@ export ROS_HOSTNAME=$ROS_IP
 export ROS_MASTER_URI=http://$ROS_IP:11311
 
 python2 app/utills/PresentPoints.py $@
+
+exit $?

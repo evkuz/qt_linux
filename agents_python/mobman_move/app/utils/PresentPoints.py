@@ -58,4 +58,7 @@ if __name__ == '__main__':
     except rospy.ROSInterruptException:
         rospy.loginfo("Navigation test finished.")
 
+    if result == 1:
+        result = 0
+        
     exit(result)
