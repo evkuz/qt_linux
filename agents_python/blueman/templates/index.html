@@ -1,0 +1,29 @@
+<html>
+  <head>
+    <title>BlueMan http server</title>
+  </head>
+  <body>
+    <h1>BlueMan http server</h1>
+    <img src="{{ url_for('video_feed') }}">
+    <p><strong>Base links:</strong></p>
+    <ul>
+      <li><b><a href="/status">status</a></b></li>
+      <li><b><a href="/service?name=getservices">getservices</a></b></li>
+      <li><b><a href="/service?name=getactions">getactions</a></b></li>
+    </ul>
+    <p><strong>Usefull links:</strong></p>
+    <ul>
+      <li><b><a href="/action?name=catchcube">CatchCube</a></b></li>
+      <li><b><a href="/status?action=catchcube">status of "catchcube"</a></b></li><br/>
+
+      <li><b><a href="/action?name=putcube">PutCube</a></b></li>
+      <li><b><a href="/status?action=putcube">status of "putcube"</a></b></li><br/>
+
+      <li><b><a href="/reset">RESET</a></b></li><br/>
+      
+      <li><b><a href="/service?name=camcalib&x1=100&y1=100&x2=150&y2=150">camcalib</a></b></li>
+      <li><b><a href="/service?name=getposition">getposition</a></b></li>
+
+      </ul>
+  </body>
+</html>
