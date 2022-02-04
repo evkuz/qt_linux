@@ -38,6 +38,7 @@ class CatchCubeAction (BaseAction):
                     pos4 = 180
                     currentPos = self.move_manip(pos1, pos2, pos3, pos4)
                     detectedSteps += 1
+                    notDetectedSteps = 0
                 else:
                     notDetectedSteps += 1
                 if currentPos[4] == 1:
