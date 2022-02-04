@@ -10,7 +10,8 @@ class CameraDetector(object):
         self.last_access = 0  # time of last client access to the camera
         #self.color_range = ((83, 198, 207), (151, 241, 251)) #((18, 120, 131), (43, 150, 158))
         #self.color_range = ((0, 0, 140), (10, 25, 183))
-        self.color_range = ((0, 230, 110), (20, 255, 190))
+        #self.color_range = ((0, 230, 110), (20, 255, 190))
+        self.color_range = ((0, 230, 155), (10, 255, 180))
 
         self.port = camPort
         self.FrameWidth = width
@@ -142,7 +143,7 @@ class CameraDetector(object):
             ch = h / self.FrameHeight
 
             #if border_coef > 0.1 and border_coef < 4 and cw < 0.85 and cw > 0.08 and ch < 0.9 and ch > 0.08:
-            if cw < 0.85 and cw > 0.08 and ch < 0.9 and ch > 0.08:    
+            if cw < 0.85 and cw > 0.04 and ch < 0.9 and ch > 0.04:    
                 detected = True
 
         if detected:
@@ -172,7 +173,7 @@ class CameraDetector(object):
         color_lower = [255,255,255]
         color_upper = [0,0,0]
         if self.__actualFrame is None:
-            return
+            return ""
         frameCpy = self.__actualFrame.copy()
         roi = frameCpy[y1:y2,x1:x2,:]
         for i in range(roi.shape[0]):
@@ -231,7 +232,8 @@ class CameraDetector(object):
             color_upper[2] += minValue
 
         self.color_range = (color_lower, color_upper)
-        print(f"(({color_lower[0]}, {color_lower[1]}, {color_lower[2]}), ({color_upper[0]}, {color_upper[1]}, {color_upper[2]}))")
+        res = f"(({color_lower[0]}, {color_lower[1]}, {color_lower[2]}), ({color_upper[0]}, {color_upper[1]}, {color_upper[2]}))"
+        return res
 
     def __thread_work(self):
         self.__isWorking = True

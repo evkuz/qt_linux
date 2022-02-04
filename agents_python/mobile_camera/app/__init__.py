@@ -21,5 +21,7 @@ from . import services
 
 device.set_name("mobile camera")
 getPositionService = services.CamDetectorService(cam)
+device.register_service(services.CamCalibService(cam))
+
 device.register_service(getPositionService)
-device.register_action(actions.MoveToTakeCube("http://192.168.1.80:8082", getPositionService))
+device.register_action(actions.MoveToTakeCube("http://192.168.1.199:8082", getPositionService, "http://192.168.1.201:8383"))
