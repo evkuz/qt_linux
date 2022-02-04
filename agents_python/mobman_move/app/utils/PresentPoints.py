@@ -53,12 +53,12 @@ if __name__ == '__main__':
             print("Unknown point name!")
             result = -1
 
-        if result:
+        if result > 0:
             rospy.loginfo("Goal execution done!")
     except rospy.ROSInterruptException:
         rospy.loginfo("Navigation test finished.")
 
     if result == 1:
         result = 0
-        
+
     exit(result)
