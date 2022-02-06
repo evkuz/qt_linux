@@ -30,11 +30,12 @@ QSimpleServer::QSimpleServer(QObject *parent) :
 //++++++++++++++ Слот этого сигнала - &MainWindow::newConnection_Slot - дает роботу команду.
 void QSimpleServer::incomingConnection(qintptr sDescriptor)
 {
-    // Создание объекта потока QObject
+    // Создание объекта потока - класс QThread
     thread_A = new QThread;
-    //Создание объекта потока для сокета
+    //Создание объекта для сокета - класс QObject
     QSocketThread* tcpthread = new QSocketThread(sDescriptor);
 
+    // Заворачиваем QObject в QThread
     tcpthread->moveToThread(thread_A);
 
     //Соединение сигнала завершения потока со слотом отложенного удаления

@@ -188,66 +188,66 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
        this->send_Data(NOT_LAST);
    }
 //+++++++++++++++++++ action  "get_box" ++++++++++++++++++++++++++++++++++++++++++++
-   if (substr == "get_box") {
-//       jsn_answer_info = Robot->current_status;
-//       str = "Current status value is ";
-//       str += jsn_answer_info;
-//       GUI_Write_To_Log(value, str);
-//       // Проверяем статус, не запущен ли уже такой action ?
-//       if (Robot->current_status == "inprogress"){jsn_answer_rc = -3;}
-//       else{
-//           Robot->current_status = "inprogress";
-//           jsn_answer_rc = 0;
-//           jsn_answer_info = "Action started";
-//           jsn_answer_name = "get_box";
-//       }
+//   if (substr == "get_box") {
+////       jsn_answer_info = Robot->current_status;
+////       str = "Current status value is ";
+////       str += jsn_answer_info;
+////       GUI_Write_To_Log(value, str);
+////       // Проверяем статус, не запущен ли уже такой action ?
+////       if (Robot->current_status == "inprogress"){jsn_answer_rc = -3;}
+////       else{
+////           Robot->current_status = "inprogress";
+////           jsn_answer_rc = 0;
+////           jsn_answer_info = "Action started";
+////           jsn_answer_name = "get_box";
+////       }
 
-       // Этот же ответ при конкретном запросе статуса экшена "get_box"
-         switch (Robot->getbox_Action.rc)
-        {
+//       // Этот же ответ при конкретном запросе статуса экшена "get_box"
+//         switch (Robot->getbox_Action.rc)
+//        {
 
-            case -4: // (ожидание) -> Запускаем
-             // А вот тут можно найти индекс этой команды в списке и присвоить
-             // Переменной HiWonder::active_command, тогда не надо держать
-             // в голове значения индексов
-               Robot->active_command = Robot->actionlst.at(0);
-               Robot->getbox_Action.rc = 0;
-               str = "Action "; str += substr; str += "Успешно запущен";
+//            case -4: // (ожидание) -> Запускаем
+//             // А вот тут можно найти индекс этой команды в списке и присвоить
+//             // Переменной HiWonder::active_command, тогда не надо держать
+//             // в голове значения индексов
+//               Robot->active_command = Robot->actionlst.at(0);
+//               Robot->getbox_Action.rc = 0;
+//               str = "Action "; str += substr; str += "Успешно запущен";
 
-               // Заносим данные в структуру
-               Robot->getbox_Action = {"get_box", 0, "In progress"};
-               // И еще в структуру для "status?action=getbox"
+//               // Заносим данные в структуру
+//               Robot->getbox_Action = {"get_box", 0, "In progress"};
+//               // И еще в структуру для "status?action=getbox"
 
-            break;
+//            break;
 
-            case 0: // (уже запущен) -> Выходим
-                Robot->getbox_Action.rc = -3;
-                str = "Action "; str += substr; str += "Уже запущен";
-                // Заносим данные в структуру
-                Robot->getbox_Action = {"get_box", -3, "Already In progress"};
+//            case 0: // (уже запущен) -> Выходим
+//                Robot->getbox_Action.rc = -3;
+//                str = "Action "; str += substr; str += "Уже запущен";
+//                // Заносим данные в структуру
+//                Robot->getbox_Action = {"get_box", -3, "Already In progress"};
 
-            break;
+//            break;
 
-            case -3: // (уже запущен) -> Выходим
+//            case -3: // (уже запущен) -> Выходим
 
-              str = "Action "; str += substr; str += "Уже запущен";
-              Robot->getbox_Action = {"get_box", -3, "Already In progress"};
-            break;
+//              str = "Action "; str += substr; str += "Уже запущен";
+//              Robot->getbox_Action = {"get_box", -3, "Already In progress"};
+//            break;
 
-            case -2: // (не запустился) -> Выходим
+//            case -2: // (не запустился) -> Выходим
 
-                str = "Action "; str += substr; str += "Не запустился"; // Serial PORT Error
-                // - Проверяем октрытие SerialPort
-                Robot->getbox_Action = {"get_box", -2, "Failed"};
-            break;
-            default:
-                Robot->getbox_Action.rc = -4;
-                str = "Action "; str += substr; str += "В ожидании";
-            break;
+//                str = "Action "; str += substr; str += "Не запустился"; // Serial PORT Error
+//                // - Проверяем октрытие SerialPort
+//                Robot->getbox_Action = {"get_box", -2, "Failed"};
+//            break;
+//            default:
+//                Robot->getbox_Action.rc = -4;
+//                str = "Action "; str += substr; str += "В ожидании";
+//            break;
 
 
-        }
-        GUI_Write_To_Log(value, str);
+//        }
+//        GUI_Write_To_Log(value, str);
 
 
         // Фиксируем время начала выполнения.
@@ -298,7 +298,7 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 //       emit Write_2_TcpClient_Signal (str);
 
 
-   }//substr == "get_box"
+ //  }//substr == "get_box"
 
 //+++++++++++++++++++ action  "srvfromfile" +++++
    // Читаем построчно файл со значениями сервоприводов
@@ -334,12 +334,20 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
    }//substr == "getactions"
 //+++++++++++++++++++++++++++++++++++++++++++++    /status?action=get_box
 // Вот тут задаем статус {"waiting","noDetection", "inprogress", "done", "fail"}
-   if (substr == "status?action=getbox"){;}
+  // if (substr == "status?action=getbox"){;}
 
 
 
 
 
+
+}
+
+void MainProcess::Data_from_TcpServer_Slot(QString tcpData)
+{
+     int value = 0x1111;
+  GUI_Write_To_Log(value, "!!!!!! Here is Data From CV device !!!!!!!!!!");
+  GUI_Write_To_Log(value,tcpData);
 
 }//Data_From_TcpClient_Slot
 //++++++++++++++++++++++++++++++++++++++++++++++++++++

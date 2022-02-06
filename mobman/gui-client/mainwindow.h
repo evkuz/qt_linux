@@ -92,6 +92,8 @@ private slots:
 
     void on_GetActionsButton_clicked();
 
+    void on_NEW_GetStatusButton_clicked();
+
 private:
     Ui::MainWindow *ui;
 };

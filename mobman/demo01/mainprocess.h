@@ -21,6 +21,8 @@
 #include "cvdevice.h"
 #include "protocol.h"
 
+#include "clientsocket.h"
+
 #include <QJsonDocument>
 #include <QJsonParseError>
 #include <QJsonObject>
@@ -69,8 +71,9 @@ public:
     //QTcpServer* m_pTCPServer;
 
     QSimpleServer server;
-    QTcpSocket* socketCV;
-    CVDevice* CVdevice;
+    QTcpSocket *socketCV;
+    CVDevice *CVdevice;
+    QThread *threadCV;
 
     //+++++++++++++++++++++++++++++ Threads +++++++++++++++
     int thread_counter ;
@@ -161,6 +164,8 @@ private:
 public slots:
 void Data_From_Web_SLot(QString message);
 void Data_From_TcpClient_Slot(QString);
+
+void Data_from_TcpServer_Slot(QString tcpData);
 
 void newConnection_Slot();
 void server_New_Connect_Slot();

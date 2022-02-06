@@ -58,7 +58,7 @@ MainProcess::MainProcess(QObject *parent)
 
     qDebug() << "Started " << target_name;
 
-    GUI_Write_To_Log(0000, "Going to Start QTcpSErver");
+    GUI_Write_To_Log(0x0000, "Going to Start QTcpServer");
     if (server.isListening ()) {
 
         str = "Listening on address "; str += server.serverAddress().toString();
@@ -739,11 +739,38 @@ void MainProcess::request_CV()
  */
 
 
+//    // Создание объекта потока - класс QThread
+//    threadCV = new QThread;
+//    //Создание объекта для сокета - класс QObject
+//   // int CVSocketDescriptor = 0x12345678; // Пока просто число.
+//    ClientSocket *CVSocketthread = new ClientSocket(CVDev_IP, CVDev_Port);
+
+//    // Заворачиваем QObject в QThread
+//    CVSocketthread->moveToThread(threadCV);
+
+
+//    //Соединение сигнала завершения потока со слотом отложенного удаления
+//    connect(CVSocketthread, SIGNAL(finished()), threadCV, SLOT(quit()));
+//    connect(CVSocketthread, SIGNAL(finished()), CVSocketthread, SLOT(deleteLater()));
+//    connect(threadCV, SIGNAL(started()), CVSocketthread, SLOT(process_TheSocket()),Qt::QueuedConnection);
+//    connect(threadCV, SIGNAL(finished()), threadCV, SLOT(deleteLater()));
+
+
+//    //connect(CVSocketthread,
+
+//    //Запуск потока
+//    threadCV->start();
+//    //addPendingConnection(sDescriptor);
+
+
+
+
+
     QString str = "Going to create socket for CVDevice";
     GUI_Write_To_Log(0xC1C1, str);
     socketCV = new QTcpSocket(this);
     socketCV->setSocketOption(QAbstractSocket::KeepAliveOption, true);
-    in.setDevice(socketCV);
+    //in.setDevice(socketCV);
 
     //Соединение сигналов со слотами                        было  CV_onReadyRead_Slot
     connect(socketCV, &QIODevice::readyRead, this, &MainProcess::CV_NEW_onReadyRead_Slot);//, Qt::QueuedConnection);
@@ -756,8 +783,9 @@ void MainProcess::request_CV()
 //++++++++++++++++++++++++++++++++++++++++++++++++
 void MainProcess::request_New_CV()
 {
-    socketCV->abort();
-    socketCV->connectToHost(CVDev_IP, CVDev_Port);
+    ;
+//    socketCV->abort();
+//    socketCV->connectToHost(CVDev_IP, CVDev_Port);
 }
 //+++++++++++++++++++++++++++++++++++++++++++++++++++
 int MainProcess::my_round(int n)
@@ -974,7 +1002,7 @@ void MainProcess::ProcessAction(HiWonder::ActionState *actionName)
 
             else {
                 actionName->rc = 0;
-                str = "Action "; str += substr; str += "Успешно запущен";
+                str = "Action "; str += actionName->name; str += " have started";
                 GUI_Write_To_Log(value, str);
 
            // Создаем сокет для связи с камерой и, в случае успеха, отправляем запрос в камеру.
@@ -982,38 +1010,41 @@ void MainProcess::ProcessAction(HiWonder::ActionState *actionName)
            // По завершении request_CV получаем объект QJsonObject   jsndataObj, из которого извлекаем distance.
 
            request_CV();
-           // Запускаем захват объекта.  Теперь это значение distance отправляем в ф-цию GetBox
-           this->GetBox(CVDistance);
-           //Команду манипулятору запустили. Задаем статус для ответа http-клиенту через структуру HiWonder::ActionState .
-           // Заносим данные в структуру - где ?
+//           // Запускаем захват объекта.  Теперь это значение distance отправляем в ф-цию GetBox
+
+//          this->GetBox(CVDistance);
+//           //Команду манипулятору запустили. Задаем статус для ответа http-клиенту через структуру HiWonder::ActionState .
+//           // Заносим данные в структуру - где ?
             } //else
 
-           // А из структуры - в JSON-объект
-           jsnActionAnswer.insert("name", QJsonValue(Robot->getbox_Action.name));
-           jsnActionAnswer.insert("rc", QJsonValue(Robot->getbox_Action.rc));
-           jsnActionAnswer.insert("info", QJsonValue(Robot->getbox_Action.info));
+//           // А из структуры - в JSON-объект
+//           jsnActionAnswer.insert("name", QJsonValue(Robot->getbox_Action.name));
+//           jsnActionAnswer.insert("rc", QJsonValue(Robot->getbox_Action.rc));
+//           jsnActionAnswer.insert("info", QJsonValue(Robot->getbox_Action.info));
 
-           // И теперь вот этот jsnActionAnswer отправляем http-клиенту в ответ на команду "get_box"
+//           // И теперь вот этот jsnActionAnswer отправляем http-клиенту в ответ на команду "get_box"
 
-           jsnDoc = QJsonDocument(jsnActionAnswer);
+//           jsnDoc = QJsonDocument(jsnActionAnswer);
 
-           str = jsnDoc.toJson(QJsonDocument::Compact);
+//           str = jsnDoc.toJson(QJsonDocument::Compact);
 
-           GUI_Write_To_Log(value, "!!!!!!!!!!! Current Answer to GetBox command is ");
-           GUI_Write_To_Log(value, str);
+//           GUI_Write_To_Log(value, "!!!!!!!!!!! Current Answer to GetBox command is ");
+//           GUI_Write_To_Log(value, str);
 
-           //str = QString::fromStdString(s2);
-          // str = QJsonDocument(jsnStatus).toJson(QJsonDocument::Compact);
+//           //str = QString::fromStdString(s2);
+//          // str = QJsonDocument(jsnStatus).toJson(QJsonDocument::Compact);
 
-           emit Write_2_TcpClient_Signal (str);
+//           emit Write_2_TcpClient_Signal (str);
          break;
 
          case 0:
              // (уже запущен) -> Выходим
-             actionName->rc = -3;
-             str = "Action "; str += substr; str += "Уже запущен";
+             //actionName->rc = -3;
+             str = "Action "; str += substr; str += "already running";
              // Заносим данные в структуру
-             Robot->getbox_Action = {"get_box", -3, "Already In progress"};
+             Robot->getbox_Action = {"get_box", -3, "RC=0, Already In progress"};
+             GUI_Write_To_Log(value, str);
+             request_CV();
 
          break;
 
@@ -1037,6 +1068,8 @@ void MainProcess::ProcessAction(HiWonder::ActionState *actionName)
 
 
      }// switch (actionName->rc)
+
+     str = "The function ProcesAction is finished !!!";
      GUI_Write_To_Log(value, str);
 
 }// ProcessAction
@@ -1088,7 +1121,7 @@ void MainProcess::server_New_Connect_Slot()
 // Формируем HTTP-запрос в CV, отправляем его в CV
 void MainProcess::onSocketConnected_Slot()
 {
- in.setDevice(socketCV);
+ //in.setDevice(socketCV);
  QString str = "CV connection established";
  GUI_Write_To_Log(0x7777, str);
 
@@ -1097,7 +1130,14 @@ void MainProcess::onSocketConnected_Slot()
  if (socketCV->state() == QTcpSocket::ConnectedState){str += " Connected State";}
  else {str += " Some OTHER than Connected State !!!!";}
 
-GUI_Write_To_Log(0x7777, str);
+    GUI_Write_To_Log(0x7777, str);
+
+// A read buffer size of 0 (the default) means that the buffer has no size limit, ensuring that no data is lost.
+    str = "###################### Current TCPSocket BUFFER SIZE is ";
+    str += QString::number(socketCV->readBufferSize());
+    GUI_Write_To_Log(0x7777, str);
+
+
 
  // А вот теперь готовим команду "/service?name=getposition"
  QString request = "GET ";
@@ -1122,6 +1162,8 @@ GUI_Write_To_Log(0x7777, str);
  // Ответ от сервера в слоте CV_onReadyRead_Slot()
 
 
+
+
 }
 //+++++++++++++++++++++++++++++++++++
 // СЛот сигнала QIODevice::readyRead()
@@ -1137,16 +1179,9 @@ void MainProcess::CV_onReadyRead_Slot()
      */
     int value = 0xeeee;
 
-//    in.startTransaction();
 
     QString nextTcpdata, str;
 
-//    in >> nextTcpdata;
-
-//    if(!in.commitTransaction()){
-//        GUI_Write_To_Log(value, "commitTransaction exit, complete data reading from socket");
-//        return;
-//       }
 int befbytes = socketCV->bytesAvailable();
     nextTcpdata = socketCV->readAll();
 int afterbytes = socketCV->bytesAvailable();
@@ -1276,14 +1311,17 @@ str = "Bytes after reading  "; str += QString::number(afterbytes); GUI_Write_To_
 // Слот обработки сигнала Disconnected
 void MainProcess::CV_onDisconnected()
 {
-    socketCV->close();
+    int value = 0xf1f1;
+    GUI_Write_To_Log(value, "!!!!!!!!!!!!!!!!! Connection closed to SOCKET device !!!!!!!!!!!!!!!!!!!!");
+
+  //  socketCV->close();
 }
 //+++++++++++++++++++++++++++++++++++++++++++++++++++
 // Добавляем парсинг JSON-данных от CV
 void MainProcess::CV_NEW_onReadyRead_Slot()
 {
     int value = 0xfafa;
-    QString nextTcpdata, str, substr;
+    QString message, nextTcpdata, str, substr;
 
     int befbytes = socketCV->bytesAvailable();
     nextTcpdata = socketCV->readAll();
@@ -1298,11 +1336,22 @@ void MainProcess::CV_NEW_onReadyRead_Slot()
     GUI_Write_To_Log(value, nextTcpdata);
 
     // Запускаю JSON-парсинг
-    parseJSON(nextTcpdata);
+   // parseJSON(nextTcpdata);
+
+    message = nextTcpdata;
+    int sPosition, ePosition; // Индекс строки run в запросе.
+    sPosition = message.indexOf("distance");
+    if (sPosition <0) return; // Когда сообщение приходит  частями и в этой части нет слова distance, нам такакя часть неинтересна.
+
+    sPosition += 11;
+    ePosition = message.indexOf("}", sPosition);
+    substr = message.mid(sPosition, (ePosition - sPosition));
+
 
     // Теперь получили значение distance, оно осталось в локальной переменной cvdistance в функции parseJSON
     // Парсинг JSON закончили, получили глобальную переменную  jsndataObj - это объект "data" : {}. Извлекаем из него данные.
-    double cvdistance = jsndataObj.value("distance").toDouble();
+   // double cvdistance = jsndataObj.value("distance").toDouble();
+     double cvdistance = substr.toDouble();
     str = "Got distance in local value as double : ";
     str += QString::number(cvdistance);
 
@@ -1324,6 +1373,10 @@ void MainProcess::CV_NEW_onReadyRead_Slot()
     str += substr;
     GUI_Write_To_Log(value, str);
 
+//    if (rDistance < 110 || rDistance > 230) {
+//        str = "!!!!!!!!!!!!!!!!! The distance is out of range !!!!!!!!!! ";
+//        return;}
+
     // Вот тут по уму надо передеать rDistance в класс cvdevice;
     // Но пока заколхозим глобальную переменную.
     this->CVDistance = rDistance;
@@ -1332,8 +1385,40 @@ void MainProcess::CV_NEW_onReadyRead_Slot()
     GUI_Write_To_Log(value, str);
 
 
+    afterbytes = socketCV->bytesAvailable();
+
+    str = "2nd !!! Bytes before reading "; str += QString::number(befbytes); GUI_Write_To_Log(value, str);
+
+    str = "2nd !!! Bytes after reading  "; str += QString::number(afterbytes); GUI_Write_To_Log(value, str);
+
+
+    //socketCV->disconnectFromHost();
     // Теперь запускаем захват кубика.
 
+
+    //           // Запускаем захват объекта.  Теперь это значение distance отправляем в ф-цию GetBox
+
+              this->GetBox(CVDistance);
+    //           //Команду манипулятору запустили. Задаем статус для ответа http-клиенту через структуру HiWonder::ActionState .
+
+               // А из структуры - в JSON-объект
+               jsnActionAnswer.insert("name", QJsonValue(Robot->getbox_Action.name));
+               jsnActionAnswer.insert("rc", QJsonValue(Robot->getbox_Action.rc));
+               jsnActionAnswer.insert("info", QJsonValue(Robot->getbox_Action.info));
+
+               // И теперь вот этот jsnActionAnswer отправляем http-клиенту в ответ на команду "get_box"
+
+               jsnDoc = QJsonDocument(jsnActionAnswer);
+
+               str = jsnDoc.toJson(QJsonDocument::Compact);
+
+               GUI_Write_To_Log(value, "!!!!!!!!!!! Current Answer to GetBox command is ");
+               GUI_Write_To_Log(value, str);
+
+               //str = QString::fromStdString(s2);
+              // str = QJsonDocument(jsnStatus).toJson(QJsonDocument::Compact);
+
+               emit Write_2_TcpClient_Signal (str);
 
 
 }
@@ -1345,7 +1430,7 @@ void MainProcess::GetBox(unsigned int distance)
     int value = 0xA9B9;
     unsigned char *arrPtr = mob_parking_position;
 
-    str = "Current distsnce is ";
+    str = "I'm in GetBox !!! Current distance is ";
     str += QString::number(distance);
     GUI_Write_To_Log(value, str);
 
@@ -1380,10 +1465,11 @@ void MainProcess::GetBox(unsigned int distance)
     }
 
     memcpy(Servos, arrPtr, DOF);
-    this->send_Data(LASTONE);
+    //this->send_Data(LASTONE);
 
-    str = "Запущен Action \"get_box\" ";
-    str += Robot->getbox_Action.name;
+    str = "!!!!!!!!!!!!!!!! The command Action \"";
+    str += Robot->getbox_Action.name; str += "\"";
+    str += " has been sent to manipulator";
     GUI_Write_To_Log(value, str);
     // А теперь копируем структуру в json
 

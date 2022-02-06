@@ -586,3 +586,24 @@ void MainWindow::on_GetActionsButton_clicked()
 
 }
 
+//+++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++ Get Status in new format
+void MainWindow::on_NEW_GetStatusButton_clicked()
+{
+    // Формируем запрос, "кнопка Get Status"
+    // А вот теперь готовим команду "/run?cmd=status&"
+     request = "GET ";
+     request += "/status&";
+     request += " HTTP/1.1";
+     request += "\r\nHost: ";
+     request += "192.168.1.201:8383\r\n";
+     request += "Accept: */*\r\n";
+     request += "Access-Control-Allow-Origin: *\r\n";
+     request += "\r\n";
+
+     QString myipaddress = CVDev_IP;
+     quint16 myport = ARM_Port;
+     makeSocket(myipaddress, myport);
+
+}
+

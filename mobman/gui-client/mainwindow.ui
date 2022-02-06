@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
+    <width>915</width>
     <height>676</height>
    </rect>
   </property>
@@ -17,8 +17,8 @@
    <widget class="QPushButton" name="GetDistanceButton">
     <property name="geometry">
      <rect>
-      <x>100</x>
-      <y>60</y>
+      <x>20</x>
+      <y>40</y>
       <width>131</width>
       <height>51</height>
      </rect>
@@ -30,8 +30,8 @@
    <widget class="QPushButton" name="GetStatusButton">
     <property name="geometry">
      <rect>
-      <x>450</x>
-      <y>10</y>
+      <x>170</x>
+      <y>110</y>
       <width>171</width>
       <height>61</height>
      </rect>
@@ -43,8 +43,8 @@
    <widget class="QPushButton" name="GetReadyButton">
     <property name="geometry">
      <rect>
-      <x>450</x>
-      <y>100</y>
+      <x>170</x>
+      <y>200</y>
       <width>171</width>
       <height>61</height>
      </rect>
@@ -56,8 +56,8 @@
    <widget class="QPushButton" name="GetParkingButton">
     <property name="geometry">
      <rect>
-      <x>450</x>
-      <y>190</y>
+      <x>170</x>
+      <y>290</y>
       <width>171</width>
       <height>61</height>
      </rect>
@@ -69,8 +69,8 @@
    <widget class="QPushButton" name="GetBoxButton">
     <property name="geometry">
      <rect>
-      <x>450</x>
-      <y>280</y>
+      <x>170</x>
+      <y>380</y>
       <width>171</width>
       <height>61</height>
      </rect>
@@ -82,8 +82,8 @@
    <widget class="QPushButton" name="GetServicesButton">
     <property name="geometry">
      <rect>
-      <x>450</x>
-      <y>370</y>
+      <x>170</x>
+      <y>470</y>
       <width>171</width>
       <height>61</height>
      </rect>
@@ -95,8 +95,8 @@
    <widget class="QPushButton" name="GetActionsButton">
     <property name="geometry">
      <rect>
-      <x>450</x>
-      <y>460</y>
+      <x>170</x>
+      <y>560</y>
       <width>171</width>
       <height>61</height>
      </rect>
@@ -105,13 +105,72 @@
      <string>Get Actions</string>
     </property>
    </widget>
+   <widget class="QLabel" name="OldLabel">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>30</y>
+      <width>141</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>18</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>OLD</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="NEW_GetStatusButton">
+    <property name="geometry">
+     <rect>
+      <x>430</x>
+      <y>110</y>
+      <width>171</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>NEW  Get Status</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lineEdit">
+    <property name="geometry">
+     <rect>
+      <x>620</x>
+      <y>110</y>
+      <width>261</width>
+      <height>61</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="ParamsLabel">
+    <property name="geometry">
+     <rect>
+      <x>680</x>
+      <y>50</y>
+      <width>141</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>18</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Parameters</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>915</width>
      <height>22</height>
     </rect>
    </property>

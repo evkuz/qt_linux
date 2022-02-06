@@ -27,6 +27,37 @@
  * file:///home/ubuntu/iqr_lit/supervisor/index.html
  *
  *
+ * //+++++++++++++++++++++++++++++++++++++++++++++++++++
+ * Смотрим https://doc.qt.io/Qt-5/qtnetwork-fortuneclient-example.html
+ * Тут TCP данные берутся из qdatastream.
+ *
+ * Также смотрим сюда https://doc.qt.io/Qt-5/qdatastream.html#details в раздел "Using Read Transactions" или http://doc.qt.io/qt-5/qdatastream.html#commitTransaction
+ *
+ * When a data stream operates on an asynchronous device, the chunks of data can arrive at arbitrary points in time.
+ * The QDataStream class implements a transaction mechanism that provides the ability to read the data atomically with a series of stream operators.
+ * As an example, you can handle incomplete reads from a socket by using a transaction in a slot connected to the readyRead() signal:
+
+in.startTransaction();
+QString str;
+qint32 a;
+in >> str >> a; // try to read packet atomically
+
+if (!in.commitTransaction())
+    return;     // wait for more data
+If no full packet is received, this code restores the stream to the initial position, after which you need to wait for more data to arrive.
+ *
+ *
+ * //+++++++++++++++++++++++++++++++++++++++++++++++++++
+ * 03.03.2022
+ * - Внутри request_СV() создаем поток - объект класса QSocketThread.
+ * - В обработчике потока (слот сигнала start) создаем сокет - объект класса QTcpSocket.
+ *
+ * - Нужно в класс потока передавать дескриптор лог-файла, чтобы все туда записывал.
+ * - request_CV() - основной поток движется дальше, не дожидаясь пока эта ф-ция завершится.
+ *   Вернее так. : ф-ция завершается отправкой connectToHost и после этого сразу идет GetBox, а данные-то
+ *   от CV еще не получены !!!
+ *   Надо вызов GetBox поместить в слот onReadyRead !
+ *   И тут снова проблема со считыванием всех данных. Опять получаются 2 посылки...
  *
  * //+++++++++++++++++++++++++++++++++++++++++++++++++++
  * 02.02.2022
@@ -35,7 +66,9 @@
  * набору состояний (state/status)
  *
  * Ф-цию создал, будем дальше улучшать.
- *
+ * Заложил каркас альтернативного способа парсинга :
+ * - все команды заносим в список (массив), по совпадению со значением в спике получаем индекс команды
+ * - По индексу команды через switch оператор обрабатываем прибывшую команду.
  *
  * Выяснилось, что при создании сокета для камеры весь поток уходит туда и не возвращается для взятия кубика.
  * В общем, нужно работу с сокетом камеры заворачивать в отдельный поток.
