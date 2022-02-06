@@ -1,5 +1,5 @@
 from .catchcube import CatchCubeAction
 from .putcube import PutCubeAction
-from .move import MoveAction
+from .move import MoveAction, MoveHomeAction
 
-__all__ = ['CatchCubeAction', 'PutCubeAction', 'MoveAction']
+__all__ = ['CatchCubeAction', 'PutCubeAction', 'MoveAction', 'MoveHomeAction']

@@ -31,7 +31,9 @@ device.set_name("BlueMan")
 
 device.register_service(services.GetPositionService(cam))
 device.register_service(services.CamCalibService(cam))
+device.register_service(services.SetHomeService(arduino_device))
 
 device.register_action(actions.MoveAction(arduino_device))
+device.register_action(actions.MoveHomeAction(arduino_device))
 device.register_action(actions.CatchCubeAction(arduino_device, cam))
 device.register_action(actions.PutCubeAction(arduino_device))
