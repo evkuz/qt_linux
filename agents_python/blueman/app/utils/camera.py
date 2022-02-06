@@ -8,8 +8,7 @@ import copy
 class CameraDetector(object):
     def __init__(self, camPort, width=640, height=480, showWindow=False):
         self.last_access = 0  # time of last client access to the camera
-        self.color_range = ((83, 198, 207), (151, 241, 251)) #((18, 120, 131), (43, 150, 158))
-        #self.color_range = ((1, 50, 144), (100, 120, 178))
+        self.color_range = ((44, 72, 203), (110, 109, 235))
 
         self.port = camPort
         self.FrameWidth = width

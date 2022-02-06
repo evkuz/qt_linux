@@ -33,10 +33,10 @@ class CatchCubeAction (BaseAction):
                     errY = y - self.__camera.FrameHeight / 2
                     newPos = [
                         int(currentPos[0] - 0.2*(self.__pixToDegreeX * errX)),
-                        int(currentPos[1] - 0.2*(self.__pixToDegreeY*errY + self.__pixToDegreeZ*errZ)),
-                        int(currentPos[2] - 0.3*(self.__pixToDegreeY*errY - self.__pixToDegreeZ*errZ)),
+                        int(currentPos[1] + 0.2*(self.__pixToDegreeY*errY + self.__pixToDegreeZ*errZ)),
+                        int(currentPos[2] + 0.3*(self.__pixToDegreeY*errY - self.__pixToDegreeZ*errZ)),
                         currentPos[3],
-                        180
+                        30
                     ]
                     currentPos, dist = self.move_manip(newPos)
                     
@@ -45,7 +45,7 @@ class CatchCubeAction (BaseAction):
                 else:
                     notDetectedSteps += 1
                 if dist < 4:
-                    currentPos[4] = 100
+                    currentPos[4] = 180
                     _ = self.move_manip(currentPos)
                     tp_state+=1
                 if detectedSteps > 50 or notDetectedSteps > 100:
@@ -59,11 +59,11 @@ class CatchCubeAction (BaseAction):
                     currentPos[1] + 20,
                     currentPos[2] + 10,
                     currentPos[3],
-                    100
+                    180
                 ]
                 _ = self.move_manip(pos)
 
-                pos = [currentPos[0], 120, 60, currentPos[3], 100]
+                pos = [currentPos[0], 120, 60, currentPos[3], 30]
                 _ = self.move_manip(pos)
                 break
         return res
