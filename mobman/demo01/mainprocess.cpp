@@ -709,7 +709,13 @@ void MainProcess::init_json()
               {"state", "inprogress | done | fail"},
               {"info", "Set device's servos at angles specified by the command"},
               {"rc", "int - action return code"}
-            }
+            },
+              {"name", "ready"},
+              {"state", "inprogress | done | fail"},
+              {"info", "Set device's clamper in rady-to-clamp position"},
+              {"rc", "int - action return code, 0=successfull, -1=already running"}
+             },
+
 
 
 
