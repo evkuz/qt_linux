@@ -1,6 +1,6 @@
 # Description of manipulator serial port protocol
 
-**boundrates** = 115200
+**baudrate** = 115200
 **line ending** - `\n`
 
 Robot has 5 servos. First - lower carousel drive, last - gripper.
@@ -33,9 +33,9 @@ In other case you will get text message `Wrong command` with list of available c
 The answer on state request have a form:
 
 ```
-pos1  pos2  pos3  pos4  pos5  distFromSonarIn_cm
+pos1\tpos2\tpos3\tpos4\tpos5\tdistFromSonarIn_cm
 ```
 
-Where *posN* - current value of angle of the corresponding servo drive, *distFromSonarIn_cm* - distance measured with sonar in cm.
+Where *posN* - current value of angle of the corresponding servo drive, *distFromSonarIn_cm* - distance measured with sonar in cm. Delimiter symbol - `\t`
 
 If you send any move command to controller (`m` or `h`) you will get message `END` when all servos will take the desired position.

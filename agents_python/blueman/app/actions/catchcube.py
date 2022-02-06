@@ -6,7 +6,7 @@ from ..utils import SerialCommunication, CameraDetector
 class CatchCubeAction (BaseAction):
     def __init__(self, arduino_device:SerialCommunication, cam:CameraDetector):
         BaseAction.__init__(self, "catchcube")
-        self.__serial = arduino_device
+        self.__manip = arduino_device
         self.__camera = cam
         self.__pixToDegreeX = 60.0 / self.__camera.FrameWidth
         self.__pixToDegreeY = 50.0 / self.__camera.FrameHeight
@@ -20,57 +20,62 @@ class CatchCubeAction (BaseAction):
     def run_action(self, **kwargs) -> int:
         res = 0
         tp_state = 0
-        currentPos = [False, 0, 0, 0, 0]
         detectedSteps = 0
         notDetectedSteps = 0
+        currentPos, dist = self.__manip.get_position()
 
         while self._workingFlag:
             if tp_state == 0:
                 detected, x, y, w, h = self.__camera.get_position()
-                currentPos = self.__serial.get_state()
                 if detected:
                     errZ = self.__camera.FrameWidth - w
                     errX = x - self.__camera.FrameWidth / 2
                     errY = y - self.__camera.FrameHeight / 2
-                    pos1 = int(currentPos[0] - 0.2*(self.__pixToDegreeX * errX))
-                    pos2 = int(currentPos[1] - 0.2*(self.__pixToDegreeY*errY + self.__pixToDegreeZ*errZ))
-                    pos3 = int(currentPos[2] - 0.3*(self.__pixToDegreeY*errY - self.__pixToDegreeZ*errZ))
-                    pos4 = 180
-                    currentPos = self.move_manip(pos1, pos2, pos3, pos4)
+                    newPos = [
+                        int(currentPos[0] - 0.2*(self.__pixToDegreeX * errX)),
+                        int(currentPos[1] - 0.2*(self.__pixToDegreeY*errY + self.__pixToDegreeZ*errZ)),
+                        int(currentPos[2] - 0.3*(self.__pixToDegreeY*errY - self.__pixToDegreeZ*errZ)),
+                        currentPos[3],
+                        180
+                    ]
+                    currentPos, dist = self.move_manip(newPos)
+                    
                     detectedSteps += 1
                     notDetectedSteps = 0
                 else:
                     notDetectedSteps += 1
-                if currentPos[4] == 1:
-                    _ = self.move_manip(
-                        currentPos[0],
-                        currentPos[1],
-                        currentPos[2],
-                        100
-                    )
+                if dist < 4:
+                    currentPos[4] = 100
+                    _ = self.move_manip(currentPos)
                     tp_state+=1
                 if detectedSteps > 50 or notDetectedSteps > 100:
                     self._set_state_info("Can't get cube for too long!")
                     res = -10
-                    self.__serial.go_to_start()
+                    _ = self.__manip.move_home(80)
                     break
             if tp_state == 1:
-                pos = self.move_manip(
+                pos = [
                     currentPos[0],
                     currentPos[1] + 20,
                     currentPos[2] + 10,
+                    currentPos[3],
                     100
-                )
-                pos = self.move_manip(currentPos[0], 120, 60, 100)
+                ]
+                _ = self.move_manip(pos)
+
+                pos = [currentPos[0], 120, 60, currentPos[3], 100]
+                _ = self.move_manip(pos)
                 break
         return res
 
     def reset_action(self) -> int:
-        pos = self.__serial.go_to_start()
-        self._set_state_info(f"position: ({pos[0]}, {pos[1]}, {pos[2]}, {pos[3]}, {pos[4]})")
+        self.__manip.stop_moving()
+        self.__manip.move_home(80, True)
+        self._set_state_info(f"Stopped and returned home")
         return -126
 
-    def move_manip(self, pos1, pos2, pos3, pos4):
-        pos = self.__serial.send_command(pos1, pos2, pos3, pos4)
-        self._set_state_info(f"position: ({pos[0]}, {pos[1]}, {pos[2]}, {pos[3]}, {pos[4]})")
-        return pos
+    def move_manip(self, pos:list):
+        self.__manip.move(pos, 80, True)
+        pos, dist = self.__manip.get_position()
+        self._set_state_info(f"Current position: ({pos})")
+        return pos, dist

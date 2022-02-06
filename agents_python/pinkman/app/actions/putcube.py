@@ -10,7 +10,7 @@ class PutCubeAction (BaseAction):
 
     def get_info(self) -> dict:
         return self.make_info(
-            "Will try to catch cube with robot"
+            "Will put cube to predefined position"
         )
 
     def run_action(self, **kwargs) -> int:

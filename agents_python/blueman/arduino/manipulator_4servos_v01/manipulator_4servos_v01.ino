@@ -56,10 +56,14 @@ void setup()
   pSdata = sdata;
   *pSdata = '\0';
   sdataLength = 0;
+
+  Serial.print("N_SERVOS: ");
+  Serial.print(nServos);
+  Serial.print("\n");
   
   read_start_values();
-  
-  Serial.print("StartPos: ");
+
+  Serial.print("START_VALUES: ");
   for(i=0; i< nServos; i++) {
     Serial.print(*(start + i));
     Serial.print('\t');  
