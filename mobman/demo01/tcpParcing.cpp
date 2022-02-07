@@ -10,6 +10,7 @@
         aa = json.loads(a)
 */
 //+++++++ Получили данные (запрос) от клиента. Парсим.
+//   0          1                    3                      5                           7
 //{"clamp", "get_box", "parking", "ready", "status", "getservices", "setservos=", "srvfromfile",  "status?action=getbox"};
 
 void MainProcess::Data_From_TcpClient_Slot(QString message)
@@ -44,6 +45,14 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
                 // Поэтому Process Action
                 ProcessAction(&Robot->getbox_Action);
         break;
+
+        case 8: //"get_box"  - это экшен (к вопросу о типе)
+                // Поэтому Process Action
+                ProcessAction(&Robot->getbox_Action);
+        break;
+
+
+
 
     default:
         ;
@@ -186,6 +195,7 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
        }//for
 
        this->send_Data(NOT_LAST);
+       jsnStatusActionAnswer["state"] = "running";
    }
 //+++++++++++++++++++ action  "get_box" ++++++++++++++++++++++++++++++++++++++++++++
 //   if (substr == "get_box") {

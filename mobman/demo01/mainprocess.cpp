@@ -348,7 +348,6 @@ void MainProcess::on_clampButton_clicked()
     FULL_OPENED = 90;
     if (Servos[0]>FULL_CLOSED){ Servos[0]=FULL_CLOSED;}
     else {Servos[0]=FULL_OPENED;}
-//    update_LineDits_from_servos();
 
     on_set_posButton_clicked();
 }
@@ -679,6 +678,7 @@ void MainProcess::init_json()
 
      //        -5 - action с таким именем успешно завершен
 
+     // Это просто список без значений.
      jsnGetActionsAnswer = {
                              {"name" , "getactions"},
                              {"rc", RC_SUCCESS}, //RC_SUCCESS
@@ -710,11 +710,12 @@ void MainProcess::init_json()
               {"info", "Set device's servos at angles specified by the command"},
               {"rc", "int - action return code"}
             },
+            {
               {"name", "ready"},
               {"state", "inprogress | done | fail"},
               {"info", "Set device's clamper in rady-to-clamp position"},
               {"rc", "int - action return code, 0=successfull, -1=already running"}
-             },
+             }
 
 
 
@@ -1107,6 +1108,9 @@ void MainProcess::Moving_Done_Slot()
     // Меняем статус, теперь "done"
     std::cout<<"Set DONE to Robot!" << std::endl;
     Robot->SetCurrentStatus ("done");
+    GUI_Write_To_Log(0xFAAA, "Now robot status is !!! DONE !!!");
+
+    // Отправлять клиенту ничего не надо. Он сам опросит сервер и получит статус.
     if (new_get_request) // Тогда даем сигнал серверу на отправку данных клиенту. Данные уже в буфере TheWeb->status_buffer
     {
      // emit Write_2_Client_Signal(Robot->current_status);
@@ -1471,7 +1475,20 @@ void MainProcess::GetBox(unsigned int distance)
     }
 
     memcpy(Servos, arrPtr, DOF);
-    //this->send_Data(LASTONE);
+    this->send_Data(LASTONE);
+/*
+ Это мы только опустили захват в нужную точку.
+ Далее нужно следующее :
+
+ - Закрыть захват
+ - Поднять в позицию "Have_Cube"
+ - Жать дальнейший указаний от ЦУП
+
+
+
+*/
+
+
 
     str = "!!!!!!!!!!!!!!!! The command Action \"";
     str += Robot->getbox_Action.name; str += "\"";

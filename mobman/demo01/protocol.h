@@ -4,7 +4,7 @@
 #include <QString>
 #include <QList>
 //"getactions",
- const QList<QString> tcpCommand = {"clamp", "get_box", "parking", "ready", "status", "getactions", "getservices", "setservos=", "srvfromfile",  "status?action=getbox"};
+ const QList<QString> tcpCommand = {"clamp", "get_box", "parking", "ready", "status", "getactions", "getservices", "setservos=", "srvfromfile",  "status?action=get_box"};
 
 /*
  * у нас структура запроса получается такая:

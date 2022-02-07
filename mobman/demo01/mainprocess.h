@@ -39,6 +39,7 @@
 
 
 #include <QTcpSocket>
+#include <QDataStream>
 //QT_BEGIN_NAMESPACE
 //namespace Ui { class MainProcess; }
 //QT_END_NAMESPACE

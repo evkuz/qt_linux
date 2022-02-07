@@ -26,6 +26,8 @@ HiWonder::HiWonder()
     getbox_Action.rc = -4;
     getbox_Action.info = "waiting";
 
+  //  STAT_getbox_Action = {"MOBMAN", 0, "Action is accepted", "init", };
+
     ActionState putbox_Action {"putbox", -4, "waiting"};
 
     ManipulatorState.action = "Nothhing";

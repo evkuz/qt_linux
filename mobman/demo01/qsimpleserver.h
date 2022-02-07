@@ -14,6 +14,7 @@
 #include <QObject>
 #include <QString>
 #include "qsocketthread.h"
+#include <QDataStream>
 
 //#define tcpport 8383;  // Порт, который слушает QTcpServer
 

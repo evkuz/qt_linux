@@ -80,10 +80,13 @@ public:
 
     };
 
+
+
     // НА каждый экшен свой - экземпляр ActionState
     ActionState getbox_Action;
+    ActionState STAT_getbox_Action;
 
-
+//Global for the whole robot
     struct CurrentState {
         QString state;
         QString action;
@@ -93,6 +96,27 @@ public:
 CurrentState ManipulatorState;
 private:
     //QString current_status;
+
+// это ответ для "status?action=get_box"
+struct StatusActionState {
+    QString name;
+    int     rc;    // "int - request result code",
+    QString info;  // text interpretation of return code
+    QString state; // "str - global device status: init | run | fail",
+    QString action_list; // Список активных на данных моментэкшенов. И вот тут вопрос :
+                         // Или как jsnDocument или как nlohmann::ordered_json;
+
+
+
+//        - 0 - action запущен -  "Is running"
+//        -1 - action с таким именем не найден
+//        -2 - action с таким именем не запустился, т.е. ошибка ?
+//        -3 - action с таким именем уже запущен
+//        -4 - action с таким именем не запущен (ожидание)
+
+};
+
+
 
 public:
     QString GetCurrentStatus() { return this->current_status; }

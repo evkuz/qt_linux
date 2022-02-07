@@ -14,6 +14,7 @@
 #include <QDebug>
 #include <QTime>
 #include <QDateTime>
+#include <QDataStream>
 
 //Пользовательский класс потока
 // Только вместо public QThread делаем public QObject
