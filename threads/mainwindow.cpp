@@ -111,7 +111,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     //+++++++++++++++ ОТкрываем порт Open_Port_Signal(QString portname); ttyUSB0
-    //emit Open_Port_Signal("ttyUSB0");
+    emit Open_Port_Signal("ttyUSB0");
     //make_json_answer();
 
 
@@ -227,9 +227,9 @@ void MainWindow::on_sitButton_clicked()
     //unsigned char pos5[] = {63, 93, 65, 45, 135, 40};
 
     QByteArray dd ;
-    dd.resize(HiWonder::DOF);
-    dd.insert(HiWonder::DOF-2, 0x31);
-    dd.insert(HiWonder::DOF-1, LASTONE);
+    dd.resize(HiWonder::szData);
+    dd.insert(HiWonder::szData-2, 0x31);
+    dd.insert(HiWonder::szData-1, LASTONE);
 
     memcpy(dd.data(), test1, 6);
     Robot->GoToPosition(dd);
@@ -313,10 +313,10 @@ void MainWindow::on_set_posButton_clicked()
    // QByteArray dd = QByteArray::fromRawData(pchar, 6);
     //GUI_Write_To_Log(0xf003,str);
     QByteArray dd ;
-    dd.resize(HiWonder::DOF);
+    dd.resize(HiWonder::szData);
     memcpy(dd.data(), Servos, 6);
-    dd.insert(HiWonder::DOF-2, 0x31); // Движение "Туда"
-    dd.insert(HiWonder::DOF-1, LASTONE);
+    dd.insert(HiWonder::szData-2, 0x31); // Движение "Туда"
+    dd.insert(HiWonder::szData-1, LASTONE);
     //dd.append(0x31);
     //dd.resize(64);
     //QByteArray dd = QByteArray::fromRawData(Servos, 6);
@@ -596,7 +596,7 @@ if (DETECTED)
     {
 
     QByteArray dd ;
-    dd.resize(HiWonder::DOF);
+    dd.resize(HiWonder::szData);
    str = "Next movement to robot";
    this->GUI_Write_To_Log (0xF055, str);
    //+++++++++++++++++ 1 make clamp
@@ -633,8 +633,8 @@ if (DETECTED)
    this->repaint();
    this->update_Servos_from_LineEdits();
    memcpy(dd.data(), Servos, 6);
-   dd.insert(HiWonder::DOF-2, 0x30); // Движение "Обратно"
-   dd.insert(HiWonder::DOF-1, LASTONE);
+   dd.insert(HiWonder::szData-2, 0x30); // Движение "Обратно"
+   dd.insert(HiWonder::szData-1, LASTONE);
 
    // this->ssend_Data(dd); // The last command
    Robot->GoToPosition(dd);
@@ -679,12 +679,12 @@ void MainWindow::send_Data(unsigned char thelast)
 
 
     QByteArray dd ;
-    dd.resize(HiWonder::DOF);
+    dd.resize(HiWonder::szData);
     memcpy(dd.data(), Servos, Robot->DOF);
-    if (newYearMode) {dd.insert(HiWonder::DOF-2, NEWYEAR_MV);} // Режим "НГ"
-    else {dd.insert(HiWonder::DOF-2, FORWARD_MV);} // Движение "Туда"
+    if (newYearMode) {dd.insert(HiWonder::szData-2, NEWYEAR_MV);} // Режим "НГ"
+    else {dd.insert(HiWonder::szData-2, FORWARD_MV);} // Движение "Туда"
 
-    dd.insert(HiWonder::DOF-1, thelast);
+    dd.insert(HiWonder::szData-1, thelast);
     //dd.append(0x31);
     //dd.resize(64);
     //QByteArray dd = QByteArray::fromRawData(Servos, 6);
@@ -829,7 +829,7 @@ void MainWindow::TakeAndPutSlot()
     //В этой точке робот опустил захват, открыл захват.
 
     QByteArray dd ;
-    dd.resize(HiWonder::DOF);
+    dd.resize(HiWonder::szData);
     str = "Next movement to robot";
     this->GUI_Write_To_Log (0xF055, str);
    //+++++++++++++++++ make clamp
@@ -905,7 +905,7 @@ void MainWindow::server_New_Connect_Slot()
 void MainWindow::on_getBackButton_clicked()
 {
     QByteArray dd ;
-    dd.resize(HiWonder::DOF);
+    dd.resize(HiWonder::szData);
 
     //+++++++++++++++++++++ 3 put the cube
     // {60, 93, 100, 35, 145, 35};
