@@ -20,7 +20,7 @@ public:
 
 #define serial_speed Baud115200
 #define Log_File_Name        "./hiwonder.log"
-#define SOURCE_POINTS_FILE  "../source_points.xls"
+#define SOURCE_POINTS_FILE  "./source_points.xls"
 #define COMMAND_LIST_FILE   "./command.lst"
 //unsigned int  DOF;
 //unsigned int  szData; //Размер посылки в байтах
