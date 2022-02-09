@@ -1,10 +1,12 @@
 from time import sleep
 from iqrdevice.action import BaseAction
 from ..utils import SerialCommunication, CameraDetector
+import logging
 
 
 class CatchCubeAction (BaseAction):
     def __init__(self, arduino_device:SerialCommunication, cam:CameraDetector):
+        self.logger = logging.getLogger("CatchCubeAction")
         BaseAction.__init__(self, "catchcube")
         self.__manip = arduino_device
         self.__camera = cam
@@ -28,16 +30,11 @@ class CatchCubeAction (BaseAction):
             if tp_state == 0:
                 detected, x, y, w, h = self.__camera.get_position()
                 if detected:
-                    errZ = self.__camera.FrameWidth - w
+                    errZ = 0.7*self.__camera.FrameWidth - w
                     errX = x - self.__camera.FrameWidth / 2
                     errY = y - self.__camera.FrameHeight / 2
-                    newPos = [
-                        int(currentPos[0] - 0.2*(self.__pixToDegreeX * errX)),
-                        int(currentPos[1] + 0.2*(self.__pixToDegreeY*errY + self.__pixToDegreeZ*errZ)),
-                        int(currentPos[2] + 0.3*(self.__pixToDegreeY*errY - self.__pixToDegreeZ*errZ)),
-                        currentPos[3],
-                        30
-                    ]
+
+                    newPos = self.calc_next_position([errX,errY,errZ], currentPos)
                     currentPos, dist = self.move_manip(newPos)
                     
                     detectedSteps += 1
@@ -79,3 +76,17 @@ class CatchCubeAction (BaseAction):
         pos, dist = self.__manip.get_position()
         self._set_state_info(f"Current position: ({pos})")
         return pos, dist
+
+    def calc_next_position(self, objPos:list, manipPos:list):
+        self.logger.info(f"Errors: {objPos}" )
+        self.logger.info(f"CUR_POS: {manipPos}")
+        
+        newPos = [
+            int(manipPos[0] - 0.2*(self.__pixToDegreeX * objPos[0])),
+            int(manipPos[1] - 0.*objPos[1] - 0.003*objPos[2]),
+            int(manipPos[2] + 0.08*objPos[1] - 0.*objPos[2]),
+            manipPos[3],
+            30
+        ]
+        self.logger.info(f"NEW_POS: {newPos}")
+        return newPos

@@ -143,7 +143,7 @@ class SerialCommunication:
         if len(positions) != self.__n_servos:
             raise RuntimeError("Wrong number of positions!")
 
-        msg = 'e ' + " ".join(positions) + '\n'
+        msg = 'e ' + " ".join(map(str, positions)) + '\n'
         self.__send_command_line(msg)
     
     def wait_for_move_done(self, timeout:float=360.):
