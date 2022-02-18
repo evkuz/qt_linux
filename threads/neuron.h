@@ -38,9 +38,14 @@
 //#include "model/new_5_min_BP.h"
 //#include "model/model3.h"
 //#include "model/new_05_10.h"
-#include "model/new2_05_10.h" // WORKS !!!
+
+//#include "model/new2_05_10.h" // WORKS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 //#include"model/kb2_sug_pr_bp.h" // 3+
 //#include "model/kb2_sug_min2_bp.h" //also WORKS
+
+//#include "model/18_02_ga_AUTO.h"
+ #include "model/18_02_ga_BP.h"
 
 //+++++++++++++++++ Вспомогательные переменные
 

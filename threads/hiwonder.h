@@ -9,7 +9,11 @@
 #include <QSerialPortInfo>
 
 
+/*
+ * Робот-манипулятор, управляемый через QSerialPort.
 
+
+*/
 class HiWonder : public QObject
 {
     Q_OBJECT
@@ -45,8 +49,8 @@ static const int szData = 8;
     QString active_command; // команда, которая сейчас исполняется
     QString comment;        // любые дополнительные данные
 
-    int writeTo(char *OutBuffer, int numbytes); // Запись данных из ПК в порт (роботу)
-    int readFrom(char *buf_data, int buf_size); // Считывает данные из порта в ПК (от робота)
+    //int writeTo(char *OutBuffer, int numbytes); // Запись данных из ПК в порт (роботу)
+    //int readFrom(char *buf_data, int buf_size); // Считывает данные из порта в ПК (от робота)
 
     void Log_File_Open(QString lname);
     void Source_Points_File_Open (QString fname); // Файл точек, для ускорения набора, при создании выборки
