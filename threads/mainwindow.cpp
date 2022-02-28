@@ -106,7 +106,9 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     //+++++++++++++++ ОТкрываем порт Open_Port_Signal(QString portname); ttyUSB0
-    emit Open_Port_Signal("ttyUSB0");
+    //emit Open_Port_Signal("ttyUSB0");
+
+    Robot->Open_Port_Slot("ttyUSB0");
     //make_json_answer();
 
 

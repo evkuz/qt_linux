@@ -77,6 +77,7 @@ void setup() {
 //  move_servo_together(hwr_Start_position, 1, 6);
   delay(1000);
 
+/// Это parking?
 
 servos[0].write(35);
 servos[1].write(1);
