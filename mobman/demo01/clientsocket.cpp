@@ -75,7 +75,7 @@ void ClientSocket::onSocketConnected_Slot()
 
 void ClientSocket::Data_2_TcpServer_Slot(QString tcpData)
 {
-  ;
+  tcpData +="1";
 }
 //++++++++++++++++++++++++++++++++++++++
 //++++++++++++ Слот сигнала readyRead(), получаем данные из сокета, направляем на обработку.
@@ -95,7 +95,7 @@ str = "Bytes before reading "; str += QString::number(befbytes); qDebug() << str
 str = "Bytes after reading  "; str += QString::number(afterbytes); qDebug() << str; //GUI_Write_To_Log(value, str);
 
 
-
+value += 1;
 
 }
 

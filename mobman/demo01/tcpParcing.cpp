@@ -12,6 +12,7 @@
 //+++++++ Получили данные (запрос) от клиента. Парсим.
 //   0          1                    3                      5                           7
 //{"clamp", "get_box", "parking", "ready", "status", "getservices", "setservos=", "srvfromfile",  "status?action=getbox"};
+//{"clamp", "get_box", "parking", "ready", "status", "getactions", "getservices", "setservos=", "srvfromfile",  "status?action=get_box"};
 
 void MainProcess::Data_From_TcpClient_Slot(QString message)
 {
@@ -34,11 +35,13 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
     GUI_Write_To_Log(value, str);
 
 // So here we've got the index of elemnt representing the command received by TCP
+    // set value of Robot->active_command
+     Robot->active_command = tcpCommand.at(comIndex);
 
     switch (comIndex) {
 
         case 0: //"clamp"
-            on_clampButton_clicked();
+                on_clampButton_clicked();
         break;
 
         case 1: //"get_box"  - это экшен (к вопросу о типе)
@@ -46,9 +49,16 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
                 ProcessAction(&Robot->getbox_Action);
         break;
 
-        case 8: //"get_box"  - это экшен (к вопросу о типе)
+        case 9: //"get_box" в новом формате - это экшен (к вопросу о типе) "status?action=get_box"
                 // Поэтому Process Action
                 ProcessAction(&Robot->getbox_Action);
+        break;
+
+        case 2: //"parking"
+                ProcessAction(&Robot->parking_Action);
+//                memcpy(Servos, mob_parking_position, DOF);
+//                this->send_Data(LASTONE);
+
         break;
 
 
@@ -131,13 +141,13 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 
    if (substr == "clamp") { on_clampButton_clicked();}//"sit"
 
-   if (substr == "parking")
-   {
-       // str = "Before parking memcpy "; Servos_To_Log(str);
-        memcpy(Servos, mob_parking_position, DOF);
-        //str = "After parking memcpy "; Servos_To_Log(str);
-        this->send_Data(LASTONE);
-   }
+//   if (substr == "parking")
+//   {
+//       // str = "Before parking memcpy "; Servos_To_Log(str);
+//        memcpy(Servos, mob_parking_position, DOF);
+//        //str = "After parking memcpy "; Servos_To_Log(str);
+//        this->send_Data(LASTONE);
+//   }
 
 
    if (substr == "ready")

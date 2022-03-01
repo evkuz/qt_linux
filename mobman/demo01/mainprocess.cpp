@@ -979,13 +979,13 @@ void MainProcess::ProcessAction(HiWonder::ActionState *actionName)
       switch (actionName->rc)
      {
 
-         case -4: // (ожидание) -> Запускаем, это "get_box". В списке actionlst это index ==0
+         case -4: // (ожидание) -> Запускаем, это "get_box". В списке actionlst это index == 1
           // А вот тут можно найти индекс этой команды в списке и присвоить
           // Переменной HiWonder::active_command, тогда не надо держать
           // в голове значения индексов - т.е. вместо
           // Robot->actionlst.at(0); будет переменная со значеием Robot->actionlst.at(0)
 
-            theindex = getIndexCommand(actionName->name, Robot->actionlst); //"get_box"
+            theindex = getIndexCommand(actionName->name, Robot->actionlst); //"get_box" ==0
             Robot->active_command = Robot->actionlst.at(theindex);
             // -4 -> 0
 
@@ -1008,16 +1008,41 @@ void MainProcess::ProcessAction(HiWonder::ActionState *actionName)
             }
 
             else {
-                actionName->rc = 0;
+                actionName->rc = 0; // Now state "Is running"
                 str = "Action "; str += actionName->name; str += " have started";
                 GUI_Write_To_Log(value, str);
 
-           // Создаем сокет для связи с камерой и, в случае успеха, отправляем запрос в камеру.
-           // В ответе будет значение distance, которое сохраняем в глобальной переменной CVDistance
-           // По завершении request_CV получаем объект QJsonObject   jsndataObj, из которого извлекаем distance.
+                str = "Action "; str += actionName->name; str += " have index "; str += QString::number(theindex);
+                GUI_Write_To_Log(value, str);
 
-           request_CV();
+                // Теперь запускаем манипулятор
+
+                switch (theindex)
+               {
+                 case 0: // "get_box"
+
+                           // Создаем сокет для связи с камерой и, в случае успеха, отправляем запрос в камеру.
+                           // В ответе будет значение distance, которое сохраняем в глобальной переменной CVDistance
+                           // По завершении request_CV получаем объект QJsonObject   jsndataObj, из которого извлекаем distance.
+                            GUI_Write_To_Log(value, "From procesAction before request_CV");
+                           request_CV();
+                 break;
+
+                 case 4:  // parking
+                            memcpy(Servos, mob_parking_position, DOF);
+                            this->send_Data(LASTONE);
+
+
+                 break;
+
+
 //           // Запускаем захват объекта.  Теперь это значение distance отправляем в ф-цию GetBox
+                 default:
+                            ;
+                 break;
+                } // switch (theindex)
+
+
 
 //          this->GetBox(CVDistance);
 //           //Команду манипулятору запустили. Задаем статус для ответа http-клиенту через структуру HiWonder::ActionState .
@@ -1044,14 +1069,14 @@ void MainProcess::ProcessAction(HiWonder::ActionState *actionName)
 //           emit Write_2_TcpClient_Signal (str);
          break;
 
-         case 0:
-             // (уже запущен) -> Выходим
+         case 0: // (уже запущен)=="Is running" -> Выходим
+
              //actionName->rc = -3;
              str = "Action "; str += substr; str += "already running";
              // Заносим данные в структуру
              Robot->getbox_Action = {"get_box", -3, "RC=0, Already In progress"};
              GUI_Write_To_Log(value, str);
-             request_CV();
+             //request_CV();
 
          break;
 
@@ -1110,12 +1135,21 @@ void MainProcess::Moving_Done_Slot()
     Robot->SetCurrentStatus ("done");
     GUI_Write_To_Log(0xFAAA, "Now robot status is !!! DONE !!!");
 
-    // Отправлять клиенту ничего не надо. Он сам опросит сервер и получит статус.
-    if (new_get_request) // Тогда даем сигнал серверу на отправку данных клиенту. Данные уже в буфере TheWeb->status_buffer
-    {
-     // emit Write_2_Client_Signal(Robot->current_status);
-      new_get_request = false;
+    // Предполагаем, что get_box завержился и мы готовы принимать новые команды.
+    // Меняем RC экшена на -4 == "Ожидание"
+    if (Robot->active_command == "get_box") {
+        Robot->STAT_getbox_Action.rc = -4; //"Ожидание"
     }
+
+    // И вот тут тоже можно искать имя команды по индексу и менять данные структур соответственно.
+
+
+    // Отправлять клиенту ничего не надо. Он сам опросит сервер и получит статус.
+//    if (new_get_request) // Тогда даем сигнал серверу на отправку данных клиенту. Данные уже в буфере TheWeb->status_buffer
+//    {
+//     // emit Write_2_Client_Signal(Robot->current_status);
+//      new_get_request = false;
+//    }
 
 }
 //++++++++++++++++++++++++++

@@ -22,9 +22,15 @@ HiWonder::HiWonder()
    // this->SetCurrentStatus ("wait");
     current_st_index = 0;
     this->current_status = statuslst.at(current_st_index); // "init" state //"Ready";
+
+    // Инициализируем все экшены
     getbox_Action.name = "get_box";
     getbox_Action.rc = -4;
     getbox_Action.info = "waiting";
+
+    parking_Action.name = "parking";
+    parking_Action.rc = -4;
+    parking_Action.info = "waiting";
 
   //  STAT_getbox_Action = {"MOBMAN", 0, "Action is accepted", "init", };
 
@@ -170,6 +176,7 @@ void HiWonder::GoToPosition(QByteArray &position)//, const char *servo)
 
 }
 //+++++++++++++++++++++++++++++++
+// Слот сигнала &QSerialPort::readyRead
 // Считываем данные из Serial port, т.е. от робота.  code From Robot :
 void HiWonder::ReadFromSerial_Slot ()
 {

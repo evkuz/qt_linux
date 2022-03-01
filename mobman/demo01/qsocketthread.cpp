@@ -37,7 +37,7 @@ void QSocketThread::process_TheSocket()
 // Слот сигнала readyRead
 void QSocketThread::onReadyRead()
 {
-    QList<QString>  strcommand = { "/run?cmd=", "/service?name=", "/status?action="};
+    QList<QString>  strcommand = { "/run?cmd=", "/service?name=", "/status", "/status?action="};
 
     //Чтение информации из сокета и вывод в консоль
     QByteArray qbmessage;
@@ -93,6 +93,7 @@ void QSocketThread::onReadyRead()
         sPosition += searchstr.size();
         ePosition = message.indexOf("&", sPosition);
         substr = message.mid(sPosition, (ePosition - sPosition));
+        if(substr == "") substr = searchstr;
 
         // Получили команду. Передаем её наверх
         qDebug() << "!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET !!!!!!!!!!!!!!!!!!!";
