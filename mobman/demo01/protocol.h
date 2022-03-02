@@ -3,8 +3,9 @@
 
 #include <QString>
 #include <QList>
-//"getactions",
- const QList<QString> tcpCommand = {"clamp", "get_box", "parking", "ready", "status", "getactions", "getservices", "setservos=", "srvfromfile",  "status?action=get_box"};
+//                                               1                     3                    5                           7
+ const QList<QString> tcpCommand = {"clamp", "get_box", "parking", "ready", "status", "getactions", "getservices", "setservos=", \
+                                    "srvfromfile",  "status?action=get_box", "formoving"};
 
 /*
  * у нас структура запроса получается такая:

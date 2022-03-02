@@ -32,6 +32,14 @@ HiWonder::HiWonder()
     parking_Action.rc = -4;
     parking_Action.info = "waiting";
 
+    ready_Action.name = "ready";
+    ready_Action.rc = -4;
+    ready_Action.info = "waiting";
+
+    forMoving_Action.name = "formoving";
+    forMoving_Action.rc = -4;
+    forMoving_Action.info = "waiting"; //Get ready for moving accross
+
   //  STAT_getbox_Action = {"MOBMAN", 0, "Action is accepted", "init", };
 
     ActionState putbox_Action {"putbox", -4, "waiting"};
@@ -151,6 +159,7 @@ void HiWonder::Open_Port_Slot(QString portname)
 void HiWonder::GoToPosition(QByteArray &position)//, const char *servo)
 {
    QString str;
+   int value = 0xF002;
    this->MOVEMENT_DONE = false;
 
    if (!SerialIsOpened) {str = "WARNING !!!! Serial port is NOT opened ! The data has NOT been sent."; this->Write_To_Log(0xF001, str); return;}
@@ -172,7 +181,7 @@ void HiWonder::GoToPosition(QByteArray &position)//, const char *servo)
         str+= ", ";
 
     }
-    this->Write_To_Log(0xF001, str);
+    this->Write_To_Log(value, str);
 
 }
 //+++++++++++++++++++++++++++++++
@@ -181,42 +190,43 @@ void HiWonder::GoToPosition(QByteArray &position)//, const char *servo)
 void HiWonder::ReadFromSerial_Slot ()
 {
     QString str;
+    int value = 0xF001;
     qint64 numBytes;
         numBytes = serial.bytesAvailable ();
 
         str = "There are "; //
         str += QString::number (numBytes);
         str += " bytes from robot to read";
-        this->Write_To_Log(0xF001, str);
+        this->Write_To_Log(value, str);
 
         qbuf = serial.readAll();
         str = "From Robot : ";
         str += QString(qbuf);
-        this->Write_To_Log(0xF001, str);
+        this->Write_To_Log(value, str);
         // И вот теперь надо вводить флаг проверки текста сообщения на предмет наличия "DONE"
 
         std::cout<<"From Serial:" << str.toStdString ()<< std::endl;
         QStringList list_str = str.split(QLatin1Char(' '), Qt::SkipEmptyParts);
 //        for (int i=0; i< list_str.size (); i++){
-//            this->Write_To_Log(0xF001, list_str.at (i));
+//            this->Write_To_Log(value, list_str.at (i));
 //            str = list_str.at (i);
 //            if ( str == "DONE!"){this->MOVEMENT_DONE = true;}
 
 //        }
         str="DONE!";
-        if (list_str.contains (str)) {this->MOVEMENT_DONE = true; this->Write_To_Log(0xF001, "Robot finished"); }
-        else this->Write_To_Log(0xF001, "Robot still running");
+        if (list_str.contains (str)) {this->MOVEMENT_DONE = true; this->Write_To_Log(value, "Robot finished"); }
+        else this->Write_To_Log(value, "Robot still running");
 
 
         str="LAST";
         if (list_str.contains (str)) {
             this->MOVEMENT_DONE = true;
-            this->Write_To_Log(0xF001, "Robot finished complex command");
+            this->Write_To_Log(value, "Robot finished complex command");
             this->current_status = "done";
             emit this->Moving_Done_Signal();
         }
 
-//   if (this->MOVEMENT_DONE) this->Write_To_Log(0xF001, "Robot finished");
+//   if (this->MOVEMENT_DONE) this->Write_To_Log(value, "Robot finished");
 //
 
 }

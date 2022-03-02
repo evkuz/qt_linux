@@ -119,9 +119,12 @@ MainProcess::MainProcess(QObject *parent)
 
     //+++++++++++++++ ОТкрываем порт Open_Port_Signal(QString portname); ttyUSB0
     // Arduino NANO виден как ttyUSB0
-    // Arduino Mega - как
-    emit Open_Port_Signal("ttyACM0"); //"ttyUSB0"
-    if (!Robot->SerialIsOpened) { Robot->current_st_index = 4;} // Robot->current_status = statuslst.at(4)
+    // Arduino Mega - как "ttyACM0"
+  //  emit Open_Port_Signal("ttyACM0"); //"ttyUSB0"
+    Robot->Open_Port_Slot("ttyACM0");
+    if (!Robot->SerialIsOpened) {
+        Robot->current_st_index = 4;
+        Robot->Open_Port_Slot("ttyACM1");  } // Robot->current_status = statuslst.at(4)
     init_json(); // Инициализируем json_status
 
     //make_json_answer();
@@ -163,8 +166,9 @@ MainProcess::~MainProcess()
     QString str = "Program is going to be closed";
     GUI_Write_To_Log(0xffff, str);
     qDebug() << str;
+    //delete Robot;
     delete this;
-    delete Robot;
+
 
 
 }
@@ -715,7 +719,14 @@ void MainProcess::init_json()
               {"state", "inprogress | done | fail"},
               {"info", "Set device's clamper in rady-to-clamp position"},
               {"rc", "int - action return code, 0=successfull, -1=already running"}
+             },
+             {
+              {"name", "formoving"},
+              {"state", "inprogress | done | fail"},
+              {"info", "Alternative transporting position for device' clamper"},
+              {"rc", "int - action return code"}
              }
+
 
 
 
@@ -975,6 +986,19 @@ void MainProcess::ProcessAction(HiWonder::ActionState *actionName)
     // Этот же ответ при конкретном запросе статуса экшена "get_box"
     // Проверяем текущее значение RC (return code)
 
+    str = "Before switch the actionName->rc value is ";
+    str += QString::number(actionName->rc);
+    GUI_Write_To_Log(value, str);
+
+
+    str = "Before switch the Current active command is ";
+    str += Robot->active_command;
+    str += " And the actionName->name is ";
+    str += actionName->name;
+
+    GUI_Write_To_Log(value, str);
+
+
 
       switch (actionName->rc)
      {
@@ -985,8 +1009,14 @@ void MainProcess::ProcessAction(HiWonder::ActionState *actionName)
           // в голове значения индексов - т.е. вместо
           // Robot->actionlst.at(0); будет переменная со значеием Robot->actionlst.at(0)
 
-            theindex = getIndexCommand(actionName->name, Robot->actionlst); //"get_box" ==0
-            Robot->active_command = Robot->actionlst.at(theindex);
+            theindex = getIndexCommand(actionName->name, tcpCommand); // Robot->actionlst => "get_box" ==0
+            // Индекс можно передавать как параметр из tcpParsing.
+            Robot->active_command = actionName->name; // Robot->actionlst.at(theindex); - вот тут индекс сместился !!!!
+
+            str = "Inside switch case -4:  the Current active command is ";
+            str += Robot->active_command;
+            GUI_Write_To_Log(value, str);
+
             // -4 -> 0
 
             // Заносим данные в структуру ( у каждогоо экшена должна быть своя.)
@@ -1019,21 +1049,30 @@ void MainProcess::ProcessAction(HiWonder::ActionState *actionName)
 
                 switch (theindex)
                {
-                 case 0: // "get_box"
+                case 1: // "get_box"
 
                            // Создаем сокет для связи с камерой и, в случае успеха, отправляем запрос в камеру.
                            // В ответе будет значение distance, которое сохраняем в глобальной переменной CVDistance
                            // По завершении request_CV получаем объект QJsonObject   jsndataObj, из которого извлекаем distance.
                             GUI_Write_To_Log(value, "From procesAction before request_CV");
                            request_CV();
-                 break;
+                break;
+                case 2:  // parking
+                           memcpy(Servos, mob_parking_position, DOF);
+                           this->send_Data(LASTONE);
+                break;
 
-                 case 4:  // parking
-                            memcpy(Servos, mob_parking_position, DOF);
-                            this->send_Data(LASTONE);
+                case 3: //"ready"
+                         memcpy(Servos, mob_ready_position, DOF);
+                         this->send_Data(LASTONE);
+                break;
 
 
-                 break;
+                case 10:   //"formoving"
+                        memcpy(Servos, mob_moving_position, DOF);
+                        this->send_Data(LASTONE);
+                break;
+
 
 
 //           // Запускаем захват объекта.  Теперь это значение distance отправляем в ф-цию GetBox
@@ -1067,12 +1106,12 @@ void MainProcess::ProcessAction(HiWonder::ActionState *actionName)
 //          // str = QJsonDocument(jsnStatus).toJson(QJsonDocument::Compact);
 
 //           emit Write_2_TcpClient_Signal (str);
-         break;
+         break; //case -4:
 
          case 0: // (уже запущен)=="Is running" -> Выходим
 
              //actionName->rc = -3;
-             str = "Action "; str += substr; str += "already running";
+             str = "Action "; str += actionName->name; str += " is already running";
              // Заносим данные в структуру
              Robot->getbox_Action = {"get_box", -3, "RC=0, Already In progress"};
              GUI_Write_To_Log(value, str);
@@ -1082,20 +1121,20 @@ void MainProcess::ProcessAction(HiWonder::ActionState *actionName)
 
          case -3: // (уже запущен) -> Выходим
 
-           str = "Action "; str += substr; str += "Уже запущен";
+           str = "Action "; str += actionName->name; str += "Уже запущен";
            Robot->getbox_Action = {"get_box", -3, "Already In progress"};
          break;
 
          case -2: // (не запустился) -> Выходим
 
-             str = "Action "; str += substr; str += "Не запустился"; // Serial PORT Error
+             str = "Action "; str += actionName->name; str += "Не запустился"; // Serial PORT Error
              // - Проверяем октрытие SerialPort
              Robot->getbox_Action = {"get_box", -2, "Failed"};
          break;
 
          default:
              actionName->rc = -4;
-             str = "Action "; str += substr; str += "В ожидании";
+             str = "Action "; str += actionName->name; str += "В ожидании";
          break;
 
 
@@ -1129,17 +1168,44 @@ void MainProcess::newConnection_Slot()
 // А также это индикатор, что команда выполнена и можно, например, отправить эти данные вебсерверу.
 void MainProcess::Moving_Done_Slot()
 {
-    GUI_Write_To_Log(0xFAAA, "Demo cycle finished !!!");
+    int value = 0xFAAA;
+    GUI_Write_To_Log(value, "Demo cycle finished !!!");
     // Меняем статус, теперь "done"
     std::cout<<"Set DONE to Robot!" << std::endl;
     Robot->SetCurrentStatus ("done");
-    GUI_Write_To_Log(0xFAAA, "Now robot status is !!! DONE !!!");
+    GUI_Write_To_Log(value, "Now robot status is !!! DONE !!!");
+
+    QString str = "Current active command is ";
+    str += Robot->active_command;
+
+    GUI_Write_To_Log(value, str);
 
     // Предполагаем, что get_box завержился и мы готовы принимать новые команды.
     // Меняем RC экшена на -4 == "Ожидание"
     if (Robot->active_command == "get_box") {
         Robot->STAT_getbox_Action.rc = -4; //"Ожидание"
+        Robot->getbox_Action.rc = -4;
+
+        GUI_Write_To_Log(value, "I'm in get_box RC-value changing");
     }
+
+    if (Robot->active_command == "parking") {
+        Robot->parking_Action.rc = -4; //"Ожидание"
+        GUI_Write_To_Log(value, "I'm in parking RC-value changing");
+    }
+    if (Robot->active_command == "ready") {
+        Robot->ready_Action.rc = -4; //"Ожидание"
+        GUI_Write_To_Log(value, "I'm in ready RC-value changing");
+    }
+
+    if (Robot->active_command == "formoving") {
+        Robot->forMoving_Action.rc = -4; //"Ожидание"
+        GUI_Write_To_Log(value, "I'm in formoving RC-value changing");
+    }
+
+
+
+
 
     // И вот тут тоже можно искать имя команды по индексу и менять данные структур соответственно.
 
@@ -1167,19 +1233,20 @@ void MainProcess::onSocketConnected_Slot()
 {
  //in.setDevice(socketCV);
  QString str = "CV connection established";
- GUI_Write_To_Log(0x7777, str);
+ int value = 0x7777;
+ GUI_Write_To_Log(value, str);
 
  str = "Current socket state is ";
 
  if (socketCV->state() == QTcpSocket::ConnectedState){str += " Connected State";}
  else {str += " Some OTHER than Connected State !!!!";}
 
-    GUI_Write_To_Log(0x7777, str);
+    GUI_Write_To_Log(value, str);
 
 // A read buffer size of 0 (the default) means that the buffer has no size limit, ensuring that no data is lost.
     str = "###################### Current TCPSocket BUFFER SIZE is ";
     str += QString::number(socketCV->readBufferSize());
-    GUI_Write_To_Log(0x7777, str);
+    GUI_Write_To_Log(value, str);
 
 
 
@@ -1478,6 +1545,11 @@ void MainProcess::GetBox(unsigned int distance)
     str += QString::number(distance);
     GUI_Write_To_Log(value, str);
 
+    str = "Inside GetBox the Current active command is ";
+    str += Robot->active_command;
+    GUI_Write_To_Log(value, str);
+
+
 
     // Выбираем массив углов через switch, потом попробуем через словарь, т.е. ключ - значение, где значением будет массив
     switch (distance)
@@ -1504,6 +1576,8 @@ void MainProcess::GetBox(unsigned int distance)
       default:
         GUI_Write_To_Log(value, "!!!!! Unrecognized position, Go to Parking !!!!");
         arrPtr = mob_parking_position; break;
+        // Если позиция за рамками руки, значит что-то с распознаванием. Переводим в статус "waiting"
+        Robot->getbox_Action.rc = -4; //"waiting"
       break;
 
     }

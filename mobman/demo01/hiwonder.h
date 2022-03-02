@@ -44,8 +44,9 @@ public:
 
     QList<QString> statuslst = { "init", "wait", "inprogress", "done", "manipulator malfunction" }; //"manipulator malfunction" - SerialPort
     //    if (!SerialIsOpened) {str = "WARNING !!!! Serial port is NOT opened ! The data has NOT been sent."; this->Write_To_Log(0xF001, str); return;}
-    //                                          1                       3
-    QList<QString> actionlst = {"get_box", "nothing", "getposition", "ready", "parking"};
+
+    // В этом классс свой список                1                       3
+    QList<QString> actionlst = {"get_box", "nothing", "getposition", "ready", "parking", "formoving"};
     // Ответ робота состоит из 4 полей
     QString current_status; // Текущий статус
     int current_st_index;   // Индекс текущего статуса в списке statuslst
@@ -86,6 +87,8 @@ public:
     ActionState getbox_Action;
     ActionState STAT_getbox_Action;
     ActionState parking_Action;
+    ActionState ready_Action;
+    ActionState forMoving_Action; //Get ready for moving accross
 
 //Global for the whole robot
     struct CurrentState {

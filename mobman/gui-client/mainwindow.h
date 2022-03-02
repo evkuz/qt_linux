@@ -94,6 +94,8 @@ private slots:
 
     void on_NEW_GetStatusButton_clicked();
 
+    void on_BeforeMovingButton_clicked();
+
 private:
     Ui::MainWindow *ui;
 };

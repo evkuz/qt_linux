@@ -78,10 +78,16 @@ void setup() {
   delay(1000);
 
 
-servos[0].write(35);
-servos[1].write(1);
+//servos[0].write(35);
+//servos[1].write(1);
+//servos[2].write(45);
+//servos[3].write(90);
+
+servos[0].write(45);
+servos[1].write(90);
 servos[2].write(45);
-servos[3].write(90);
+servos[3].write(180);
+
 
 
   for (byte i=0; i< sBufSize; i++){

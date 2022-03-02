@@ -10,13 +10,12 @@
         aa = json.loads(a)
 */
 //+++++++ Получили данные (запрос) от клиента. Парсим.
-//   0          1                    3                      5                           7
-//{"clamp", "get_box", "parking", "ready", "status", "getservices", "setservos=", "srvfromfile",  "status?action=getbox"};
-//{"clamp", "get_box", "parking", "ready", "status", "getactions", "getservices", "setservos=", "srvfromfile",  "status?action=get_box"};
+//   0          1                    3                      5                           7                                   9
+//{"clamp", "get_box", "parking", "ready", "status", "getactions", "getservices", "setservos=", "srvfromfile",  "status?action=get_box", "formoving"};
 
 void MainProcess::Data_From_TcpClient_Slot(QString message)
 {
-    QByteArray dd ;
+//    QByteArray dd ;
     QString str, substr;
     int value = 0xf00f;
     new_get_request = true;
@@ -29,14 +28,23 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
     int comIndex = getIndexCommand(substr, tcpCommand);
 
     if (comIndex < 0) {str = "WRONG DATA !!!"; GUI_Write_To_Log(value, str);return;}
-    str = "Index value is "; str += QString::number(comIndex); str += "\n";
+    str = "Index value is "; str += QString::number(comIndex); str += ",\n";
     str += "List value on that index is \""; str += tcpCommand.at(comIndex); str += "\"";
 
     GUI_Write_To_Log(value, str);
 
 // So here we've got the index of elemnt representing the command received by TCP
     // set value of Robot->active_command
-     Robot->active_command = tcpCommand.at(comIndex);
+    Robot->active_command = tcpCommand.at(comIndex);
+    str = "Current active command is ";
+    str += Robot->active_command;
+    GUI_Write_To_Log(value, str);
+
+
+    QStringList list1; // Обязательно сдесь, иначе switch не скомпилируется, внутри switch нельзя объявить.
+
+    // А можно же в ProcessAction передавать сам comIndex и тогда switch не нужен ?!
+    // Не совсем... у разных экшенов все-таки разная обработка...
 
     switch (comIndex) {
 
@@ -48,24 +56,48 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
                 // Поэтому Process Action
                 ProcessAction(&Robot->getbox_Action);
         break;
+        case 2: //"parking"
+                ProcessAction(&Robot->parking_Action);
+
+        break;
+
+
+        case 3: //"ready"
+                ProcessAction(&Robot->ready_Action);
+
+
+        break;
+        case 7: //"setservos="
+                substr = substr.remove("setservos=");
+                list1 = substr.split(QLatin1Char(','));
+                for (int i=0; i<DOF; ++i)
+                {
+                    Servos[i] = list1.at(i).toUInt();
+                }//for
+
+                this->send_Data(NOT_LAST);
+                jsnStatusActionAnswer["state"] = "running";
+
+        break;
 
         case 9: //"get_box" в новом формате - это экшен (к вопросу о типе) "status?action=get_box"
                 // Поэтому Process Action
                 ProcessAction(&Robot->getbox_Action);
         break;
 
-        case 2: //"parking"
-                ProcessAction(&Robot->parking_Action);
-//                memcpy(Servos, mob_parking_position, DOF);
+        case 10: //"formoving"
+//                memcpy(Servos, mob_moving_position, DOF);
 //                this->send_Data(LASTONE);
+                ProcessAction(&Robot->forMoving_Action);
+
 
         break;
 
 
 
 
-    default:
-        ;
+        default:
+                  ;
         break;
 
 
@@ -150,11 +182,11 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 //   }
 
 
-   if (substr == "ready")
-   {
-       memcpy(Servos, mob_ready_position, DOF);
-       this->send_Data(LASTONE);
-   }
+//   if (substr == "ready")
+//   {
+//       memcpy(Servos, mob_ready_position, DOF);
+//       this->send_Data(LASTONE);
+//   }
 
    if (substr == "servo2_20")
    {
@@ -196,17 +228,17 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 //++++++++++++++++++ Если команда длинная, а для распознавания
 // достаточно первые несколько символов
 
-   if (substr.startsWith("setservos=")){
-       substr = substr.remove("setservos=");
-       QStringList list1 = substr.split(QLatin1Char(','));
-       for (int i=0; i<DOF; ++i)
-       {
-           Servos[i] = list1.at(i).toUInt();
-       }//for
+//   if (substr.startsWith("setservos=")){
+//       substr = substr.remove("setservos=");
+//       QStringList list1 = substr.split(QLatin1Char(','));
+//       for (int i=0; i<DOF; ++i)
+//       {
+//           Servos[i] = list1.at(i).toUInt();
+//       }//for
 
-       this->send_Data(NOT_LAST);
-       jsnStatusActionAnswer["state"] = "running";
-   }
+//       this->send_Data(NOT_LAST);
+//       jsnStatusActionAnswer["state"] = "running";
+//   }
 //+++++++++++++++++++ action  "get_box" ++++++++++++++++++++++++++++++++++++++++++++
 //   if (substr == "get_box") {
 ////       jsn_answer_info = Robot->current_status;
@@ -362,7 +394,7 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 
 
 }
-
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 void MainProcess::Data_from_TcpServer_Slot(QString tcpData)
 {
      int value = 0x1111;
