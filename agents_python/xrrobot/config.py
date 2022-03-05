@@ -7,10 +7,8 @@ class DevelopementConfig(BaseConfig):
     DEBUG = True
     CAMERA_NUM = 0
     APP_DIR = app_dir
-    COM_PORT = 0
     
 class ProductionConfig(BaseConfig):
     DEBUG = False
     CAMERA_NUM = 0
     APP_DIR = app_dir
-    COM_PORT = 0

@@ -1,36 +1,53 @@
 #!/usr/bin/env python
-# license removed for brevity
 
 import sys
 import rospy
 import actionlib
 from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
+from geometry_msgs.msg import Twist
 
-# Version 1. Robot with Manipulator
-x1 = 0.0
-y1 = 0.0
-z1 = 1.0
-w1 = 0.0
+# Presentation version 1 according to A.G
+x1 = 0.750
+y1 = 0.90
+z1 = 0.0
+w1 = 1.0
 
-x2 = -1.10
-y2 = -0.50
-z2 = 0.70
-w2 = -0.70
+x2 = 0.00
+y2 = 0.10
+z2 = 0.0
+w2 = 1.0
 
-x3 = -1.10
-y3 = -0.50
-z3 = 0.20
-w3 = 0.90
+# Presentation version 2 according to A.R
+x1 = 0.750
+y1 = 0.90
+z1 = 0.0
+w1 = 1.0
 
-x0 = 0.0
-y0 = 0.0
-z0 = 0.0
-w0 = 1.0
+x2 = 0.10
+y2 = 0.10
+z2 = -0.7
+w2 = 0.7
+
+# Presentation version 3 according to A.R + turn on 10,5 o'clock
+x1 = 0.750
+y1 = 0.90
+z1 = 0.20
+w1 = 0.90
+
+x2 = 0.10
+y2 = 0.10
+z2 = -0.7
+w2 = 0.7
+
+'''
+a = 1.0
+b = 0.0
+c = 0.0
+d = 0.0
+'''
 
 
 def movebase_client(x, y, z, w):
-    result = -1
-
     client = actionlib.SimpleActionClient('move_base',MoveBaseAction)
     print('w8ing server')
     client.wait_for_server()
@@ -52,12 +69,7 @@ def movebase_client(x, y, z, w):
         rospy.logerr("Action server not available!")
         rospy.signal_shutdown("Action server not available!")
     else:
-        res = client.get_result()
-        if res is not None:
-            print "MoveBase result:", result
-            result = 0
-    return result
-        
+        return client.get_result()
 
 if __name__ == '__main__':
     result = 0
@@ -67,15 +79,9 @@ if __name__ == '__main__':
         if len(sys.argv) < 2:
             result = -2
         elif sys.argv[1] == 'a':
-            result = movebase_client(x1,y1,z1,w1)
-            #rospy.sleep(5)
-            result = movebase_client(x2,y2,z2,w2)
-            #rospy.sleep(5)
+            result = movebase_client(x1, y1, z1, w1)
         elif sys.argv[1] == 'b':
-            result = movebase_client(x3,y3,z3,w3)
-            #rospy.sleep(5)
-            result = movebase_client(x0,y0,z0,w0)
-            #rospy.sleep(5)
+            result = movebase_client(x2, y2, z2, w2)
         else:
             print("Unknown point name!")
             result = -1

@@ -10,10 +10,11 @@ fi
 cd ../../
 
 USER=xrrobot
-ADDR=192.168.1.98
+ADDR=192.168.1.205
 
 rsync -av --exclude '__pycache__' --exclude '.venv' agents_python/iqrdevice $USER@$ADDR:~/agents_python/
 rsync -av --exclude '__pycache__' --exclude '.venv' agents_python/mobman_move $USER@$ADDR:~/agents_python/
+rsync -av agents_python/requirements.txt $USER@$ADDR:~/agents_python/
 
 ssh $USER@$ADDR 'sudo systemctl restart robot.mobman_move.service'
 echo $?

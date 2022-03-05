@@ -238,7 +238,7 @@ class CameraDetector(object):
      
         while self.__isWorking:
             _, frame = self.__cap.read()
-            frame, self.position = self.__detect(frame)
+            frame, self.position = self.__detect(frame.copy())
             (flag, encodedImage) = cv2.imencode(".jpeg", frame)
             self.__actualFrameBytes = encodedImage
             self.__actualFrame = frame.copy()
