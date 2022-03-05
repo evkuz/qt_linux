@@ -645,9 +645,13 @@ void MainProcess::init_json()
              {"state", "inprogress | done | fail"},
              {"info", "Set device's servos at angles specified by the command"},
              {"rc", "int - action return code"}
+           },
+           {
+             {"name", "formoving"},
+             {"state", "inprogress | done | fail"},
+             {"info", "Alternative transporting position for device' clamper"},
+             {"rc", "int - action return code"}
            }
-
-
 
            } //list
          }//action_list-field
@@ -976,7 +980,7 @@ int MainProcess::getIndexCommand(QString myCommand, QList<QString> theList)
 // И если еще не запущен, то меняем состояние на "уже запущен"
 void MainProcess::ProcessAction(HiWonder::ActionState *actionName)
 {
-    QString str, substr;
+    QString str;
     int theindex, value;
     value = 0x1122;
     // Фиксируем время начала выполнения.
@@ -1029,12 +1033,11 @@ void MainProcess::ProcessAction(HiWonder::ActionState *actionName)
             //    - Пишем в лог.
             //    - Ставим actionName->rc == -2: // (не запустился)
             if (!Robot->SerialIsOpened){
-                str = "Serial port is UNAVAILABLE !!! CAN'T GET BOX !!!";
+                str = "Serial port is UNAVAILABLE !!! CAN'T move the ARM !!! Action is FAILED !!!";
 
-                Robot->getbox_Action = {"get_box", -2, str}; //"Failed"
+                actionName->rc = -2;
+                actionName->info = str;
                 GUI_Write_To_Log(value, str);
-//                emit Write_2_TcpClient_Signal (str);
-//                return;
             }
 
             else {
@@ -1054,7 +1057,7 @@ void MainProcess::ProcessAction(HiWonder::ActionState *actionName)
                            // Создаем сокет для связи с камерой и, в случае успеха, отправляем запрос в камеру.
                            // В ответе будет значение distance, которое сохраняем в глобальной переменной CVDistance
                            // По завершении request_CV получаем объект QJsonObject   jsndataObj, из которого извлекаем distance.
-                            GUI_Write_To_Log(value, "From procesAction before request_CV");
+                           GUI_Write_To_Log(value, "From procesAction before request_CV");
                            request_CV();
                 break;
                 case 2:  // parking
@@ -1113,8 +1116,9 @@ void MainProcess::ProcessAction(HiWonder::ActionState *actionName)
              //actionName->rc = -3;
              str = "Action "; str += actionName->name; str += " is already running";
              // Заносим данные в структуру
-             Robot->getbox_Action = {"get_box", -3, "RC=0, Already In progress"};
+             //Robot->getbox_Action = {"get_box", -3, "RC=0, Already In progress"};
              GUI_Write_To_Log(value, str);
+             actionName->rc = -3;
              //request_CV();
 
          break;
@@ -1122,19 +1126,22 @@ void MainProcess::ProcessAction(HiWonder::ActionState *actionName)
          case -3: // (уже запущен) -> Выходим
 
            str = "Action "; str += actionName->name; str += "Уже запущен";
-           Robot->getbox_Action = {"get_box", -3, "Already In progress"};
+           // Robot->getbox_Action = {"get_box", -3, "Already In progress"};
+           actionName->info =  "Already In progress";
          break;
 
          case -2: // (не запустился) -> Выходим
 
              str = "Action "; str += actionName->name; str += "Не запустился"; // Serial PORT Error
              // - Проверяем октрытие SerialPort
-             Robot->getbox_Action = {"get_box", -2, "Failed"};
+             //Robot->getbox_Action = {"get_box", -2, "Failed"};
+             actionName->info = "Failed";
          break;
 
          default:
              actionName->rc = -4;
-             str = "Action "; str += actionName->name; str += "В ожидании";
+             str = "Default case : Action "; str += actionName->name; str += " В ожидании";
+             GUI_Write_To_Log(value, str);
          break;
 
 

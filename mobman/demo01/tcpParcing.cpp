@@ -24,7 +24,7 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
     GUI_Write_To_Log(0xf00f, str);
 
     substr = message;
-    // Определяем индекс команды в списке tcpCommand
+    // Определяем индекс команды в списке MainProcess::tcpCommand
     int comIndex = getIndexCommand(substr, tcpCommand);
 
     if (comIndex < 0) {str = "WRONG DATA !!!"; GUI_Write_To_Log(value, str);return;}
