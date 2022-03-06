@@ -8,6 +8,8 @@
 
 #include <QtCore>
 
+//+++++++++++++++ ЗАХВАТ РУЧНИКА ИМЕЕТ НОМЕР ПРИВОДА 0 - ИДЕТ 1-Й В СПИСКЕ.
+
 unsigned char hwr_Start_position [6] = {93, 93, 93, 93, 93, 93}; // servo1,,,servo6
 unsigned char sit_down_position [6] = {93, 93, 93, 48, 48, 93} ; // Поза сидя. Сдвинуты 4,5 приводы (относительно 93)
 unsigned char sit_45_position [6] = {93, 93, 5, 5, 10, 45};
@@ -17,9 +19,9 @@ unsigned char put_position [6] = {60, 93, 90, 40, 140, 30};
                             //      60, 93, 100, 35, 145, 35
 unsigned char after_put_position [6] = {0, 93, 90, 45, 135, 30};
 
-unsigned char mob_parking_position [4] = {45,90,90,160};//,45,45,49,222
-unsigned char mob_ready_position [4] = {45,90,135,165};
-unsigned char mob_moving_position [4] = {45,90,45,180};
+unsigned char mob_parking_position [4] = {90,90,90,160};//,45,45,49,222
+unsigned char mob_ready_position [4] = {90,90,135,165};
+unsigned char mob_moving_position [4] = {90,90,45,180}; //
 
 
 //unsigned char mob_pos_10 [4] = {35,90,120,60};

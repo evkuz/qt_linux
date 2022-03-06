@@ -1194,6 +1194,7 @@ void MainProcess::Moving_Done_Slot()
         Robot->getbox_Action.rc = -4;
 
         GUI_Write_To_Log(value, "I'm in get_box RC-value changing");
+        GUI_Write_To_Log(value, "get_box operation is finished !");
     }
 
     if (Robot->active_command == "parking") {
@@ -1208,7 +1209,7 @@ void MainProcess::Moving_Done_Slot()
     if (Robot->active_command == "formoving") {
         Robot->forMoving_Action.rc = -4; //"Ожидание"
         GUI_Write_To_Log(value, "I'm in formoving RC-value changing");
-    }
+            }
 
 
 
@@ -1491,9 +1492,10 @@ void MainProcess::CV_NEW_onReadyRead_Slot()
     str += substr;
     GUI_Write_To_Log(value, str);
 
-//    if (rDistance < 110 || rDistance > 230) {
-//        str = "!!!!!!!!!!!!!!!!! The distance is out of range !!!!!!!!!! ";
-//        return;}
+    if (rDistance < 110 || rDistance > 230) {
+        str = "!!!!!!!!!!!!!!!!! The distance is out of range !!!!!!!!!! ";
+        GUI_Write_To_Log(value, str);
+        return;}
 
     // Вот тут по уму надо передеать rDistance в класс cvdevice;
     // Но пока заколхозим глобальную переменную.
@@ -1589,8 +1591,9 @@ void MainProcess::GetBox(unsigned int distance)
 
     }
 
-    memcpy(Servos, arrPtr, DOF);
-    this->send_Data(LASTONE);
+    //+++++++++++++++++++++++ Опустить хват для взятия кубика
+     memcpy(Servos, arrPtr, DOF);
+     this->send_Data(NOT_LAST);  // Уже не LASTONE
 /*
  Это мы только опустили захват в нужную точку.
  Далее нужно следующее :
@@ -1598,12 +1601,23 @@ void MainProcess::GetBox(unsigned int distance)
  - Закрыть захват
  - Поднять в позицию "Have_Cube"
  - Жать дальнейший указаний от ЦУП
-
-
-
 */
 
+     //++++++++++++++++++++++ Сжать захват
 
+     quint8 FULL_OPENED, FULL_CLOSED;
+     FULL_CLOSED = 35;
+     FULL_OPENED = 90;
+     if (Servos[0]>FULL_CLOSED){ Servos[0]=FULL_CLOSED;}
+     else {Servos[0]=FULL_OPENED;}
+
+     //memcpy(Servos, arrPtr, DOF);
+     this->send_Data(NOT_LAST);  // Уже не LASTONE
+
+
+     //++++++++++++++++++++++ в позицию formoving, теперь последняя
+     memcpy(Servos, mob_moving_position, DOF);
+     this->send_Data(LASTONE);
 
     str = "!!!!!!!!!!!!!!!! The command Action \"";
     str += Robot->getbox_Action.name; str += "\"";
