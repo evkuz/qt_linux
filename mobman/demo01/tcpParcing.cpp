@@ -89,9 +89,22 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 //                memcpy(Servos, mob_moving_position, DOF);
 //                this->send_Data(LASTONE);
                 ProcessAction(&Robot->forMoving_Action);
+        break; //"put_box"
+
+        case 11: //"put_box" в новом формате - это экшен (к вопросу о типе) "status?action=get_box"
+                // Поэтому Process Action
+                ProcessAction(&Robot->putbox_Action);
+        break; //"reset"
+        case 12: //"reset" в новом формате - это экшен (к вопросу о типе) "status?action=get_box"
+                 // НО, т.к. сбрасываем текущую, то без ProcessAction, ставим всем командам RC=-4
+                Robot->getbox_Action.rc = -4;
+                Robot->putbox_Action.rc = -4;
+                Robot->parking_Action.rc = -4;
+                Robot->ready_Action.rc = -4;
+                Robot->forMoving_Action.rc = -4;
 
 
-        break;
+        break; //
 
 
 

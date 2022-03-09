@@ -348,7 +348,7 @@ void MainProcess::on_socketButton_clicked()
 void MainProcess::on_clampButton_clicked()
 {
     quint8 FULL_OPENED, FULL_CLOSED;
-    FULL_CLOSED = 90;
+    FULL_CLOSED = 60;
     FULL_OPENED = 45;
     // Если открыто, то закрываем
     if (Servos[0]<FULL_CLOSED){ Servos[0]=FULL_CLOSED;}
@@ -623,6 +623,18 @@ void MainProcess::init_json()
         {"state", "Wait"},
         {"action_list", {
            {
+            {"name", "clamp"},
+            {"state", "inprogress | done | fail"},
+            {"info", "Open/Close clamper"},
+            {"rc", "int - action return code"}
+           },
+           {
+            {"name", "formoving"},
+            {"state", "inprogress | done | fail"},
+            {"info", "Alternative transporting position for device' clamper"},
+            {"rc", "int - action return code"}
+           },
+           {
             {"name", "get_box"},
             {"state", {"waiting","noDetection", "inprogress", "done", "fail"}},
             {"info", "Get the box by clamper, ascing CV about distance in advance"},
@@ -637,23 +649,17 @@ void MainProcess::init_json()
             {"rc", "int - action return code"}
            },
            {
-             {"name", "parking"},
-             {"state", "inprogress | done | fail"},
-             {"info", "Set device's clamper in transporting position"},
-             {"rc", "int - action return code"}
+            {"name", "parking"},
+            {"state", "inprogress | done | fail"},
+            {"info", "Set device's clamper in transporting position"},
+            {"rc", "int - action return code"}
             },
            {
-             {"name", "setservos="},
-             {"state", "inprogress | done | fail"},
-             {"info", "Set device's servos at angles specified by the command"},
-             {"rc", "int - action return code"}
+            {"name", "setservos="},
+            {"state", "inprogress | done | fail"},
+            {"info", "Set device's servos at angles specified by the command"},
+            {"rc", "int - action return code"}
            },
-           {
-             {"name", "formoving"},
-             {"state", "inprogress | done | fail"},
-             {"info", "Alternative transporting position for device' clamper"},
-             {"rc", "int - action return code"}
-           }
 
            } //list
          }//action_list-field
@@ -1077,6 +1083,28 @@ void MainProcess::ProcessAction(HiWonder::ActionState *actionName)
                         memcpy(Servos, mob_moving_position, DOF);
                         this->send_Data(LASTONE);
                 break;
+                case 11:   //"putbox" - раскладываем на 4 команды :
+                           // 1. хват в позицию mob_put_23 2. открыть хват 3. Поднять привод [3] 4. в позицию "formoving"
+
+                        memcpy(Servos, mob_put_23, DOF);
+                        this->send_Data(NOT_LAST);
+                        // Так это последняя команда...
+                        //on_clampButton_clicked();
+
+                        // Открываем
+                        Servos[0] = 45;
+                        this->send_Data(NOT_LAST);
+
+                        //Поднимаем крайний привод, чтобы снова не схватить кубик при движении обратно
+                        Servos[3] = 65;
+                        this->send_Data(NOT_LAST);
+
+                        memcpy(Servos, mob_moving_position, DOF);
+                        this->send_Data(LASTONE);
+
+                break;
+
+
 
 
 
@@ -1127,9 +1155,11 @@ void MainProcess::ProcessAction(HiWonder::ActionState *actionName)
 
          case -3: // (уже запущен) -> Выходим
 
-           str = "Action "; str += actionName->name; str += "Уже запущен";
+           str = "Action "; str += actionName->name; str += " is STILL running. Try RESET action";
            // Robot->getbox_Action = {"get_box", -3, "Already In progress"};
            actionName->info =  "Already In progress";
+           GUI_Write_To_Log(value, str);
+
          break;
 
          case -2: // (не запустился) -> Выходим
@@ -1189,6 +1219,8 @@ void MainProcess::Moving_Done_Slot()
 
     GUI_Write_To_Log(value, str);
 
+    //Тут тоже надо через switch
+
     // Предполагаем, что get_box завержился и мы готовы принимать новые команды.
     // Меняем RC экшена на -4 == "Ожидание"
     if (Robot->active_command == "get_box") {
@@ -1213,6 +1245,13 @@ void MainProcess::Moving_Done_Slot()
         GUI_Write_To_Log(value, "I'm in formoving RC-value changing");
             }
 
+    if (Robot->active_command == "put_box") {
+        Robot->STAT_getbox_Action.rc = -4; //"Ожидание"
+        Robot->putbox_Action.rc = -4;
+
+        GUI_Write_To_Log(value, "I'm in put_box RC-value changing");
+        GUI_Write_To_Log(value, "put_box operation is finished !");
+    }
 
 
 
@@ -1497,6 +1536,7 @@ void MainProcess::CV_NEW_onReadyRead_Slot()
     if (rDistance < 110 || rDistance > 230) {
         str = "!!!!!!!!!!!!!!!!! The distance is out of range !!!!!!!!!! ";
         GUI_Write_To_Log(value, str);
+        Robot->getbox_Action.rc = -4; // Ставим экшен RC в "waiting"
         return;}
 
     // Вот тут по уму надо передеать rDistance в класс cvdevice;

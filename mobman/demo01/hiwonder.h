@@ -89,6 +89,8 @@ public:
     ActionState parking_Action;
     ActionState ready_Action;
     ActionState forMoving_Action; //Get ready for moving accross
+    ActionState putbox_Action;
+
 
 //Global for the whole robot
     struct CurrentState {

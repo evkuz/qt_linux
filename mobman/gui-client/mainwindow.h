@@ -96,6 +96,10 @@ private slots:
 
     void on_BeforeMovingButton_clicked();
 
+    void on_PutBoxButton_clicked();
+
+    void on_ClampButton_clicked();
+
 private:
     Ui::MainWindow *ui;
 };

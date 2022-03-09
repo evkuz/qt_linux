@@ -237,16 +237,8 @@ void Go_To_Position(byte *pos)
         }
 
         else {  // Обычный порядок - двжиение за кубиком при создании обучающей выборки
-//           move_servo_together (ints, 4, 4);
-//           delay(1000);
-//           move_servo_together (ints, 1, 2);
-//           delay(1000);
-//           move_servo_together (ints, 3, 3);
-//           delay(1000);
-
-            //move_servos(ints);
-            move_servo_together (ints, 1, 4);
-            delay(1000);
+              move_servo_together (ints, 1, 4);
+              delay(1000);
 
         }
 
@@ -258,34 +250,24 @@ void Go_To_Position(byte *pos)
           if (pos[szParcel-1]==0xC8) // обычная команда
           {// Не последняя команда
 
-          move_servo_together (ints, 3, 3); // поднимаем дальнюю половину
+          move_servo_together (ints, 4, 4); // поднимаем дальнюю часть
           delay(1000);
-          move_servo_together (ints, 1, 1); // закрываем/хват
+          move_servo_together (ints, 2, 3); 
           delay(1000);
-          move_servo_together (ints, 4, 4);
+          move_servo_together (ints, 1, 1); // закрываем/открываем хват
           delay(1000);
           }
 
-           if (pos[szParcel-1]==0xF4){ // Кубик на тележку положили, теперь грамотно убираем манипулятор (не задевая транспортир).
-               move_servo_together (ints, 3, 5);
-               delay(500);
-               move_servo_together (ints, 1, 6);
-               delay(500);
-           }
+//           if (pos[szParcel-1]==0xF4){ // Кубик на тележку положили, теперь грамотно убираем манипулятор (не задевая транспортир).
+//               move_servo_together (ints, 3, 5);
+//               delay(500);
+//               move_servo_together (ints, 1, 6);
+//               delay(500);
+//           }
 
 
-          if (pos[szParcel-1]==0xDE) // Последняя команда роботу при комплексном движении
+          if (pos[szParcel-1]==0xDE) // 0xDE==222 Последняя команда роботу при комплексном движении
           {// Последняя команда, может быть и одиночой, но на случай работы с кубиком делаем так
-
-        //  move_servo_together (ints, 3, 4);
-          move_servos(ints);
-          delay(1000);
-//          move_servo_together (ints, 1, 2);
-//          delay(1000);
-
-//          move_servo_together (ints, 1, 2);
-//          delay(300);
-//          move_servo_together (ints, 6, 6);
 
           }   
      break; //case 0x30:

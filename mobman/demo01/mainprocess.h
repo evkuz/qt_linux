@@ -102,6 +102,7 @@ public:
 
 //#define
 #define FORWARD     0X31 //049
+#define BACKWARD    0X30 //048
 #define NOT_LAST    0xC8 //200  // Не последняя команда
 #define LASTONE     0xDE //222  // Последняя команда роботу при комплексном движении
 #define BEFORE_LAST 0xE9 //233  // Предпоследняя команда - положить кубик на тележку.

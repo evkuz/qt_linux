@@ -627,3 +627,44 @@ void MainWindow::on_BeforeMovingButton_clicked()
 
 }
 
+//+++++++++++++++++++++++++++++++++++++++++++++++++++
+
+void MainWindow::on_PutBoxButton_clicked()
+{
+    // Формируем запрос, "кнопка Put Box"
+    // А вот теперь готовим команду "/run?cmd=put_box&"
+     request = "GET ";
+     request += "/run?cmd=put_box&";
+     request += " HTTP/1.1";
+     request += "\r\nHost: ";
+     request += "192.168.1.201:8383\r\n";
+     request += "Accept: */*\r\n";
+     request += "Access-Control-Allow-Origin: *\r\n";
+     request += "\r\n";
+
+     QString myipaddress = CVDev_IP;
+     quint16 myport = ARM_Port;
+     makeSocket(myipaddress, myport);
+
+}
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++
+void MainWindow::on_ClampButton_clicked()
+{
+    // Формируем запрос, "кнопка Clamp"
+    // А вот теперь готовим команду "/run?cmd=clamp&"
+     request = "GET ";
+     request += "/run?cmd=clamp&";
+     request += " HTTP/1.1";
+     request += "\r\nHost: ";
+     request += "192.168.1.201:8383\r\n";
+     request += "Accept: */*\r\n";
+     request += "Access-Control-Allow-Origin: *\r\n";
+     request += "\r\n";
+
+     QString myipaddress = CVDev_IP;
+     quint16 myport = ARM_Port;
+     makeSocket(myipaddress, myport);
+
+}
+

@@ -40,9 +40,13 @@ HiWonder::HiWonder()
     forMoving_Action.rc = -4;
     forMoving_Action.info = "waiting"; //Get ready for moving accross
 
+    putbox_Action.name = "put_box";
+    putbox_Action.rc = -4;
+    putbox_Action.info = "waiting";
+
   //  STAT_getbox_Action = {"MOBMAN", 0, "Action is accepted", "init", };
 
-    ActionState putbox_Action {"putbox", -4, "waiting"};
+  //  ActionState putbox_Action {"put_box", -4, "waiting"};
 
     ManipulatorState.action = "Nothhing";
     ManipulatorState.state = statuslst.at(0); // "init" state
