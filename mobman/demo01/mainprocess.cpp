@@ -348,12 +348,14 @@ void MainProcess::on_socketButton_clicked()
 void MainProcess::on_clampButton_clicked()
 {
     quint8 FULL_OPENED, FULL_CLOSED;
-    FULL_CLOSED = 35;
-    FULL_OPENED = 90;
-    if (Servos[0]>FULL_CLOSED){ Servos[0]=FULL_CLOSED;}
+    FULL_CLOSED = 90;
+    FULL_OPENED = 45;
+    // Если открыто, то закрываем
+    if (Servos[0]<FULL_CLOSED){ Servos[0]=FULL_CLOSED;}
     else {Servos[0]=FULL_OPENED;}
 
-    on_set_posButton_clicked();
+    //on_set_posButton_clicked();
+    this->send_Data(LASTONE);
 }
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++

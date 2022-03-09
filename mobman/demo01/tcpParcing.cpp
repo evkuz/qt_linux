@@ -171,7 +171,7 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 
    }
 
-   if (substr == "clamp") { on_clampButton_clicked();}//"sit"
+//   if (substr == "clamp") { on_clampButton_clicked();}//"sit"
 
 //   if (substr == "parking")
 //   {
