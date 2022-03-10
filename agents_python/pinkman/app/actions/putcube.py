@@ -16,11 +16,11 @@ class PutCubeAction (BaseAction):
     def run_action(self, **kwargs) -> int:
         res = 0
         if self._workingFlag:
-            _ = self.move_manip([90, 120, 70, 100])
+            _ = self.move_manip([90, 120, 70, 120])
         if self._workingFlag:
-            _ = self.move_manip([165, 120, 70, 100])
+            _ = self.move_manip([165, 120, 70, 120])
         if self._workingFlag:
-            _ = self.move_manip([165, 50, 115, 100])
+            _ = self.move_manip([165, 50, 115, 120])
         if self._workingFlag:
             _ = self.move_manip([165, 50, 115, 180])
         if self._workingFlag:

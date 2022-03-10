@@ -41,8 +41,8 @@ class CatchCubeAction (BaseAction):
                     notDetectedSteps = 0
                 else:
                     notDetectedSteps += 1
-                if dist < 4:
-                    currentPos[3] = 100
+                if dist < 3.9:
+                    currentPos[3] = 120
                     _ = self.move_manip(currentPos)
                     tp_state+=1
                 if detectedSteps > 100 or notDetectedSteps > 200:
@@ -55,11 +55,11 @@ class CatchCubeAction (BaseAction):
                     currentPos[0],
                     currentPos[1] + 20,
                     currentPos[2] + 10,
-                    100
+                    currentPos[3]
                 ]
                 _ = self.move_manip(pos)
 
-                pos = [currentPos[0], 120, 60, 30]
+                pos = [currentPos[0], 120, 60, currentPos[3]]
                 _ = self.move_manip(pos)
                 break
         return res
@@ -82,8 +82,8 @@ class CatchCubeAction (BaseAction):
 
         newPos = [
             int(manipPos[0] - 0.2*(self.__pixToDegreeX * objPos[0])),
-            int(manipPos[1] - 0.2*(self.__pixToDegreeY*objPos[1] + self.__pixToDegreeZ*objPos[2])),
-            int(manipPos[2] - 0.3*(self.__pixToDegreeY*objPos[1] - self.__pixToDegreeZ*objPos[2])),
+            int(manipPos[1] - 0.3*(self.__pixToDegreeY*objPos[1] + self.__pixToDegreeZ*objPos[2])),
+            int(manipPos[2] - 0.2*(self.__pixToDegreeY*objPos[1] - self.__pixToDegreeZ*objPos[2])),
             180
         ]
         self.logger.info(f"NEW_POS: {newPos}")
