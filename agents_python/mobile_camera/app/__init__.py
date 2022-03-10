@@ -24,4 +24,4 @@ getPositionService = services.CamDetectorService(cam)
 device.register_service(services.CamCalibService(cam))
 
 device.register_service(getPositionService)
-device.register_action(actions.MoveToTakeCube("http://192.168.1.199:8082", getPositionService, "http://192.168.1.201:8383"))
+device.register_action(actions.MoveToTakeCube("http://192.168.1.205:8082", getPositionService, "http://192.168.1.201:8383"))

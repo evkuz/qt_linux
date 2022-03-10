@@ -3,15 +3,19 @@ import time
 import threading
 import numpy as np
 import copy
+from os.path import isfile
 
 
 class CameraDetector(object):
     def __init__(self, camPort, width=640, height=480, showWindow=False):
+        self.filename = "cam_color_range.txt"
+        self.default_color_range = ((0, 230, 155), (10, 255, 180))
+
         self.last_access = 0  # time of last client access to the camera
         #self.color_range = ((83, 198, 207), (151, 241, 251)) #((18, 120, 131), (43, 150, 158))
         #self.color_range = ((0, 0, 140), (10, 25, 183))
         #self.color_range = ((0, 230, 110), (20, 255, 190))
-        self.color_range = ((0, 230, 155), (10, 255, 180))
+        self.color_range = self.read_color_range()
 
         self.port = camPort
         self.FrameWidth = width
@@ -28,6 +32,26 @@ class CameraDetector(object):
         self.position = (False, 0, 0, 0, 0)
         
         self.__showWindow = showWindow
+
+    def read_color_range(self):
+        if not isfile(self.filename):
+            return self.default_color_range
+        
+        with open(self.filename, 'r') as f:
+            lines = f.readlines()
+        if len(lines) < 2:
+            return self.default_color_range
+
+        res = [
+            [int(x.strip()) for x in lines[0].split(' ')],
+            [int(x.strip()) for x in lines[1].split(' ')]
+        ]
+        return res
+
+    def write_color_range(self):
+        with open(self.filename, 'w') as f:
+             for l in self.color_range:
+                 f.write(f"{l[0]} {l[1]} {l[2]}\n")
 
     @property
     def isOpened(self):

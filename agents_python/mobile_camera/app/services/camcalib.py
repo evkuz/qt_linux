@@ -37,5 +37,6 @@ class CamCalibService (BaseService):
         res_str = self.cam.calibrate_colors(x1, y1, x2, y2)
         if len(res_str) == 0:
             raise RuntimeError("Can't calibrate, maby no frame")
-
+        self.cam.write_color_range()
+        
         return res_str

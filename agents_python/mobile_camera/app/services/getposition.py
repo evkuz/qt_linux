@@ -16,7 +16,7 @@ class CamDetectorService(BaseService):
 
     def get_data(self, **kwargs):
         pos = self.__cam.get_position()
-        distance = self.fit_h_func(pos[4])
+        distance = self.fit_h_func(pos[4]) - 15
         err_angle = self.calc_angle(distance, pos[1], pos[3])
         res = {
             "detected": pos[0],

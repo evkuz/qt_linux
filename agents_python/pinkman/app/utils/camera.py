@@ -266,7 +266,7 @@ class CameraDetector(object):
         
 
 if __name__ == '__main__':
-    c = CameraDetector(2, showWindow=True)
+    c = CameraDetector(0, showWindow=True)
     # winName = "Camera demonstration"
     # cv2.namedWindow(winName)
     #c.start()
