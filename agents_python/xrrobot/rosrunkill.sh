@@ -11,4 +11,4 @@ export ROS_MASTER_URI=http://$ROS_IP:11311
 export XRBASE=tank
 export XRLIDAR=rplidar
 
-roslaunch /home/xrrobot/bring_slam.launch
+rosnode kill -a

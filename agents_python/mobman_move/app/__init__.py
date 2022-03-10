@@ -10,7 +10,7 @@ from iqrdevice import device, app
 app.config.from_object(os.environ.get('FLASK_ENV') or 'config.DevelopementConfig')
 
 from . import utils
-rosrun = utils.RosRun("rosrun.sh")
+rosrun = utils.RosRun("rosrun.sh", "rosrunkill.sh")
 
 # import views
 from . import views
