@@ -21,6 +21,7 @@ MainProcess::MainProcess(QObject *parent)
 //    , readSocket("../../simpledetector_cpp/iqr.socket")
 
 {
+    int value = 0x000;
     parcel_size  = 6;
 
     //json jsncommand; // Команду извне упакуем в json
@@ -54,17 +55,17 @@ MainProcess::MainProcess(QObject *parent)
   //  Robot->Source_Points_File_Open (SOURCE_POINTS_FILE);
 
     QString str = "The application \"";  str +=target_name; str += "\"";
-    Robot->Write_To_Log(0xf000, str.append(" is started successfully!!!\n"));
+    Robot->Write_To_Log(value, str.append(" is started successfully!!!\n"));
 
     qDebug() << "Started " << target_name;
 
-    GUI_Write_To_Log(0x0000, "Going to Start QTcpServer");
+    GUI_Write_To_Log(value, "Going to Start QTcpServer");
     if (server.isListening ()) {
 
         str = "Listening on address "; str += server.serverAddress().toString();
         str += " and port "; str += QString::number(server.serverPort());//QString::number(server.tcpport);
 
-        GUI_Write_To_Log(0000, str);
+        GUI_Write_To_Log(value, str);
          qDebug() << str;
     }
 
@@ -121,10 +122,20 @@ MainProcess::MainProcess(QObject *parent)
     // Arduino NANO виден как ttyUSB0
     // Arduino Mega - как "ttyACM0"
   //  emit Open_Port_Signal("ttyACM0"); //"ttyUSB0"
-    Robot->Open_Port_Slot("ttyACM0");
-    if (!Robot->SerialIsOpened) {
+    int OKay = Robot->Open_Port_Slot("ttyACM0");
+    if (!OKay) { //!Robot->SerialIsOpened
         Robot->current_st_index = 4;
-        Robot->Open_Port_Slot("ttyACM1");  } // Robot->current_status = statuslst.at(4)
+
+       OKay = Robot->Open_Port_Slot("ttyACM1");
+
+    } // Robot->current_status = statuslst.at(4)
+
+    if (!OKay){
+                GUI_Write_To_Log(value, "CerialPort  PROBLEM !!!");
+                // ТОгда таймер пускаем ???
+    };
+
+
     init_json(); // Инициализируем json_status
 
     //make_json_answer();

@@ -135,7 +135,7 @@ signals:
 
 
 public slots:
-    void Open_Port_Slot(QString portname);
+    int Open_Port_Slot(QString portname); // https://doc.qt.io/qt-5/qserialport.html#SerialPortError-enum - список ошибок при открытии порта.
     void ReadFromSerial_Slot();
 };
 
