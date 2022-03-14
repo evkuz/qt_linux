@@ -90,6 +90,7 @@ public:
     ActionState ready_Action;
     ActionState forMoving_Action; //Get ready for moving accross
     ActionState putbox_Action;
+    ActionState setservos_Action;
 
 
 //Global for the whole robot

@@ -657,7 +657,8 @@ void MainWindow::on_ClampButton_clicked()
      request += "/run?cmd=clamp&";
      request += " HTTP/1.1";
      request += "\r\nHost: ";
-     request += "192.168.1.201:8383\r\n";
+     //request += "192.168.1.201:8383\r\n";
+     request += CVDev_IP; request+=":"; request+=strARM_Port; request+="\r\n";
      request += "Accept: */*\r\n";
      request += "Access-Control-Allow-Origin: *\r\n";
      request += "\r\n";
@@ -665,6 +666,55 @@ void MainWindow::on_ClampButton_clicked()
      QString myipaddress = CVDev_IP;
      quint16 myport = ARM_Port;
      makeSocket(myipaddress, myport);
+
+}
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++
+void MainWindow::on_SetServosButton_clicked()
+{
+    // Формируем запрос, "кнопка SetServos"
+    // А вот теперь готовим команду "/run?cmd=setservos=&"
+
+//     int num;
+//     QString data = ui->Param_lineEdit->text();
+//     QRegExp rx("[, ]");// match a comma or a space
+//     QStringList list;
+//     list = data.split(rx, Qt::SkipEmptyParts);
+//     num = list.size (); //Число элементов, начиная с 1
+
+     request = "GET ";
+     request += "/run?cmd=setservos="; request+=ui->Param_lineEdit->text(); request+="&"; //
+     // Вот тут добавляем значения Servos
+     request += " HTTP/1.1";
+     request += "\r\nHost: ";
+     request += CVDev_IP; request+=":"; request+=strARM_Port; request+="\r\n";
+     request += "Accept: */*\r\n";
+     request += "Access-Control-Allow-Origin: *\r\n";
+     request += "\r\n";
+
+     QString myipaddress = CVDev_IP;
+     quint16 myport = ARM_Port;
+    makeSocket(myipaddress, myport);
+
+}
+//++++++++++++++++++++++++++++++++++++++++++++++++++
+
+void MainWindow::on_ResetButton_clicked()
+{
+    // Формируем запрос, "кнопка Reset"
+    // А вот теперь готовим команду "/run?cmd=reset&"
+     request = "GET ";
+     request += "/run?cmd=reset&";
+     request += " HTTP/1.1";
+     request += "\r\nHost: ";
+     request += CVDev_IP; request+=":"; request+=strARM_Port; request+="\r\n";
+     request += "Accept: */*\r\n";
+     request += "Access-Control-Allow-Origin: *\r\n";
+     request += "\r\n";
+
+     QString myipaddress = CVDev_IP;
+     quint16 myport = ARM_Port;
+    makeSocket(myipaddress, myport);
 
 }
 

@@ -37,6 +37,7 @@ public:
 #define CVDev_IP         "192.168.1.201"  // "159.93.44.146" - роутер в 240
 #define CVDev_Port       5001             // 7575 - проброс
 #define ARM_Port         8383
+#define strARM_Port      "8383"
 
 
     QString     target_name;
@@ -99,6 +100,10 @@ private slots:
     void on_PutBoxButton_clicked();
 
     void on_ClampButton_clicked();
+
+    void on_SetServosButton_clicked();
+
+    void on_ResetButton_clicked();
 
 private:
     Ui::MainWindow *ui;

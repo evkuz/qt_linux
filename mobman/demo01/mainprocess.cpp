@@ -131,7 +131,7 @@ MainProcess::MainProcess(QObject *parent)
     } // Robot->current_status = statuslst.at(4)
 
     if (!OKay){
-                GUI_Write_To_Log(value, "CerialPort  PROBLEM !!!");
+                GUI_Write_To_Log(value, "SerialPort  PROBLEM !!!");
                 // ТОгда таймер пускаем ???
     };
 
@@ -167,6 +167,7 @@ MainProcess::MainProcess(QObject *parent)
 
     str = "On start ";
     Servos_To_Log(str);
+    //
  QThread::sleep(1);
 
 
@@ -360,7 +361,7 @@ void MainProcess::on_clampButton_clicked()
 {
     quint8 FULL_OPENED, FULL_CLOSED;
     FULL_CLOSED = 60;
-    FULL_OPENED = 45;
+    FULL_OPENED = 35;
     // Если открыто, то закрываем
     if (Servos[0]<FULL_CLOSED){ Servos[0]=FULL_CLOSED;}
     else {Servos[0]=FULL_OPENED;}
@@ -1230,7 +1231,7 @@ void MainProcess::Moving_Done_Slot()
 
     GUI_Write_To_Log(value, str);
 
-    //Тут тоже надо через switch
+    //Тут тоже надо через switch...
 
     // Предполагаем, что get_box завержился и мы готовы принимать новые команды.
     // Меняем RC экшена на -4 == "Ожидание"
@@ -1238,30 +1239,39 @@ void MainProcess::Moving_Done_Slot()
         Robot->STAT_getbox_Action.rc = -4; //"Ожидание"
         Robot->getbox_Action.rc = -4;
 
-        GUI_Write_To_Log(value, "I'm in get_box RC-value changing");
+        GUI_Write_To_Log(value, "The get_box RC-value have changed");
         GUI_Write_To_Log(value, "get_box operation is finished !");
     }
 
     if (Robot->active_command == "parking") {
         Robot->parking_Action.rc = -4; //"Ожидание"
-        GUI_Write_To_Log(value, "I'm in parking RC-value changing");
+        GUI_Write_To_Log(value, "The parking RC-value have changed");
+        GUI_Write_To_Log(value, "parking operation is finished !");
     }
     if (Robot->active_command == "ready") {
         Robot->ready_Action.rc = -4; //"Ожидание"
-        GUI_Write_To_Log(value, "I'm in ready RC-value changing");
+        GUI_Write_To_Log(value, "The ready RC-value have changed");
+        GUI_Write_To_Log(value, "ready operation is finished !");
     }
 
     if (Robot->active_command == "formoving") {
         Robot->forMoving_Action.rc = -4; //"Ожидание"
-        GUI_Write_To_Log(value, "I'm in formoving RC-value changing");
+        GUI_Write_To_Log(value, "The formoving RC-value have changed");
+        GUI_Write_To_Log(value, "formoving operation is finished !");
             }
 
     if (Robot->active_command == "put_box") {
         Robot->STAT_getbox_Action.rc = -4; //"Ожидание"
         Robot->putbox_Action.rc = -4;
 
-        GUI_Write_To_Log(value, "I'm in put_box RC-value changing");
+        GUI_Write_To_Log(value, "The put_box RC-value have changed");
         GUI_Write_To_Log(value, "put_box operation is finished !");
+    }
+//+++++++++++++++++++++++++++++++++++++++
+    if (Robot->active_command == "setservos=") {
+        Robot->ready_Action.rc = -4; //"Ожидание"
+        GUI_Write_To_Log(value, "The setserbos= RC-value have changed");
+        GUI_Write_To_Log(value, "setservos= operation is finished !");
     }
 
 

@@ -44,6 +44,11 @@ HiWonder::HiWonder()
     putbox_Action.rc = -4;
     putbox_Action.info = "waiting";
 
+
+    setservos_Action.name = "setservos=";
+    setservos_Action.rc = -4;
+    setservos_Action.info = "Set the servos to correspondent values";
+
   //  STAT_getbox_Action = {"MOBMAN", 0, "Action is accepted", "init", };
 
   //  ActionState putbox_Action {"put_box", -4, "waiting"};
