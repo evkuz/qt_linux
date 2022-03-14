@@ -75,8 +75,13 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
                     Servos[i] = list1.at(i).toUInt();
                 }//for
 
-                this->send_Data(NOT_LAST);
+                ProcessAction(&Robot->setservos_Action);
+                Robot->active_command = Robot->setservos_Action.name;
+                this->send_Data(LASTONE); //NOT_LAST
                 jsnStatusActionAnswer["state"] = "running";
+
+                str = "After setservos ";
+                Servos_To_Log(str);
 
         break;
 
@@ -236,134 +241,6 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
    if (substr == "pos_21") { memcpy(Servos, mob_pos_21, DOF);  this->send_Data(LASTONE); }
    if (substr == "pos_22") { memcpy(Servos, mob_pos_22, DOF);  this->send_Data(LASTONE); }
    if (substr == "pos_23") { memcpy(Servos, mob_pos_23, DOF);  this->send_Data(LASTONE); }
-
-
-//++++++++++++++++++ Если команда длинная, а для распознавания
-// достаточно первые несколько символов
-
-//   if (substr.startsWith("setservos=")){
-//       substr = substr.remove("setservos=");
-//       QStringList list1 = substr.split(QLatin1Char(','));
-//       for (int i=0; i<DOF; ++i)
-//       {
-//           Servos[i] = list1.at(i).toUInt();
-//       }//for
-
-//       this->send_Data(NOT_LAST);
-//       jsnStatusActionAnswer["state"] = "running";
-//   }
-//+++++++++++++++++++ action  "get_box" ++++++++++++++++++++++++++++++++++++++++++++
-//   if (substr == "get_box") {
-////       jsn_answer_info = Robot->current_status;
-////       str = "Current status value is ";
-////       str += jsn_answer_info;
-////       GUI_Write_To_Log(value, str);
-////       // Проверяем статус, не запущен ли уже такой action ?
-////       if (Robot->current_status == "inprogress"){jsn_answer_rc = -3;}
-////       else{
-////           Robot->current_status = "inprogress";
-////           jsn_answer_rc = 0;
-////           jsn_answer_info = "Action started";
-////           jsn_answer_name = "get_box";
-////       }
-
-//       // Этот же ответ при конкретном запросе статуса экшена "get_box"
-//         switch (Robot->getbox_Action.rc)
-//        {
-
-//            case -4: // (ожидание) -> Запускаем
-//             // А вот тут можно найти индекс этой команды в списке и присвоить
-//             // Переменной HiWonder::active_command, тогда не надо держать
-//             // в голове значения индексов
-//               Robot->active_command = Robot->actionlst.at(0);
-//               Robot->getbox_Action.rc = 0;
-//               str = "Action "; str += substr; str += "Успешно запущен";
-
-//               // Заносим данные в структуру
-//               Robot->getbox_Action = {"get_box", 0, "In progress"};
-//               // И еще в структуру для "status?action=getbox"
-
-//            break;
-
-//            case 0: // (уже запущен) -> Выходим
-//                Robot->getbox_Action.rc = -3;
-//                str = "Action "; str += substr; str += "Уже запущен";
-//                // Заносим данные в структуру
-//                Robot->getbox_Action = {"get_box", -3, "Already In progress"};
-
-//            break;
-
-//            case -3: // (уже запущен) -> Выходим
-
-//              str = "Action "; str += substr; str += "Уже запущен";
-//              Robot->getbox_Action = {"get_box", -3, "Already In progress"};
-//            break;
-
-//            case -2: // (не запустился) -> Выходим
-
-//                str = "Action "; str += substr; str += "Не запустился"; // Serial PORT Error
-//                // - Проверяем октрытие SerialPort
-//                Robot->getbox_Action = {"get_box", -2, "Failed"};
-//            break;
-//            default:
-//                Robot->getbox_Action.rc = -4;
-//                str = "Action "; str += substr; str += "В ожидании";
-//            break;
-
-
-//        }
-//        GUI_Write_To_Log(value, str);
-
-
-        // Фиксируем время начала выполнения.
-//        QDateTime dt(QDateTime::currentDateTime());
-//        QString st_time = QString::number(dt.toSecsSinceEpoch());
-
-       // Создаем сокет для связи с камерой и, в случае успеха, отправляем запрос в камеру.
-       // В ответе будет значение distance, которое сохраняем в глобальной переменной CVDistance
-       // По завершении request_CV получаем объект QJsonObject   jsndataObj, из которого извлекаем distance.
-
-
-
-//       request_CV();
-//       // Запускаем захват объекта.  Теперь это значение distance отправляем в ф-цию GetBox
-//       this->GetBox(CVDistance);
-       //Команду манипулятору запустили. Задаем статус для ответа http-клиенту через структуру HiWonder::ActionState .
-
-//       Robot->getbox_Action.rc = 0;
-//       Robot->getbox_Action.info = "Is running";
-
-
-//       Robot->getbox_Action.rc = 0;
-//       QJsonValue myvalue;
-
-       // Заносим данные в структуру
-       //Robot->getbox_Action = {"get_box", 0, "In progress"};
-
-       //myvalue = Robot->getbox_Action.name;
-      // jsnActionAnswer.insert("name", myvalue);
-
-       // А из структуры - в JSON-объект
-//       jsnActionAnswer.insert("name", QJsonValue(Robot->getbox_Action.name));
-//       jsnActionAnswer.insert("rc", QJsonValue(Robot->getbox_Action.rc));
-//       jsnActionAnswer.insert("info", QJsonValue(Robot->getbox_Action.info));
-
-//       // И теперь вот этот jsnActionAnswer отправляем http-клиенту в ответ на команду "get_box"
-
-//       jsnDoc = QJsonDocument(jsnActionAnswer);
-
-//       str = jsnDoc.toJson(QJsonDocument::Compact);
-
-//       GUI_Write_To_Log(value, "!!!!!!!!!!! Current Answer to GetBox command is ");
-//       GUI_Write_To_Log(value, str);
-
-       //str = QString::fromStdString(s2);
-      // str = QJsonDocument(jsnStatus).toJson(QJsonDocument::Compact);
-
-//       emit Write_2_TcpClient_Signal (str);
-
-
- //  }//substr == "get_box"
 
 //+++++++++++++++++++ action  "srvfromfile" +++++
    // Читаем построчно файл со значениями сервоприводов

@@ -126,6 +126,9 @@ public:
 
 #define CVDev_IP     "192.168.1.201"//"192.168.1.201"
 #define CVDev_Port   5001
+#define ARMDev_IP    CVDev_IP
+#define ARMDev_Port  8383
+
 
     QString currentTcpdata; //Нужно, чтоб была глобальная.
     QDataStream in; // НА считывание данных из сокета CV
@@ -136,7 +139,7 @@ public:
     bool DETECTED; // Флаг, показывающий, сработал ли захват изображения.
 
     int parcel_size ;
-    unsigned char Servos [DOF] = {93,93,93,93};
+    unsigned char Servos [DOF] = {70,90,45,180};//==formoving position //{93,93,93,93};
 
     unsigned int CVDistance;
 
