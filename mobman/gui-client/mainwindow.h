@@ -88,6 +88,18 @@ private slots:
 
     void on_GetBoxButton_clicked();
 
+    void on_GetServicesButton_clicked();
+
+    void on_GetActionsButton_clicked();
+
+    void on_NEW_GetStatusButton_clicked();
+
+    void on_BeforeMovingButton_clicked();
+
+    void on_PutBoxButton_clicked();
+
+    void on_ClampButton_clicked();
+
 private:
     Ui::MainWindow *ui;
 };

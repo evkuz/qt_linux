@@ -14,6 +14,7 @@
 #include <QDebug>
 #include <QTime>
 #include <QDateTime>
+#include <QDataStream>
 
 //Пользовательский класс потока
 // Только вместо public QThread делаем public QObject
@@ -47,7 +48,7 @@ private:
     //Дескриптор сокета
     int socketDescriptor;
     //Объект сокета
-    QTcpSocket* socket;
+    QTcpSocket *socket;
     //QTcpSocket* socketCV; // Socket for data exchange with computer vision device (web camera)
 };
 

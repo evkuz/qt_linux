@@ -82,4 +82,42 @@ CV device JSON answer
 \"distance\": 217.02240483137268
 }
 }
+//+++++++++++++++++++++++++++++++++
+
+        {"action_list", {
+           {
+            {"name", "get_box"},
+            {"state", {"waiting","noDetection", "inprogress", "done", "fail"}},
+            {"info", "Get the box by clamper, ascing CV about distance in advance"},
+            {"st_time", "int - timestamp of last start"},
+            {"fin_time", "int - timestamp of finish"},
+
+            {"result", "int - action return code"}
+           },
+           {
+            {"name", "reset"},
+            {"state", "succsess | fail"},
+            {"info", "Set device status as <Wait>"},
+            {"result", "int - action return code"}
+           },
+           {
+             {"name", "parking"},
+             {"state", "inprogress | done | fail"},
+             {"info", "Set device's clamper in transporting position"},
+             {"result", "int - action return code"}
+            },
+           {
+             {"name", "setservos="},
+             {"state", "inprogress | done | fail"},
+             {"info", "Set device's servos at angles specified by the command"},
+             {"result", "int - action return code"}
+           }
+
+
+
+           } //list
+         }//action_list-field
+
+
+
 */

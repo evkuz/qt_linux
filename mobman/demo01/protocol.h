@@ -1,5 +1,12 @@
 #ifndef PROTOCOL_H
 #define PROTOCOL_H
+
+#include <QString>
+#include <QList>
+//                                               1                     3                    5                           7
+ const QList<QString> tcpCommand = {"clamp", "get_box", "parking", "ready", "status", "getactions", "getservices", "setservos=", \
+                                    "srvfromfile",  "status?action=get_box", "formoving", "put_box", "reset"};
+//                                                          9                                  11
 /*
  * у нас структура запроса получается такая:
  * <address>/run?cmd=<name>&<parameter_name>=<parameter_value>
@@ -7,6 +14,7 @@
  * <ip-address>:8383/run?cmd=<name>
  *
  * http://192.168.1.201:8383/run?cmd=status&
+ * http://192.168.1.201:8383/run?cmd=status?action=getbox&
  *
  *
  *
@@ -43,6 +51,38 @@
 
         //servos=35,90,145,50,0,0,125,222&
 
+/*
+{"action_list", {
+   {
+    {"name", "get_box"},
+    {"state", {"waiting","noDetection", "inprogress", "done", "fail"}},
+    {"info", "Get the box by clamper, ascing CV about distance in advance"},
+    {"rc", "int - action return code"}
+   },
+   {
+    {"name", "reset"},
+    {"state", "succsess | fail"},
+    {"info", "Set device status as <Wait>"},
+    {"rc", "int - action return code"}
+   },
+   {
+     {"name", "parking"},
+     {"state", "inprogress | done | fail"},
+     {"info", "Set device's clamper in transporting position"},
+     {"rc", "int - action return code"}
+    },
+   {
+     {"name", "setservos="},
+     {"state", "inprogress | done | fail"},
+     {"info", "Set device's servos at angles specified by the command"},
+     {"rc", "int - action return code"}
+   }
 
+
+
+   } //list
+ }//action_list-field
+
+*/
 
 #endif // PROTOCOL_H

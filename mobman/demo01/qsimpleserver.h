@@ -14,6 +14,7 @@
 #include <QObject>
 #include <QString>
 #include "qsocketthread.h"
+#include <QDataStream>
 
 //#define tcpport 8383;  // Порт, который слушает QTcpServer
 
@@ -26,6 +27,8 @@ public:
 
     // http://localhost:8383/run?cmd=status&
     // http://192.168.1.175:8383/run?cmd=status&
+    // http://192.168.1.201:8383/service?name=getservices&
+
 #define  wifi_ADDRESS "192.168.1.175" // local PC address
 #define  ipv4_ADDRESS "159.93.84.44"  // PC public address
 
