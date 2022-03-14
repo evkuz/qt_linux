@@ -32,19 +32,14 @@ MainWindow::MainWindow(QWidget *parent)
         ui->comL->addItem(info.portName(),info.portName());
     }
 
-    // Прячем QlineEdit-ы и QSlider-ы
-//    for (int i =0; i<= DOF -1; i++)
-//    {
-//        qle_list[i]->setVisible(false);
-//        slider_list[i]->setVisible(false);
-//    }
 
 
     target_name = QFileInfo(QCoreApplication::applicationFilePath()).fileName();
     //QByteArray ba = target_name.toLocal8Bit();
     //const char *c_str = ba.data();
     //printf("Appname : %s", c_str);
-    Robot = new HiWonder(); // Без этого будет "The program has unexpectedly finished", хотя в начале нговорила, что это ambiguous
+
+    Robot = new HiWonder(); // Создаем объект класса HiWonder
 
     Robot->Log_File_Open(Log_File_Name);
     Robot->Source_Points_File_Open (SOURCE_POINTS_FILE);
@@ -52,7 +47,7 @@ MainWindow::MainWindow(QWidget *parent)
     QString str = "The application \"";  str +=target_name; str += "\"";
     Robot->Write_To_Log(0xf000, str.append(" is started successfully!!!\n"));
 
-    GUI_Write_To_Log(0000, "Going to Start QTcpSErver");
+    GUI_Write_To_Log(0xF000, "Going to Start QTcpServer");
     if (server.isListening ()) {
 
         str = "Listening on address "; str += server.serverAddress().toString();
@@ -111,7 +106,9 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     //+++++++++++++++ ОТкрываем порт Open_Port_Signal(QString portname); ttyUSB0
-    emit Open_Port_Signal("ttyUSB0");
+    //emit Open_Port_Signal("ttyUSB0");
+
+    Robot->Open_Port_Slot("ttyUSB0");
     //make_json_answer();
 
 
