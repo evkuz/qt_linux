@@ -1,5 +1,10 @@
 import logging
-logging.basicConfig(filename='pinkman.log', level=logging.INFO, filemode="w")
+logging.basicConfig(
+    filename='pinkman.log',
+    level=logging.INFO,
+    filemode="w",
+    format = "%(asctime)s - %(levelname)s - %(funcName)s: %(lineno)d - %(message)s"
+)
 
 import sys
 import pathlib

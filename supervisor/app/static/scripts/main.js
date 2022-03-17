@@ -30,7 +30,7 @@ function httpGet(url, timeout) {
 
 async function runAction(addr, name){
   let url = addr + "/action?name=" + name;
-  let  = await fetch(url);
+  let response = await fetch(url);
   if (response.ok) { // если HTTP-статус в диапазоне 200-299
     // получаем тело ответа (см. про этот метод ниже)
     let json = await response.json();
@@ -43,7 +43,7 @@ async function runAction(addr, name){
 
 async function sendReset(addr){
   let url = addr + "/reset";
-  let  = await fetch(url);
+  let response = await fetch(url);
   if (response.ok) { // если HTTP-статус в диапазоне 200-299
     // получаем тело ответа (см. про этот метод ниже)
     //let json = await response.json();

@@ -39,22 +39,20 @@ class BaseDevice:
     def __thread_work(self):
         while self._isWorking:
             if time.time() - self.__lastUpdateTime > self.__updateStateInterval:
-                self.__update_state()
+                self.update_state()
             time.sleep(0.02)
 
         self.__thread = None
         self._isWorking = False
     
-    def __update_state(self):
+    def update_state(self):
         # url = "/run?cmd=status&"
         try:
             self.__lastUpdateTime = time.time()
-            self.update_state()
+            data = self.remote_device.get_status()
+            self.__parse_state(data)
         except Exception as e:
             self.__state.set_disconnected(str(e))
-
-    def update_state(self):
-        raise NotImplementedError()
 
     def run_action(self, actionName:str, **kwargs)->bool:
         #url = self.addr + f"/run?cmd={cmdName}&"

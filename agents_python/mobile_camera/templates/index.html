@@ -4,7 +4,10 @@
   </head>
   <body>
     <h1>Mobile camera http server</h1>
-    <img src="{{ url_for('video_feed') }}">
+    <div style="width:640px; height:480px;" id="videobox">
+      <img src="{{ url_for('video_feed') }}">
+      <canvas id="videobox_canvas" width="640" height="480" style="border:0px; position:relative; top:-480px;"></canvas>
+    </div>
     <p><strong>Communication links:</strong></p>
     <ul>
       <li><b><a href="/status">status</a></b></li>
@@ -20,6 +23,6 @@
       <li><b><a href="/reset">Reset</a></b></li><br/>
       <li><b><a href="/service?name=camcalib&x1=100&y1=100&x2=150&y2=150">camcalib</a></b></li>
     </ul>
-
+    <script src="static/camcalib.js"></script>
   </body>
 </html>

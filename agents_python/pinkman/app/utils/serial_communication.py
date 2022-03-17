@@ -6,7 +6,7 @@ import time
 import logging
 
 
-default_timeout = 2.
+default_timeout = 4.
 
 
 class SerialCommunication:
@@ -182,13 +182,13 @@ class SerialCommunication:
     def __reading_port_thread_work(self):
         while self.__sp.is_open:
             if self.__sp.in_waiting:
-                line = self.__sp.readline().decode("utf-8")[:-1]
+                line = self.__sp.readline().decode("utf-8")[:-1].strip()
                 self.logger.info(f"from {self.__name}: {line}")
-                if line.startswith("OK"):
+                if line.startswith('OK'):
                     self.__commandAcceptedEvent.set()
-                elif line.startswith("END"):
+                elif line.startswith('END'):
                     self.__endMovingEvent.set()
-                elif line.startswith("N_SERVOS"):
+                elif line.startswith('N_SERVOS'):
                     self.__n_servos = int(line.split(':')[1])
                 else:
                     try:

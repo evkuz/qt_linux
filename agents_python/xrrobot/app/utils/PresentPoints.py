@@ -39,6 +39,18 @@ y2 = 0.10
 z2 = -0.7
 w2 = 0.7
 
+# Presentation version 4 like v.3 but according technical process (reverse A-B)
+x1 = 0.10
+y1 = 0.10
+z1 = -0.7
+w1 = 0.7
+
+x2 = 0.750
+y2 = 0.90
+z2 = 0.20
+w2 = 0.90
+
+
 '''
 a = 1.0
 b = 0.0

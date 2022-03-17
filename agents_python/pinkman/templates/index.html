@@ -4,7 +4,10 @@
   </head>
   <body>
     <h1>PinkMan http server</h1>
-    <img src="{{ url_for('video_feed') }}">
+    <div style="width:640px; height:480px;" id="videobox">
+      <img src="{{ url_for('video_feed') }}">
+      <canvas id="videobox_canvas" width="640" height="480" style="border:0px; position:relative; top:-480px;"></canvas>
+    </div>
     <p><strong>Base links:</strong></p>
     <ul>
       <li><b><a href="/status">status</a></b></li>
@@ -34,5 +37,6 @@
       <li><b><a href="/service?name=sethome&pos=91,114,35,180">Don't touch it!</a></b></li>
 
       </ul>
+      <script src="static/camcalib.js"></script>
   </body>
 </html>

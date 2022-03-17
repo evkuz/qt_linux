@@ -48,7 +48,7 @@ class MoveToTakeCube (BaseAction):
                 sleep(0.1)
         
         self._set_state_info("Robot has arrived at the TakeCube position")
-        self.manipDevice.manual_request("/run?cmd=get_box&")
+        #self.manipDevice.manual_request("/run?cmd=get_box&")
 
         return 0
 

@@ -20,9 +20,9 @@ class PutCubeAction (BaseAction):
         if self._workingFlag:
             _ = self.move_manip([165, 120, 70, 120])
         if self._workingFlag:
-            _ = self.move_manip([165, 50, 115, 120])
+            _ = self.move_manip([165, 45, 120, 120])
         if self._workingFlag:
-            _ = self.move_manip([165, 50, 115, 180])
+            _ = self.move_manip([165, 45, 120, 180])
         if self._workingFlag:
             _ = self.move_manip([165, 120, 70, 180])
         
