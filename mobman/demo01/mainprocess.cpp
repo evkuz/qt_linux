@@ -360,7 +360,7 @@ void MainProcess::on_socketButton_clicked()
 void MainProcess::on_clampButton_clicked()
 {
     quint8 FULL_OPENED, FULL_CLOSED;
-    FULL_CLOSED = 60;
+    FULL_CLOSED = 80;
     FULL_OPENED = 35;
     // Если открыто, то закрываем
     if (Servos[0]<FULL_CLOSED){ Servos[0]=FULL_CLOSED;}
@@ -1092,13 +1092,15 @@ void MainProcess::ProcessAction(HiWonder::ActionState *actionName)
 
 
                 case 10:   //"formoving"
-                        memcpy(Servos, mob_moving_position, DOF);
+                        //memcpy(Servos, mob_moving_position, DOF);
+                          memcpy(Servos, mob_2_moving_position, DOF);
                         this->send_Data(LASTONE);
                 break;
                 case 11:   //"putbox" - раскладываем на 4 команды :
                            // 1. хват в позицию mob_put_23 2. открыть хват 3. Поднять привод [3] 4. в позицию "formoving"
 
-                        memcpy(Servos, mob_put_23, DOF);
+                        //memcpy(Servos, mob_put_23, DOF);
+                        memcpy(Servos, mob_2_put_23, DOF);
                         this->send_Data(NOT_LAST);
                         // Так это последняя команда...
                         //on_clampButton_clicked();
@@ -1232,6 +1234,22 @@ void MainProcess::Moving_Done_Slot()
     GUI_Write_To_Log(value, str);
 
     //Тут тоже надо через switch...
+    // Определяем индекс команды в списке MainProcess::tcpCommand
+    int comIndex = getIndexCommand(Robot->active_command, tcpCommand);
+
+    switch (comIndex) {
+
+//        case 0: //"clamp"
+//                //on_clampButton_clicked();
+//        break;
+
+        case 1: //"get_box"  - это экшен (к вопросу о типе)
+                // Меняем статус
+                Robot->getbox_Action.rc = -4;
+        break;
+
+        }// switch (comIndex)
+
 
     // Предполагаем, что get_box завержился и мы готовы принимать новые команды.
     // Меняем RC экшена на -4 == "Ожидание"
@@ -1270,7 +1288,7 @@ void MainProcess::Moving_Done_Slot()
 //+++++++++++++++++++++++++++++++++++++++
     if (Robot->active_command == "setservos=") {
         Robot->ready_Action.rc = -4; //"Ожидание"
-        GUI_Write_To_Log(value, "The setserbos= RC-value have changed");
+        GUI_Write_To_Log(value, "The setservos= RC-value have changed");
         GUI_Write_To_Log(value, "setservos= operation is finished !");
     }
 
@@ -1630,19 +1648,33 @@ void MainProcess::GetBox(unsigned int distance)
 
 
 
-        case 110: arrPtr = mob_pos_11; break;
-        case 120: arrPtr = mob_pos_12; break;
-        case 130: arrPtr = mob_pos_13; break;
-        case 140: arrPtr = mob_pos_14; break;
-        case 150: arrPtr = mob_pos_15; break;
-        case 160: arrPtr = mob_pos_16; break;
-        case 170: arrPtr = mob_pos_17; break;
-        case 180: arrPtr = mob_pos_18; break;
-        case 190: arrPtr = mob_pos_19; break;
-        case 200: arrPtr = mob_pos_20; break;
-        case 210: arrPtr = mob_pos_21; break;
-        case 220: arrPtr = mob_pos_21; break;
-        case 230: arrPtr = mob_pos_23; break;
+//        case 110: arrPtr = mob_pos_11; break;
+//        case 120: arrPtr = mob_pos_12; break;
+//        case 130: arrPtr = mob_pos_13; break;
+//        case 140: arrPtr = mob_pos_14; break;
+//        case 150: arrPtr = mob_pos_15; break;
+//        case 160: arrPtr = mob_pos_16; break;
+//        case 170: arrPtr = mob_pos_17; break;
+//        case 180: arrPtr = mob_pos_18; break;
+//        case 190: arrPtr = mob_pos_19; break;
+//        case 200: arrPtr = mob_pos_20; break;
+//        case 210: arrPtr = mob_pos_21; break;
+//        case 220: arrPtr = mob_pos_21; break;
+//        case 230: arrPtr = mob_pos_23; break;
+
+    case 110: arrPtr = mob_2_pos_11; break;
+    case 120: arrPtr = mob_2_pos_12; break;
+    case 130: arrPtr = mob_2_pos_13; break;
+    case 140: arrPtr = mob_2_pos_14; break;
+    case 150: arrPtr = mob_2_pos_15; break;
+    case 160: arrPtr = mob_2_pos_16; break;
+    case 170: arrPtr = mob_2_pos_17; break;
+    case 180: arrPtr = mob_2_pos_18; break;
+    case 190: arrPtr = mob_2_pos_19; break;
+    case 200: arrPtr = mob_2_pos_20; break;
+    case 210: arrPtr = mob_2_pos_21; break;
+    case 220: arrPtr = mob_2_pos_21; break;
+    case 230: arrPtr = mob_2_pos_23; break;
 
 
       default:

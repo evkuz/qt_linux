@@ -1,7 +1,16 @@
 #ifndef EVKUZ_H
 #define EVKUZ_H
 
-/* //++++++++++++++++++++++++++++++++++++
+/*
+ *
+ *
+ * //++++++++++++++++++++++++++++++++++++
+ * 16.03.2022
+ * - Добавляем кнопку "Move_To_Take_Cube" для Ручника.
+ * - Добавляем кнопку "Start" для HiWonder
+ * - Добавляем кнопку "Get ON Distance" - взять с заданной дистанции, дистанцию прописываем в мм в окне.
+ *
+ * //++++++++++++++++++++++++++++++++++++
  * 06.02.022
  * Добавляем кнопки для команд в новом формате
  * //++++++++++++++++++++++++++++++++++++
@@ -20,11 +29,11 @@
  *
  * Можно добавлять полученный функционал в demo01. Т.е. в итоге используем встроенные классы Qt для работы с JSON
  *
-#include <QJsonDocument>
-#include <QJsonParseError>
-#include <QJsonObject>
-#include <QJsonValue>
-#include <QJsonArray>
+    #include <QJsonDocument>
+    #include <QJsonParseError>
+    #include <QJsonObject>
+    #include <QJsonValue>
+    #include <QJsonArray>
  * Задача :
  * - Отправлять ответ от mobman на команду "get_box". Т.е. команду "get_box" теперь следует  посылать в виде [Поставлено в очередь.]
  *
