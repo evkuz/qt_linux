@@ -47,8 +47,15 @@
 //#include "model/new2_05_10.h" // было в ветке embedded
 // #include "model/kb2_sug_min2_bp.h"
 
-#include "model/18_02_ga_BP.h" // Это для розовой полочки
-
+//#include "model/18_02_ga_BP.h" // РАБОТАЕТ !!! Это для розовой полочки
+//16.03.2022
+//#include "model/KB_MAM.h" //
+//#include "model/KB_MAM2.h"
+//#include "model/KB_MAM2_bp.h" //
+//18.03.2022
+//#include "model/KB2_SUG_OPT.h"
+//#include "model/KB2_SUG.h"
+#include "model/KB2_SUG_BP.h"
 
 //+++++++++++++++++ Вспомогательные переменные
 

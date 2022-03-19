@@ -362,10 +362,10 @@ int main(int argc, char* argv[])
 	Miksarus::ParseProgramOptions(argc, argv, options_list);
 	
 	// getting my IP
-    char ip_addr[80];
-    if (get_my_ip(ip_addr) != 0) {
-    	return -1;
-    }
+//    char ip_addr[80];
+//    if (get_my_ip(ip_addr) != 0) {
+//    	return -1;
+//    }
     //const char* ip_addr = "192.168.1.175";
 
 	VideoCapture capture;
@@ -395,7 +395,7 @@ int main(int argc, char* argv[])
 		return -3;
 	}
 
-	// HTTP Server
+/*	// HTTP Server
 	// ------------------------
 	std::uint16_t SrvPort = 5555;
 	std::uint16_t SrvThreadCount = 4;
@@ -462,7 +462,7 @@ int main(int argc, char* argv[])
 		}
 	});
 	
-
+	*/
 	//
 	int framesSinceDetection = 0;
 	Rect etalon;
@@ -517,13 +517,13 @@ int main(int argc, char* argv[])
 			DrawCameraMarks(frame);
 			imshow(windowName, frame);
 			
-			{
+			/*{
 				std::unique_lock<std::mutex> locker(frameLock);
 				frame.copyTo(serverFrame);
 				frameReady = true;
 				frameCondition.notify_one();
 			}
-
+			*/
 			char key = (char)waitKey(capture.isOpened() ? 50 : 500);
 			if( key == 115 ) {
 				imwrite("frame.png", frame_orig);
