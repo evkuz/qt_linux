@@ -1,0 +1,19 @@
+[Unit]
+Description=Robot rosrun daemon
+After=network.target
+
+[Service]
+User=wheeltec
+Group=wheeltec
+WorkingDirectory=/home/wheeltec/
+ExecStart=/home/wheeltec/agents_python/wheeltec/rosrun.sh >> "/home/wheeltec/agents_python/wheeltec/rosrun.log"
+Type=simple
+ExecReload=/bin/kill -s HUP $MAINPID
+KillMode=mixed
+TimeoutStopSec=5
+PrivateTmp=true
+Restart=always
+
+
+[Install]
+WantedBy=multi-user.target

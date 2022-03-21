@@ -3,6 +3,8 @@ from iqrdevice.action import BaseAction
 from ..utils import SerialCommunication, CameraDetector
 import logging
 
+GRIP_CLOSED = 105
+GRIP_OPENED = 30
 
 class CatchCubeAction (BaseAction):
     def __init__(self, arduino_device:SerialCommunication, cam:CameraDetector):
@@ -41,11 +43,11 @@ class CatchCubeAction (BaseAction):
                     notDetectedSteps = 0
                 else:
                     notDetectedSteps += 1
-                if dist < 4:
-                    currentPos[4] = 180
+                if dist < 3.6:
+                    currentPos[4] = GRIP_CLOSED
                     _ = self.move_manip(currentPos)
                     tp_state+=1
-                if detectedSteps > 50 or notDetectedSteps > 100:
+                if detectedSteps > 150 or notDetectedSteps > 200:
                     self._set_state_info("Can't get cube for too long!")
                     res = -10
                     _ = self.__manip.move_home(80)
@@ -56,11 +58,11 @@ class CatchCubeAction (BaseAction):
                     currentPos[1] + 20,
                     currentPos[2] + 10,
                     currentPos[3],
-                    180
+                    GRIP_CLOSED
                 ]
                 _ = self.move_manip(pos)
 
-                pos = [currentPos[0], 120, 60, currentPos[3], 30]
+                pos = [currentPos[0], 120, 60, currentPos[3], GRIP_CLOSED]
                 _ = self.move_manip(pos)
                 break
         return res
@@ -82,11 +84,11 @@ class CatchCubeAction (BaseAction):
         self.logger.info(f"CUR_POS: {manipPos}")
         
         newPos = [
-            int(manipPos[0] - 0.2*(self.__pixToDegreeX * objPos[0])),
-            int(manipPos[1] - 0.*objPos[1] - 0.003*objPos[2]),
-            int(manipPos[2] + 0.08*objPos[1] - 0.*objPos[2]),
+            int(manipPos[0] - 0.15*(self.__pixToDegreeX * objPos[0])),
+            int(manipPos[1] - 0.*objPos[1] - 0.002*objPos[2]),
+            int(manipPos[2] + 0.06*objPos[1] - 0.*objPos[2]),
             manipPos[3],
-            30
+            GRIP_OPENED
         ]
         self.logger.info(f"NEW_POS: {newPos}")
         return newPos
