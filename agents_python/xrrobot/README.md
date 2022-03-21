@@ -18,4 +18,3 @@ And several files:
 * **README.md** - this file
 * **runner.py** - special script to start your robot web-server. You can edit port number and server address here.
 * **start.sh** - system script to start your web server
-
