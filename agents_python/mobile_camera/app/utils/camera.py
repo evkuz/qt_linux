@@ -267,7 +267,8 @@ class CameraDetector(object):
             _, frame = self.__cap.read()
             #frame = cv2.imread("mobile_camera/ffff/Untitled1.png", 1)
             frame = cv2.flip(frame, 0)
-            frame, self.position = self.__detect(frame)
+            frame = cv2.flip(frame, 1)
+            det_frame, self.position = self.__detect(frame)
             (flag, encodedImage) = cv2.imencode(".jpeg", frame)
             self.__actualFrameBytes = encodedImage
             self.__actualFrame = frame.copy()

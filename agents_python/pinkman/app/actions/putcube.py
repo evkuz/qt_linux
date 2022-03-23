@@ -19,13 +19,13 @@ class PutCubeAction (BaseAction):
         if self._workingFlag:
             _ = self.move_manip([90, 120, 70, GRIP_CLOSED])
         if self._workingFlag:
-            _ = self.move_manip([160, 120, 70, GRIP_CLOSED])
+            _ = self.move_manip([153, 120, 70, GRIP_CLOSED])
         if self._workingFlag:
-            _ = self.move_manip([160, 48, 110, GRIP_CLOSED])
+            _ = self.move_manip([153, 55, 100, GRIP_CLOSED])
         if self._workingFlag:
-            _ = self.move_manip([160, 48, 110, GRIP_OPENED])
+            _ = self.move_manip([153, 55, 100, GRIP_OPENED])
         if self._workingFlag:
-            _ = self.move_manip([160, 120, 70, GRIP_OPENED])
+            _ = self.move_manip([153, 120, 70, GRIP_OPENED])
         
         return res
 

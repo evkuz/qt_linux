@@ -1,6 +1,42 @@
 <html>
   <head>
     <title>Mobman move http server</title>
+    <script>
+      deviceAddr = "http://192.168.1.205:5001";
+
+      async function sendRequest(addr){
+        let url = deviceAddr + addr;
+        let response = await fetch(url);
+        if (response.ok) { // если HTTP-статус в диапазоне 200-299
+          // получаем тело ответа (см. про этот метод ниже)
+          let json = await response.json();
+          if (json.rc == 0) {
+              return true;
+          }
+        }
+        return false;
+      }
+
+      async function getInfo(addr){
+        let url = deviceAddr + addr;
+        let response = await fetch(url);
+        if (response.ok) { // если HTTP-статус в диапазоне 200-299
+          // получаем тело ответа (см. про этот метод ниже)
+          let json = await response.json();
+          if (json.rc == 0) {
+            alert(json.data)  
+            return true;
+          }
+        }
+        return false;
+      }
+    </script>
+
+    <style>
+      .button {
+        cursor: pointer;
+      }
+    </style>
   </head>
   <body>
     <h1>Mobman move http server</h1>
@@ -13,13 +49,15 @@
 
     <p><strong>Useful links:</strong></p>
     <ul>
-      <li><b><a href="/action?name=movetoa">Perform "MoveToA"</a></b></li>  
+      <li><b><a class="button" onclick="sendRequest('/action?name=movetoa');">Perform "MoveToA"</a></b></li>  
       <li><b><a href="/status?action=movetoa">"MoveToA" status</a></b></li>
-      <li><b><a href="/action?name=movetob">Perform "MoveToB"</a></b></li>  
+      <li><b><a class="button" onclick="sendRequest('/action?name=movetob');">Perform "MoveToB"</a></b></li>  
       <li><b><a href="/status?action=movetob">"MoveToB" status</a></b></li>
       <li><b><a href="/reset">Reset</a></b></li><br/><br/>
-      <li><b><a href="/service?name=startrosrun">START ROSRun</a></b></li>
-      <li><b><a href="/service?name=stoprosrun">STOP ROSRun</a></b></li>
+      <li><b><a class="button" onclick="getInfo('/service?name=startrosrun');">START ROSRun</a></b></li>
+      <li><b><a class="button" onclick="getInfo('/service?name=stoprosrun');">STOP ROSRun</a></b></li><br/>
+      <li><b><a class="button" onclick="getInfo('/service?name=startmvrasp');">START MVRasp</a></b></li>
+      <li><b><a class="button" onclick="getInfo('/service?name=stopmvrasp');">STOP MVRasp</a></b></li>
       
     </ul>
   </body>
