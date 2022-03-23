@@ -1,6 +1,7 @@
 from time import sleep
 from iqrdevice.action import BaseAction
 from ..utils import SerialCommunication
+from . import GRIP_CLOSED, GRIP_OPENED
 
 
 class PutCubeAction (BaseAction):
@@ -16,15 +17,15 @@ class PutCubeAction (BaseAction):
     def run_action(self, **kwargs) -> int:
         res = 0
         if self._workingFlag:
-            _ = self.move_manip([180, 120, 60, 90, 100])
+            _ = self.move_manip([180, 120, 60, 90, GRIP_CLOSED])
         if self._workingFlag:
-            _ = self.move_manip([180, 49, 90, 90, 100])
+            _ = self.move_manip([180, 49, 90, 90, GRIP_CLOSED])
         if self._workingFlag:
-            _ = self.move_manip([180, 49, 90, 90, 180])
+            _ = self.move_manip([180, 49, 90, 90, GRIP_OPENED])
         if self._workingFlag:
-            _ = self.move_manip([180, 120, 74, 90, 180])
+            _ = self.move_manip([180, 120, 74, 90, GRIP_OPENED])
         if self._workingFlag:
-            _ = self.move_manip([91, 120, 60, 90, 180])
+            _ = self.move_manip([91, 120, 60, 90, GRIP_OPENED])
         if self._workingFlag:
             self.__manip.move_home()
             pos, dist = self.__manip.get_position()

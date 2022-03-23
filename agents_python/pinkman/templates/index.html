@@ -1,6 +1,28 @@
 <html>
   <head>
     <title>PinkMan http server</title>
+    <script>
+      deviceAddr = "http://192.168.1.177:5001";
+
+      async function sendRequest(addr){
+        let url = deviceAddr + addr;
+        let response = await fetch(url);
+        if (response.ok) { // если HTTP-статус в диапазоне 200-299
+          // получаем тело ответа (см. про этот метод ниже)
+          let json = await response.json();
+          if (json.rc == 0) {
+              return true;
+          }
+        }
+        return false;
+      }
+    </script>
+
+    <style>
+      .button {
+        cursor: pointer;
+      }
+    </style>
   </head>
   <body>
     <h1>PinkMan http server</h1>
@@ -16,27 +38,26 @@
     </ul>
     <p><strong>Usefull links:</strong></p>
     <ul>
-      <li><b><a href="/action?name=catchcube">CatchCube</a></b></li>
-      <li><b><a href="/status?action=catchcube">status of "catchcube"</a></b></li><br/>
+      <li><b><a class="button" onclick="sendRequest('/action?name=catchcube');">CatchCube</a></b></li>
+      <li><b><a class="button" onclick="sendRequest('/action?name=putcube');">PutCube</a></b></li>
+      <li><b><a class="button" onclick="sendRequest('/action?name=movehome&speed=70');">move home</a></b></li><br/>
 
-      <li><b><a href="/action?name=putcube">PutCube</a></b></li>
-      <li><b><a href="/status?action=putcube">status of "putcube"</a></b></li><br/>
+      <li><b><a class="button" onclick="sendRequest('/reset');">RESET</a></b></li><br/>
 
-      <li><b><a href="/reset">RESET</a></b></li><br/>
+      <li><b><a href="/status?action=catchcube">status of "catchcube"</a></b></li>
+      <li><b><a href="/status?action=putcube">status of "putcube"</a></b></li>
+      <li><b><a href="/status?action=movehome">status of "movehome"</a></b></li><br/>
       
-      <li><b><a href="/service?name=camcalib&x1=100&y1=100&x2=150&y2=150">camcalib</a></b></li>
+      <li><b><a class="button" onclick="sendRequest('/action?name=opengrip&speed=80');">OPEN GRIP</a></b></li>
+      <li><b><a class="button" onclick="sendRequest('/action?name=closegrip&speed=80');">CLOSE GRIP</a></b></li><br/>
+
       <li><b><a href="/service?name=getposition">getposition</a></b></li>
       <li><b><a href="/service?name=getdist">getdistance</a></b></li><br/>
 
-      <li><b><a href="/action?name=move&pos=91,114,35,180&speed=90">move to (91, 114, 35, 180)</a></b></li>
-      <li><b><a href="/status?action=move">status of "move"</a></b></li><br/>
+      <li>Addr for move to: <b>/action?name=move&pos=91,114,35,180&speed=90</b></li>
+      <li>Addr for change home position: <b>/service?name=sethome&pos=91,114,35,180</b></li>
 
-      <li><b><a href="/action?name=movehome&speed=60">move home</a></b></li>
-      <li><b><a href="/status?action=movehome">status of "movehome"</a></b></li><br/>
-
-      <li><b><a href="/service?name=sethome&pos=91,114,35,180">Don't touch it!</a></b></li>
-
-      </ul>
-      <script src="static/camcalib.js"></script>
+    </ul>
+    <script src="static/camcalib.js"></script>
   </body>
 </html>

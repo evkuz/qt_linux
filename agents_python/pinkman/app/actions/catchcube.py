@@ -1,6 +1,7 @@
 from time import sleep,time
 from iqrdevice.action import BaseAction
 from ..utils import SerialCommunication, CameraDetector
+from . import GRIP_CLOSED, GRIP_OPENED
 import logging
 
 
@@ -47,8 +48,8 @@ class CatchCubeAction (BaseAction):
                         notDetectedSteps = 0
                     else:
                         notDetectedSteps += 1
-                    if dist < 4.2:
-                        currentPos[3] = 115
+                    if dist < 3.5:
+                        currentPos[3] = GRIP_CLOSED
                         _ = self.move_manip(currentPos)
                         tp_state+=1
                     if detectedSteps > 200 or notDetectedSteps > 250:
@@ -90,7 +91,7 @@ class CatchCubeAction (BaseAction):
             int(manipPos[0] - 0.15*(self.__pixToDegreeX * objPos[0])),
             int(manipPos[1] - 0.25*(self.__pixToDegreeY*objPos[1] + self.__pixToDegreeZ*objPos[2])),
             int(manipPos[2] - 0.15*(self.__pixToDegreeY*objPos[1] - self.__pixToDegreeZ*objPos[2])),
-            180
+            GRIP_OPENED
         ]
         self.logger.info(f"NEW_POS: {newPos}")
         return newPos

@@ -1,10 +1,9 @@
 from time import sleep
 from iqrdevice.action import BaseAction
+from . import GRIP_CLOSED, GRIP_OPENED
 from ..utils import SerialCommunication, CameraDetector
 import logging
 
-GRIP_CLOSED = 105
-GRIP_OPENED = 30
 
 class CatchCubeAction (BaseAction):
     def __init__(self, arduino_device:SerialCommunication, cam:CameraDetector):
