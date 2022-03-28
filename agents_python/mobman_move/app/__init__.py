@@ -32,4 +32,4 @@ device.register_service(services.StartMVRaspService(mvrasp))
 device.register_service(services.StopMVRaspService(mvrasp))
 
 #rosrun.run()
-#mvrasp.run()
+mvrasp.run()

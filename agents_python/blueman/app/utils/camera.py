@@ -108,7 +108,8 @@ class CameraDetector(object):
         return res
 
     def __detect(self, frame):
-        blurred = cv2.GaussianBlur(frame, (51, 51), 0)
+        hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+        blurred = cv2.GaussianBlur(hsv, (51, 51), 0)
 
         # create NumPy arrays from the boundaries
         lower = np.array(self.color_range[0], dtype="uint8")
@@ -171,7 +172,8 @@ class CameraDetector(object):
         if self.__actualFrame is None:
             return ""
         frameCpy = self.__actualFrame.copy()
-        roi = frameCpy[y1:y2,x1:x2,:]
+        hsv = cv2.cvtColor(frameCpy, cv2.COLOR_BGR2HSV)
+        roi = hsv[y1:y2,x1:x2,:]
         for i in range(roi.shape[0]):
             for j in range(roi.shape[1]):
                 b = roi[i, j, 0] # B

@@ -136,7 +136,7 @@ class CameraDetector(object):
 
     def __detect(self, frame):
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-        blurred = cv2.GaussianBlur(hsv, (51, 51), 0)
+        blurred = cv2.GaussianBlur(hsv, (11, 11), 0)
 
         # create NumPy arrays from the boundaries
         lower = np.array(self.color_range[0], dtype="uint8")
@@ -172,7 +172,7 @@ class CameraDetector(object):
 
         if detected:
             output = cv2.rectangle(
-                hsv, 
+                frame, 
                 (x, y),
                 (x + w, y + h),
                 (0, 255, 0),
@@ -180,7 +180,7 @@ class CameraDetector(object):
             )
         else:
             output = cv2.rectangle(
-                hsv, 
+                frame, 
                 (x, y),
                 (x + w, y + h),
                 (0, 0, 255),
@@ -199,7 +199,8 @@ class CameraDetector(object):
         if self.__actualFrame is None:
             return ""
         frameCpy = self.__actualFrame.copy()
-        roi = frameCpy[y1:y2,x1:x2,:]
+        hsv = cv2.cvtColor(frameCpy, cv2.COLOR_BGR2HSV)
+        roi = hsv[y1:y2,x1:x2,:]
         for i in range(roi.shape[0]):
             for j in range(roi.shape[1]):
                 b = roi[i, j, 0] # B
@@ -268,8 +269,9 @@ class CameraDetector(object):
             #frame = cv2.imread("mobile_camera/ffff/Untitled1.png", 1)
             frame = cv2.flip(frame, 0)
             frame = cv2.flip(frame, 1)
+            #det_frame = frame
             det_frame, self.position = self.__detect(frame)
-            (flag, encodedImage) = cv2.imencode(".jpeg", frame)
+            (flag, encodedImage) = cv2.imencode(".jpeg", det_frame)
             self.__actualFrameBytes = encodedImage
             self.__actualFrame = frame.copy()
             self.__waitForFrame.set()

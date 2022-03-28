@@ -1,5 +1,6 @@
 import subprocess
 
+
 class RosRun:
     def __init__(self, start_script:str, stop_script:str):
         self.__start_script = start_script

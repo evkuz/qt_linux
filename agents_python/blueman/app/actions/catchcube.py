@@ -32,8 +32,8 @@ class CatchCubeAction (BaseAction):
                 detected, x, y, w, h = self.__camera.get_position()
                 if detected:
                     errZ = 0.7*self.__camera.FrameWidth - w
-                    errX = x - self.__camera.FrameWidth / 2
-                    errY = y - self.__camera.FrameHeight / 2
+                    errX = x - 0.5 * self.__camera.FrameWidth
+                    errY = y - 0.4 * self.__camera.FrameHeight
 
                     newPos = self.calc_next_position([errX,errY,errZ], currentPos)
                     currentPos, dist = self.move_manip(newPos)
@@ -42,7 +42,7 @@ class CatchCubeAction (BaseAction):
                     notDetectedSteps = 0
                 else:
                     notDetectedSteps += 1
-                if dist < 3.6:
+                if dist < 2.9:
                     currentPos[4] = GRIP_CLOSED
                     _ = self.move_manip(currentPos)
                     tp_state+=1
@@ -85,7 +85,7 @@ class CatchCubeAction (BaseAction):
         newPos = [
             int(manipPos[0] - 0.15*(self.__pixToDegreeX * objPos[0])),
             int(manipPos[1] - 0.*objPos[1] - 0.002*objPos[2]),
-            int(manipPos[2] + 0.06*objPos[1] - 0.*objPos[2]),
+            int(manipPos[2] + 0.04*objPos[1] - 0.*objPos[2]),
             manipPos[3],
             GRIP_OPENED
         ]
