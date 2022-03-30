@@ -21,7 +21,8 @@ class BaseCamera(object):
         """
         self.__filters = filters
         self.auto_close_time = auto_close_time
-        self.__actualFrame = np.zeros((640,480,3), dtype='uint8')
+        self.__emptyFrame = np.zeros((640,480,3), dtype='uint8')
+        self.__actualFrame = self.__emptyFrame
         self.last_access = 0
         self.__thread = None
         self.__isWorking = False
@@ -106,7 +107,9 @@ class BaseCamera(object):
             self.__start()
         self.last_access = time.time()
         with self.__lock:
-            return self.__actualFrame.copy()
+            if self.__actualFrame is not None:
+                return self.__actualFrame.copy()
+            return self.__emptyFrame.copy()
 
     def _read_frame(self):
         raise NotImplementedError()

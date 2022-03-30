@@ -1,199 +1,46 @@
 import cv2
 import time
-import threading
 import numpy as np
-import copy
 from os.path import isfile
-from .base import BaseCamera
+from .basedetector import BaseDetector
 
 
-class SimpleDetector(BaseCamera):
-    def __init__(self, camera:BaseCamera, conf_file_name:str="cam_color_range.txt"):
-        self._camera = camera
+class SimpleDetector(BaseDetector):
+    def __init__(self, conf_file_name:str="cam_color_range.txt", min_area=100,
+                       object_area_range=(0.02, 0.4), aspect_ratio_range=(1/2.5,2.5),
+                       result_smoothing:int=3):
         self.filename = conf_file_name
-        self.default_color_range = ((0, 230, 155), (10, 255, 180))
+        self.min_area = min_area
+        self.object_area_range = object_area_range
+        self.aspect_ratio_range = aspect_ratio_range
+        self.result_smoothing = result_smoothing
 
+        self.default_color_range = (
+            np.array([0, 230, 155], dtype="uint8"),
+            np.array([10, 255, 180], dtype="uint8")
+        )
         self.color_range = self.read_color_range()
-        self.__actualFrameBytes = None
-        self.__actualFrame = None
-        self.__thread = None
-        self.__cap = cv2.VideoCapture()
-        self.__isWorking = False
-        self.__waitForFrame = threading.Event()
-        self.__waitForFrame.clear()
-        self.__waitForPosition = threading.Event()
-        self.__waitForPosition.clear()
-        self.position = (False, 0, 0, 0, 0)
-        
-        self.__showWindow = showWindow
+        self.previous_results = []
 
-    def read_color_range(self):
-        if not isfile(self.filename):
-            return self.default_color_range
-        
-        with open(self.filename, 'r') as f:
-            lines = f.readlines()
-        if len(lines) < 2:
-            return self.default_color_range
+    def calibrate(self, frame:np.ndarray, x1:int, y1:int, x2:int, y2:int)->str:
+        """makes detector calibration
 
-        res = [
-            [int(x.strip()) for x in lines[0].split(' ')],
-            [int(x.strip()) for x in lines[1].split(' ')]
-        ]
-        return res
+        Args:
+            frame (_type_): frame that detector calibrates on
+            x1 (int): top left X value
+            y1 (int): top left Y value
+            x2 (int): bottom right X value
+            y2 (int): bottom right Y value
 
-    def write_color_range(self):
-        with open(self.filename, 'w') as f:
-             for l in self.color_range:
-                 f.write(f"{l[0]} {l[1]} {l[2]}\n")
+        Raises:
+            NotImplementedError: must be reimplemented in derived
+        Returns:
+            str: information about calibration
+        """
+        color_lower = np.array([255, 255, 255], dtype="uint8")
+        color_upper = np.array([0, 0, 0], dtype="uint8")
 
-    @property
-    def isOpened(self):
-        return self.__cap.isOpened()
-
-    @property
-    def isStarted(self):
-        return self.__isWorking
-
-    def __open_device(self, nTries=3):
-        if self.isOpened:
-            self.__cap.release()
-
-        for i in range(nTries):
-            self.__cap.open(self.port)
-            if self.__cap.isOpened():
-                break
-        else:
-            msg = f"Can't open camera port {self.port}!"
-            print(msg)
-            raise RuntimeError(msg)
-
-        if self.FrameWidth is not None:
-            self.__cap.set(cv2.CAP_PROP_FRAME_WIDTH, self.FrameWidth)
-
-        if self.FrameHeight is not None:
-            self.__cap.set(cv2.CAP_PROP_FRAME_HEIGHT, self.FrameHeight)
-        
-        self.__cap.set(cv2.CAP_PROP_AUTO_EXPOSURE, 0.0)
-        self.__cap.set(cv2.CAP_PROP_EXPOSURE, 0.60)
-        self.__cap.set(cv2.CAP_PROP_AUTO_WB, 0.0)
-        self.__cap.set(cv2.CAP_PROP_AUTOFOCUS, 0.25)
-
-
-    def __close_device(self):
-        self.__cap.release()
-
-    def start(self):
-        if self.__thread is not None:
-            return
-        print("starting..")
-        self.last_access = time.time()
-        self.__thread = threading.Thread(target=self.__thread_work)
-        self.__isWorking = True
-        self.__thread.start()
-
-    def stop(self):
-        if self.__thread is None:
-            return
-        self.__isWorking = False
-        self.__thread.join()
-
-    def get_byte_frame(self):
-        if self.__thread is None:
-            self.start()
-
-        self.__waitForFrame.wait()
-        self.__waitForFrame.clear()
-        frame = copy.deepcopy(self.__actualFrameBytes)
-        self.last_access = time.time()
-        return frame
-
-    def get_frame(self):
-        if self.__thread is None:
-            self.start()
-
-        self.__waitForFrame.wait()
-        self.__waitForFrame.clear()
-        frame = self.__actualFrame
-        self.last_access = time.time()
-        return frame
-    
-    def get_position(self):
-        if self.__thread is None:
-            self.start()
-
-        self.__waitForPosition.wait()
-        self.__waitForPosition.clear()
-        res = self.position
-        CameraDetector.last_access = time.time()
-        return res
-
-    def __detect(self, frame):
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-        blurred = cv2.GaussianBlur(hsv, (11, 11), 0)
-
-        # create NumPy arrays from the boundaries
-        lower = np.array(self.color_range[0], dtype="uint8")
-        upper = np.array(self.color_range[1], dtype="uint8")
-        # find the colors within the specified boundaries and apply
-        # the mask
-        mask = cv2.inRange(blurred, lower, upper)
-        contours, _ = cv2.findContours(
-            mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
-
-        bestCountorArea = 0
-        x, y, w, h = (0, 0, 0, 0)
-        for contour in contours:
-            area = cv2.contourArea(contour)
-            if(area > 100) and area > bestCountorArea:
-                bestCountorArea = area
-                x, y, w, h = cv2.boundingRect(contour)
-        
-        detected = False
-        ox, oy = (0, 0)
-
-        if bestCountorArea > 200:
-            ox = int(x + w / 2) - self.FrameWidth/2
-            oy = self.FrameHeight/2 - int(y + h / 2)
-
-            border_coef = w / h
-            cw = w / self.FrameWidth
-            ch = h / self.FrameHeight
-
-            #if border_coef > 0.1 and border_coef < 4 and cw < 0.85 and cw > 0.08 and ch < 0.9 and ch > 0.08:
-            if cw < 0.85 and cw > 0.04 and ch < 0.9 and ch > 0.04:    
-                detected = True
-
-        if detected:
-            output = cv2.rectangle(
-                frame, 
-                (x, y),
-                (x + w, y + h),
-                (0, 255, 0),
-                2
-            )
-        else:
-            output = cv2.rectangle(
-                frame, 
-                (x, y),
-                (x + w, y + h),
-                (0, 0, 255),
-                2
-            )
-        return output, (detected, ox, oy, w, h)
-
-    def calibrate_colors(self, x1, y1, x2, y2):
-        if self.__thread is None:
-            self.start()
-
-        self.__waitForFrame.wait()
-
-        color_lower = [255,255,255]
-        color_upper = [0,0,0]
-        if self.__actualFrame is None:
-            return ""
-        frameCpy = self.__actualFrame.copy()
-        hsv = cv2.cvtColor(frameCpy, cv2.COLOR_BGR2HSV)
         roi = hsv[y1:y2,x1:x2,:]
         for i in range(roi.shape[0]):
             for j in range(roi.shape[1]):
@@ -254,62 +101,147 @@ class SimpleDetector(BaseCamera):
         res = f"(({color_lower[0]}, {color_lower[1]}, {color_lower[2]}), ({color_upper[0]}, {color_upper[1]}, {color_upper[2]}))"
         return res
 
-    def __thread_work(self):
-        self.__isWorking = True
-        self.__open_device()
-     
-        while self.__isWorking:
-            _, frame = self.__cap.read()
-            #frame = cv2.imread("mobile_camera/ffff/Untitled1.png", 1)
-            frame = cv2.flip(frame, 0)
-            frame = cv2.flip(frame, 1)
-            #det_frame = frame
-            det_frame, self.position = self.__detect(frame)
-            (flag, encodedImage) = cv2.imencode(".jpeg", det_frame)
-            self.__actualFrameBytes = encodedImage
-            self.__actualFrame = frame.copy()
-            self.__waitForFrame.set()
-            self.__waitForPosition.set()
-            if self.__showWindow:
-                cv2.imshow("Camera test", self.__actualFrame)
-                key = cv2.waitKey(1)
-                if key & 0xFF == ord('q'):
-                    break
-                self.last_access = time.time()
+    def detect(self, image:np.ndarray, draw:bool=False)->dict:
+        """Detect object on image
 
-            time.sleep(0)
-            # the last 5 seconds stop the thread
-            if time.time() - self.last_access > 10:
-                break
+        Args:
+            image: image frame to detect object on
+            draw (bool, optional): if set to True, output dictionary will contain key 'output' with drowen detection results. Defaults to True.
 
-        self.__close_device()
-        self.__thread = None
-        self.__isWorking = False
+        Raises:
+            NotImplementedError: This method must be implemented in derived
+
+        Returns:
+            dict: result dictionary that must contain keys: 
+                * 'detected' - bool value
+             Addition mandatory keys in case of 'detected' is True
+                * 'x' - float value of object center x in range [0,1]
+                * 'y' - float value of object center y in range [0,1]
+                * 'width' - float value of object width in range [0,1]
+                * 'height' - float value of object height in range [0,1]
+        """
+        im_width = image.shape[0]
+        im_height = image.shape[1]
+
+        hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+        blurred = cv2.GaussianBlur(hsv, (11, 11), 0)
+
+        # create NumPy arrays from the boundaries
+        lower = self.color_range[0]
+        upper = self.color_range[1]
+        # find the colors within the specified boundaries and apply
+        # the mask
+        mask = cv2.inRange(blurred, lower, upper)
+        contours, _ = cv2.findContours(
+            mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+
+        # Searching for best countor
+        bestCountorArea = 0
+        bestCountor = None
+        for contour in contours:
+            area = cv2.contourArea(contour)
+            if(area > self.min_area) and area > bestCountorArea:
+                bestCountorArea = area
+                bestCountor = contour
+
+        if bestCountor is None:
+            # nothing was detected
+            return { 'detected' : False }
         
-        if self.__showWindow:
-            cv2.destroyAllWindows()
+        x, y, w, h = cv2.boundingRect(bestCountor)
+        res = {
+            'detected' : False,
+            'x'        : (x + 0.5*w - 0.5*im_width) / im_width,
+            'y'        : (0.5*im_height - (y + 0.5*h)) / im_height,
+            'width'    : w / im_width,
+            'height'   : h / im_height
+        }
+
+        bestCountorArea = bestCountorArea / (im_width*im_height)
+
+        if self.object_area_range[0] <= bestCountorArea <= self.object_area_range[1]:
+            ar = w / h
+            if self.aspect_ratio_range[0] <= ar <= self.aspect_ratio_range[0]:    
+                res['detected'] = True
         
+        res = self.smoothing_of_result(res)
 
-if __name__ == '__main__':
-    c = CameraDetector(0, showWindow=True)
-    # winName = "Camera demonstration"
-    # cv2.namedWindow(winName)
-    #c.start()
-    while True:
-        c.get_frame()
-        line = input()
-        if len(line) == 0:
-            continue
+        if draw:
+            res['output'] = self.draw_result(image, res)
+        
+        return res
 
-        if line == 'q':
-            break
-        par = line.split(" ")
-        if len(par) == 4:
-            c.calibrate_colors(
-                int(par[0]),
-                int(par[1]),
-                int(par[2]),
-                int(par[3])
-            )
+    def draw_result(self, frame:np.ndarray, detection_result:dict):
+        """Draws given result of detection on given frame
 
-    c.stop()
+        Args:
+            frame: frame to draw result
+            detection_result (dict): result of detection
+
+        Raises:
+            NotImplementedError: Must be implemented in derived
+        """
+        if detection_result['detected']:
+            color = (0, 255, 0)
+        else:
+            color = (0, 0, 255)
+
+        if not all([i in detection_result for i in ['x', 'y', 'width', 'height']]):
+            return frame
+        
+        top_left = (
+            int((detection_result['x']-0.5*detection_result['width']) * frame.shape[0]),
+            int((detection_result['y']-0.5*detection_result['height']) * frame.shape[1])
+        )
+        bottom_right = (
+            int((detection_result['x']+0.5*detection_result['width']) * frame.shape[0]),
+            int((detection_result['y']+0.5*detection_result['height']) * frame.shape[1])
+        )
+
+        return cv2.rectangle(
+            frame, 
+            top_left,
+            bottom_right,
+            color,
+            2
+        )
+
+    def read_color_range(self):
+        if not isfile(self.filename):
+            return self.default_color_range
+        
+        with open(self.filename, 'r') as f:
+            lines = f.readlines()
+        if len(lines) < 2:
+            return self.default_color_range
+
+        res = [
+            np.array([int(x.strip()) for x in lines[0].split(' ')], dtype="uint8"),
+            np.array([int(x.strip()) for x in lines[1].split(' ')], dtype="uint8"),
+        ]
+        return res
+
+    def write_color_range(self):
+        with open(self.filename, 'w') as f:
+             for l in self.color_range:
+                 f.write(f"{l[0]} {l[1]} {l[2]}\n")
+
+    def smoothing_of_result(self, current_res):
+        if self.result_smoothing == 0:
+            return current_res
+        
+        if len(self.previous_results) > self.result_smoothing:
+            self.previous_results.pop(0)
+        self.previous_results.append(current_res)
+        
+        num_of_elements = len(self.previous_results)
+        if num_of_elements == 1:
+            return current_res
+
+        return {
+            'detected' : all([i['detected'] for i in self.previous_results]),
+            'x'        : sum([i['x'] for i in self.previous_results])/num_of_elements,
+            'y'        : sum([i['y'] for i in self.previous_results])/num_of_elements,
+            'width'    : sum([i['width'] for i in self.previous_results])/num_of_elements,
+            'height'    : sum([i['height'] for i in self.previous_results])/num_of_elements,
+        }
