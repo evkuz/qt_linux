@@ -243,5 +243,7 @@ class SimpleDetector(BaseDetector):
             'x'        : sum([i['x'] for i in self.previous_results])/num_of_elements,
             'y'        : sum([i['y'] for i in self.previous_results])/num_of_elements,
             'width'    : sum([i['width'] for i in self.previous_results])/num_of_elements,
-            'height'    : sum([i['height'] for i in self.previous_results])/num_of_elements,
+            'height'   : sum([i['height'] for i in self.previous_results])/num_of_elements,
         }
+
+__all__ = [ 'SimpleDetector' ]
