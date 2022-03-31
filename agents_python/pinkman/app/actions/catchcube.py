@@ -1,3 +1,4 @@
+import os
 from time import sleep,time
 from iqrdevice.action import BaseAction
 from ..utils import SerialCommunication, CameraDetector
@@ -23,7 +24,7 @@ class CatchCubeAction (BaseAction):
     def run_action(self, **kwargs) -> int:
         fileName=f"PM_points_{time()}.txt"
         with open(fileName, 'w') as lfile:
-            lfile.write("x\ty\tw\terrx\terry\terrz\tpos1\tpos2\tpos3\tpos4\n")
+            lfile.write("x\ty\tw\terrx\terry\terrz\tpos1\tpos2\tpos3\tpos4\tcur1\tcur2\tcur3\tcur4\n")
 
             res = 0
             tp_state = 0
@@ -40,9 +41,10 @@ class CatchCubeAction (BaseAction):
                         errY = y - 0.75*self.__camera.FrameHeight
 
                         newPos = self.calc_next_position([errX,errY,errZ], currentPos)
+                        
+                        lfile.write(f"{x}\t{y}\t{w}\t{errX}\t{errY}\t{errZ}\t{newPos[0]}\t{newPos[1]}\t{newPos[2]}\t{newPos[3]}\t{currentPos[0]}\t{currentPos[1]}\t{currentPos[2]}\t{currentPos[3]}\n")
+                        
                         currentPos, dist = self.move_manip(newPos)
-
-                        lfile.write(f"{x}\t{y}\t{w}\t{errX}\t{errY}\t{errZ}\t{newPos[0]}\t{newPos[1]}\t{newPos[2]}\t{newPos[3]}\n")
 
                         detectedSteps += 1
                         notDetectedSteps = 0
@@ -69,6 +71,9 @@ class CatchCubeAction (BaseAction):
                     pos = [currentPos[0], 120, 60, currentPos[3]]
                     _ = self.move_manip(pos)
                     break
+        if res == 0:
+            newName = "SUCCESS_" + fileName
+            os.rename(fileName, newName)
         return res
 
     def reset_action(self) -> int:
