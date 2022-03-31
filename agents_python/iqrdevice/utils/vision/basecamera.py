@@ -9,8 +9,10 @@ from .basefilter import BaseFilter
 class BaseCamera(object):
     """Base camera class. Implements basic functions of camera with frame read loop.
 
-    Args:
-        object (_type_): _description_
+    This is abstract class all derived clases must hvae implementation of this methods:
+      * _read_frame(self)
+      * _open_device(self, nTries=3)
+      * _close_device(self)
     """
     def __init__(self, filters:List[BaseFilter]=[], auto_close_time:int=10):
         """creates new base camera object
@@ -32,14 +34,21 @@ class BaseCamera(object):
     def __del__(self):
         self.__stop()
         
-    def add_filter(self, filter:BaseFilter):
-        self.__filters.append(filter)
+    def set_filters(self, filters:List[BaseFilter]):
+        """Set list of filters
+
+        Args:
+            filters (List[BaseFilter]): list of filters
+        """
+        self.__filters = filters
 
     @property
     def Filters(self):
         return self.__filters
 
     def __start(self):
+        """Starts reading frames from device in thread
+        """
         if self.__thread is not None:
             return
         self.last_access = time.time()
@@ -48,6 +57,8 @@ class BaseCamera(object):
         self.__thread.start()
 
     def __stop(self):
+        """stops reading frames thread
+        """
         if self.__thread is None:
             return
         self.__isWorking = False
@@ -78,7 +89,11 @@ class BaseCamera(object):
             logging.info("Camera thread was stopped")
 
     @property
-    def isStarted(self):
+    def isStarted(self)->bool:
+        """Returns is reading frames thread started
+        Returns:
+            bool: is reading frames thread started
+        """
         return self.__isWorking
         
     def wait_for_new_frame(self, timeout=None):
@@ -97,7 +112,7 @@ class BaseCamera(object):
             if not self.__waitForFrame.wait(timeout=timeout):
                 raise RuntimeError("Can't get frame at given time!")
 
-    def get_last_frame(self):
+    def get_last_frame(self)->np.ndarray:
         """return last read frame
 
         Returns:
@@ -112,12 +127,30 @@ class BaseCamera(object):
             return self.__emptyFrame.copy()
 
     def _read_frame(self):
+        """Reads frame from device
+
+        Raises:
+            NotImplementedError: Must be implemented in drived
+        """
         raise NotImplementedError()
     
     def _open_device(self, nTries=3):
+        """Open camera device for reading
+
+        Args:
+            nTries (int, optional): How many times if will try to open device. Defaults to 3.
+
+        Raises:
+            NotImplementedError: Must be implemented in drived
+        """
         raise NotImplementedError()
 
     def _close_device(self):
+        """Close device
+
+        Raises:
+            NotImplementedError: Must be implemented in drived
+        """
         raise NotImplementedError()
 
 

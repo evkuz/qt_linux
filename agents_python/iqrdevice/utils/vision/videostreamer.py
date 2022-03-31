@@ -4,9 +4,16 @@ import logging
 from .basecamera import BaseCamera
 from .basedetector import BaseDetector
 import cv2
+import numpy as np
 
 
 class VideoStreamer(object):
+    """This class describes object that needed to make jpeg images
+    for video stream to web browser. It gets frames from camera and performs
+    detection in separated thread. Last detection result will be drawn on 
+    jpeg image. This was made for isolation of getting images from camera and
+    calculation of datection, because last can long for a significant time.
+    """
     def __init__(self, camera:BaseCamera, detector=None):
         """Constructor
 
@@ -27,6 +34,8 @@ class VideoStreamer(object):
         self.__stop()
 
     def __start(self):
+        """Starts separated thread for detector
+        """
         if self.__detector is None:
             return
         if self.__thread is not None:
@@ -37,6 +46,8 @@ class VideoStreamer(object):
         self.__thread.start()
 
     def __stop(self):
+        """Stops separated thread
+        """
         if self.__thread is None:
             return
         self.__isWorking = False
@@ -63,15 +74,22 @@ class VideoStreamer(object):
             logging.info("Streamer detector thread was stopped")
 
     def __update_detection(self):
+        """Sets event variable
+        """
         self.__needToDetect.set()
 
-    def draw_detector_result(self, frame):
+    def draw_detector_result(self, frame:np.ndarray)->np.ndarray:
         if self.__detector is None:
             return frame
         frame = self.__detector.draw_result(frame, self.__detector_result)
         return frame
 
-    def get_next_frame(self):
+    def get_next_frame(self)->np.ndarray:
+        """Returns next frame from camera with drawn detection result
+
+        Returns:
+            np.ndarray: encoded to jpeg frame
+        """
         if self.__thread is None:
             self.__start()
         self.last_access = time.time()

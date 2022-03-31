@@ -1,8 +1,8 @@
 import cv2
-import time
 import numpy as np
 from os.path import isfile
 from .basedetector import BaseDetector
+from typing import List
 
 
 class SimpleDetector(BaseDetector):
@@ -15,10 +15,10 @@ class SimpleDetector(BaseDetector):
         self.aspect_ratio_range = aspect_ratio_range
         self.result_smoothing = result_smoothing
 
-        self.default_color_range = (
+        self.default_color_range = [
             np.array([0, 230, 155], dtype="uint8"),
             np.array([10, 255, 180], dtype="uint8")
-        )
+        ]
         self.color_range = self.read_color_range()
         self.previous_results = []
 
@@ -171,7 +171,7 @@ class SimpleDetector(BaseDetector):
         
         return res
 
-    def draw_result(self, frame:np.ndarray, detection_result:dict):
+    def draw_result(self, frame:np.ndarray, detection_result:dict)->np.ndarray:
         """Draws given result of detection on given frame
 
         Args:
@@ -206,7 +206,12 @@ class SimpleDetector(BaseDetector):
             2
         )
 
-    def read_color_range(self):
+    def read_color_range(self)->List[np.ndarray]:
+        """Reads color ranges from file
+
+        Returns:
+            List[np.ndarray]: lower and upper color bounds
+        """
         if not isfile(self.filename):
             return self.default_color_range
         
@@ -222,11 +227,23 @@ class SimpleDetector(BaseDetector):
         return res
 
     def write_color_range(self):
+        """writes current color_range to file
+        """
         with open(self.filename, 'w') as f:
              for l in self.color_range:
                  f.write(f"{l[0]} {l[1]} {l[2]}\n")
 
-    def smoothing_of_result(self, current_res):
+    def smoothing_of_result(self, current_res:dict)->dict:
+        """Culculates detection result based on previous results.
+        All result values calculated as average value except 'detected'.
+        'detected' will be True only if all previous results have 'detected' = True
+
+        Args:
+            current_res (dict): current result you want to smooth
+
+        Returns:
+            dict: Fixed detection result
+        """
         if self.result_smoothing == 0:
             return current_res
         

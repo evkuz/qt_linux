@@ -1,13 +1,13 @@
+import numpy as np
+
+
 class BaseFilter(object):
     """This class implements base frame filter functionality
-
-    Args:
-        object (_type_): _description_
     """
     def __init__(self):
         pass
 
-    def process_frame(self, frame):
+    def process_frame(self, frame:np.ndarray)->np.ndarray:
         """Makes frame transformation
 
         Args:
