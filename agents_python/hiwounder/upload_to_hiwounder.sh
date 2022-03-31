@@ -11,10 +11,8 @@ fi
 
 cd ../../
 
-#hiwounder iqrlit2021
-
 USER=ubuntu
-ADDR=192.168.1.80???
+ADDR=192.168.1.175
 
 rsync -av --exclude '__pycache__' --exclude '.venv' agents_python/iqrdevice $USER@$ADDR:~/agents_python/
 rsync -av --exclude '__pycache__' --exclude '.venv' agents_python/$DIRNAME $USER@$ADDR:~/agents_python/

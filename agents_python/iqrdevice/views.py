@@ -19,7 +19,7 @@ def make_my_responce(resp:BaseResponce):
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html', device_addr=request.host_url)
 
 
 @app.route('/status', methods=['get'])

@@ -5,6 +5,10 @@ var calibZoneY1 = -1;
 var calibZoneX2 = -1;
 var calibZoneY2 = -1;
 
+function set_device_addr(addr){
+    device_addr = addr
+}
+
 var canvas = document.getElementById('videobox_canvas');
 var context = canvas.getContext("2d");
 context.strokeStyle = "blue";
