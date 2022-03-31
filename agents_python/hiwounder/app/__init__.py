@@ -5,12 +5,21 @@ sys.path.append(str(module_path))
 
 import os
 from iqrdevice import device, app
+import iqrdevice.utils.vision as vision
 
 # создание экземпляра приложения
 app.config.from_object(os.environ.get('FLASK_ENV') or 'config.DevelopementConfig')
 
 from . import utils
-cam = utils.CameraDetector(app.config['CAMERA_NUM'])
+
+cam = vision.OpenCVCamera(app.config['CAMERA_NUM'])
+detector = vision.SimpleDetector(
+    min_area=150,
+    object_area_range=(0.01, 0.3),
+    aspect_ratio_range=(0.3, 3),
+    result_smoothing=5
+)
+streamer = vision.VideoStreamer(cam, detector)
 
 # import views
 from . import views
@@ -20,8 +29,7 @@ from . import actions
 from . import services
 
 device.set_name("mobile camera")
-getPositionService = services.CamDetectorService(cam)
-device.register_service(services.CamCalibService(cam))
+getPositionService = services.CamDetectorService(cam, detector)
+device.register_service(services.CamCalibService(cam, detector))
 
 device.register_service(getPositionService)
-device.register_action(actions.MoveToTakeCube("http://192.168.1.205:8082", getPositionService, "http://192.168.1.201:8383"))

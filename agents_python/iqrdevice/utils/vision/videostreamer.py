@@ -62,7 +62,7 @@ class VideoStreamer(object):
             while self.__isWorking:
                 if self.__needToDetect.is_set():
                     self.__needToDetect.clear()
-                    self.__detector.detect(self.__camera.get_last_frame(), False)
+                    self.__detector_result = self.__detector.detect(self.__camera.get_last_frame(), False)
                 time.sleep(0) # this should help to switch thread
                 if time.time() - self.last_access > self.auto_close_time:
                     break

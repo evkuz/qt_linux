@@ -1,3 +1,4 @@
+var device_addr = 'http://159.93.69.188:5001'
 var calibrationInProgress = false;
 var calibZoneX1 = -1;
 var calibZoneY1 = -1;
@@ -37,7 +38,7 @@ videobox.onmousedown = function(e) {
 }
 videobox.onmouseup = function(e) { 
     if( true) { //(calibZoneX2 - calibZoneX1) > 0 && (calibZoneY2 - calibZoneY1) > 0 ) {
-        let url = "http://192.168.1.201:5001/service?name=camcalib";
+        let url = device_addr + "/service?name=camcalib";
         url += "&x1=" + calibZoneX1;
         url += "&y1=" + calibZoneY1;
         url += "&x2=" + calibZoneX2;

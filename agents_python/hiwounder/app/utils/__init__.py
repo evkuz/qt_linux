@@ -1,4 +1,4 @@
-from .camera import CameraDetector
+from .socketserver import SocketServer
 
 
-__all__ = ['CameraDetector']
+__all__ = ['SocketServer']

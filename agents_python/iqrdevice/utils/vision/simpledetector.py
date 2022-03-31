@@ -133,7 +133,8 @@ class SimpleDetector(BaseDetector):
         # the mask
         mask = cv2.inRange(blurred, lower, upper)
         contours, _ = cv2.findContours(
-            mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
+            mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE
+        )
 
         # Searching for best countor
         bestCountorArea = 0
@@ -151,8 +152,8 @@ class SimpleDetector(BaseDetector):
         x, y, w, h = cv2.boundingRect(bestCountor)
         res = {
             'detected' : False,
-            'x'        : (x + 0.5*w - 0.5*im_width) / im_width,
-            'y'        : (0.5*im_height - (y + 0.5*h)) / im_height,
+            'x'        : (x + 0.5*w) / im_width,
+            'y'        : (y + 0.5*h) / im_height,
             'width'    : w / im_width,
             'height'   : h / im_height
         }
