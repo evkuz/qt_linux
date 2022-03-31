@@ -1,0 +1,21 @@
+[Unit]
+Description=Robot http server daemon
+After=network.target
+
+[Service]
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/agents_python/mobile_camera
+ExecStart=/home/pi/agents_python/.venv/bin/python \
+          /home/pi/agents_python/mobile_camera/runner.py >> "/home/pi/agents_python/mobile_camera/error.log"
+Type=simple
+ExecReload=/bin/kill -s HUP $MAINPID
+KillMode=mixed
+TimeoutStopSec=5
+PrivateTmp=true
+Restart=always
+Environment="PYTHONPATH=/home/pi/agents_python/mobile_camera"
+Environment="FLASK_ENV=config.ProductionConfig"
+
+[Install]
+WantedBy=multi-user.target

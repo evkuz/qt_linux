@@ -1,0 +1,72 @@
+<html>
+  <head>
+    <title>Mobile camera http server</title>
+    <script>
+      deviceAddr = "http://192.168.1.201:5001";
+
+      async function sendRequest(addr){
+        let url = deviceAddr + addr;
+        let response = await fetch(url);
+        if (response.ok) { // если HTTP-статус в диапазоне 200-299
+          // получаем тело ответа (см. про этот метод ниже)
+          let json = await response.json();
+          if (json.rc == 0) {
+              return true;
+          }
+        }
+        return false;
+      }
+
+      async function getInfo(addr){
+        let url = deviceAddr + addr;
+        let response = await fetch(url);
+        if (response.ok) { // если HTTP-статус в диапазоне 200-299
+          // получаем тело ответа (см. про этот метод ниже)
+          let json = await response.json();
+          if (json.rc == 0) {
+            alert(json.data)  
+            return true;
+          }
+        }
+        return false;
+      }
+    </script>
+
+    <style>
+      .button {
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Mobile camera http server</h1>
+    <div style="width:640px; height:480px;" id="videobox">
+      <img src="{{ url_for('video_feed') }}">
+      <canvas id="videobox_canvas" width="640" height="480" style="border:0px; position:relative; top:-480px;"></canvas>
+    </div>
+    <p><strong>Communication links:</strong></p>
+    <ul>
+      <li><b><a href="/status">status</a></b></li>
+      <li><b><a href="/service?name=getservices">getservices</a></b></li>
+      <li><b><a href="/service?name=getactions">getactions</a></b></li>
+    </ul>
+
+    <p><strong>Useful links:</strong></p>
+    <ul>
+      <li><b><a class="button" onclick="getInfo('/service?name=getposition');">Ask info from GetPosition (/service?name=getposition)</a></b></li>
+      <li><b><a class="button" onclick="sendRequest('/action?name=movetotakecube');">Move To Take Cube</a></b></li>
+      <li><b><a class="button" onclick="sendRequest('/reset');">RESET</a></b></li><br/>
+      <li><b><a href="/status?action=movetotakecube">Status of "MoveToTakeCube"</a></b></li><br/>
+      <li><b><a class="button" onclick="fetch('http://192.168.1.205:5001/action?name=movetoa');">MoveToA</a></b></li>
+      <li><b><a class="button" onclick="fetch('http://192.168.1.205:5001/action?name=movetob');">MoveToB</a></b></li>
+    </ul>
+    <p><strong>For "Ручник"</strong></p>
+    <ul>
+      <li><b><a class="button" onclick="fetch('http://192.168.1.201:8383/run?cmd=reset');">RESET</a></b></li>
+      <li><b><a class="button" onclick="fetch('http://192.168.1.201:8383/run?cmd=get_box');">get_box</a></b></li>
+      <li><b><a class="button" onclick="fetch('http://192.168.1.201:8383/run?cmd=formoving');">formoving</a></b></li>
+      <li><b><a class="button" onclick="fetch('http://192.168.1.201:8383/run?cmd=put_box');">put_box</a></b></li>
+    </ul>
+    <script src="static/camcalib.js"></script>
+  </body>
+</html>
