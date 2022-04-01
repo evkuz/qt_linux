@@ -42,7 +42,7 @@ videobox.onmousedown = function(e) {
 }
 videobox.onmouseup = function(e) { 
     if( true) { //(calibZoneX2 - calibZoneX1) > 0 && (calibZoneY2 - calibZoneY1) > 0 ) {
-        let url = device_addr + "/service?name=camcalib";
+        let url = device_addr + "service?name=camcalib";
         url += "&x1=" + calibZoneX1;
         url += "&y1=" + calibZoneY1;
         url += "&x2=" + calibZoneX2;

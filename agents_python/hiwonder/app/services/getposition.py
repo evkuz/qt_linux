@@ -16,7 +16,8 @@ class CamDetectorService(BaseService):
         )
 
     def get_data(self, **kwargs):
-        frame = self.__cam.wait_for_new_frame()
+        self.__cam.wait_for_new_frame()
+        frame = self.__cam.get_last_frame()
         det_res = self.__detector.detect(frame)
         
         res = {

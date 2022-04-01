@@ -24,7 +24,7 @@
           // получаем тело ответа (см. про этот метод ниже)
           let json = await response.json();
           if (json.rc == 0) {
-            alert(json.data)  
+            alert(JSON.stringify(json.data));  
             return true;
           }
         }

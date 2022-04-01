@@ -41,19 +41,29 @@ class SocketServer(object):
             return
         self.__isWorking = False
         self.__thread.join()
-        os.remove(self.__socket_path)
+        try:
+            os.remove(self.__socket_path)
+        except Exception as e:
+            logging.error(str(e))
+            
 
     def __thread_work(self):
         try:
             logging.info("Socket server thread was started")
             with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as ssocket:
+                self.__ssocket = ssocket
                 if os.path.exists(self.__socket_path):
                     os.remove(self.__socket_path)
                 logging.info("Binding socket...")
+                ssocket.settimeout(0.1)
                 ssocket.bind(self.__socket_path)
                 ssocket.listen()
                 while self.__isWorking:
-                    conn, _addr = ssocket.accept()
+                    try:
+                        conn, _addr = ssocket.accept()
+                    except Exception:
+                        continue
+                    
                     data = conn.recv(4)
                     if len(data) > 0:
                         answer = ""
@@ -67,6 +77,7 @@ class SocketServer(object):
         except Exception as e:
             logging.error(str(e))
         finally:
+            self.__ssocket = None
             self.__thread = None
             self.__isWorking = False
             logging.info("Socket server thread was stopped")
