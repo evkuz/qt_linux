@@ -2,7 +2,7 @@
   <head>
     <title>Mobile camera http server</title>
     <script>
-      deviceAddr = "http://192.168.1.201:5001";
+      deviceAddr = "{{device_addr}}";
 
       async function sendRequest(addr){
         let url = deviceAddr + addr;
@@ -68,5 +68,6 @@
       <li><b><a class="button" onclick="fetch('http://192.168.1.201:8383/run?cmd=put_box');">put_box</a></b></li>
     </ul>
     <script src="static/camcalib.js"></script>
+    <script>set_device_addr("{{device_addr}}")</script>
   </body>
 </html>

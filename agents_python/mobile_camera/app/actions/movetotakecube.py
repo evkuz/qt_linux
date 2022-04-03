@@ -26,7 +26,7 @@ class MoveToTakeCube (BaseAction):
     def run_action(self, **kwargs) -> int:
         while self._workingFlag:
             pos = self.get_position()
-            pos = self.get_position()
+            #pos = self.get_position()
             if pos['detected']:
                 self._set_state_info(f"Cube detected: dist={pos['distance']}, angle={pos['err_angle']}")
                 if abs(pos['err_angle']) < 2:

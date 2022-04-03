@@ -1,8 +1,13 @@
+var device_addr = 'http://159.93.69.188:5001'
 var calibrationInProgress = false;
 var calibZoneX1 = -1;
 var calibZoneY1 = -1;
 var calibZoneX2 = -1;
 var calibZoneY2 = -1;
+
+function set_device_addr(addr){
+    device_addr = addr
+}
 
 var canvas = document.getElementById('videobox_canvas');
 var context = canvas.getContext("2d");
@@ -37,7 +42,7 @@ videobox.onmousedown = function(e) {
 }
 videobox.onmouseup = function(e) { 
     if( true) { //(calibZoneX2 - calibZoneX1) > 0 && (calibZoneY2 - calibZoneY1) > 0 ) {
-        let url = "http://192.168.1.201:5001/service?name=camcalib";
+        let url = device_addr + "service?name=camcalib";
         url += "&x1=" + calibZoneX1;
         url += "&y1=" + calibZoneY1;
         url += "&x2=" + calibZoneX2;

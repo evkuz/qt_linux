@@ -1,13 +1,12 @@
-from time import sleep
-
 from iqrdevice.service import BaseService
-from ..utils import CameraDetector
+from iqrdevice.utils.vision import OpenCVCamera, SimpleDetector
 
 
 class CamCalibService (BaseService):
-    def __init__(self, cam:CameraDetector):
+    def __init__(self, cam:OpenCVCamera, detector:SimpleDetector):
         BaseService.__init__(self, "camcalib")
         self.cam = cam
+        self.detector = detector
 
     def get_info(self) -> dict:
         return self.make_info(
@@ -23,20 +22,21 @@ class CamCalibService (BaseService):
     def get_data(self, **kwargs):
         x1, y1, x2, y2 = None, None, None, None
         if "x1" in kwargs:
-            x1 = int(kwargs['x1'])
+            x1 = kwargs['x1']
         if "y1" in kwargs:
-            y1 = int(kwargs['y1'])
+            y1 = kwargs['y1']
         if "x2" in kwargs:
-            x2 = int(kwargs['x2'])
+            x2 = kwargs['x2']
         if "y2" in kwargs:
-            y2 = int(kwargs['y2'])
+            y2 = kwargs['y2']
         
         if any((x1, y1, x2, y2)) is None:
             raise RuntimeError("Error: not all parameters was specified")
 
-        res_str = self.cam.calibrate_colors(x1, y1, x2, y2)
+        frame = self.cam.get_last_frame()
+        res_str = self.detector.calibrate(frame, int(x1), int(y1), int(x2), int(y2))
         if len(res_str) == 0:
             raise RuntimeError("Can't calibrate, maby no frame")
-        self.cam.write_color_range()
+        self.detector.write_color_range()
         
         return res_str
