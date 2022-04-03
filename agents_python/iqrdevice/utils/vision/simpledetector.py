@@ -3,6 +3,7 @@ import numpy as np
 from os.path import isfile
 from .basedetector import BaseDetector
 from typing import List
+import logging
 
 
 class SimpleDetector(BaseDetector):
@@ -120,8 +121,8 @@ class SimpleDetector(BaseDetector):
                 * 'width' - float value of object width in range [0,1]
                 * 'height' - float value of object height in range [0,1]
         """
-        im_width = image.shape[0]
-        im_height = image.shape[1]
+        im_width = image.shape[1]
+        im_height = image.shape[0]
 
         hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
         blurred = cv2.GaussianBlur(hsv, (11, 11), 0)
@@ -155,16 +156,15 @@ class SimpleDetector(BaseDetector):
             'x'        : (x + 0.5*w) / im_width,
             'y'        : (y + 0.5*h) / im_height,
             'width'    : w / im_width,
-            'height'   : h / im_height
+            'height'   : h / im_height,
         }
 
         bestCountorArea = bestCountorArea / (im_width*im_height)
-
         if self.object_area_range[0] <= bestCountorArea <= self.object_area_range[1]:
             ar = w / h
-            if self.aspect_ratio_range[0] <= ar <= self.aspect_ratio_range[0]:    
+            if self.aspect_ratio_range[0] <= ar <= self.aspect_ratio_range[1]:    
                 res['detected'] = True
-        
+
         res = self.smoothing_of_result(res)
 
         if draw:
@@ -191,12 +191,12 @@ class SimpleDetector(BaseDetector):
             return frame
         
         top_left = (
-            int((detection_result['x']-0.5*detection_result['width']) * frame.shape[0]),
-            int((detection_result['y']-0.5*detection_result['height']) * frame.shape[1])
+            int((detection_result['x']-0.5*detection_result['width']) * frame.shape[1]),
+            int((detection_result['y']-0.5*detection_result['height']) * frame.shape[0])
         )
         bottom_right = (
-            int((detection_result['x']+0.5*detection_result['width']) * frame.shape[0]),
-            int((detection_result['y']+0.5*detection_result['height']) * frame.shape[1])
+            int((detection_result['x']+0.5*detection_result['width']) * frame.shape[1]),
+            int((detection_result['y']+0.5*detection_result['height']) * frame.shape[0])
         )
 
         return cv2.rectangle(

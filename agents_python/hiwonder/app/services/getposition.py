@@ -16,17 +16,22 @@ class CamDetectorService(BaseService):
         )
 
     def get_data(self, **kwargs):
-        self.__cam.wait_for_new_frame()
-        frame = self.__cam.get_last_frame()
-        det_res = self.__detector.detect(frame)
-        
-        res = {
-            "detected": det_res['detected'],
-        }
-        if 'x' in det_res:
-            res['x'] = det_res['x']
-            res['y'] = det_res['y']
-            res['width'] = det_res['width']
-            res['height'] = det_res['height']
+        try:
+            self.__cam.wait_for_new_frame()
+            frame = self.__cam.get_last_frame()
+            det_res = self.__detector.detect(frame)
+            res = {
+                "detected": det_res['detected'],
+            }
+            if 'x' in det_res:
+                res['x'] = det_res['x']
+                res['y'] = det_res['y']
+                res['width'] = det_res['width']
+                res['height'] = det_res['height']
+                res['area'] = det_res['width'] * det_res['height']
+                res['aspect_ratio'] = det_res['width'] / det_res['height']
+
+        except Exception as e:
+            res = str(e)
 
         return res

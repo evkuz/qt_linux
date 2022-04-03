@@ -12,17 +12,16 @@ app.config.from_object(os.environ.get('FLASK_ENV') or 'config.DevelopementConfig
 
 from . import utils
 
-socket_server = utils.SocketServer(app.config["SOCKET_PATH"])
-socket_server.start()
-
 cam = vision.OpenCVCamera(app.config['CAMERA_NUM'])
 detector = vision.SimpleDetector(
     min_area=150,
-    object_area_range=(0.01, 0.3),
-    aspect_ratio_range=(0.3, 3),
+    object_area_range=(0.005, 0.025),
+    aspect_ratio_range=(0.8, 1.5),
     result_smoothing=5
 )
 streamer = vision.VideoStreamer(cam, detector)
+socket_server = utils.SocketServer(app.config["SOCKET_PATH"], cam, detector)
+socket_server.start()
 
 # import views
 from . import views
