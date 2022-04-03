@@ -28,7 +28,7 @@ class CamDetectorService(BaseService):
         return det_res
 
     def fit_h_func(self, x):
-        coeffs = [-6683.74950062, 7893.64524427, -3376.15326712, 617.39830742] # cube 30 [0,1]
+        coeffs = [-7800.24289301, 8765.0404947, -3580.85567724, 630.88037114] # cube 30 [0,1]
         #coeffs = [-6.04361309e-05, 3.42606240e-02, -7.03365398e+00, 6.17398358e+02] #cube 30
         #coeffs = [-5.27230123e-05, 3.18824287e-02, -6.93440162e+00, 6.52666043e+02] #old cube
         return coeffs[0] * x * x * x + coeffs[1] * x * x + coeffs[2] * x + coeffs[3]
