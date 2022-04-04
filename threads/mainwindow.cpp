@@ -10,10 +10,12 @@
 #include <chrono>
 #include <thread>
 
+// /home/ubuntu/iqr_lit/hiwonder  ../simpledetector_cpp/iqr.socket
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , readSocket("../simpledetector_cpp/iqr.socket")
+    , readSocket("/home/ubuntu/iqr_lit/hiwonder/iqr.socket")
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);

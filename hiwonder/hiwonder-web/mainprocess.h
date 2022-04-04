@@ -62,7 +62,7 @@ public:
 
     //int parcel_size; // размер посылки в байтах от ПК к роботу
 
-    int X, Y;//Координаты x,y
+    float X, Y;//Координаты x,y
     bool DETECTED; // Флаг, показывающий, сработал ли захват изображения.
 
     unsigned char Servos [6] = {93,93,93,93,93,93};
@@ -70,7 +70,7 @@ public:
     //void update_data_from_sliders(int index, int value);
 
     void GUI_Write_To_Log (int value, QString log_message); //Пишет в лог-файл номер ошибки value и сообщение message
-    void try_mcinfer(int x, int y);
+    void try_mcinfer(float x, float y);
 //    void update_LineDits_from_servos(void);
 //    void update_LineDits_from_position(const char *pos);
 //    void update_LineDits_from_position(unsigned char *pos);

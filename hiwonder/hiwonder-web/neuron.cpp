@@ -4,8 +4,8 @@
 
 //        Механизм запрос - ответ
 
-void MainProcess::try_mcinfer(int x, int y){
-    QString str;
+void MainProcess::try_mcinfer(float x, float y){
+    QString str, fstr;
 
 //            in[0] = actAngle;
 //            in[1] = e_Arr_Max;
@@ -60,8 +60,14 @@ void MainProcess::try_mcinfer(int x, int y){
 
 
     str = "Mcinfer Data : ";
-    str += QString::number(x); str+= ", ";
-    str += QString::number(y); str+= ", ";
+    //str += QString::number(x);
+    fstr.setNum(x);
+    str += fstr;
+    str+= ", ";
+    fstr.setNum(y);
+    str += fstr;
+    //str += QString::number(y);
+    str+= ", ";
 
 
     for (int i=0; i<= DOF - 1; i++){

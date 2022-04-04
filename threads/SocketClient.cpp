@@ -34,7 +34,7 @@ using namespace std;
 
 SocketClient::SocketClient(const char *socketPath) {
   int pathLength = strlen(socketPath);
-  _serverPath = new char[pathLength+1];
+  _serverPath = new char[pathLength + 1];
   strncpy(_serverPath, socketPath, pathLength);
   _serverPath[pathLength] = '\0';
 }
@@ -61,14 +61,16 @@ int SocketClient::GetState(DetectorState *state) {
   }
 
   sprintf(buffer, "%i", ServerCommand::ACT_SEND_COORDS);
-  ssize_t wr_result = write(sockfd, buffer, strlen(buffer));
-  if (wr_result==0) {;}
+  write(sockfd, buffer, strlen(buffer));
+
   n = read(sockfd, buffer, 80);
-  if (n==0) {;}
+  //*(buffer + n) = '\0';
+  //std::cout << "Recived message: " << buffer << std::endl;
   int isDetected(0);
-  int x(0), y(0);
+  float x(0), y(0);
   try {
-    sscanf(buffer, "%i %i %i", &isDetected, &x, &y);
+    int r = sscanf(buffer, "%i %f %f", &isDetected, &x, &y);
+    std::cout<<"sscanf result: " << r << std::endl;
   } catch (...) {
     cerr << "Error reading values" << endl;
     return -3;
@@ -76,7 +78,7 @@ int SocketClient::GetState(DetectorState *state) {
 
   state->isDetected = (isDetected > 0);
   state->objectX = x;
-  state->objectY = y;
+  state->objectY = y;  
 
   close(sockfd);
   return 0;

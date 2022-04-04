@@ -29,8 +29,8 @@ typedef enum ServerCommand {
 
 typedef struct DetectorState {
     bool isDetected;
-    int objectX;
-    int objectY;
+    float objectX;
+    float objectY;
 } DetectorState;
 
 
