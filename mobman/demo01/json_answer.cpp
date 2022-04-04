@@ -48,8 +48,9 @@ response += "]"; //end of action_list
 
 response += "\n}"; //main bracket
 //++++++++++++++++++++++++++++++++++++++++++++++++
-
+{"rc": 0, "info": "success", "name": "getposition", "data": {"detected": true, "x": -46.0, "y": -70.0, "width": 158, "height": 154, "err_angle": -4.2654448889627625, "distance": 148.3335127743527}}
 {"rc": 0, "info": "success", "name": "getposition", "data": {"detected": true, "x": 0.478125, "y": 0.759375, "width": 0.16875, "height": 0.30625, "distance": 126.61526756664661, "err_angle": -0.9695904180064545}}
+
 //++++++++++++++++++++++++++++++++++++++++++++++++
 
 CV device JSON answer
