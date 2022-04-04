@@ -1,0 +1,2338 @@
+2022-04-04__13:22:48:219 > 0xf000: The application "threads" is started successfully!!!
+
+2022-04-04__13:22:48:219 > 0xf000: Going to Start QTcpServer
+2022-04-04__13:22:48:219 > 0x0000: Listening on address 0.0.0.0 and port 8383
+2022-04-04__13:22:48:219 > 0xff00: Error opening Serial port !!!
+2022-04-04__13:22:48:219 > 0xff00: 1
+2022-04-04__13:22:52:799 > 0xff00: 1
+2022-04-04__13:22:52:799 > 0xff00: Serial port ttyUSB1 is opened
+2022-04-04__13:23:06:26 > 0xf010: 0, 93, 20, 30, 85, 62
+2022-04-04__13:23:06:26 > 0xf010: Данные переданы корректно
+2022-04-04__13:23:09:574 > 0xf001: To Robot: 0, 93, 20, 30, 85, 62, 49, 222
+2022-04-04__13:23:09:58 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__13:23:09:58 > 0xf001: From Robot : 0 93 20 30 85 62 49 222
+2022-04-04__13:23:09:58 > 0xf001: Robot still running
+2022-04-04__13:23:15:294 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:23:15:294 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:23:15:294 > 0xf001: Robot finished
+2022-04-04__13:23:15:294 > 0xf001: Robot finished complex command
+2022-04-04__13:23:15:294 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:23:29:189 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__13:23:29:195 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__13:23:29:195 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__13:23:29:195 > 0xf001: Robot still running
+2022-04-04__13:23:33:409 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:23:33:409 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:23:33:409 > 0xf001: Robot finished
+2022-04-04__13:23:33:409 > 0xf001: Robot finished complex command
+2022-04-04__13:23:33:409 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:24:11:04 > 0x4444: 0.755339, 0.304514, 0, 93, 20, 30, 85, 62
+2022-04-04__13:27:25:322 > 0xf010: 0, 93, 60, 30, 85, 57
+2022-04-04__13:27:25:323 > 0xf010: Данные переданы корректно
+2022-04-04__13:27:27:082 > 0xf001: To Robot: 0, 93, 60, 30, 85, 57, 49, 222
+2022-04-04__13:27:27:088 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__13:27:27:088 > 0xf001: From Robot : 0 93 60 30 85 57 49 222
+2022-04-04__13:27:27:088 > 0xf001: Robot still running
+2022-04-04__13:27:32:448 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:27:32:449 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:27:32:449 > 0xf001: Robot finished
+2022-04-04__13:27:32:449 > 0xf001: Robot finished complex command
+2022-04-04__13:27:32:449 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:27:39:45 > 0xf001: To Robot: 0, 93, 60, 30, 85, 52, 49, 222
+2022-04-04__13:27:39:456 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__13:27:39:456 > 0xf001: From Robot : 0 93 60 30 85 52 49 222
+2022-04-04__13:27:39:456 > 0xf001: Robot still running
+2022-04-04__13:27:42:511 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:27:42:511 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:27:42:511 > 0xf001: Robot finished
+2022-04-04__13:27:42:511 > 0xf001: Robot finished complex command
+2022-04-04__13:27:42:511 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:27:46:526 > 0xf016: 0, 93, 60, 30, 85, 52
+2022-04-04__13:27:47:955 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__13:27:47:961 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__13:27:47:961 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__13:27:47:961 > 0xf001: Robot still running
+2022-04-04__13:27:51:734 > 0xf010: 0, 93, 60, 30, 85, 50
+2022-04-04__13:27:51:734 > 0xf010: Данные переданы корректно
+2022-04-04__13:27:51:873 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:27:51:873 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:27:51:873 > 0xf001: Robot finished
+2022-04-04__13:27:51:873 > 0xf001: Robot finished complex command
+2022-04-04__13:27:51:873 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:27:52:898 > 0xf001: To Robot: 0, 93, 60, 30, 85, 50, 49, 222
+2022-04-04__13:27:52:903 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__13:27:52:903 > 0xf001: From Robot : 0 93 60 30 85 50 49 222
+2022-04-04__13:27:52:903 > 0xf001: Robot still running
+2022-04-04__13:27:58:334 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:27:58:334 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:27:58:334 > 0xf001: Robot finished
+2022-04-04__13:27:58:334 > 0xf001: Robot finished complex command
+2022-04-04__13:27:58:334 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:28:04:22 > 0xf010: 0, 93, 60, 30, 85, 50
+2022-04-04__13:28:04:22 > 0xf010: Данные переданы корректно
+2022-04-04__13:28:08:724 > 0xf001: To Robot: 0, 93, 20, 30, 85, 50, 49, 222
+2022-04-04__13:28:08:729 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__13:28:08:729 > 0xf001: From Robot : 0 93 20 30 85 50 49 222
+2022-04-04__13:28:08:729 > 0xf001: Robot still running
+2022-04-04__13:28:12:137 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:28:12:137 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:28:12:137 > 0xf001: Robot finished
+2022-04-04__13:28:12:137 > 0xf001: Robot finished complex command
+2022-04-04__13:28:12:137 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:28:17:242 > 0xf016: 0, 93, 20, 30, 85, 50
+2022-04-04__13:28:19:1 > 0xf001: To Robot: 90, 93, 20, 30, 85, 50, 49, 222
+2022-04-04__13:28:19:106 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__13:28:19:106 > 0xf001: From Robot : 90 93 20 30 85 50 49 222
+2022-04-04__13:28:19:106 > 0xf001: Robot still running
+2022-04-04__13:28:21:672 > 0xf001: To Robot: 0, 93, 20, 30, 85, 50, 49, 222
+2022-04-04__13:28:23:016 > 0xf001: There are 32 bytes from robot to read
+2022-04-04__13:28:23:017 > 0xf001: From Robot : Robot movement DONE! LAST !!0 93
+2022-04-04__13:28:23:017 > 0xf001: Robot finished
+2022-04-04__13:28:23:017 > 0xf001: Robot finished complex command
+2022-04-04__13:28:23:017 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:28:23:02 > 0xf001: There are 19 bytes from robot to read
+2022-04-04__13:28:23:02 > 0xf001: From Robot :  20 30 85 50 49 222
+2022-04-04__13:28:23:02 > 0xf001: Robot still running
+2022-04-04__13:28:26:357 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__13:28:26:93 > 0xf001: There are 32 bytes from robot to read
+2022-04-04__13:28:26:93 > 0xf001: From Robot : Robot movement DONE! LAST !!93 9
+2022-04-04__13:28:26:93 > 0xf001: Robot finished
+2022-04-04__13:28:26:93 > 0xf001: Robot finished complex command
+2022-04-04__13:28:26:93 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:28:26:934 > 0xf001: There are 20 bytes from robot to read
+2022-04-04__13:28:26:934 > 0xf001: From Robot : 3 93 93 93 93 48 222
+2022-04-04__13:28:26:934 > 0xf001: Robot still running
+2022-04-04__13:28:31:268 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:28:31:268 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:28:31:268 > 0xf001: Robot finished
+2022-04-04__13:28:31:268 > 0xf001: Robot finished complex command
+2022-04-04__13:28:31:268 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:29:25:628 > 0x4444: 0.835156, 0.368403, 0, 93, 20, 30, 85, 50
+2022-04-04__13:30:36:028 > 0xf010: 0, 93, 60, 30, 85, 43
+2022-04-04__13:30:36:028 > 0xf010: Данные переданы корректно
+2022-04-04__13:30:37:186 > 0xf001: To Robot: 0, 93, 60, 30, 85, 43, 49, 222
+2022-04-04__13:30:37:192 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__13:30:37:192 > 0xf001: From Robot : 0 93 60 30 85 43 49 222
+2022-04-04__13:30:37:192 > 0xf001: Robot still running
+2022-04-04__13:30:42:692 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:30:42:692 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:30:42:692 > 0xf001: Robot finished
+2022-04-04__13:30:42:692 > 0xf001: Robot finished complex command
+2022-04-04__13:30:42:692 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:30:54:727 > 0xf010: 0, 93, 20, 30, 85, 43
+2022-04-04__13:30:54:727 > 0xf010: Данные переданы корректно
+2022-04-04__13:30:55:638 > 0xf001: To Robot: 0, 93, 20, 30, 85, 43, 49, 222
+2022-04-04__13:30:55:643 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__13:30:55:643 > 0xf001: From Robot : 0 93 20 30 85 43 49 222
+2022-04-04__13:30:55:643 > 0xf001: Robot still running
+2022-04-04__13:30:59:051 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:30:59:051 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:30:59:051 > 0xf001: Robot finished
+2022-04-04__13:30:59:051 > 0xf001: Robot finished complex command
+2022-04-04__13:30:59:051 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:31:02:633 > 0xf001: To Robot: 90, 93, 20, 30, 85, 43, 49, 222
+2022-04-04__13:31:02:639 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__13:31:02:639 > 0xf001: From Robot : 90 93 20 30 85 43 49 222
+2022-04-04__13:31:02:639 > 0xf001: Robot still running
+2022-04-04__13:31:06:125 > 0xf001: To Robot: 0, 93, 20, 30, 85, 43, 49, 222
+2022-04-04__13:31:06:55 > 0xf001: There are 32 bytes from robot to read
+2022-04-04__13:31:06:55 > 0xf001: From Robot : Robot movement DONE! LAST !!0 93
+2022-04-04__13:31:06:55 > 0xf001: Robot finished
+2022-04-04__13:31:06:55 > 0xf001: Robot finished complex command
+2022-04-04__13:31:06:55 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:31:06:554 > 0xf001: There are 19 bytes from robot to read
+2022-04-04__13:31:06:554 > 0xf001: From Robot :  20 30 85 43 49 222
+2022-04-04__13:31:06:554 > 0xf001: Robot still running
+2022-04-04__13:31:10:254 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__13:31:10:464 > 0xf001: There are 32 bytes from robot to read
+2022-04-04__13:31:10:464 > 0xf001: From Robot : Robot movement DONE! LAST !!93 9
+2022-04-04__13:31:10:464 > 0xf001: Robot finished
+2022-04-04__13:31:10:464 > 0xf001: Robot finished complex command
+2022-04-04__13:31:10:464 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:31:10:467 > 0xf001: There are 20 bytes from robot to read
+2022-04-04__13:31:10:467 > 0xf001: From Robot : 3 93 93 93 93 48 222
+2022-04-04__13:31:10:467 > 0xf001: Robot still running
+2022-04-04__13:31:14:873 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:31:14:873 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:31:14:873 > 0xf001: Robot finished
+2022-04-04__13:31:14:873 > 0xf001: Robot finished complex command
+2022-04-04__13:31:14:873 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:31:17:546 > 0x4444: 0.885156, 0.41875, 0, 93, 20, 30, 85, 43
+2022-04-04__13:32:58:274 > 0xf010: 0, 93, 20, 30, 85, 37
+2022-04-04__13:32:58:274 > 0xf010: Данные переданы корректно
+2022-04-04__13:33:02:032 > 0xf001: To Robot: 0, 93, 60, 30, 85, 37, 49, 222
+2022-04-04__13:33:02:037 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__13:33:02:037 > 0xf001: From Robot : 0 93 60 30 85 37 49 222
+2022-04-04__13:33:02:037 > 0xf001: Robot still running
+2022-04-04__13:33:07:598 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:33:07:598 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:33:07:598 > 0xf001: Robot finished
+2022-04-04__13:33:07:598 > 0xf001: Robot finished complex command
+2022-04-04__13:33:07:598 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:33:17:095 > 0xf001: To Robot: 0, 93, 20, 30, 85, 37, 49, 222
+2022-04-04__13:33:17:101 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__13:33:17:101 > 0xf001: From Robot : 0 93 20 30 85 37 49 222
+2022-04-04__13:33:17:101 > 0xf001: Robot still running
+2022-04-04__13:33:20:509 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:33:20:509 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:33:20:509 > 0xf001: Robot finished
+2022-04-04__13:33:20:509 > 0xf001: Robot finished complex command
+2022-04-04__13:33:20:509 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:33:38:047 > 0xf001: To Robot: 0, 93, 20, 30, 90, 37, 49, 222
+2022-04-04__13:33:38:053 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__13:33:38:053 > 0xf001: From Robot : 0 93 20 30 90 37 49 222
+2022-04-04__13:33:38:053 > 0xf001: Robot still running
+2022-04-04__13:33:41:108 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:33:41:108 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:33:41:108 > 0xf001: Robot finished
+2022-04-04__13:33:41:108 > 0xf001: Robot finished complex command
+2022-04-04__13:33:41:108 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:33:46:691 > 0xf001: To Robot: 0, 93, 27, 30, 90, 37, 49, 222
+2022-04-04__13:33:46:697 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__13:33:46:697 > 0xf001: From Robot : 0 93 27 30 90 37 49 222
+2022-04-04__13:33:46:697 > 0xf001: Robot still running
+2022-04-04__13:33:49:771 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:33:49:771 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:33:49:771 > 0xf001: Robot finished
+2022-04-04__13:33:49:771 > 0xf001: Robot finished complex command
+2022-04-04__13:33:49:771 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:33:55:363 > 0xf016: 0, 93, 27, 30, 90, 37
+2022-04-04__13:33:56:704 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__13:33:56:71 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__13:33:56:71 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__13:33:56:71 > 0xf001: Robot still running
+2022-04-04__13:34:01:056 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:34:01:056 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:34:01:056 > 0xf001: Robot finished
+2022-04-04__13:34:01:056 > 0xf001: Robot finished complex command
+2022-04-04__13:34:01:056 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:34:01:769 > 0xf010: 0, 93, 27, 30, 90, 35
+2022-04-04__13:34:01:769 > 0xf010: Данные переданы корректно
+2022-04-04__13:34:03:779 > 0xf001: To Robot: 0, 93, 27, 30, 90, 35, 49, 222
+2022-04-04__13:34:03:784 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__13:34:03:785 > 0xf001: From Robot : 0 93 27 30 90 35 49 222
+2022-04-04__13:34:03:785 > 0xf001: Robot still running
+2022-04-04__13:34:09:649 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:34:09:649 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:34:09:649 > 0xf001: Robot finished
+2022-04-04__13:34:09:649 > 0xf001: Robot finished complex command
+2022-04-04__13:34:09:649 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:34:15:971 > 0xf001: To Robot: 90, 93, 27, 30, 90, 35, 49, 222
+2022-04-04__13:34:15:977 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__13:34:15:977 > 0xf001: From Robot : 90 93 27 30 90 35 49 222
+2022-04-04__13:34:15:977 > 0xf001: Robot still running
+2022-04-04__13:34:19:889 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:34:19:889 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:34:19:889 > 0xf001: Robot finished
+2022-04-04__13:34:19:889 > 0xf001: Robot finished complex command
+2022-04-04__13:34:19:889 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:34:22:622 > 0xf001: To Robot: 0, 93, 27, 30, 90, 35, 49, 222
+2022-04-04__13:34:22:628 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__13:34:22:628 > 0xf001: From Robot : 0 93 27 30 90 35 49 222
+2022-04-04__13:34:22:628 > 0xf001: Robot still running
+2022-04-04__13:34:26:541 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:34:26:541 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:34:26:541 > 0xf001: Robot finished
+2022-04-04__13:34:26:541 > 0xf001: Robot finished complex command
+2022-04-04__13:34:26:541 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:34:27:697 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__13:34:27:703 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__13:34:27:703 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__13:34:27:703 > 0xf001: Robot still running
+2022-04-04__13:34:32:07 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:34:32:07 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:34:32:07 > 0xf001: Robot finished
+2022-04-04__13:34:32:07 > 0xf001: Robot finished complex command
+2022-04-04__13:34:32:07 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:34:33:411 > 0x4444: 0.947135, 0.471875, 0, 93, 27, 30, 90, 35
+2022-04-04__13:35:40:757 > 0xf010: 0, 93, 57, 30, 90, 32
+2022-04-04__13:35:40:757 > 0xf010: Данные переданы корректно
+2022-04-04__13:35:41:737 > 0xf001: To Robot: 0, 93, 57, 30, 90, 32, 49, 222
+2022-04-04__13:35:41:743 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__13:35:41:743 > 0xf001: From Robot : 0 93 57 30 90 32 49 222
+2022-04-04__13:35:41:743 > 0xf001: Robot still running
+2022-04-04__13:35:47:334 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:35:47:334 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:35:47:334 > 0xf001: Robot finished
+2022-04-04__13:35:47:334 > 0xf001: Robot finished complex command
+2022-04-04__13:35:47:334 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:35:52:21 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__13:35:52:216 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__13:35:52:216 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__13:35:52:216 > 0xf001: Robot still running
+2022-04-04__13:35:56:311 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:35:56:311 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:35:56:311 > 0xf001: Robot finished
+2022-04-04__13:35:56:311 > 0xf001: Robot finished complex command
+2022-04-04__13:35:56:311 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:36:01:863 > 0xf010: 0, 93, 57, 30, 90, 35
+2022-04-04__13:36:01:863 > 0xf010: Данные переданы корректно
+2022-04-04__13:36:02:661 > 0xf001: To Robot: 0, 93, 57, 30, 90, 35, 49, 222
+2022-04-04__13:36:02:667 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__13:36:02:667 > 0xf001: From Robot : 0 93 57 30 90 35 49 222
+2022-04-04__13:36:02:667 > 0xf001: Robot still running
+2022-04-04__13:36:08:228 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:36:08:228 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:36:08:228 > 0xf001: Robot finished
+2022-04-04__13:36:08:228 > 0xf001: Robot finished complex command
+2022-04-04__13:36:08:228 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:36:17:111 > 0xf001: To Robot: 0, 93, 37, 30, 90, 35, 49, 222
+2022-04-04__13:36:17:116 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__13:36:17:116 > 0xf001: From Robot : 0 93 37 30 90 35 49 222
+2022-04-04__13:36:17:116 > 0xf001: Robot still running
+2022-04-04__13:36:20:322 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:36:20:322 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:36:20:322 > 0xf001: Robot finished
+2022-04-04__13:36:20:322 > 0xf001: Robot finished complex command
+2022-04-04__13:36:20:322 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:36:27:197 > 0xf001: To Robot: 0, 93, 27, 30, 90, 35, 49, 222
+2022-04-04__13:36:27:202 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__13:36:27:202 > 0xf001: From Robot : 0 93 27 30 90 35 49 222
+2022-04-04__13:36:27:202 > 0xf001: Robot still running
+2022-04-04__13:36:30:307 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:36:30:307 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:36:30:307 > 0xf001: Robot finished
+2022-04-04__13:36:30:307 > 0xf001: Robot finished complex command
+2022-04-04__13:36:30:307 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:36:38:583 > 0xf001: To Robot: 0, 93, 27, 30, 87, 35, 49, 222
+2022-04-04__13:36:38:588 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__13:36:38:588 > 0xf001: From Robot : 0 93 27 30 87 35 49 222
+2022-04-04__13:36:38:588 > 0xf001: Robot still running
+2022-04-04__13:36:41:623 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:36:41:623 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:36:41:623 > 0xf001: Robot finished
+2022-04-04__13:36:41:623 > 0xf001: Robot finished complex command
+2022-04-04__13:36:41:623 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:36:42:856 > 0xf001: To Robot: 0, 93, 27, 30, 83, 35, 49, 222
+2022-04-04__13:36:42:862 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__13:36:42:862 > 0xf001: From Robot : 0 93 27 30 83 35 49 222
+2022-04-04__13:36:42:862 > 0xf001: Robot still running
+2022-04-04__13:36:45:907 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:36:45:907 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:36:45:907 > 0xf001: Robot finished
+2022-04-04__13:36:45:907 > 0xf001: Robot finished complex command
+2022-04-04__13:36:45:907 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:36:46:368 > 0xf016: 0, 93, 27, 30, 83, 35
+2022-04-04__13:36:47:271 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__13:36:47:277 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__13:36:47:277 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__13:36:47:277 > 0xf001: Robot still running
+2022-04-04__13:36:48:996 > 0xf010: 0, 93, 27, 30, 83, 35
+2022-04-04__13:36:48:996 > 0xf010: Данные переданы корректно
+2022-04-04__13:36:51:714 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:36:51:714 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:36:51:714 > 0xf001: Robot finished
+2022-04-04__13:36:51:714 > 0xf001: Robot finished complex command
+2022-04-04__13:36:51:714 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:36:52:16 > 0xf001: To Robot: 0, 93, 27, 30, 83, 35, 49, 222
+2022-04-04__13:36:52:166 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__13:36:52:166 > 0xf001: From Robot : 0 93 27 30 83 35 49 222
+2022-04-04__13:36:52:166 > 0xf001: Robot still running
+2022-04-04__13:36:58:1 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:36:58:1 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:36:58:1 > 0xf001: Robot finished
+2022-04-04__13:36:58:1 > 0xf001: Robot finished complex command
+2022-04-04__13:36:58:1 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:37:16:1 > 0xf001: To Robot: 0, 93, 27, 27, 83, 35, 49, 222
+2022-04-04__13:37:16:106 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__13:37:16:106 > 0xf001: From Robot : 0 93 27 27 83 35 49 222
+2022-04-04__13:37:16:106 > 0xf001: Robot still running
+2022-04-04__13:37:19:14 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:37:19:14 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:37:19:14 > 0xf001: Robot finished
+2022-04-04__13:37:19:14 > 0xf001: Robot finished complex command
+2022-04-04__13:37:19:14 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:37:20:304 > 0xf001: To Robot: 0, 93, 27, 23, 83, 35, 49, 222
+2022-04-04__13:37:20:31 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__13:37:20:31 > 0xf001: From Robot : 0 93 27 23 83 35 49 222
+2022-04-04__13:37:20:31 > 0xf001: Robot still running
+2022-04-04__13:37:22:852 > 0xf016: 0, 93, 27, 23, 83, 35
+2022-04-04__13:37:23:355 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:37:23:355 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:37:23:355 > 0xf001: Robot finished
+2022-04-04__13:37:23:355 > 0xf001: Robot finished complex command
+2022-04-04__13:37:23:355 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:37:23:841 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__13:37:23:847 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__13:37:23:847 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__13:37:23:847 > 0xf001: Robot still running
+2022-04-04__13:37:28:354 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:37:28:354 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:37:28:354 > 0xf001: Robot finished
+2022-04-04__13:37:28:354 > 0xf001: Robot finished complex command
+2022-04-04__13:37:28:354 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:37:29:05 > 0xf010: 0, 93, 27, 23, 83, 35
+2022-04-04__13:37:29:05 > 0xf010: Данные переданы корректно
+2022-04-04__13:37:30:048 > 0xf001: To Robot: 0, 93, 27, 23, 83, 35, 49, 222
+2022-04-04__13:37:30:054 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__13:37:30:054 > 0xf001: From Robot : 0 93 27 23 83 35 49 222
+2022-04-04__13:37:30:054 > 0xf001: Robot still running
+2022-04-04__13:37:36:059 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:37:36:059 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:37:36:059 > 0xf001: Robot finished
+2022-04-04__13:37:36:059 > 0xf001: Robot finished complex command
+2022-04-04__13:37:36:059 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:37:42:846 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__13:37:42:852 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__13:37:42:852 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__13:37:42:852 > 0xf001: Robot still running
+2022-04-04__13:37:47:36 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:37:47:36 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:37:47:36 > 0xf001: Robot finished
+2022-04-04__13:37:47:36 > 0xf001: Robot finished complex command
+2022-04-04__13:37:47:36 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:37:50:543 > 0xf010: 0, 93, 22, 23, 83, 35
+2022-04-04__13:37:50:544 > 0xf010: Данные переданы корректно
+2022-04-04__13:37:51:597 > 0xf001: To Robot: 0, 93, 22, 23, 83, 35, 49, 222
+2022-04-04__13:37:51:603 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__13:37:51:603 > 0xf001: From Robot : 0 93 22 23 83 35 49 222
+2022-04-04__13:37:51:603 > 0xf001: Robot still running
+2022-04-04__13:37:57:659 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:37:57:659 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:37:57:659 > 0xf001: Robot finished
+2022-04-04__13:37:57:659 > 0xf001: Robot finished complex command
+2022-04-04__13:37:57:659 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:38:10:713 > 0xf016: 0, 93, 22, 23, 83, 35
+2022-04-04__13:38:12:392 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__13:38:12:398 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__13:38:12:398 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__13:38:12:398 > 0xf001: Robot still running
+2022-04-04__13:38:16:955 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:38:16:955 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:38:16:956 > 0xf001: Robot finished
+2022-04-04__13:38:16:956 > 0xf001: Robot finished complex command
+2022-04-04__13:38:16:956 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:38:17:392 > 0x4444: 0.901042, 0.518576, 0, 93, 22, 23, 83, 35
+2022-04-04__13:39:12:252 > 0xf010: 0, 93, 62, 23, 83, 40
+2022-04-04__13:39:12:252 > 0xf010: Данные переданы корректно
+2022-04-04__13:39:14:984 > 0xf001: To Robot: 0, 93, 62, 23, 83, 40, 49, 222
+2022-04-04__13:39:14:99 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__13:39:14:99 > 0xf001: From Robot : 0 93 62 23 83 40 49 222
+2022-04-04__13:39:14:99 > 0xf001: Robot still running
+2022-04-04__13:39:20:592 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:39:20:592 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:39:20:592 > 0xf001: Robot finished
+2022-04-04__13:39:20:592 > 0xf001: Robot finished complex command
+2022-04-04__13:39:20:592 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:39:30:633 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__13:39:30:639 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__13:39:30:639 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__13:39:30:639 > 0xf001: Robot still running
+2022-04-04__13:39:34:744 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:39:34:744 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:39:34:744 > 0xf001: Robot finished
+2022-04-04__13:39:34:744 > 0xf001: Robot finished complex command
+2022-04-04__13:39:34:744 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:39:35:67 > 0xf010: 0, 93, 62, 23, 83, 43
+2022-04-04__13:39:35:67 > 0xf010: Данные переданы корректно
+2022-04-04__13:39:37:396 > 0xf001: To Robot: 0, 93, 62, 23, 83, 43, 49, 222
+2022-04-04__13:39:37:401 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__13:39:37:401 > 0xf001: From Robot : 0 93 62 23 83 43 49 222
+2022-04-04__13:39:37:401 > 0xf001: Robot still running
+2022-04-04__13:39:42:974 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:39:42:974 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:39:42:974 > 0xf001: Robot finished
+2022-04-04__13:39:42:974 > 0xf001: Robot finished complex command
+2022-04-04__13:39:42:974 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:39:54:475 > 0xf001: To Robot: 0, 93, 22, 23, 83, 43, 49, 222
+2022-04-04__13:39:54:481 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__13:39:54:481 > 0xf001: From Robot : 0 93 22 23 83 43 49 222
+2022-04-04__13:39:54:481 > 0xf001: Robot still running
+2022-04-04__13:39:57:889 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:39:57:889 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:39:57:889 > 0xf001: Robot finished
+2022-04-04__13:39:57:889 > 0xf001: Robot finished complex command
+2022-04-04__13:39:57:889 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:40:04:643 > 0xf016: 0, 93, 22, 23, 83, 43
+2022-04-04__13:40:28:314 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__13:40:28:32 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__13:40:28:32 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__13:40:28:32 > 0xf001: Robot still running
+2022-04-04__13:40:32:796 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:40:32:796 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:40:32:796 > 0xf001: Robot finished
+2022-04-04__13:40:32:796 > 0xf001: Robot finished complex command
+2022-04-04__13:40:32:796 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:40:37:605 > 0xf010: 0, 93, 22, 23, 77, 43
+2022-04-04__13:40:37:605 > 0xf010: Данные переданы корректно
+2022-04-04__13:40:39:237 > 0xf001: To Robot: 0, 93, 22, 23, 77, 43, 49, 222
+2022-04-04__13:40:39:243 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__13:40:39:243 > 0xf001: From Robot : 0 93 22 23 77 43 49 222
+2022-04-04__13:40:39:243 > 0xf001: Robot still running
+2022-04-04__13:40:45:279 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:40:45:279 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:40:45:279 > 0xf001: Robot finished
+2022-04-04__13:40:45:279 > 0xf001: Robot finished complex command
+2022-04-04__13:40:45:279 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:41:12:0 > 0xf001: To Robot: 0, 93, 15, 23, 77, 43, 49, 222
+2022-04-04__13:41:12:006 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__13:41:12:006 > 0xf001: From Robot : 0 93 15 23 77 43 49 222
+2022-04-04__13:41:12:006 > 0xf001: Robot still running
+2022-04-04__13:41:15:081 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:41:15:081 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:41:15:081 > 0xf001: Robot finished
+2022-04-04__13:41:15:081 > 0xf001: Robot finished complex command
+2022-04-04__13:41:15:081 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:41:25:816 > 0xf001: To Robot: 0, 93, 18, 23, 77, 43, 49, 222
+2022-04-04__13:41:25:822 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__13:41:25:822 > 0xf001: From Robot : 0 93 18 23 77 43 49 222
+2022-04-04__13:41:25:822 > 0xf001: Robot still running
+2022-04-04__13:41:28:856 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:41:28:856 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:41:28:856 > 0xf001: Robot finished
+2022-04-04__13:41:28:856 > 0xf001: Robot finished complex command
+2022-04-04__13:41:28:856 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:41:34:786 > 0xf001: To Robot: 90, 93, 18, 23, 77, 43, 49, 222
+2022-04-04__13:41:34:792 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__13:41:34:792 > 0xf001: From Robot : 90 93 18 23 77 43 49 222
+2022-04-04__13:41:34:792 > 0xf001: Robot still running
+2022-04-04__13:41:37:154 > 0xf001: To Robot: 0, 93, 18, 23, 77, 43, 49, 222
+2022-04-04__13:41:38:703 > 0xf001: There are 32 bytes from robot to read
+2022-04-04__13:41:38:703 > 0xf001: From Robot : Robot movement DONE! LAST !!0 93
+2022-04-04__13:41:38:703 > 0xf001: Robot finished
+2022-04-04__13:41:38:703 > 0xf001: Robot finished complex command
+2022-04-04__13:41:38:703 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:41:38:706 > 0xf001: There are 19 bytes from robot to read
+2022-04-04__13:41:38:706 > 0xf001: From Robot :  18 23 77 43 49 222
+2022-04-04__13:41:38:706 > 0xf001: Robot still running
+2022-04-04__13:41:42:618 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:41:42:618 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:41:42:618 > 0xf001: Robot finished
+2022-04-04__13:41:42:618 > 0xf001: Robot finished complex command
+2022-04-04__13:41:42:618 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:41:42:648 > 0xf016: 0, 93, 18, 23, 77, 43
+2022-04-04__13:41:44:313 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__13:41:44:319 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__13:41:44:319 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__13:41:44:319 > 0xf001: Robot still running
+2022-04-04__13:41:48:896 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:41:48:896 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:41:48:896 > 0xf001: Robot finished
+2022-04-04__13:41:48:896 > 0xf001: Robot finished complex command
+2022-04-04__13:41:48:896 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:41:49:428 > 0xf010: 0, 93, 18, 23, 77, 43
+2022-04-04__13:41:49:428 > 0xf010: Данные переданы корректно
+2022-04-04__13:41:51:32 > 0xf001: To Robot: 0, 93, 18, 23, 77, 43, 49, 222
+2022-04-04__13:41:51:326 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__13:41:51:326 > 0xf001: From Robot : 0 93 18 23 77 43 49 222
+2022-04-04__13:41:51:326 > 0xf001: Robot still running
+2022-04-04__13:41:57:402 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:41:57:402 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:41:57:402 > 0xf001: Robot finished
+2022-04-04__13:41:57:402 > 0xf001: Robot finished complex command
+2022-04-04__13:41:57:402 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:42:00:223 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__13:42:00:228 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__13:42:00:229 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__13:42:00:229 > 0xf001: Robot still running
+2022-04-04__13:42:04:806 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:42:04:806 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:42:04:806 > 0xf001: Robot finished
+2022-04-04__13:42:04:806 > 0xf001: Robot finished complex command
+2022-04-04__13:42:04:806 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:42:06:305 > 0x4444: 0.838932, 0.483333, 0, 93, 18, 23, 77, 43
+2022-04-04__13:42:24:663 > 0xf010: 0, 93, 18, 23, 77, 43
+2022-04-04__13:42:24:663 > 0xf010: Данные переданы корректно
+2022-04-04__13:42:45:237 > 0xf001: To Robot: 0, 93, 48, 23, 77, 48, 49, 222
+2022-04-04__13:42:45:243 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__13:42:45:243 > 0xf001: From Robot : 0 93 48 23 77 48 49 222
+2022-04-04__13:42:45:243 > 0xf001: Robot still running
+2022-04-04__13:42:50:966 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:42:50:966 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:42:50:966 > 0xf001: Robot finished
+2022-04-04__13:42:50:966 > 0xf001: Robot finished complex command
+2022-04-04__13:42:50:966 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:43:00:769 > 0xf016: 0, 93, 48, 23, 77, 50
+2022-04-04__13:43:03:03 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__13:43:03:036 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__13:43:03:036 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__13:43:03:036 > 0xf001: Robot still running
+2022-04-04__13:43:07:261 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:43:07:261 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:43:07:261 > 0xf001: Robot finished
+2022-04-04__13:43:07:261 > 0xf001: Robot finished complex command
+2022-04-04__13:43:07:261 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:43:07:809 > 0xf010: 0, 93, 48, 23, 77, 50
+2022-04-04__13:43:07:809 > 0xf010: Данные переданы корректно
+2022-04-04__13:43:09:365 > 0xf010: 0, 93, 48, 23, 77, 50
+2022-04-04__13:43:09:365 > 0xf010: Данные переданы корректно
+2022-04-04__13:43:10:541 > 0xf001: To Robot: 0, 93, 48, 23, 77, 50, 49, 222
+2022-04-04__13:43:10:546 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__13:43:10:546 > 0xf001: From Robot : 0 93 48 23 77 50 49 222
+2022-04-04__13:43:10:546 > 0xf001: Robot still running
+2022-04-04__13:43:16:25 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:43:16:25 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:43:16:25 > 0xf001: Robot finished
+2022-04-04__13:43:16:25 > 0xf001: Robot finished complex command
+2022-04-04__13:43:16:25 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:43:30:794 > 0xf001: To Robot: 0, 93, 28, 23, 77, 50, 49, 222
+2022-04-04__13:43:30:8 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__13:43:30:8 > 0xf001: From Robot : 0 93 28 23 77 50 49 222
+2022-04-04__13:43:30:8 > 0xf001: Robot still running
+2022-04-04__13:43:34:006 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:43:34:006 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:43:34:006 > 0xf001: Robot finished
+2022-04-04__13:43:34:006 > 0xf001: Robot finished complex command
+2022-04-04__13:43:34:006 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:43:39:74 > 0xf001: To Robot: 0, 93, 22, 23, 77, 50, 49, 222
+2022-04-04__13:43:39:746 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__13:43:39:746 > 0xf001: From Robot : 0 93 22 23 77 50 49 222
+2022-04-04__13:43:39:746 > 0xf001: Robot still running
+2022-04-04__13:43:42:811 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:43:42:811 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:43:42:811 > 0xf001: Robot finished
+2022-04-04__13:43:42:811 > 0xf001: Robot finished complex command
+2022-04-04__13:43:42:811 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:43:48:086 > 0xf016: 0, 93, 22, 23, 77, 50
+2022-04-04__13:43:49:403 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__13:43:49:409 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__13:43:49:409 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__13:43:49:409 > 0xf001: Robot still running
+2022-04-04__13:43:51:304 > 0xf010: 0, 93, 22, 23, 77, 50
+2022-04-04__13:43:51:304 > 0xf010: Данные переданы корректно
+2022-04-04__13:43:53:875 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:43:53:875 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:43:53:875 > 0xf001: Robot finished
+2022-04-04__13:43:53:875 > 0xf001: Robot finished complex command
+2022-04-04__13:43:53:875 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:43:54:456 > 0xf001: To Robot: 0, 93, 22, 23, 77, 50, 49, 222
+2022-04-04__13:43:54:462 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__13:43:54:462 > 0xf001: From Robot : 0 93 22 23 77 50 49 222
+2022-04-04__13:43:54:462 > 0xf001: Robot still running
+2022-04-04__13:44:00:428 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:44:00:428 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:44:00:428 > 0xf001: Robot finished
+2022-04-04__13:44:00:428 > 0xf001: Robot finished complex command
+2022-04-04__13:44:00:428 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:44:28:149 > 0xf016: 0, 93, 22, 23, 72, 50
+2022-04-04__13:44:30:18 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__13:44:30:186 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__13:44:30:194 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__13:44:30:194 > 0xf001: Robot still running
+2022-04-04__13:44:32:343 > 0xf010: 0, 93, 22, 23, 72, 50
+2022-04-04__13:44:32:344 > 0xf010: Данные переданы корректно
+2022-04-04__13:44:34:652 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:44:34:652 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:44:34:652 > 0xf001: Robot finished
+2022-04-04__13:44:34:652 > 0xf001: Robot finished complex command
+2022-04-04__13:44:34:652 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:44:39:385 > 0xf001: To Robot: 0, 93, 22, 23, 72, 50, 49, 222
+2022-04-04__13:44:39:391 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__13:44:39:391 > 0xf001: From Robot : 0 93 22 23 72 50 49 222
+2022-04-04__13:44:39:391 > 0xf001: Robot still running
+2022-04-04__13:44:45:407 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:44:45:407 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:44:45:407 > 0xf001: Robot finished
+2022-04-04__13:44:45:407 > 0xf001: Robot finished complex command
+2022-04-04__13:44:45:407 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:44:56:215 > 0xf001: To Robot: 0, 93, 15, 23, 72, 50, 49, 222
+2022-04-04__13:44:56:221 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__13:44:56:221 > 0xf001: From Robot : 0 93 15 23 72 50 49 222
+2022-04-04__13:44:56:221 > 0xf001: Robot still running
+2022-04-04__13:44:59:295 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:44:59:295 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:44:59:295 > 0xf001: Robot finished
+2022-04-04__13:44:59:295 > 0xf001: Robot finished complex command
+2022-04-04__13:44:59:295 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:45:06:821 > 0xf001: To Robot: 0, 93, 15, 20, 72, 50, 49, 222
+2022-04-04__13:45:06:826 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__13:45:06:827 > 0xf001: From Robot : 0 93 15 20 72 50 49 222
+2022-04-04__13:45:06:827 > 0xf001: Robot still running
+2022-04-04__13:45:09:861 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:45:09:861 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:45:09:861 > 0xf001: Robot finished
+2022-04-04__13:45:09:861 > 0xf001: Robot finished complex command
+2022-04-04__13:45:09:861 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:45:11:525 > 0xf016: 0, 93, 15, 20, 72, 50
+2022-04-04__13:45:13:562 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__13:45:13:567 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__13:45:13:567 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__13:45:13:568 > 0xf001: Robot still running
+2022-04-04__13:45:15:157 > 0xf010: 0, 93, 15, 20, 72, 50
+2022-04-04__13:45:15:157 > 0xf010: Данные переданы корректно
+2022-04-04__13:45:18:185 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:45:18:185 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:45:18:185 > 0xf001: Robot finished
+2022-04-04__13:45:18:185 > 0xf001: Robot finished complex command
+2022-04-04__13:45:18:185 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:45:19:771 > 0xf001: To Robot: 0, 93, 15, 20, 72, 50, 49, 222
+2022-04-04__13:45:19:776 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__13:45:19:776 > 0xf001: From Robot : 0 93 15 20 72 50 49 222
+2022-04-04__13:45:19:776 > 0xf001: Robot still running
+2022-04-04__13:45:25:894 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:45:25:894 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:45:25:894 > 0xf001: Robot finished
+2022-04-04__13:45:25:894 > 0xf001: Robot finished complex command
+2022-04-04__13:45:25:894 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:45:35:887 > 0xf001: To Robot: 90, 93, 15, 20, 72, 50, 49, 222
+2022-04-04__13:45:35:892 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__13:45:35:892 > 0xf001: From Robot : 90 93 15 20 72 50 49 222
+2022-04-04__13:45:35:892 > 0xf001: Robot still running
+2022-04-04__13:45:38:534 > 0xf001: To Robot: 0, 93, 15, 20, 72, 50, 49, 222
+2022-04-04__13:45:39:803 > 0xf001: There are 32 bytes from robot to read
+2022-04-04__13:45:39:803 > 0xf001: From Robot : Robot movement DONE! LAST !!0 93
+2022-04-04__13:45:39:803 > 0xf001: Robot finished
+2022-04-04__13:45:39:803 > 0xf001: Robot finished complex command
+2022-04-04__13:45:39:803 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:45:39:807 > 0xf001: There are 19 bytes from robot to read
+2022-04-04__13:45:39:807 > 0xf001: From Robot :  15 20 72 50 49 222
+2022-04-04__13:45:39:807 > 0xf001: Robot still running
+2022-04-04__13:45:43:719 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:45:43:719 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:45:43:719 > 0xf001: Robot finished
+2022-04-04__13:45:43:719 > 0xf001: Robot finished complex command
+2022-04-04__13:45:43:719 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:45:48:493 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__13:45:48:499 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__13:45:48:499 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__13:45:48:499 > 0xf001: Robot still running
+2022-04-04__13:45:53:116 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:45:53:116 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:45:53:116 > 0xf001: Robot finished
+2022-04-04__13:45:53:116 > 0xf001: Robot finished complex command
+2022-04-04__13:45:53:116 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:45:54:213 > 0x4444: 0.791797, 0.446875, 0, 93, 15, 20, 72, 50
+2022-04-04__13:46:13:432 > 0xf010: 0, 93, 15, 20, 72, 50
+2022-04-04__13:46:13:432 > 0xf010: Данные переданы корректно
+2022-04-04__13:46:30:882 > 0xf001: To Robot: 0, 93, 35, 20, 72, 55, 49, 222
+2022-04-04__13:46:30:887 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__13:46:30:887 > 0xf001: From Robot : 0 93 35 20 72 55 49 222
+2022-04-04__13:46:30:887 > 0xf001: Robot still running
+2022-04-04__13:46:36:753 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:46:36:753 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:46:36:753 > 0xf001: Robot finished
+2022-04-04__13:46:36:753 > 0xf001: Robot finished complex command
+2022-04-04__13:46:36:753 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:46:45:033 > 0xf016: 0, 93, 35, 20, 72, 55
+2022-04-04__13:46:49:053 > 0xf016: 0, 93, 35, 20, 72, 57
+2022-04-04__13:46:50:516 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__13:46:50:522 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__13:46:50:522 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__13:46:50:522 > 0xf001: Robot still running
+2022-04-04__13:46:51:749 > 0xf010: 0, 93, 35, 20, 72, 57
+2022-04-04__13:46:51:749 > 0xf010: Данные переданы корректно
+2022-04-04__13:46:54:887 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:46:54:887 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:46:54:887 > 0xf001: Robot finished
+2022-04-04__13:46:54:887 > 0xf001: Robot finished complex command
+2022-04-04__13:46:54:887 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:46:55:797 > 0xf001: To Robot: 0, 93, 35, 20, 72, 57, 49, 222
+2022-04-04__13:46:55:803 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__13:46:55:803 > 0xf001: From Robot : 0 93 35 20 72 57 49 222
+2022-04-04__13:46:55:803 > 0xf001: Robot still running
+2022-04-04__13:47:01:648 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:47:01:648 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:47:01:648 > 0xf001: Robot finished
+2022-04-04__13:47:01:648 > 0xf001: Robot finished complex command
+2022-04-04__13:47:01:648 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:47:13:275 > 0xf001: To Robot: 0, 93, 15, 20, 72, 57, 49, 222
+2022-04-04__13:47:13:281 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__13:47:13:281 > 0xf001: From Robot : 0 93 15 20 72 57 49 222
+2022-04-04__13:47:13:281 > 0xf001: Robot still running
+2022-04-04__13:47:16:487 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:47:16:487 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:47:16:487 > 0xf001: Robot finished
+2022-04-04__13:47:16:487 > 0xf001: Robot finished complex command
+2022-04-04__13:47:16:487 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:47:22:065 > 0xf016: 0, 93, 15, 20, 72, 57
+2022-04-04__13:47:23:666 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__13:47:23:672 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__13:47:23:672 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__13:47:23:672 > 0xf001: Robot still running
+2022-04-04__13:47:26:473 > 0xf010: 0, 93, 15, 20, 72, 57
+2022-04-04__13:47:26:473 > 0xf010: Данные переданы корректно
+2022-04-04__13:47:28:218 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:47:28:218 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:47:28:218 > 0xf001: Robot finished
+2022-04-04__13:47:28:218 > 0xf001: Robot finished complex command
+2022-04-04__13:47:28:218 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:47:29:645 > 0xf001: To Robot: 0, 93, 15, 20, 72, 57, 49, 222
+2022-04-04__13:47:29:65 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__13:47:29:65 > 0xf001: From Robot : 0 93 15 20 72 57 49 222
+2022-04-04__13:47:29:651 > 0xf001: Robot still running
+2022-04-04__13:47:35:697 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:47:35:697 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:47:35:697 > 0xf001: Robot finished
+2022-04-04__13:47:35:698 > 0xf001: Robot finished complex command
+2022-04-04__13:47:35:698 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:47:38:742 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__13:47:38:748 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__13:47:38:748 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__13:47:38:748 > 0xf001: Robot still running
+2022-04-04__13:47:43:294 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:47:43:294 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:47:43:294 > 0xf001: Robot finished
+2022-04-04__13:47:43:294 > 0xf001: Robot finished complex command
+2022-04-04__13:47:43:294 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:47:55:263 > 0x4444: 0.736068, 0.410417, 0, 93, 15, 20, 72, 57
+2022-04-04__13:48:42:744 > 0xf010: 0, 93, 15, 20, 72, 57
+2022-04-04__13:48:42:744 > 0xf010: Данные переданы корректно
+2022-04-04__13:48:59:338 > 0xf001: To Robot: 0, 93, 35, 20, 72, 63, 49, 222
+2022-04-04__13:48:59:343 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__13:48:59:343 > 0xf001: From Robot : 0 93 35 20 72 63 49 222
+2022-04-04__13:48:59:343 > 0xf001: Robot still running
+2022-04-04__13:49:05:128 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:49:05:128 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:49:05:128 > 0xf001: Robot finished
+2022-04-04__13:49:05:128 > 0xf001: Robot finished complex command
+2022-04-04__13:49:05:128 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:49:18:509 > 0xf001: To Robot: 0, 93, 35, 20, 72, 65, 49, 222
+2022-04-04__13:49:18:515 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__13:49:18:515 > 0xf001: From Robot : 0 93 35 20 72 65 49 222
+2022-04-04__13:49:18:515 > 0xf001: Robot still running
+2022-04-04__13:49:21:539 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:49:21:539 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:49:21:539 > 0xf001: Robot finished
+2022-04-04__13:49:21:539 > 0xf001: Robot finished complex command
+2022-04-04__13:49:21:539 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:49:24:053 > 0xf016: 0, 93, 35, 20, 72, 65
+2022-04-04__13:49:24:888 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__13:49:24:894 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__13:49:24:894 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__13:49:24:894 > 0xf001: Robot still running
+2022-04-04__13:49:28:503 > 0xf010: 0, 93, 35, 20, 72, 65
+2022-04-04__13:49:28:503 > 0xf010: Данные переданы корректно
+2022-04-04__13:49:29:157 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:49:29:157 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:49:29:157 > 0xf001: Robot finished
+2022-04-04__13:49:29:157 > 0xf001: Robot finished complex command
+2022-04-04__13:49:29:157 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:49:33:097 > 0xf001: To Robot: 0, 93, 35, 20, 72, 65, 49, 222
+2022-04-04__13:49:33:103 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__13:49:33:103 > 0xf001: From Robot : 0 93 35 20 72 65 49 222
+2022-04-04__13:49:33:103 > 0xf001: Robot still running
+2022-04-04__13:49:38:868 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:49:38:868 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:49:38:868 > 0xf001: Robot finished
+2022-04-04__13:49:38:868 > 0xf001: Robot finished complex command
+2022-04-04__13:49:38:868 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:49:53:327 > 0xf016: 0, 93, 15, 20, 72, 65
+2022-04-04__13:49:54:65 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__13:49:54:656 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__13:49:54:656 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__13:49:54:656 > 0xf001: Robot still running
+2022-04-04__13:49:55:671 > 0xf010: 0, 93, 15, 20, 72, 65
+2022-04-04__13:49:55:671 > 0xf010: Данные переданы корректно
+2022-04-04__13:49:58:919 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:49:58:919 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:49:58:919 > 0xf001: Robot finished
+2022-04-04__13:49:58:919 > 0xf001: Robot finished complex command
+2022-04-04__13:49:58:919 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:49:59:589 > 0xf001: To Robot: 0, 93, 15, 20, 72, 65, 49, 222
+2022-04-04__13:49:59:594 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__13:49:59:594 > 0xf001: From Robot : 0 93 15 20 72 65 49 222
+2022-04-04__13:49:59:594 > 0xf001: Robot still running
+2022-04-04__13:50:05:561 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__13:50:05:561 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__13:50:05:561 > 0xf001: Robot finished
+2022-04-04__13:50:05:561 > 0xf001: Robot finished complex command
+2022-04-04__13:50:05:561 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__13:50:14:301 > 0x4444: NOT DETECTED0, 93, 15, 20, 72, 65
+2022-04-04__13:50:23:129 > 0x4444: 0.689974, 0.375, 0, 93, 15, 20, 72, 65
+2022-04-04__14:48:02:362 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__14:48:02:368 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__14:48:02:375 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__14:48:02:375 > 0xf001: Robot still running
+2022-04-04__14:48:06:833 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__14:48:06:833 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__14:48:06:833 > 0xf001: Robot finished
+2022-04-04__14:48:06:833 > 0xf001: Robot finished complex command
+2022-04-04__14:48:06:833 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__14:48:18:924 > 0xf010: 0, 93, 15, 20, 72, 65
+2022-04-04__14:48:18:925 > 0xf010: Данные переданы корректно
+2022-04-04__14:48:33:892 > 0xf001: To Robot: 0, 93, 35, 20, 72, 72, 49, 222
+2022-04-04__14:48:33:898 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__14:48:33:898 > 0xf001: From Robot : 0 93 35 20 72 72 49 222
+2022-04-04__14:48:33:898 > 0xf001: Robot still running
+2022-04-04__14:48:39:592 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__14:48:39:592 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__14:48:39:592 > 0xf001: Robot finished
+2022-04-04__14:48:39:592 > 0xf001: Robot finished complex command
+2022-04-04__14:48:39:592 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__14:48:51:01 > 0xf016: 0, 93, 35, 20, 72, 70
+2022-04-04__14:48:52:639 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__14:48:52:645 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__14:48:52:645 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__14:48:52:645 > 0xf001: Robot still running
+2022-04-04__14:48:53:694 > 0xf010: 0, 93, 35, 20, 72, 70
+2022-04-04__14:48:53:694 > 0xf010: Данные переданы корректно
+2022-04-04__14:48:56:837 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__14:48:56:837 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__14:48:56:837 > 0xf001: Robot finished
+2022-04-04__14:48:56:837 > 0xf001: Robot finished complex command
+2022-04-04__14:48:56:837 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__14:48:57:992 > 0xf001: To Robot: 0, 93, 35, 20, 72, 70, 49, 222
+2022-04-04__14:48:57:997 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__14:48:57:997 > 0xf001: From Robot : 0 93 35 20 72 70 49 222
+2022-04-04__14:48:57:997 > 0xf001: Robot still running
+2022-04-04__14:49:03:712 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__14:49:03:712 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__14:49:03:712 > 0xf001: Robot finished
+2022-04-04__14:49:03:712 > 0xf001: Robot finished complex command
+2022-04-04__14:49:03:712 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__14:49:13:045 > 0xf001: To Robot: 0, 93, 15, 20, 72, 70, 49, 222
+2022-04-04__14:49:13:051 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__14:49:13:051 > 0xf001: From Robot : 0 93 15 20 72 70 49 222
+2022-04-04__14:49:13:051 > 0xf001: Robot still running
+2022-04-04__14:49:16:257 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__14:49:16:257 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__14:49:16:257 > 0xf001: Robot finished
+2022-04-04__14:49:16:257 > 0xf001: Robot finished complex command
+2022-04-04__14:49:16:257 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__14:49:19:889 > 0xf016: 0, 93, 15, 20, 72, 70
+2022-04-04__14:49:22:538 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__14:49:22:544 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__14:49:22:544 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__14:49:22:544 > 0xf001: Robot still running
+2022-04-04__14:49:24:529 > 0xf010: 0, 93, 15, 20, 72, 70
+2022-04-04__14:49:24:529 > 0xf010: Данные переданы корректно
+2022-04-04__14:49:26:958 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__14:49:26:958 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__14:49:26:958 > 0xf001: Robot finished
+2022-04-04__14:49:26:958 > 0xf001: Robot finished complex command
+2022-04-04__14:49:26:958 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__14:49:29:809 > 0xf001: To Robot: 0, 93, 15, 20, 72, 70, 49, 222
+2022-04-04__14:49:29:815 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__14:49:29:815 > 0xf001: From Robot : 0 93 15 20 72 70 49 222
+2022-04-04__14:49:29:815 > 0xf001: Robot still running
+2022-04-04__14:49:35:731 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__14:49:35:731 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__14:49:35:731 > 0xf001: Robot finished
+2022-04-04__14:49:35:731 > 0xf001: Robot finished complex command
+2022-04-04__14:49:35:731 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__14:49:41:336 > 0x4444: 0.654818, 0.347396, 0, 93, 15, 20, 72, 70
+2022-04-04__14:49:52:928 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__14:49:52:934 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__14:49:52:934 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__14:49:52:934 > 0xf001: Robot still running
+2022-04-04__14:49:57:348 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__14:49:57:348 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__14:49:57:348 > 0xf001: Robot finished
+2022-04-04__14:49:57:348 > 0xf001: Robot finished complex command
+2022-04-04__14:49:57:348 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__14:50:18:24 > 0xf010: 0, 93, 15, 20, 72, 70
+2022-04-04__14:50:18:241 > 0xf010: Данные переданы корректно
+2022-04-04__14:50:22:814 > 0xf016: 0, 93, 15, 20, 72, 75
+2022-04-04__14:50:29:858 > 0xf001: To Robot: 0, 93, 36, 20, 72, 75, 49, 222
+2022-04-04__14:50:29:864 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__14:50:29:864 > 0xf001: From Robot : 0 93 36 20 72 75 49 222
+2022-04-04__14:50:29:864 > 0xf001: Robot still running
+2022-04-04__14:50:35:518 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__14:50:35:518 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__14:50:35:518 > 0xf001: Robot finished
+2022-04-04__14:50:35:518 > 0xf001: Robot finished complex command
+2022-04-04__14:50:35:518 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__14:50:50:556 > 0xf016: 0, 93, 36, 20, 72, 77
+2022-04-04__14:50:52:263 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__14:50:52:269 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__14:50:52:269 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__14:50:52:269 > 0xf001: Robot still running
+2022-04-04__14:50:56:421 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__14:50:56:421 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__14:50:56:421 > 0xf001: Robot finished
+2022-04-04__14:50:56:421 > 0xf001: Robot finished complex command
+2022-04-04__14:50:56:421 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__14:51:02:124 > 0xf010: 0, 93, 15, 20, 72, 77
+2022-04-04__14:51:02:124 > 0xf010: Данные переданы корректно
+2022-04-04__14:51:02:986 > 0xf001: To Robot: 0, 93, 15, 20, 72, 77, 49, 222
+2022-04-04__14:51:02:991 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__14:51:02:991 > 0xf001: From Robot : 0 93 15 20 72 77 49 222
+2022-04-04__14:51:02:991 > 0xf001: Robot still running
+2022-04-04__14:51:08:838 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__14:51:08:838 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__14:51:08:838 > 0xf001: Robot finished
+2022-04-04__14:51:08:838 > 0xf001: Robot finished complex command
+2022-04-04__14:51:08:838 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__14:51:12:465 > 0xf001: To Robot: 90, 93, 15, 20, 72, 77, 49, 222
+2022-04-04__14:51:12:471 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__14:51:12:471 > 0xf001: From Robot : 90 93 15 20 72 77 49 222
+2022-04-04__14:51:12:471 > 0xf001: Robot still running
+2022-04-04__14:51:16:384 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__14:51:16:384 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__14:51:16:384 > 0xf001: Robot finished
+2022-04-04__14:51:16:384 > 0xf001: Robot finished complex command
+2022-04-04__14:51:16:384 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__14:51:16:487 > 0xf001: To Robot: 0, 93, 15, 20, 72, 77, 49, 222
+2022-04-04__14:51:16:493 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__14:51:16:493 > 0xf001: From Robot : 0 93 15 20 72 77 49 222
+2022-04-04__14:51:16:493 > 0xf001: Robot still running
+2022-04-04__14:51:20:405 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__14:51:20:405 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__14:51:20:406 > 0xf001: Robot finished
+2022-04-04__14:51:20:406 > 0xf001: Robot finished complex command
+2022-04-04__14:51:20:406 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__14:51:27:144 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__14:51:27:15 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__14:51:27:15 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__14:51:27:15 > 0xf001: Robot still running
+2022-04-04__14:51:31:493 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__14:51:31:493 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__14:51:31:494 > 0xf001: Robot finished
+2022-04-04__14:51:31:494 > 0xf001: Robot finished complex command
+2022-04-04__14:51:31:494 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__14:51:42:168 > 0x4444: 0.602734, 0.285417, 0, 93, 15, 20, 72, 77
+2022-04-04__14:52:01:491 > 0xf010: 0, 93, 15, 20, 72, 77
+2022-04-04__14:52:01:491 > 0xf010: Данные переданы корректно
+2022-04-04__14:52:15:668 > 0xf001: To Robot: 0, 93, 35, 20, 72, 84, 49, 222
+2022-04-04__14:52:15:674 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__14:52:15:674 > 0xf001: From Robot : 0 93 35 20 72 84 49 222
+2022-04-04__14:52:15:674 > 0xf001: Robot still running
+2022-04-04__14:52:21:248 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__14:52:21:248 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__14:52:21:248 > 0xf001: Robot finished
+2022-04-04__14:52:21:248 > 0xf001: Robot finished complex command
+2022-04-04__14:52:21:248 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__14:52:28:246 > 0xf001: To Robot: 0, 93, 15, 20, 72, 84, 49, 222
+2022-04-04__14:52:28:252 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__14:52:28:252 > 0xf001: From Robot : 0 93 15 20 72 84 49 222
+2022-04-04__14:52:28:252 > 0xf001: Robot still running
+2022-04-04__14:52:31:458 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__14:52:31:458 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__14:52:31:458 > 0xf001: Robot finished
+2022-04-04__14:52:31:458 > 0xf001: Robot finished complex command
+2022-04-04__14:52:31:458 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__14:52:50:794 > 0xf001: To Robot: 0, 93, 20, 15, 72, 84, 49, 222
+2022-04-04__14:52:50:8 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__14:52:50:8 > 0xf001: From Robot : 0 93 20 15 72 84 49 222
+2022-04-04__14:52:50:8 > 0xf001: Robot still running
+2022-04-04__14:52:53:905 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__14:52:53:905 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__14:52:53:905 > 0xf001: Robot finished
+2022-04-04__14:52:53:905 > 0xf001: Robot finished complex command
+2022-04-04__14:52:53:905 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__14:53:08:366 > 0xf001: To Robot: 0, 93, 20, 15, 77, 84, 49, 222
+2022-04-04__14:53:08:371 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__14:53:08:371 > 0xf001: From Robot : 0 93 20 15 77 84 49 222
+2022-04-04__14:53:08:371 > 0xf001: Robot still running
+2022-04-04__14:53:11:426 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__14:53:11:426 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__14:53:11:426 > 0xf001: Robot finished
+2022-04-04__14:53:11:426 > 0xf001: Robot finished complex command
+2022-04-04__14:53:11:426 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__14:53:18:467 > 0xf001: To Robot: 0, 93, 28, 15, 77, 84, 49, 222
+2022-04-04__14:53:18:473 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__14:53:18:473 > 0xf001: From Robot : 0 93 28 15 77 84 49 222
+2022-04-04__14:53:18:473 > 0xf001: Robot still running
+2022-04-04__14:53:21:558 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__14:53:21:558 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__14:53:21:558 > 0xf001: Robot finished
+2022-04-04__14:53:21:558 > 0xf001: Robot finished complex command
+2022-04-04__14:53:21:558 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__14:53:27:623 > 0xf016: 0, 93, 25, 15, 77, 84
+2022-04-04__14:53:29:071 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__14:53:29:076 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__14:53:29:076 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__14:53:29:077 > 0xf001: Robot still running
+2022-04-04__14:53:30:907 > 0xf010: 0, 93, 25, 15, 77, 84
+2022-04-04__14:53:30:907 > 0xf010: Данные переданы корректно
+2022-04-04__14:53:33:219 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__14:53:33:219 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__14:53:33:219 > 0xf001: Robot finished
+2022-04-04__14:53:33:219 > 0xf001: Robot finished complex command
+2022-04-04__14:53:33:219 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__14:53:34:657 > 0xf001: To Robot: 0, 93, 25, 15, 77, 84, 49, 222
+2022-04-04__14:53:34:663 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__14:53:34:663 > 0xf001: From Robot : 0 93 25 15 77 84 49 222
+2022-04-04__14:53:34:663 > 0xf001: Robot still running
+2022-04-04__14:53:40:339 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__14:53:40:339 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__14:53:40:339 > 0xf001: Robot finished
+2022-04-04__14:53:40:339 > 0xf001: Robot finished complex command
+2022-04-04__14:53:40:339 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__14:53:56:296 > 0x4444: 0.54375, 0.236111, 0, 93, 25, 15, 77, 84
+2022-04-04__14:54:01:403 > 0xf001: To Robot: 90, 93, 25, 15, 77, 84, 49, 222
+2022-04-04__14:54:01:409 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__14:54:01:409 > 0xf001: From Robot : 90 93 25 15 77 84 49 222
+2022-04-04__14:54:01:409 > 0xf001: Robot still running
+2022-04-04__14:54:04:995 > 0xf001: To Robot: 0, 93, 25, 15, 77, 84, 49, 222
+2022-04-04__14:54:05:319 > 0xf001: There are 32 bytes from robot to read
+2022-04-04__14:54:05:319 > 0xf001: From Robot : Robot movement DONE! LAST !!0 93
+2022-04-04__14:54:05:319 > 0xf001: Robot finished
+2022-04-04__14:54:05:319 > 0xf001: Robot finished complex command
+2022-04-04__14:54:05:319 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__14:54:05:323 > 0xf001: There are 19 bytes from robot to read
+2022-04-04__14:54:05:323 > 0xf001: From Robot :  25 15 77 84 49 222
+2022-04-04__14:54:05:323 > 0xf001: Robot still running
+2022-04-04__14:54:09:234 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__14:54:09:234 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__14:54:09:234 > 0xf001: Robot finished
+2022-04-04__14:54:09:234 > 0xf001: Robot finished complex command
+2022-04-04__14:54:09:234 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__14:54:11:296 > 0x4444: 0.542188, 0.227431, 0, 93, 25, 15, 77, 84
+2022-04-04__14:54:36:197 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__14:54:36:203 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__14:54:36:203 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__14:54:36:203 > 0xf001: Robot still running
+2022-04-04__14:54:40:375 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__14:54:40:375 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__14:54:40:375 > 0xf001: Robot finished
+2022-04-04__14:54:40:376 > 0xf001: Robot finished complex command
+2022-04-04__14:54:40:376 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__14:54:52:494 > 0xf010: 0, 93, 25, 15, 77, 84
+2022-04-04__14:54:52:494 > 0xf010: Данные переданы корректно
+2022-04-04__14:55:01:408 > 0xf001: To Robot: 0, 93, 44, 15, 77, 84, 49, 222
+2022-04-04__14:55:01:414 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__14:55:01:414 > 0xf001: From Robot : 0 93 44 15 77 84 49 222
+2022-04-04__14:55:01:414 > 0xf001: Robot still running
+2022-04-04__14:55:06:898 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__14:55:06:898 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__14:55:06:898 > 0xf001: Robot finished
+2022-04-04__14:55:06:898 > 0xf001: Robot finished complex command
+2022-04-04__14:55:06:898 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__14:55:44:787 > 0xf001: To Robot: 0, 93, 35, 15, 82, 80, 49, 222
+2022-04-04__14:55:44:793 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__14:55:44:793 > 0xf001: From Robot : 0 93 35 15 82 80 49 222
+2022-04-04__14:55:44:793 > 0xf001: Robot still running
+2022-04-04__14:55:47:979 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__14:55:47:979 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__14:55:47:979 > 0xf001: Robot finished
+2022-04-04__14:55:47:979 > 0xf001: Robot finished complex command
+2022-04-04__14:55:47:979 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__14:55:58:307 > 0xf016: 0, 93, 35, 15, 82, 80
+2022-04-04__14:56:00:074 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__14:56:00:08 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__14:56:00:08 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__14:56:00:08 > 0xf001: Robot still running
+2022-04-04__14:56:01:823 > 0xf010: 0, 93, 35, 15, 82, 80
+2022-04-04__14:56:01:823 > 0xf010: Данные переданы корректно
+2022-04-04__14:56:04:141 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__14:56:04:141 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__14:56:04:141 > 0xf001: Robot finished
+2022-04-04__14:56:04:141 > 0xf001: Robot finished complex command
+2022-04-04__14:56:04:141 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__14:56:06:367 > 0xf001: To Robot: 0, 93, 35, 15, 82, 80, 49, 222
+2022-04-04__14:56:06:373 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__14:56:06:373 > 0xf001: From Robot : 0 93 35 15 82 80 49 222
+2022-04-04__14:56:06:373 > 0xf001: Robot still running
+2022-04-04__14:56:11:937 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__14:56:11:937 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__14:56:11:937 > 0xf001: Robot finished
+2022-04-04__14:56:11:937 > 0xf001: Robot finished complex command
+2022-04-04__14:56:11:937 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__14:56:23:126 > 0xf001: To Robot: 0, 93, 45, 15, 82, 80, 49, 222
+2022-04-04__14:56:23:132 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__14:56:23:132 > 0xf001: From Robot : 0 93 45 15 82 80 49 222
+2022-04-04__14:56:23:132 > 0xf001: Robot still running
+2022-04-04__14:56:26:237 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__14:56:26:237 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__14:56:26:237 > 0xf001: Robot finished
+2022-04-04__14:56:26:237 > 0xf001: Robot finished complex command
+2022-04-04__14:56:26:237 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__14:56:32:65 > 0xf001: To Robot: 0, 93, 45, 9, 82, 80, 49, 222
+2022-04-04__14:56:32:656 > 0xf001: There are 22 bytes from robot to read
+2022-04-04__14:56:32:656 > 0xf001: From Robot : 0 93 45 9 82 80 49 222
+2022-04-04__14:56:32:656 > 0xf001: Robot still running
+2022-04-04__14:56:35:721 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__14:56:35:721 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__14:56:35:721 > 0xf001: Robot finished
+2022-04-04__14:56:35:721 > 0xf001: Robot finished complex command
+2022-04-04__14:56:35:721 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__14:56:43:742 > 0xf016: 0, 93, 45, 9, 83, 80
+2022-04-04__14:56:46:222 > 0xf016: 0, 93, 45, 9, 83, 80
+2022-04-04__14:56:58:486 > 0xf016: 0, 93, 45, 9, 83, 82
+2022-04-04__14:56:59:567 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__14:56:59:573 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__14:56:59:58 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__14:56:59:58 > 0xf001: Robot still running
+2022-04-04__14:57:01:294 > 0xf010: 0, 93, 45, 9, 83, 82
+2022-04-04__14:57:01:294 > 0xf010: Данные переданы корректно
+2022-04-04__14:57:03:595 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__14:57:03:595 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__14:57:03:595 > 0xf001: Robot finished
+2022-04-04__14:57:03:595 > 0xf001: Robot finished complex command
+2022-04-04__14:57:03:595 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__14:57:07:418 > 0xf001: To Robot: 0, 93, 45, 9, 83, 82, 49, 222
+2022-04-04__14:57:07:423 > 0xf001: There are 22 bytes from robot to read
+2022-04-04__14:57:07:424 > 0xf001: From Robot : 0 93 45 9 83 82 49 222
+2022-04-04__14:57:07:424 > 0xf001: Robot still running
+2022-04-04__14:57:12:918 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__14:57:12:918 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__14:57:12:918 > 0xf001: Robot finished
+2022-04-04__14:57:12:918 > 0xf001: Robot finished complex command
+2022-04-04__14:57:12:918 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__14:57:51:877 > 0xf001: To Robot: 0, 93, 37, 15, 87, 82, 49, 222
+2022-04-04__14:57:51:883 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__14:57:51:883 > 0xf001: From Robot : 0 93 37 15 87 82 49 222
+2022-04-04__14:57:51:883 > 0xf001: Robot still running
+2022-04-04__14:57:55:069 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__14:57:55:069 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__14:57:55:069 > 0xf001: Robot finished
+2022-04-04__14:57:55:069 > 0xf001: Robot finished complex command
+2022-04-04__14:57:55:069 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__14:58:08:991 > 0xf001: To Robot: 0, 93, 45, 15, 87, 82, 49, 222
+2022-04-04__14:58:08:997 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__14:58:08:997 > 0xf001: From Robot : 0 93 45 15 87 82 49 222
+2022-04-04__14:58:08:997 > 0xf001: Robot still running
+2022-04-04__14:58:12:081 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__14:58:12:081 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__14:58:12:081 > 0xf001: Robot finished
+2022-04-04__14:58:12:081 > 0xf001: Robot finished complex command
+2022-04-04__14:58:12:081 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__14:58:21:815 > 0xf001: To Robot: 0, 93, 45, 15, 93, 82, 49, 222
+2022-04-04__14:58:21:82 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__14:58:21:82 > 0xf001: From Robot : 0 93 45 15 93 82 49 222
+2022-04-04__14:58:21:82 > 0xf001: Robot still running
+2022-04-04__14:58:24:885 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__14:58:24:885 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__14:58:24:885 > 0xf001: Robot finished
+2022-04-04__14:58:24:885 > 0xf001: Robot finished complex command
+2022-04-04__14:58:24:885 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__14:58:40:604 > 0xf001: To Robot: 0, 93, 45, 15, 100, 82, 49, 222
+2022-04-04__14:58:40:61 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__14:58:40:61 > 0xf001: From Robot : 0 93 45 15 100 82 49 222
+2022-04-04__14:58:40:61 > 0xf001: Robot still running
+2022-04-04__14:58:43:685 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__14:58:43:686 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__14:58:43:686 > 0xf001: Robot finished
+2022-04-04__14:58:43:686 > 0xf001: Robot finished complex command
+2022-04-04__14:58:43:686 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__14:58:46:434 > 0xf016: 0, 93, 45, 15, 100, 82
+2022-04-04__14:58:47:941 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__14:58:47:947 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__14:58:47:947 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__14:58:47:947 > 0xf001: Robot still running
+2022-04-04__14:58:51:848 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__14:58:51:848 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__14:58:51:848 > 0xf001: Robot finished
+2022-04-04__14:58:51:848 > 0xf001: Robot finished complex command
+2022-04-04__14:58:51:848 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__14:59:00:658 > 0xf010: 0, 93, 45, 15, 100, 82
+2022-04-04__14:59:00:658 > 0xf010: Данные переданы корректно
+2022-04-04__14:59:01:626 > 0xf001: To Robot: 0, 93, 45, 15, 100, 82, 49, 222
+2022-04-04__14:59:01:632 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__14:59:01:632 > 0xf001: From Robot : 0 93 45 15 100 82 49 222
+2022-04-04__14:59:01:632 > 0xf001: Robot still running
+2022-04-04__14:59:07:036 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__14:59:07:036 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__14:59:07:036 > 0xf001: Robot finished
+2022-04-04__14:59:07:036 > 0xf001: Robot finished complex command
+2022-04-04__14:59:07:036 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__14:59:51:667 > 0xf001: To Robot: 90, 93, 45, 15, 100, 82, 49, 222
+2022-04-04__14:59:51:673 > 0xf001: There are 25 bytes from robot to read
+2022-04-04__14:59:51:673 > 0xf001: From Robot : 90 93 45 15 100 82 49 222
+2022-04-04__14:59:51:673 > 0xf001: Robot still running
+2022-04-04__14:59:54:741 > 0xf001: To Robot: 0, 93, 45, 15, 100, 82, 49, 222
+2022-04-04__14:59:55:584 > 0xf001: There are 32 bytes from robot to read
+2022-04-04__14:59:55:584 > 0xf001: From Robot : Robot movement DONE! LAST !!0 93
+2022-04-04__14:59:55:584 > 0xf001: Robot finished
+2022-04-04__14:59:55:584 > 0xf001: Robot finished complex command
+2022-04-04__14:59:55:584 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__14:59:55:588 > 0xf001: There are 20 bytes from robot to read
+2022-04-04__14:59:55:588 > 0xf001: From Robot :  45 15 100 82 49 222
+2022-04-04__14:59:55:588 > 0xf001: Robot still running
+2022-04-04__14:59:59:499 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__14:59:59:499 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__14:59:59:499 > 0xf001: Robot finished
+2022-04-04__14:59:59:499 > 0xf001: Robot finished complex command
+2022-04-04__14:59:59:499 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:00:10:786 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__15:00:10:792 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:00:10:792 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__15:00:10:792 > 0xf001: Robot still running
+2022-04-04__15:00:14:693 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:00:14:693 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:00:14:693 > 0xf001: Robot finished
+2022-04-04__15:00:14:693 > 0xf001: Robot finished complex command
+2022-04-04__15:00:14:693 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:00:22:507 > 0xf010: 0, 93, 45, 15, 100, 82
+2022-04-04__15:00:22:507 > 0xf010: Данные переданы корректно
+2022-04-04__15:00:28:599 > 0xf001: To Robot: 0, 93, 45, 15, 100, 82, 49, 222
+2022-04-04__15:00:28:605 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:00:28:605 > 0xf001: From Robot : 0 93 45 15 100 82 49 222
+2022-04-04__15:00:28:605 > 0xf001: Robot still running
+2022-04-04__15:00:34:008 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:00:34:008 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:00:34:008 > 0xf001: Robot finished
+2022-04-04__15:00:34:008 > 0xf001: Robot finished complex command
+2022-04-04__15:00:34:008 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:00:55:679 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__15:00:55:685 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:00:55:685 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__15:00:55:685 > 0xf001: Robot still running
+2022-04-04__15:00:59:586 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:00:59:586 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:00:59:586 > 0xf001: Robot finished
+2022-04-04__15:00:59:586 > 0xf001: Robot finished complex command
+2022-04-04__15:00:59:586 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:01:09:697 > 0x4444: 0.586458, 0.0909722, 0, 93, 45, 15, 100, 82
+2022-04-04__15:01:28:422 > 0xf010: 0, 93, 45, 15, 100, 82
+2022-04-04__15:01:28:422 > 0xf010: Данные переданы корректно
+2022-04-04__15:01:44:997 > 0xf001: To Robot: 0, 93, 45, 37, 100, 75, 49, 222
+2022-04-04__15:01:45:003 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:01:45:003 > 0xf001: From Robot : 0 93 45 37 100 75 49 222
+2022-04-04__15:01:45:003 > 0xf001: Robot still running
+2022-04-04__15:01:50:253 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:01:50:253 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:01:50:253 > 0xf001: Robot finished
+2022-04-04__15:01:50:253 > 0xf001: Robot finished complex command
+2022-04-04__15:01:50:253 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:01:58:555 > 0xf016: 0, 93, 45, 37, 100, 77
+2022-04-04__15:02:00:266 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__15:02:00:272 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:02:00:272 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__15:02:00:272 > 0xf001: Robot still running
+2022-04-04__15:02:02:161 > 0xf010: 0, 93, 45, 37, 100, 77
+2022-04-04__15:02:02:161 > 0xf010: Данные переданы корректно
+2022-04-04__15:02:04:021 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:02:04:021 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:02:04:021 > 0xf001: Robot finished
+2022-04-04__15:02:04:021 > 0xf001: Robot finished complex command
+2022-04-04__15:02:04:021 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:02:05:913 > 0xf001: To Robot: 0, 93, 45, 37, 100, 77, 49, 222
+2022-04-04__15:02:05:919 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:02:05:919 > 0xf001: From Robot : 0 93 45 37 100 77 49 222
+2022-04-04__15:02:05:919 > 0xf001: Robot still running
+2022-04-04__15:02:11:149 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:02:11:149 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:02:11:149 > 0xf001: Robot finished
+2022-04-04__15:02:11:149 > 0xf001: Robot finished complex command
+2022-04-04__15:02:11:149 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:02:32:069 > 0xf001: To Robot: 0, 93, 45, 37, 107, 77, 49, 222
+2022-04-04__15:02:32:075 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:02:32:075 > 0xf001: From Robot : 0 93 45 37 107 77 49 222
+2022-04-04__15:02:32:075 > 0xf001: Robot still running
+2022-04-04__15:02:35:15 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:02:35:15 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:02:35:15 > 0xf001: Robot finished
+2022-04-04__15:02:35:15 > 0xf001: Robot finished complex command
+2022-04-04__15:02:35:15 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:02:47:728 > 0xf001: To Robot: 0, 93, 45, 37, 100, 77, 49, 222
+2022-04-04__15:02:47:734 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:02:47:734 > 0xf001: From Robot : 0 93 45 37 100 77 49 222
+2022-04-04__15:02:47:734 > 0xf001: Robot still running
+2022-04-04__15:02:50:81 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:02:50:81 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:02:50:81 > 0xf001: Robot finished
+2022-04-04__15:02:50:81 > 0xf001: Robot finished complex command
+2022-04-04__15:02:50:81 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:02:57:654 > 0xf001: To Robot: 0, 93, 35, 37, 100, 77, 49, 222
+2022-04-04__15:02:57:66 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:02:57:66 > 0xf001: From Robot : 0 93 35 37 100 77 49 222
+2022-04-04__15:02:57:66 > 0xf001: Robot still running
+2022-04-04__15:03:00:765 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:03:00:765 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:03:00:765 > 0xf001: Robot finished
+2022-04-04__15:03:00:765 > 0xf001: Robot finished complex command
+2022-04-04__15:03:00:765 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:03:07:312 > 0xf001: To Robot: 0, 93, 33, 37, 100, 77, 49, 222
+2022-04-04__15:03:07:318 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:03:07:318 > 0xf001: From Robot : 0 93 33 37 100 77 49 222
+2022-04-04__15:03:07:318 > 0xf001: Robot still running
+2022-04-04__15:03:10:342 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:03:10:342 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:03:10:342 > 0xf001: Robot finished
+2022-04-04__15:03:10:342 > 0xf001: Robot finished complex command
+2022-04-04__15:03:10:342 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:03:17:688 > 0xf001: To Robot: 0, 93, 30, 37, 100, 77, 49, 222
+2022-04-04__15:03:17:694 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:03:17:694 > 0xf001: From Robot : 0 93 30 37 100 77 49 222
+2022-04-04__15:03:17:694 > 0xf001: Robot still running
+2022-04-04__15:03:20:728 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:03:20:728 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:03:20:728 > 0xf001: Robot finished
+2022-04-04__15:03:20:728 > 0xf001: Robot finished complex command
+2022-04-04__15:03:20:728 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:03:26:386 > 0xf016: 0, 93, 30, 37, 100, 77
+2022-04-04__15:03:28:811 > 0x4444: 0.639193, 0.126215, 0, 93, 30, 37, 100, 77
+2022-04-04__15:03:30:833 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__15:03:30:839 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:03:30:839 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__15:03:30:839 > 0xf001: Robot still running
+2022-04-04__15:03:32:69 > 0xf010: 0, 93, 30, 37, 100, 77
+2022-04-04__15:03:32:69 > 0xf010: Данные переданы корректно
+2022-04-04__15:03:34:718 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:03:34:718 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:03:34:718 > 0xf001: Robot finished
+2022-04-04__15:03:34:718 > 0xf001: Robot finished complex command
+2022-04-04__15:03:34:718 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:03:36:026 > 0xf001: To Robot: 0, 93, 30, 37, 100, 77, 49, 222
+2022-04-04__15:03:36:031 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:03:36:031 > 0xf001: From Robot : 0 93 30 37 100 77 49 222
+2022-04-04__15:03:36:032 > 0xf001: Robot still running
+2022-04-04__15:03:41:412 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:03:41:412 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:03:41:412 > 0xf001: Robot finished
+2022-04-04__15:03:41:412 > 0xf001: Robot finished complex command
+2022-04-04__15:03:41:412 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:03:49:237 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__15:03:49:243 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:03:49:243 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__15:03:49:243 > 0xf001: Robot still running
+2022-04-04__15:03:53:122 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:03:53:122 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:03:53:122 > 0xf001: Robot finished
+2022-04-04__15:03:53:122 > 0xf001: Robot finished complex command
+2022-04-04__15:03:53:122 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:03:58:677 > 0xf010: 0, 93, 30, 37, 100, 77
+2022-04-04__15:03:58:677 > 0xf010: Данные переданы корректно
+2022-04-04__15:04:11:117 > 0xf016: 0, 93, 48, 37, 100, 72
+2022-04-04__15:04:12:527 > 0xf010: 0, 93, 48, 37, 100, 72
+2022-04-04__15:04:12:527 > 0xf010: Данные переданы корректно
+2022-04-04__15:04:15:495 > 0xf001: To Robot: 0, 93, 48, 37, 100, 72, 49, 222
+2022-04-04__15:04:15:501 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:04:15:501 > 0xf001: From Robot : 0 93 48 37 100 72 49 222
+2022-04-04__15:04:15:501 > 0xf001: Robot still running
+2022-04-04__15:04:20:75 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:04:20:75 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:04:20:75 > 0xf001: Robot finished
+2022-04-04__15:04:20:75 > 0xf001: Robot finished complex command
+2022-04-04__15:04:20:75 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:04:30:895 > 0xf001: To Robot: 0, 93, 30, 37, 100, 72, 49, 222
+2022-04-04__15:04:30:901 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:04:30:901 > 0xf001: From Robot : 0 93 30 37 100 72 49 222
+2022-04-04__15:04:30:901 > 0xf001: Robot still running
+2022-04-04__15:04:34:086 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:04:34:086 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:04:34:086 > 0xf001: Robot finished
+2022-04-04__15:04:34:086 > 0xf001: Robot finished complex command
+2022-04-04__15:04:34:086 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:04:38:441 > 0xf001: To Robot: 90, 93, 30, 37, 100, 72, 49, 222
+2022-04-04__15:04:38:447 > 0xf001: There are 25 bytes from robot to read
+2022-04-04__15:04:38:447 > 0xf001: From Robot : 90 93 30 37 100 72 49 222
+2022-04-04__15:04:38:447 > 0xf001: Robot still running
+2022-04-04__15:04:40:813 > 0xf001: To Robot: 0, 93, 30, 37, 100, 72, 49, 222
+2022-04-04__15:04:42:357 > 0xf001: There are 32 bytes from robot to read
+2022-04-04__15:04:42:357 > 0xf001: From Robot : Robot movement DONE! LAST !!0 93
+2022-04-04__15:04:42:357 > 0xf001: Robot finished
+2022-04-04__15:04:42:357 > 0xf001: Robot finished complex command
+2022-04-04__15:04:42:357 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:04:42:361 > 0xf001: There are 20 bytes from robot to read
+2022-04-04__15:04:42:361 > 0xf001: From Robot :  30 37 100 72 49 222
+2022-04-04__15:04:42:361 > 0xf001: Robot still running
+2022-04-04__15:04:46:272 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:04:46:272 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:04:46:272 > 0xf001: Robot finished
+2022-04-04__15:04:46:272 > 0xf001: Robot finished complex command
+2022-04-04__15:04:46:272 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:04:49:592 > 0xf016: 0, 93, 30, 37, 100, 72
+2022-04-04__15:04:54:781 > 0x4444: 0.688932, 0.159028, 0, 93, 30, 37, 100, 72
+2022-04-04__15:04:58:219 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__15:04:58:225 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:04:58:225 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__15:04:58:225 > 0xf001: Robot still running
+2022-04-04__15:04:59:838 > 0xf010: 0, 93, 30, 37, 100, 72
+2022-04-04__15:04:59:838 > 0xf010: Данные переданы корректно
+2022-04-04__15:05:02:155 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:05:02:155 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:05:02:155 > 0xf001: Robot finished
+2022-04-04__15:05:02:155 > 0xf001: Robot finished complex command
+2022-04-04__15:05:02:156 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:05:02:644 > 0xf001: To Robot: 0, 93, 30, 37, 100, 72, 49, 222
+2022-04-04__15:05:02:65 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:05:02:65 > 0xf001: From Robot : 0 93 30 37 100 72 49 222
+2022-04-04__15:05:02:65 > 0xf001: Robot still running
+2022-04-04__15:05:08:081 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:05:08:081 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:05:08:081 > 0xf001: Robot finished
+2022-04-04__15:05:08:081 > 0xf001: Robot finished complex command
+2022-04-04__15:05:08:081 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:05:11:445 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__15:05:11:451 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:05:11:451 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__15:05:11:451 > 0xf001: Robot still running
+2022-04-04__15:05:15:381 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:05:15:381 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:05:15:381 > 0xf001: Robot finished
+2022-04-04__15:05:15:381 > 0xf001: Robot finished complex command
+2022-04-04__15:05:15:381 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:05:19:868 > 0xf010: 0, 93, 30, 37, 100, 72
+2022-04-04__15:05:19:868 > 0xf010: Данные переданы корректно
+2022-04-04__15:05:34:962 > 0xf001: To Robot: 0, 93, 45, 37, 100, 65, 49, 222
+2022-04-04__15:05:34:968 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:05:34:968 > 0xf001: From Robot : 0 93 45 37 100 65 49 222
+2022-04-04__15:05:34:968 > 0xf001: Robot still running
+2022-04-04__15:05:40:317 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:05:40:317 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:05:40:317 > 0xf001: Robot finished
+2022-04-04__15:05:40:317 > 0xf001: Robot finished complex command
+2022-04-04__15:05:40:317 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:05:49:354 > 0xf016: 0, 93, 45, 37, 100, 67
+2022-04-04__15:05:50:87 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__15:05:50:876 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:05:50:876 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__15:05:50:876 > 0xf001: Robot still running
+2022-04-04__15:05:52:237 > 0xf010: 0, 93, 45, 37, 100, 67
+2022-04-04__15:05:52:238 > 0xf010: Данные переданы корректно
+2022-04-04__15:05:54:726 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:05:54:726 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:05:54:726 > 0xf001: Robot finished
+2022-04-04__15:05:54:726 > 0xf001: Robot finished complex command
+2022-04-04__15:05:54:726 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:05:55:745 > 0xf001: To Robot: 0, 93, 45, 37, 100, 67, 49, 222
+2022-04-04__15:05:55:751 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:05:55:751 > 0xf001: From Robot : 0 93 45 37 100 67 49 222
+2022-04-04__15:05:55:751 > 0xf001: Robot still running
+2022-04-04__15:06:01:081 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:06:01:081 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:06:01:081 > 0xf001: Robot finished
+2022-04-04__15:06:01:081 > 0xf001: Robot finished complex command
+2022-04-04__15:06:01:081 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:06:05:583 > 0xf001: To Robot: 0, 93, 30, 37, 100, 67, 49, 222
+2022-04-04__15:06:05:589 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:06:05:589 > 0xf001: From Robot : 0 93 30 37 100 67 49 222
+2022-04-04__15:06:05:589 > 0xf001: Robot still running
+2022-04-04__15:06:08:744 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:06:08:744 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:06:08:744 > 0xf001: Robot finished
+2022-04-04__15:06:08:744 > 0xf001: Robot finished complex command
+2022-04-04__15:06:08:745 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:06:33:401 > 0xf016: 0, 93, 30, 37, 100, 67
+2022-04-04__15:06:34:528 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__15:06:34:534 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:06:34:534 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__15:06:34:534 > 0xf001: Robot still running
+2022-04-04__15:06:35:683 > 0xf010: 0, 93, 30, 37, 100, 67
+2022-04-04__15:06:35:683 > 0xf010: Данные переданы корректно
+2022-04-04__15:06:38:515 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:06:38:515 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:06:38:515 > 0xf001: Robot finished
+2022-04-04__15:06:38:515 > 0xf001: Robot finished complex command
+2022-04-04__15:06:38:515 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:06:39:155 > 0xf001: To Robot: 0, 93, 30, 37, 100, 67, 49, 222
+2022-04-04__15:06:39:161 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:06:39:161 > 0xf001: From Robot : 0 93 30 37 100 67 49 222
+2022-04-04__15:06:39:161 > 0xf001: Robot still running
+2022-04-04__15:06:44:642 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:06:44:642 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:06:44:642 > 0xf001: Robot finished
+2022-04-04__15:06:44:642 > 0xf001: Robot finished complex command
+2022-04-04__15:06:44:642 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:06:49:78 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__15:06:49:785 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:06:49:785 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__15:06:49:786 > 0xf001: Robot still running
+2022-04-04__15:06:53:766 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:06:53:767 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:06:53:767 > 0xf001: Robot finished
+2022-04-04__15:06:53:767 > 0xf001: Robot finished complex command
+2022-04-04__15:06:53:767 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:07:05:211 > 0x4444: 0.739844, 0.195833, 0, 93, 30, 37, 100, 67
+2022-04-04__15:07:15:83 > 0xf010: 0, 93, 30, 37, 100, 67
+2022-04-04__15:07:15:83 > 0xf010: Данные переданы корректно
+2022-04-04__15:07:28:506 > 0xf001: To Robot: 0, 93, 45, 37, 100, 62, 49, 222
+2022-04-04__15:07:28:512 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:07:28:512 > 0xf001: From Robot : 0 93 45 37 100 62 49 222
+2022-04-04__15:07:28:512 > 0xf001: Robot still running
+2022-04-04__15:07:33:892 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:07:33:892 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:07:33:892 > 0xf001: Robot finished
+2022-04-04__15:07:33:892 > 0xf001: Robot finished complex command
+2022-04-04__15:07:33:892 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:07:45:128 > 0xf016: 0, 93, 30, 37, 100, 62
+2022-04-04__15:07:48:305 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__15:07:48:311 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:07:48:311 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__15:07:48:311 > 0xf001: Robot still running
+2022-04-04__15:07:49:248 > 0xf010: 0, 93, 30, 37, 100, 62
+2022-04-04__15:07:49:248 > 0xf010: Данные переданы корректно
+2022-04-04__15:07:52:191 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:07:52:191 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:07:52:191 > 0xf001: Robot finished
+2022-04-04__15:07:52:191 > 0xf001: Robot finished complex command
+2022-04-04__15:07:52:191 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:07:54:357 > 0xf001: To Robot: 0, 93, 30, 37, 100, 62, 49, 222
+2022-04-04__15:07:54:363 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:07:54:363 > 0xf001: From Robot : 0 93 30 37 100 62 49 222
+2022-04-04__15:07:54:363 > 0xf001: Robot still running
+2022-04-04__15:07:59:895 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:07:59:895 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:07:59:895 > 0xf001: Robot finished
+2022-04-04__15:07:59:895 > 0xf001: Robot finished complex command
+2022-04-04__15:07:59:895 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:08:05:75 > 0x4444: 0.783464, 0.219792, 0, 93, 30, 37, 100, 62
+2022-04-04__15:08:17:9 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__15:08:17:906 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:08:17:906 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__15:08:17:906 > 0xf001: Robot still running
+2022-04-04__15:08:21:938 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:08:21:938 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:08:21:938 > 0xf001: Robot finished
+2022-04-04__15:08:21:938 > 0xf001: Robot finished complex command
+2022-04-04__15:08:21:938 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:08:30:051 > 0xf010: 0, 93, 30, 37, 100, 62
+2022-04-04__15:08:30:051 > 0xf010: Данные переданы корректно
+2022-04-04__15:08:47:046 > 0xf001: To Robot: 0, 93, 45, 37, 100, 57, 49, 222
+2022-04-04__15:08:47:052 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:08:47:052 > 0xf001: From Robot : 0 93 45 37 100 57 49 222
+2022-04-04__15:08:47:052 > 0xf001: Robot still running
+2022-04-04__15:08:52:482 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:08:52:482 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:08:52:482 > 0xf001: Robot finished
+2022-04-04__15:08:52:482 > 0xf001: Robot finished complex command
+2022-04-04__15:08:52:482 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:09:00:698 > 0xf016: 0, 93, 30, 37, 100, 57
+2022-04-04__15:09:01:759 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__15:09:01:765 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:09:01:765 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__15:09:01:765 > 0xf001: Robot still running
+2022-04-04__15:09:03:194 > 0xf010: 0, 93, 30, 37, 100, 57
+2022-04-04__15:09:03:194 > 0xf010: Данные переданы корректно
+2022-04-04__15:09:05:446 > 0xf010: 0, 93, 30, 37, 100, 57
+2022-04-04__15:09:05:446 > 0xf010: Данные переданы корректно
+2022-04-04__15:09:05:696 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:09:05:696 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:09:05:696 > 0xf001: Robot finished
+2022-04-04__15:09:05:696 > 0xf001: Robot finished complex command
+2022-04-04__15:09:05:696 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:09:07:248 > 0xf001: To Robot: 0, 93, 30, 37, 100, 57, 49, 222
+2022-04-04__15:09:07:254 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:09:07:254 > 0xf001: From Robot : 0 93 30 37 100 57 49 222
+2022-04-04__15:09:07:254 > 0xf001: Robot still running
+2022-04-04__15:09:12:835 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:09:12:835 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:09:12:835 > 0xf001: Robot finished
+2022-04-04__15:09:12:835 > 0xf001: Robot finished complex command
+2022-04-04__15:09:12:835 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:09:16:761 > 0x4444: 0.819922, 0.251389, 0, 93, 30, 37, 100, 57
+2022-04-04__15:09:31:401 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__15:09:31:407 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:09:31:407 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__15:09:31:407 > 0xf001: Robot still running
+2022-04-04__15:09:35:489 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:09:35:489 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:09:35:489 > 0xf001: Robot finished
+2022-04-04__15:09:35:489 > 0xf001: Robot finished complex command
+2022-04-04__15:09:35:489 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:09:44:133 > 0xf010: 0, 93, 30, 37, 100, 57
+2022-04-04__15:09:44:133 > 0xf010: Данные переданы корректно
+2022-04-04__15:09:56:025 > 0xf001: To Robot: 0, 93, 45, 37, 100, 52, 49, 222
+2022-04-04__15:09:56:03 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:09:56:031 > 0xf001: From Robot : 0 93 45 37 100 52 49 222
+2022-04-04__15:09:56:031 > 0xf001: Robot still running
+2022-04-04__15:10:01:511 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:10:01:511 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:10:01:511 > 0xf001: Robot finished
+2022-04-04__15:10:01:511 > 0xf001: Robot finished complex command
+2022-04-04__15:10:01:511 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:10:11:112 > 0xf016: 0, 93, 45, 37, 100, 53
+2022-04-04__15:10:12:292 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__15:10:12:298 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:10:12:298 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__15:10:12:298 > 0xf001: Robot still running
+2022-04-04__15:10:13:548 > 0xf010: 0, 93, 45, 37, 100, 53
+2022-04-04__15:10:13:548 > 0xf010: Данные переданы корректно
+2022-04-04__15:10:16:28 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:10:16:28 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:10:16:28 > 0xf001: Robot finished
+2022-04-04__15:10:16:28 > 0xf001: Robot finished complex command
+2022-04-04__15:10:16:28 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:12:31:49 > 0xf001: To Robot: 0, 93, 45, 37, 100, 53, 49, 222
+2022-04-04__15:12:31:495 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:12:31:495 > 0xf001: From Robot : 0 93 45 37 100 53 49 222
+2022-04-04__15:12:31:495 > 0xf001: Robot still running
+2022-04-04__15:12:36:966 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:12:36:966 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:12:36:966 > 0xf001: Robot finished
+2022-04-04__15:12:36:966 > 0xf001: Robot finished complex command
+2022-04-04__15:12:36:966 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:12:58:973 > 0xf001: To Robot: 0, 93, 30, 37, 100, 53, 49, 222
+2022-04-04__15:12:58:979 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:12:58:979 > 0xf001: From Robot : 0 93 30 37 100 53 49 222
+2022-04-04__15:12:58:979 > 0xf001: Robot still running
+2022-04-04__15:13:02:134 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:13:02:134 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:13:02:134 > 0xf001: Robot finished
+2022-04-04__15:13:02:134 > 0xf001: Robot finished complex command
+2022-04-04__15:13:02:134 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:13:11:867 > 0xf016: 0, 93, 30, 37, 100, 54
+2022-04-04__15:13:13:22 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__15:13:13:226 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:13:13:226 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__15:13:13:226 > 0xf001: Robot still running
+2022-04-04__15:13:14:696 > 0xf010: 0, 93, 30, 37, 100, 54
+2022-04-04__15:13:14:697 > 0xf010: Данные переданы корректно
+2022-04-04__15:13:17:349 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:13:17:349 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:13:17:349 > 0xf001: Robot finished
+2022-04-04__15:13:17:349 > 0xf001: Robot finished complex command
+2022-04-04__15:13:17:349 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:13:17:882 > 0xf001: To Robot: 0, 93, 30, 37, 100, 54, 49, 222
+2022-04-04__15:13:17:888 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:13:17:888 > 0xf001: From Robot : 0 93 30 37 100 54 49 222
+2022-04-04__15:13:17:888 > 0xf001: Robot still running
+2022-04-04__15:13:23:5 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:13:23:5 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:13:23:5 > 0xf001: Robot finished
+2022-04-04__15:13:23:5 > 0xf001: Robot finished complex command
+2022-04-04__15:13:23:5 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:13:31:763 > 0x4444: 0.853516, 0.274479, 0, 93, 30, 37, 100, 54
+2022-04-04__15:13:37:138 > 0xf001: To Robot: 90, 93, 30, 37, 100, 54, 49, 222
+2022-04-04__15:13:37:144 > 0xf001: There are 25 bytes from robot to read
+2022-04-04__15:13:37:144 > 0xf001: From Robot : 90 93 30 37 100 54 49 222
+2022-04-04__15:13:37:144 > 0xf001: Robot still running
+2022-04-04__15:13:39:506 > 0xf001: To Robot: 0, 93, 30, 37, 100, 54, 49, 222
+2022-04-04__15:13:41:055 > 0xf001: There are 32 bytes from robot to read
+2022-04-04__15:13:41:055 > 0xf001: From Robot : Robot movement DONE! LAST !!0 93
+2022-04-04__15:13:41:055 > 0xf001: Robot finished
+2022-04-04__15:13:41:055 > 0xf001: Robot finished complex command
+2022-04-04__15:13:41:055 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:13:41:058 > 0xf001: There are 20 bytes from robot to read
+2022-04-04__15:13:41:058 > 0xf001: From Robot :  30 37 100 54 49 222
+2022-04-04__15:13:41:058 > 0xf001: Robot still running
+2022-04-04__15:13:43:245 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__15:13:44:968 > 0xf001: There are 32 bytes from robot to read
+2022-04-04__15:13:44:968 > 0xf001: From Robot : Robot movement DONE! LAST !!93 9
+2022-04-04__15:13:44:968 > 0xf001: Robot finished
+2022-04-04__15:13:44:968 > 0xf001: Robot finished complex command
+2022-04-04__15:13:44:968 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:13:44:972 > 0xf001: There are 20 bytes from robot to read
+2022-04-04__15:13:44:972 > 0xf001: From Robot : 3 93 93 93 93 48 222
+2022-04-04__15:13:44:972 > 0xf001: Robot still running
+2022-04-04__15:13:49:084 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:13:49:084 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:13:49:084 > 0xf001: Robot finished
+2022-04-04__15:13:49:084 > 0xf001: Robot finished complex command
+2022-04-04__15:13:49:084 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:13:55:314 > 0xf010: 0, 93, 30, 37, 100, 54
+2022-04-04__15:13:55:314 > 0xf010: Данные переданы корректно
+2022-04-04__15:14:09:107 > 0xf001: To Robot: 0, 93, 45, 37, 100, 50, 49, 222
+2022-04-04__15:14:09:113 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:14:09:113 > 0xf001: From Robot : 0 93 45 37 100 50 49 222
+2022-04-04__15:14:09:113 > 0xf001: Robot still running
+2022-04-04__15:14:14:613 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:14:14:613 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:14:14:613 > 0xf001: Robot finished
+2022-04-04__15:14:14:613 > 0xf001: Robot finished complex command
+2022-04-04__15:14:14:613 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:14:21:201 > 0xf001: To Robot: 0, 93, 30, 37, 100, 50, 49, 222
+2022-04-04__15:14:21:207 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:14:21:207 > 0xf001: From Robot : 0 93 30 37 100 50 49 222
+2022-04-04__15:14:21:207 > 0xf001: Robot still running
+2022-04-04__15:14:24:362 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:14:24:362 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:14:24:362 > 0xf001: Robot finished
+2022-04-04__15:14:24:362 > 0xf001: Robot finished complex command
+2022-04-04__15:14:24:362 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:14:27:196 > 0x4444: 0.890495, 0.295312, 0, 93, 30, 37, 100, 54
+2022-04-04__15:15:21:876 > 0xf016: 0, 93, 30, 37, 100, 50
+2022-04-04__15:15:26:197 > 0x4444: 0.889974, 0.294965, 0, 93, 30, 37, 100, 50
+2022-04-04__15:15:39:557 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__15:15:39:563 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:15:39:563 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__15:15:39:563 > 0xf001: Robot still running
+2022-04-04__15:15:43:716 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:15:43:716 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:15:43:716 > 0xf001: Robot finished
+2022-04-04__15:15:43:716 > 0xf001: Robot finished complex command
+2022-04-04__15:15:43:716 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:15:51:237 > 0xf010: 0, 93, 30, 37, 100, 50
+2022-04-04__15:15:51:237 > 0xf010: Данные переданы корректно
+2022-04-04__15:16:05:585 > 0xf001: To Robot: 0, 93, 45, 37, 100, 46, 49, 222
+2022-04-04__15:16:05:591 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:16:05:591 > 0xf001: From Robot : 0 93 45 37 100 46 49 222
+2022-04-04__15:16:05:591 > 0xf001: Robot still running
+2022-04-04__15:16:11:131 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:16:11:131 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:16:11:131 > 0xf001: Robot finished
+2022-04-04__15:16:11:131 > 0xf001: Robot finished complex command
+2022-04-04__15:16:11:131 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:16:26:105 > 0xf016: 0, 93, 35, 37, 100, 45
+2022-04-04__15:16:27:282 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__15:16:27:287 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:16:27:287 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__15:16:27:287 > 0xf001: Robot still running
+2022-04-04__15:16:28:358 > 0xf010: 0, 93, 35, 37, 100, 45
+2022-04-04__15:16:28:359 > 0xf010: Данные переданы корректно
+2022-04-04__15:16:31:33 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:16:31:33 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:16:31:33 > 0xf001: Robot finished
+2022-04-04__15:16:31:33 > 0xf001: Robot finished complex command
+2022-04-04__15:16:31:33 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:16:31:878 > 0xf001: To Robot: 0, 93, 35, 37, 100, 45, 49, 222
+2022-04-04__15:16:31:884 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:16:31:884 > 0xf001: From Robot : 0 93 35 37 100 45 49 222
+2022-04-04__15:16:31:884 > 0xf001: Robot still running
+2022-04-04__15:16:37:536 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:16:37:536 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:16:37:536 > 0xf001: Robot finished
+2022-04-04__15:16:37:536 > 0xf001: Robot finished complex command
+2022-04-04__15:16:37:536 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:16:44:674 > 0xf016: 0, 93, 30, 37, 100, 45
+2022-04-04__15:16:46:114 > 0xf010: 0, 93, 30, 37, 100, 45
+2022-04-04__15:16:46:114 > 0xf010: Данные переданы корректно
+2022-04-04__15:16:47:636 > 0xf001: To Robot: 0, 93, 30, 37, 100, 45, 49, 222
+2022-04-04__15:16:47:642 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:16:47:642 > 0xf001: From Robot : 0 93 30 37 100 45 49 222
+2022-04-04__15:16:47:642 > 0xf001: Robot still running
+2022-04-04__15:16:50:696 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:16:50:696 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:16:50:696 > 0xf001: Robot finished
+2022-04-04__15:16:50:696 > 0xf001: Robot finished complex command
+2022-04-04__15:16:50:696 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:16:55:719 > 0x4444: 0.923437, 0.331771, 0, 93, 30, 37, 100, 45
+2022-04-04__15:16:58:126 > 0xf001: To Robot: 90, 93, 30, 37, 100, 45, 49, 222
+2022-04-04__15:16:58:132 > 0xf001: There are 25 bytes from robot to read
+2022-04-04__15:16:58:132 > 0xf001: From Robot : 90 93 30 37 100 45 49 222
+2022-04-04__15:16:58:132 > 0xf001: Robot still running
+2022-04-04__15:17:02:044 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:17:02:044 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:17:02:044 > 0xf001: Robot finished
+2022-04-04__15:17:02:044 > 0xf001: Robot finished complex command
+2022-04-04__15:17:02:044 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:17:05:544 > 0xf001: To Robot: 0, 93, 30, 37, 100, 45, 49, 222
+2022-04-04__15:17:05:55 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:17:05:55 > 0xf001: From Robot : 0 93 30 37 100 45 49 222
+2022-04-04__15:17:05:55 > 0xf001: Robot still running
+2022-04-04__15:17:09:462 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:17:09:462 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:17:09:462 > 0xf001: Robot finished
+2022-04-04__15:17:09:462 > 0xf001: Robot finished complex command
+2022-04-04__15:17:09:462 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:17:13:507 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__15:17:13:513 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:17:13:513 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__15:17:13:513 > 0xf001: Robot still running
+2022-04-04__15:17:17:717 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:17:17:717 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:17:17:717 > 0xf001: Robot finished
+2022-04-04__15:17:17:717 > 0xf001: Robot finished complex command
+2022-04-04__15:17:17:717 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:17:24:805 > 0xf010: 0, 93, 30, 37, 100, 45
+2022-04-04__15:17:24:806 > 0xf010: Данные переданы корректно
+2022-04-04__15:17:33:117 > 0xf001: To Robot: 0, 93, 30, 37, 100, 40, 49, 222
+2022-04-04__15:17:33:123 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:17:33:123 > 0xf001: From Robot : 0 93 30 37 100 40 49 222
+2022-04-04__15:17:33:123 > 0xf001: Robot still running
+2022-04-04__15:17:38:875 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:17:38:875 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:17:38:875 > 0xf001: Robot finished
+2022-04-04__15:17:38:875 > 0xf001: Robot finished complex command
+2022-04-04__15:17:38:875 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:17:48:179 > 0xf001: To Robot: 90, 93, 30, 37, 100, 40, 49, 222
+2022-04-04__15:17:48:185 > 0xf001: There are 25 bytes from robot to read
+2022-04-04__15:17:48:185 > 0xf001: From Robot : 90 93 30 37 100 40 49 222
+2022-04-04__15:17:48:185 > 0xf001: Robot still running
+2022-04-04__15:17:50:759 > 0xf001: To Robot: 0, 93, 30, 37, 100, 40, 49, 222
+2022-04-04__15:17:52:096 > 0xf001: There are 32 bytes from robot to read
+2022-04-04__15:17:52:096 > 0xf001: From Robot : Robot movement DONE! LAST !!0 93
+2022-04-04__15:17:52:096 > 0xf001: Robot finished
+2022-04-04__15:17:52:096 > 0xf001: Robot finished complex command
+2022-04-04__15:17:52:096 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:17:52:099 > 0xf001: There are 20 bytes from robot to read
+2022-04-04__15:17:52:099 > 0xf001: From Robot :  30 37 100 40 49 222
+2022-04-04__15:17:52:099 > 0xf001: Robot still running
+2022-04-04__15:17:56:011 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:17:56:011 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:17:56:011 > 0xf001: Robot finished
+2022-04-04__15:17:56:011 > 0xf001: Robot finished complex command
+2022-04-04__15:17:56:011 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:18:12:074 > 0x4444: 0.961719, 0.372917, 0, 93, 30, 37, 100, 45
+2022-04-04__15:18:21:326 > 0xf016: 0, 93, 30, 37, 100, 40
+2022-04-04__15:18:24:497 > 0x4444: 0.961719, 0.372917, 0, 93, 30, 37, 100, 40
+2022-04-04__15:18:28:489 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__15:18:28:495 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:18:28:495 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__15:18:28:495 > 0xf001: Robot still running
+2022-04-04__15:18:32:75 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:18:32:75 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:18:32:75 > 0xf001: Robot finished
+2022-04-04__15:18:32:75 > 0xf001: Robot finished complex command
+2022-04-04__15:18:32:75 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:19:59:929 > 0xf010: 0, 93, 30, 37, 100, 40
+2022-04-04__15:19:59:929 > 0xf010: Данные переданы корректно
+2022-04-04__15:20:14:442 > 0xf001: To Robot: 0, 93, 47, 37, 100, 40, 49, 222
+2022-04-04__15:20:14:448 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:20:14:448 > 0xf001: From Robot : 0 93 47 37 100 40 49 222
+2022-04-04__15:20:14:448 > 0xf001: Robot still running
+2022-04-04__15:20:20:029 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:20:20:029 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:20:20:029 > 0xf001: Robot finished
+2022-04-04__15:20:20:029 > 0xf001: Robot finished complex command
+2022-04-04__15:20:20:029 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:20:34:61 > 0xf001: To Robot: 0, 93, 47, 37, 90, 40, 49, 222
+2022-04-04__15:20:34:616 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__15:20:34:616 > 0xf001: From Robot : 0 93 47 37 90 40 49 222
+2022-04-04__15:20:34:616 > 0xf001: Robot still running
+2022-04-04__15:20:37:722 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:20:37:722 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:20:37:722 > 0xf001: Robot finished
+2022-04-04__15:20:37:722 > 0xf001: Robot finished complex command
+2022-04-04__15:20:37:722 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:21:01:741 > 0xf001: To Robot: 0, 93, 32, 30, 90, 40, 49, 222
+2022-04-04__15:21:01:747 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__15:21:01:747 > 0xf001: From Robot : 0 93 32 30 90 40 49 222
+2022-04-04__15:21:01:747 > 0xf001: Robot still running
+2022-04-04__15:21:04:974 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:21:04:974 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:21:04:974 > 0xf001: Robot finished
+2022-04-04__15:21:04:974 > 0xf001: Robot finished complex command
+2022-04-04__15:21:04:974 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:21:20:601 > 0xf001: To Robot: 0, 93, 27, 30, 90, 40, 49, 222
+2022-04-04__15:21:20:607 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__15:21:20:607 > 0xf001: From Robot : 0 93 27 30 90 40 49 222
+2022-04-04__15:21:20:607 > 0xf001: Robot still running
+2022-04-04__15:21:23:661 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:21:23:661 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:21:23:661 > 0xf001: Robot finished
+2022-04-04__15:21:23:661 > 0xf001: Robot finished complex command
+2022-04-04__15:21:23:661 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:21:40:307 > 0xf001: To Robot: 0, 93, 27, 27, 90, 40, 49, 222
+2022-04-04__15:21:40:312 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__15:21:40:312 > 0xf001: From Robot : 0 93 27 27 90 40 49 222
+2022-04-04__15:21:40:312 > 0xf001: Robot still running
+2022-04-04__15:21:43:347 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:21:43:347 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:21:43:347 > 0xf001: Robot finished
+2022-04-04__15:21:43:347 > 0xf001: Robot finished complex command
+2022-04-04__15:21:43:347 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:21:54:582 > 0xf001: To Robot: 90, 93, 27, 27, 90, 40, 49, 222
+2022-04-04__15:21:54:588 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:21:54:588 > 0xf001: From Robot : 90 93 27 27 90 40 49 222
+2022-04-04__15:21:54:588 > 0xf001: Robot still running
+2022-04-04__15:21:57:218 > 0xf001: To Robot: 0, 93, 27, 27, 90, 40, 49, 222
+2022-04-04__15:21:58:499 > 0xf001: There are 32 bytes from robot to read
+2022-04-04__15:21:58:499 > 0xf001: From Robot : Robot movement DONE! LAST !!0 93
+2022-04-04__15:21:58:499 > 0xf001: Robot finished
+2022-04-04__15:21:58:499 > 0xf001: Robot finished complex command
+2022-04-04__15:21:58:499 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:21:58:502 > 0xf001: There are 19 bytes from robot to read
+2022-04-04__15:21:58:502 > 0xf001: From Robot :  27 27 90 40 49 222
+2022-04-04__15:21:58:503 > 0xf001: Robot still running
+2022-04-04__15:22:02:414 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:22:02:414 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:22:02:414 > 0xf001: Robot finished
+2022-04-04__15:22:02:414 > 0xf001: Robot finished complex command
+2022-04-04__15:22:02:414 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:22:03:738 > 0xf016: 0, 93, 27, 27, 90, 40
+2022-04-04__15:22:06:725 > 0x4444: 0.926693, 0.421701, 0, 93, 27, 27, 90, 40
+2022-04-04__15:22:17:453 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__15:22:17:459 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:22:17:459 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__15:22:17:459 > 0xf001: Robot still running
+2022-04-04__15:22:21:805 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:22:21:805 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:22:21:805 > 0xf001: Robot finished
+2022-04-04__15:22:21:805 > 0xf001: Robot finished complex command
+2022-04-04__15:22:21:805 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:22:26:542 > 0xf010: 0, 93, 27, 27, 90, 40
+2022-04-04__15:22:26:542 > 0xf010: Данные переданы корректно
+2022-04-04__15:22:35:466 > 0xf001: To Robot: 0, 93, 27, 27, 90, 45, 49, 222
+2022-04-04__15:22:35:471 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__15:22:35:471 > 0xf001: From Robot : 0 93 27 27 90 45 49 222
+2022-04-04__15:22:35:471 > 0xf001: Robot still running
+2022-04-04__15:22:41:265 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:22:41:266 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:22:41:266 > 0xf001: Robot finished
+2022-04-04__15:22:41:266 > 0xf001: Robot finished complex command
+2022-04-04__15:22:41:266 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:22:45:715 > 0xf016: 0, 93, 27, 27, 90, 45
+2022-04-04__15:22:55:108 > 0x4444: 0.88125, 0.39809, 0, 93, 27, 27, 90, 45
+2022-04-04__15:23:03:48 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__15:23:03:486 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:23:03:486 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__15:23:03:486 > 0xf001: Robot still running
+2022-04-04__15:23:07:781 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:23:07:781 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:23:07:781 > 0xf001: Robot finished
+2022-04-04__15:23:07:781 > 0xf001: Robot finished complex command
+2022-04-04__15:23:07:781 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:23:13:113 > 0xf010: 0, 93, 27, 27, 90, 45
+2022-04-04__15:23:13:113 > 0xf010: Данные переданы корректно
+2022-04-04__15:23:16:731 > 0xf001: To Robot: 0, 93, 27, 27, 90, 50, 49, 222
+2022-04-04__15:23:16:737 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__15:23:16:737 > 0xf001: From Robot : 0 93 27 27 90 50 49 222
+2022-04-04__15:23:16:737 > 0xf001: Robot still running
+2022-04-04__15:23:22:481 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:23:22:481 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:23:22:481 > 0xf001: Robot finished
+2022-04-04__15:23:22:481 > 0xf001: Robot finished complex command
+2022-04-04__15:23:22:481 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:23:25:213 > 0xf016: 0, 93, 27, 27, 90, 50
+2022-04-04__15:23:30:868 > 0x4444: NOT DETECTED0, 93, 27, 27, 90, 50
+2022-04-04__15:23:33:192 > 0x4444: NOT DETECTED0, 93, 27, 27, 90, 50
+2022-04-04__15:24:01:571 > 0x4444: 0.845312, 0.370833, 0, 93, 27, 27, 90, 50
+2022-04-04__15:24:13:215 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__15:24:13:221 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:24:13:221 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__15:24:13:221 > 0xf001: Robot still running
+2022-04-04__15:24:17:465 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:24:17:465 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:24:17:465 > 0xf001: Robot finished
+2022-04-04__15:24:17:465 > 0xf001: Robot finished complex command
+2022-04-04__15:24:17:465 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:24:24:646 > 0xf010: 0, 93, 27, 27, 90, 50
+2022-04-04__15:24:24:646 > 0xf010: Данные переданы корректно
+2022-04-04__15:24:30:28 > 0xf001: To Robot: 0, 93, 27, 27, 90, 55, 49, 222
+2022-04-04__15:24:30:286 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__15:24:30:286 > 0xf001: From Robot : 0 93 27 27 90 55 49 222
+2022-04-04__15:24:30:286 > 0xf001: Robot still running
+2022-04-04__15:24:35:979 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:24:35:979 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:24:35:979 > 0xf001: Robot finished
+2022-04-04__15:24:35:979 > 0xf001: Robot finished complex command
+2022-04-04__15:24:35:979 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:24:44:331 > 0xf016: 0, 93, 27, 27, 90, 55
+2022-04-04__15:24:46:559 > 0x4444: 0.814844, 0.347917, 0, 93, 27, 27, 90, 55
+2022-04-04__15:24:49:26 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__15:24:49:266 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:24:49:266 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__15:24:49:266 > 0xf001: Robot still running
+2022-04-04__15:24:53:46 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:24:53:46 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:24:53:46 > 0xf001: Robot finished
+2022-04-04__15:24:53:46 > 0xf001: Robot finished complex command
+2022-04-04__15:24:53:46 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:24:59:381 > 0xf010: 0, 93, 27, 27, 90, 55
+2022-04-04__15:24:59:381 > 0xf010: Данные переданы корректно
+2022-04-04__15:25:03:839 > 0xf001: To Robot: 0, 93, 27, 27, 90, 60, 49, 222
+2022-04-04__15:25:03:845 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__15:25:03:845 > 0xf001: From Robot : 0 93 27 27 90 60 49 222
+2022-04-04__15:25:03:845 > 0xf001: Robot still running
+2022-04-04__15:25:09:488 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:25:09:488 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:25:09:488 > 0xf001: Robot finished
+2022-04-04__15:25:09:488 > 0xf001: Robot finished complex command
+2022-04-04__15:25:09:488 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:25:22:099 > 0xf016: 0, 93, 27, 27, 90, 60
+2022-04-04__15:25:24:166 > 0x4444: 0.777214, 0.326042, 0, 93, 27, 27, 90, 60
+2022-04-04__15:25:26:582 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__15:25:26:588 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:25:26:588 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__15:25:26:588 > 0xf001: Robot still running
+2022-04-04__15:25:30:73 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:25:30:73 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:25:30:73 > 0xf001: Robot finished
+2022-04-04__15:25:30:73 > 0xf001: Robot finished complex command
+2022-04-04__15:25:30:73 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:25:35:302 > 0xf010: 0, 93, 27, 27, 90, 60
+2022-04-04__15:25:35:303 > 0xf010: Данные переданы корректно
+2022-04-04__15:25:38:12 > 0xf001: To Robot: 0, 93, 27, 27, 90, 65, 49, 222
+2022-04-04__15:25:38:126 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__15:25:38:126 > 0xf001: From Robot : 0 93 27 27 90 65 49 222
+2022-04-04__15:25:38:126 > 0xf001: Robot still running
+2022-04-04__15:25:43:719 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:25:43:719 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:25:43:719 > 0xf001: Robot finished
+2022-04-04__15:25:43:719 > 0xf001: Robot finished complex command
+2022-04-04__15:25:43:719 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:26:24:55 > 0xf016: 0, 93, 27, 27, 90, 65
+2022-04-04__15:26:37:692 > 0x4444: 0.732813, 0.301389, 0, 93, 27, 27, 90, 65
+2022-04-04__15:27:17:951 > 0xf001: To Robot: 0, 93, 27, 27, 82, 65, 49, 222
+2022-04-04__15:27:17:956 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__15:27:17:956 > 0xf001: From Robot : 0 93 27 27 82 65 49 222
+2022-04-04__15:27:17:956 > 0xf001: Robot still running
+2022-04-04__15:27:21:042 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:27:21:042 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:27:21:042 > 0xf001: Robot finished
+2022-04-04__15:27:21:042 > 0xf001: Robot finished complex command
+2022-04-04__15:27:21:042 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:27:31:472 > 0xf001: To Robot: 0, 93, 27, 22, 82, 65, 49, 222
+2022-04-04__15:27:31:478 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__15:27:31:478 > 0xf001: From Robot : 0 93 27 22 82 65 49 222
+2022-04-04__15:27:31:478 > 0xf001: Robot still running
+2022-04-04__15:27:34:533 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:27:34:533 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:27:34:533 > 0xf001: Robot finished
+2022-04-04__15:27:34:533 > 0xf001: Robot finished complex command
+2022-04-04__15:27:34:533 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:27:42:874 > 0xf016: 0, 93, 27, 22, 82, 63
+2022-04-04__15:27:44:16 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__15:27:44:166 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:27:44:166 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__15:27:44:166 > 0xf001: Robot still running
+2022-04-04__15:27:45:966 > 0xf010: 0, 93, 27, 22, 82, 63
+2022-04-04__15:27:45:966 > 0xf010: Данные переданы корректно
+2022-04-04__15:27:48:388 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:27:48:388 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:27:48:388 > 0xf001: Robot finished
+2022-04-04__15:27:48:388 > 0xf001: Robot finished complex command
+2022-04-04__15:27:48:388 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:27:48:924 > 0xf001: To Robot: 0, 93, 27, 22, 82, 63, 49, 222
+2022-04-04__15:27:48:93 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__15:27:48:93 > 0xf001: From Robot : 0 93 27 22 82 63 49 222
+2022-04-04__15:27:48:93 > 0xf001: Robot still running
+2022-04-04__15:27:54:675 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:27:54:675 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:27:54:675 > 0xf001: Robot finished
+2022-04-04__15:27:54:675 > 0xf001: Robot finished complex command
+2022-04-04__15:27:54:675 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:28:05:228 > 0xf001: To Robot: 0, 93, 23, 22, 82, 63, 49, 222
+2022-04-04__15:28:05:233 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__15:28:05:233 > 0xf001: From Robot : 0 93 23 22 82 63 49 222
+2022-04-04__15:28:05:233 > 0xf001: Robot still running
+2022-04-04__15:28:08:278 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:28:08:278 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:28:08:278 > 0xf001: Robot finished
+2022-04-04__15:28:08:278 > 0xf001: Robot finished complex command
+2022-04-04__15:28:08:278 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:28:11:924 > 0xf016: 0, 93, 23, 22, 82, 63
+2022-04-04__15:28:13:679 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__15:28:13:685 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:28:13:685 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__15:28:13:685 > 0xf001: Robot still running
+2022-04-04__15:28:15:052 > 0xf010: 0, 93, 23, 22, 82, 63
+2022-04-04__15:28:15:052 > 0xf010: Данные переданы корректно
+2022-04-04__15:28:17:968 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:28:17:968 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:28:17:968 > 0xf001: Robot finished
+2022-04-04__15:28:17:968 > 0xf001: Robot finished complex command
+2022-04-04__15:28:17:968 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:28:18:804 > 0xf001: To Robot: 0, 93, 23, 22, 82, 63, 49, 222
+2022-04-04__15:28:18:809 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__15:28:18:809 > 0xf001: From Robot : 0 93 23 22 82 63 49 222
+2022-04-04__15:28:18:809 > 0xf001: Robot still running
+2022-04-04__15:28:24:594 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:28:24:594 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:28:24:595 > 0xf001: Robot finished
+2022-04-04__15:28:24:595 > 0xf001: Robot finished complex command
+2022-04-04__15:28:24:595 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:28:30:338 > 0x4444: 0.729297, 0.302431, 0, 93, 23, 22, 82, 63
+2022-04-04__15:28:59:628 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__15:28:59:634 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:28:59:634 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__15:28:59:634 > 0xf001: Robot still running
+2022-04-04__15:29:03:917 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:29:03:917 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:29:03:917 > 0xf001: Robot finished
+2022-04-04__15:29:03:917 > 0xf001: Robot finished complex command
+2022-04-04__15:29:03:917 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:29:13:881 > 0xf010: 0, 93, 23, 22, 82, 63
+2022-04-04__15:29:13:881 > 0xf010: Данные переданы корректно
+2022-04-04__15:29:29:719 > 0xf001: To Robot: 0, 93, 23, 22, 82, 67, 49, 222
+2022-04-04__15:29:29:724 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__15:29:29:724 > 0xf001: From Robot : 0 93 23 22 82 67 49 222
+2022-04-04__15:29:29:724 > 0xf001: Robot still running
+2022-04-04__15:29:35:469 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:29:35:469 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:29:35:469 > 0xf001: Robot finished
+2022-04-04__15:29:35:469 > 0xf001: Robot finished complex command
+2022-04-04__15:29:35:469 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:29:40:477 > 0x4444: 0.688151, 0.283681, 0, 93, 23, 22, 82, 63
+2022-04-04__15:30:03:424 > 0xf016: 0, 93, 23, 22, 82, 67
+2022-04-04__15:30:06:657 > 0x4444: 0.688281, 0.282813, 0, 93, 23, 22, 82, 67
+2022-04-04__15:30:12:936 > 0xf001: To Robot: 90, 93, 23, 22, 82, 67, 49, 222
+2022-04-04__15:30:12:942 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:30:12:942 > 0xf001: From Robot : 90 93 23 22 82 67 49 222
+2022-04-04__15:30:12:942 > 0xf001: Robot still running
+2022-04-04__15:30:16:32 > 0xf001: To Robot: 0, 93, 23, 22, 82, 67, 49, 222
+2022-04-04__15:30:16:852 > 0xf001: There are 32 bytes from robot to read
+2022-04-04__15:30:16:852 > 0xf001: From Robot : Robot movement DONE! LAST !!0 93
+2022-04-04__15:30:16:852 > 0xf001: Robot finished
+2022-04-04__15:30:16:852 > 0xf001: Robot finished complex command
+2022-04-04__15:30:16:852 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:30:16:856 > 0xf001: There are 19 bytes from robot to read
+2022-04-04__15:30:16:856 > 0xf001: From Robot :  23 22 82 67 49 222
+2022-04-04__15:30:16:856 > 0xf001: Robot still running
+2022-04-04__15:30:20:767 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:30:20:767 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:30:20:767 > 0xf001: Robot finished
+2022-04-04__15:30:20:767 > 0xf001: Robot finished complex command
+2022-04-04__15:30:20:767 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:30:22:736 > 0x4444: 0.695573, 0.281424, 0, 93, 23, 22, 82, 67
+2022-04-04__15:30:31:704 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__15:30:31:71 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:30:31:71 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__15:30:31:71 > 0xf001: Robot still running
+2022-04-04__15:30:35:953 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:30:35:953 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:30:35:953 > 0xf001: Robot finished
+2022-04-04__15:30:35:953 > 0xf001: Robot finished complex command
+2022-04-04__15:30:35:953 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:30:45:779 > 0xf010: 0, 93, 23, 22, 82, 67
+2022-04-04__15:30:45:779 > 0xf010: Данные переданы корректно
+2022-04-04__15:30:54:287 > 0xf001: To Robot: 0, 93, 23, 22, 82, 71, 49, 222
+2022-04-04__15:30:54:293 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__15:30:54:293 > 0xf001: From Robot : 0 93 23 22 82 71 49 222
+2022-04-04__15:30:54:293 > 0xf001: Robot still running
+2022-04-04__15:30:59:998 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:30:59:998 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:30:59:998 > 0xf001: Robot finished
+2022-04-04__15:30:59:998 > 0xf001: Robot finished complex command
+2022-04-04__15:30:59:998 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:31:10:63 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__15:31:10:635 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:31:10:635 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__15:31:10:635 > 0xf001: Robot still running
+2022-04-04__15:31:13:135 > 0xf010: 0, 93, 23, 22, 82, 67
+2022-04-04__15:31:13:135 > 0xf010: Данные переданы корректно
+2022-04-04__15:31:14:838 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:31:14:838 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:31:14:838 > 0xf001: Robot finished
+2022-04-04__15:31:14:838 > 0xf001: Robot finished complex command
+2022-04-04__15:31:14:838 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:31:19:108 > 0xf016: 0, 93, 23, 22, 82, 72
+2022-04-04__15:31:20:098 > 0xf010: 0, 93, 23, 22, 82, 72
+2022-04-04__15:31:20:099 > 0xf010: Данные переданы корректно
+2022-04-04__15:31:22:113 > 0xf001: To Robot: 0, 93, 23, 22, 82, 72, 49, 222
+2022-04-04__15:31:22:118 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__15:31:22:118 > 0xf001: From Robot : 0 93 23 22 82 72 49 222
+2022-04-04__15:31:22:118 > 0xf001: Robot still running
+2022-04-04__15:31:27:813 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:31:27:813 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:31:27:813 > 0xf001: Robot finished
+2022-04-04__15:31:27:813 > 0xf001: Robot finished complex command
+2022-04-04__15:31:27:813 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:31:33:747 > 0x4444: 0.652474, 0.280035, 0, 93, 23, 22, 82, 72
+2022-04-04__15:31:36:041 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__15:31:36:047 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:31:36:047 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__15:31:36:047 > 0xf001: Robot still running
+2022-04-04__15:31:40:239 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:31:40:239 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:31:40:239 > 0xf001: Robot finished
+2022-04-04__15:31:40:239 > 0xf001: Robot finished complex command
+2022-04-04__15:31:40:239 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:31:47:19 > 0xf010: 0, 93, 23, 22, 82, 72
+2022-04-04__15:31:47:19 > 0xf010: Данные переданы корректно
+2022-04-04__15:31:50:744 > 0xf001: To Robot: 0, 93, 23, 22, 82, 77, 49, 222
+2022-04-04__15:31:50:75 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__15:31:50:75 > 0xf001: From Robot : 0 93 23 22 82 77 49 222
+2022-04-04__15:31:50:75 > 0xf001: Robot still running
+2022-04-04__15:31:56:394 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:31:56:394 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:31:56:394 > 0xf001: Robot finished
+2022-04-04__15:31:56:394 > 0xf001: Robot finished complex command
+2022-04-04__15:31:56:394 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:32:02:318 > 0xf016: 0, 93, 23, 22, 82, 77
+2022-04-04__15:32:04:495 > 0x4444: 0.614583, 0.258681, 0, 93, 23, 22, 82, 77
+2022-04-04__15:32:07:107 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__15:32:07:113 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:32:07:113 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__15:32:07:113 > 0xf001: Robot still running
+2022-04-04__15:32:11:254 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:32:11:254 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:32:11:254 > 0xf001: Robot finished
+2022-04-04__15:32:11:254 > 0xf001: Robot finished complex command
+2022-04-04__15:32:11:254 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:32:14:164 > 0xf010: 0, 93, 23, 22, 82, 77
+2022-04-04__15:32:14:164 > 0xf010: Данные переданы корректно
+2022-04-04__15:32:20:373 > 0xf016: 0, 93, 23, 22, 82, 82
+2022-04-04__15:32:22:011 > 0xf001: To Robot: 0, 93, 23, 22, 82, 82, 49, 222
+2022-04-04__15:32:22:017 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__15:32:22:017 > 0xf001: From Robot : 0 93 23 22 82 82 49 222
+2022-04-04__15:32:22:017 > 0xf001: Robot still running
+2022-04-04__15:32:27:612 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:32:27:612 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:32:27:612 > 0xf001: Robot finished
+2022-04-04__15:32:27:612 > 0xf001: Robot finished complex command
+2022-04-04__15:32:27:612 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:32:33:998 > 0x4444: 0.580599, 0.231076, 0, 93, 23, 22, 82, 82
+2022-04-04__15:32:36:429 > 0xf001: To Robot: 90, 93, 23, 22, 82, 82, 49, 222
+2022-04-04__15:32:36:435 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:32:36:435 > 0xf001: From Robot : 90 93 23 22 82 82 49 222
+2022-04-04__15:32:36:435 > 0xf001: Robot still running
+2022-04-04__15:32:40:347 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:32:40:347 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:32:40:347 > 0xf001: Robot finished
+2022-04-04__15:32:40:348 > 0xf001: Robot finished complex command
+2022-04-04__15:32:40:348 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:32:41:391 > 0xf001: To Robot: 0, 93, 23, 22, 82, 82, 49, 222
+2022-04-04__15:32:41:397 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__15:32:41:397 > 0xf001: From Robot : 0 93 23 22 82 82 49 222
+2022-04-04__15:32:41:397 > 0xf001: Robot still running
+2022-04-04__15:32:45:309 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:32:45:309 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:32:45:309 > 0xf001: Robot finished
+2022-04-04__15:32:45:309 > 0xf001: Robot finished complex command
+2022-04-04__15:32:45:309 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:32:48:954 > 0x4444: 0.567578, 0.213194, 0, 93, 23, 22, 82, 82
+2022-04-04__15:32:55:302 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__15:32:55:308 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:32:55:315 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__15:32:55:315 > 0xf001: Robot still running
+2022-04-04__15:32:59:398 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:32:59:398 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:32:59:398 > 0xf001: Robot finished
+2022-04-04__15:32:59:398 > 0xf001: Robot finished complex command
+2022-04-04__15:32:59:398 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:33:03:821 > 0xf010: 0, 93, 23, 22, 82, 82
+2022-04-04__15:33:03:821 > 0xf010: Данные переданы корректно
+2022-04-04__15:33:08:383 > 0xf001: To Robot: 0, 93, 23, 22, 82, 87, 49, 222
+2022-04-04__15:33:08:388 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__15:33:08:388 > 0xf001: From Robot : 0 93 23 22 82 87 49 222
+2022-04-04__15:33:08:388 > 0xf001: Robot still running
+2022-04-04__15:33:13:933 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:33:13:933 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:33:13:933 > 0xf001: Robot finished
+2022-04-04__15:33:13:933 > 0xf001: Robot finished complex command
+2022-04-04__15:33:13:933 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:33:29:626 > 0xf016: 0, 93, 23, 22, 82, 89
+2022-04-04__15:33:37:502 > 0xf016: 0, 93, 23, 18, 82, 89
+2022-04-04__15:33:38:565 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__15:33:38:571 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:33:38:571 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__15:33:38:571 > 0xf001: Robot still running
+2022-04-04__15:33:39:67 > 0xf010: 0, 93, 23, 18, 82, 89
+2022-04-04__15:33:39:67 > 0xf010: Данные переданы корректно
+2022-04-04__15:33:42:611 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:33:42:611 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:33:42:611 > 0xf001: Robot finished
+2022-04-04__15:33:42:612 > 0xf001: Robot finished complex command
+2022-04-04__15:33:42:612 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:33:43:342 > 0xf001: To Robot: 0, 93, 23, 18, 82, 89, 49, 222
+2022-04-04__15:33:43:348 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__15:33:43:348 > 0xf001: From Robot : 0 93 23 18 82 89 49 222
+2022-04-04__15:33:43:348 > 0xf001: Robot still running
+2022-04-04__15:33:48:913 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:33:48:913 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:33:48:913 > 0xf001: Robot finished
+2022-04-04__15:33:48:926 > 0xf001: Robot finished complex command
+2022-04-04__15:33:48:926 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:34:02:566 > 0xf001: To Robot: 0, 93, 27, 18, 82, 89, 49, 222
+2022-04-04__15:34:02:572 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__15:34:02:572 > 0xf001: From Robot : 0 93 27 18 82 89 49 222
+2022-04-04__15:34:02:572 > 0xf001: Robot still running
+2022-04-04__15:34:05:616 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:34:05:616 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:34:05:616 > 0xf001: Robot finished
+2022-04-04__15:34:05:616 > 0xf001: Robot finished complex command
+2022-04-04__15:34:05:616 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:34:12:02 > 0xf001: To Robot: 0, 93, 30, 18, 82, 89, 49, 222
+2022-04-04__15:34:12:025 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__15:34:12:025 > 0xf001: From Robot : 0 93 30 18 82 89 49 222
+2022-04-04__15:34:12:025 > 0xf001: Robot still running
+2022-04-04__15:34:15:059 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:34:15:059 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:34:15:06 > 0xf001: Robot finished
+2022-04-04__15:34:15:06 > 0xf001: Robot finished complex command
+2022-04-04__15:34:15:06 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:34:17:531 > 0xf016: 0, 93, 30, 18, 82, 89
+2022-04-04__15:34:19:438 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__15:34:19:444 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:34:19:444 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__15:34:19:444 > 0xf001: Robot still running
+2022-04-04__15:34:20:519 > 0xf010: 0, 93, 30, 18, 82, 89
+2022-04-04__15:34:20:519 > 0xf010: Данные переданы корректно
+2022-04-04__15:34:23:435 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:34:23:435 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:34:23:435 > 0xf001: Robot finished
+2022-04-04__15:34:23:435 > 0xf001: Robot finished complex command
+2022-04-04__15:34:23:435 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:34:25:907 > 0xf001: To Robot: 0, 93, 30, 18, 82, 89, 49, 222
+2022-04-04__15:34:25:913 > 0xf001: There are 23 bytes from robot to read
+2022-04-04__15:34:25:913 > 0xf001: From Robot : 0 93 30 18 82 89 49 222
+2022-04-04__15:34:25:913 > 0xf001: Robot still running
+2022-04-04__15:34:31:407 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:34:31:407 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:34:31:407 > 0xf001: Robot finished
+2022-04-04__15:34:31:407 > 0xf001: Robot finished complex command
+2022-04-04__15:34:31:407 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:34:36:076 > 0x4444: 0.508724, 0.189931, 0, 93, 30, 18, 82, 89
+2022-04-04__15:34:38:565 > 0xf001: To Robot: 90, 93, 30, 18, 82, 89, 49, 222
+2022-04-04__15:34:38:571 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:34:38:571 > 0xf001: From Robot : 90 93 30 18 82 89 49 222
+2022-04-04__15:34:38:571 > 0xf001: Robot still running
+2022-04-04__15:34:42:303 > 0xf001: To Robot: 0, 93, 30, 18, 82, 89, 49, 222
+2022-04-04__15:34:42:482 > 0xf001: There are 32 bytes from robot to read
+2022-04-04__15:34:42:482 > 0xf001: From Robot : Robot movement DONE! LAST !!0 93
+2022-04-04__15:34:42:482 > 0xf001: Robot finished
+2022-04-04__15:34:42:482 > 0xf001: Robot finished complex command
+2022-04-04__15:34:42:482 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:34:42:485 > 0xf001: There are 19 bytes from robot to read
+2022-04-04__15:34:42:485 > 0xf001: From Robot :  30 18 82 89 49 222
+2022-04-04__15:34:42:485 > 0xf001: Robot still running
+2022-04-04__15:34:46:397 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:34:46:397 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:34:46:397 > 0xf001: Robot finished
+2022-04-04__15:34:46:397 > 0xf001: Robot finished complex command
+2022-04-04__15:34:46:397 > 0xfaaa: Demo cycle finished !!!
+2022-04-04__15:34:47:544 > 0x4444: 0.495833, 0.184549, 0, 93, 30, 18, 82, 89
+2022-04-04__15:34:56:29 > 0xf001: To Robot: 93, 93, 93, 93, 93, 93, 48, 222
+2022-04-04__15:34:56:296 > 0xf001: There are 24 bytes from robot to read
+2022-04-04__15:34:56:296 > 0xf001: From Robot : 93 93 93 93 93 93 48 222
+2022-04-04__15:34:56:296 > 0xf001: Robot still running
+2022-04-04__15:35:00:286 > 0xf001: There are 28 bytes from robot to read
+2022-04-04__15:35:00:286 > 0xf001: From Robot : Robot movement DONE! LAST !!
+2022-04-04__15:35:00:286 > 0xf001: Robot finished
+2022-04-04__15:35:00:286 > 0xf001: Robot finished complex command
+2022-04-04__15:35:00:286 > 0xfaaa: Demo cycle finished !!!

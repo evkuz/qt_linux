@@ -1,0 +1,26 @@
+60 93 120 35 145 30
+60, 93, 120, 35, 135, 35
+60, 93, 100, 35, 135, 35
+GET /run?cmd=status&sdlfjg
+
+60, 93, 100, 35, 145, 35 - по высоте.
+
+90, 90, 90, 90, 90,90
+- открыли захват
+- 0 93 150 45 155 35 - подняли 
+90, 90, 90, 90, 90,90
+
+
+Не в том классе была задана переменная, ответственная за статус. В моем проекте  "Robot" - объект класса, занимающегося управлением роботом. А "server" - объект класса, занимающегося обменом сообщений по TCP, и в нем есть переменная "current_status", ответственная за статус, соответственно, нужно было менять значение переменной "server.current_status",  .  
+
+
+
+
+Error connecting. Path:../../simpledetector_cpp/iqr.socketText
+
+ТОгда как 
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , readSocket("../../simpledetector_cpp/iqr.socket")
+    , ui(new Ui::MainWindow)
+{
