@@ -5,6 +5,7 @@
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
+    setlocale(LC_NUMERIC,"C");
 
     // Запускаем основной поток, где обмен с TCP-сервером, роботом, запись в лог и т.д.
     MainProcess processor;

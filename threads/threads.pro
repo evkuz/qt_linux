@@ -34,6 +34,7 @@ HEADERS += \
     mcinfer.h \
     move_servos.h \
     neuron.h \
+    neuron.h \
     positions.h \
     hiwonder.h \
     qsimpleserver.h \

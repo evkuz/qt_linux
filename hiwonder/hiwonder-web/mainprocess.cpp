@@ -13,7 +13,7 @@
 
 MainProcess::MainProcess(QObject *parent)
     : QObject(parent)
-    , readSocket("../../simpledetector_cpp/iqr.socket")
+    , readSocket("../iqr.socket")
 
 {
 
@@ -95,7 +95,7 @@ MainProcess::MainProcess(QObject *parent)
     //+++++++++++++++ ОТкрываем порт Open_Port_Signal(QString portname); ttyUSB0
     // Arduino NANO виден как ttyUSB0
     // Arduino Mega - как
-    emit Open_Port_Signal("ttyUSB0");
+    emit Open_Port_Signal("ttyUSB1");
     //make_json_answer();
 
     //+++++++++ Проверяем, что работает QSerialPort
@@ -377,8 +377,9 @@ void MainProcess::on_trainButton_clicked()
 
 
     DetectorState state;
-    QString str;
+    QString str, fstr;
     str = "";
+    fstr = "";
 //Сразу открываем захват
 //    if (ui->servo_1_lineEdit->text().toInt() > 0){ ui->servo_1_lineEdit->setText("0"); Servos[0]=0;}
 //    else {ui->servo_1_lineEdit->setText("160"); Servos[0]=160;}
@@ -388,13 +389,31 @@ void MainProcess::on_trainButton_clicked()
     if (readSocket.GetState(&state) == 0)
       {
         if (state.isDetected){
+
+                        //state.objectX = 0.1234;
+                        //state.objectY = 0.5678;
+
+
+            str = "Just float values of state : ";
+            fstr.setNum(state.objectX);
+            str += fstr;
+            str += ", ";
+            fstr.setNum(state.objectY);
+            str += fstr;
+            GUI_Write_To_Log(0xf014, str);
+
+
             try_mcinfer(state.objectX, state.objectY); // Тут меняем current_status = "inprogress". Команда 0 - Переместить открытый хват к кубику.
             X = state.objectX;                        //  Хват открывается в процессе движения робота, а не отдельной командой.
             Y = state.objectY;
-            str+="DETECTED: ";
-            str += QString::number(state.objectX);
+            std::cout << "DETECTED: " << state.objectX << " " << state.objectY << std::endl;
+            //str += QString::number(state.objectX);
+            fstr.setNum(state.objectX);
+            str += fstr;
             str += ", ";
-            str += QString::number(state.objectY);
+            //str += QString::number(state.objectY);
+            fstr.setNum(state.objectY);
+            str += fstr;
             DETECTED = true;
 
         } else {
@@ -526,7 +545,7 @@ void MainProcess::Data_From_Web_SLot(QString message)
  //this->ui->threadlabel->setText(QString::number(thread_counter));
 }
 //+++++++++++++++++++++++++++++++++++++++++++++++++++
-//+++++++ Получили данне (запрос) от клиента. Парсим.
+//+++++++ Получили данные (запрос) от клиента. Парсим.
 void MainProcess::Data_From_TcpClient_Slot(QString message)
 {
     QString str, substr;
