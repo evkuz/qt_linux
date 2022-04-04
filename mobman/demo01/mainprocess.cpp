@@ -914,7 +914,7 @@ void MainProcess::traversJson(QJsonObject json_obj)
 // Пробелы допускаются до и после «структурных символов» (structural characters) []{}:,
 // QString (данные от CV-Device) -> QJsonDocument -> QJsonObject и вот дальше надо парсить.
 
-void MainProcess::parseJSON(QString jsnData)
+double MainProcess::parseJSON(QString jsnData)
 {
     int value = 0xC7C7;
     QString str, substr;
@@ -949,7 +949,7 @@ void MainProcess::parseJSON(QString jsnData)
           GUI_Write_To_Log(value, str);
    }       //return;
 
-  //Get the main JSON object and get the datas in it
+  //Get the main JSON object and get the data in it
   jsnObj = jsnDoc.object();
 
 
@@ -961,11 +961,15 @@ void MainProcess::parseJSON(QString jsnData)
   GUI_Write_To_Log(value, "!!!!!!!!!!!!!!!!!!!! Get back from recursive parsing !!!!!!!!!!!!!!!!!!!!");
 
 //  // Парсинг JSON закончили, получили глобальную переменную  jsndataObj - это объект "data" : {}. Извлекаем из него данные.
-//  double cvdistance = jsndataObj.value("distance").toDouble();
-//  str = "Got distance value as double : ";
-//  str += QString::number(cvdistance);
+  // Вот тут мы откуда-то знаем, что есть ключ "distance"... А если его нет ? надо допиливать...
+  double cvdistance = jsndataObj.value("distance").toDouble();
+  str = "Got distance value as double : ";
+  str += QString::number(cvdistance);
 
-  //  GUI_Write_To_Log(value, str);
+    GUI_Write_To_Log(value, str);
+
+    // Возвращаем distance
+    return cvdistance;
 }
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 int MainProcess::getIndexCommand(QString myCommand, QList<QString> theList)
@@ -1535,22 +1539,26 @@ void MainProcess::CV_NEW_onReadyRead_Slot()
     GUI_Write_To_Log(value, nextTcpdata);
 
     // Запускаю JSON-парсинг
-   // parseJSON(nextTcpdata);
+   double cvdistance = parseJSON(nextTcpdata);
 
-    message = nextTcpdata;
-    int sPosition, ePosition; // Индекс строки run в запросе.
-    sPosition = message.indexOf("distance");
-    if (sPosition <0) return; // Когда сообщение приходит  частями и в этой части нет слова distance, нам такакя часть неинтересна.
+   // Всё, что ниже - old scool :), все решает json-парсинг
 
-    sPosition += 11;
-    ePosition = message.indexOf("}", sPosition);
-    substr = message.mid(sPosition, (ePosition - sPosition));
+//    message = nextTcpdata;
+//    int sPosition, ePosition; // Индекс строки run в запросе.
+//    sPosition = message.indexOf("distance");
+//    if (sPosition <0) return; // Когда сообщение приходит  частями и в этой части нет слова distance, нам такакя часть неинтересна.
+
+//    sPosition += 11;
+//    ePosition = message.indexOf(",", sPosition);
+//    substr = message.mid(sPosition, (ePosition - sPosition));
 
 
     // Теперь получили значение distance, оно осталось в локальной переменной cvdistance в функции parseJSON
     // Парсинг JSON закончили, получили глобальную переменную  jsndataObj - это объект "data" : {}. Извлекаем из него данные.
    // double cvdistance = jsndataObj.value("distance").toDouble();
-     double cvdistance = substr.toDouble();
+
+   // double cvdistance = substr.toDouble();
+
     str = "Got distance in local value as double : ";
     str += QString::number(cvdistance);
 

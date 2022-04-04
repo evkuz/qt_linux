@@ -158,7 +158,7 @@ public:
      int my_round(int n); // Округление целого числа до ближайшего кратного 10
 
    void traversJson(QJsonObject json_obj); // Рекурсивный Парсинг JSON
-   void parseJSON(QString jsnData); // Парсинг JSON из HTTP
+   double parseJSON(QString jsnData); // Парсинг JSON из HTTP
 
    int getIndexCommand(QString myCommand, QList<QString> theList);
    void ProcessAction (HiWonder::ActionState * actionName);
