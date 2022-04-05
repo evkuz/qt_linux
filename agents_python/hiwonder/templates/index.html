@@ -1,0 +1,67 @@
+<html>
+  <head>
+    <title>Hiwonder http server</title>
+    <script>
+      deviceAddr = "{{device_addr}}";
+
+      async function sendRequest(addr){
+        let url = deviceAddr + addr;
+        let response = await fetch(url);
+        if (response.ok) { // если HTTP-статус в диапазоне 200-299
+          // получаем тело ответа (см. про этот метод ниже)
+          let json = await response.json();
+          if (json.rc == 0) {
+              return true;
+          }
+        }
+        return false;
+      }
+
+      async function getInfo(addr){
+        let url = deviceAddr + addr;
+        let response = await fetch(url);
+        if (response.ok) { // если HTTP-статус в диапазоне 200-299
+          // получаем тело ответа (см. про этот метод ниже)
+          let json = await response.json();
+          if (json.rc == 0) {
+            alert(JSON.stringify(json.data));  
+            return true;
+          }
+        }
+        return false;
+      }
+    </script>
+
+    <style>
+      .button {
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>HIWONDER http server</h1>
+    <div style="width:640px; height:480px;" id="videobox">
+      <img src="{{ url_for('video_feed') }}">
+      <canvas id="videobox_canvas" width="640" height="480" style="border:0px; position:relative; top:-480px;"></canvas>
+    </div>
+    <p><strong>Communication links:</strong></p>
+    <ul>
+      <li><b><a href="/status">status</a></b></li>
+      <li><b><a href="/service?name=getservices">getservices</a></b></li>
+      <li><b><a href="/service?name=getactions">getactions</a></b></li>
+    </ul>
+
+    <p><strong>Useful links:</strong></p>
+    <ul>
+      <li><b><a class="button" onclick="getInfo('service?name=getposition');">Ask info from GetPosition</a> ({{device_addr}}service?name=getposition)</b></li><br/>
+      <li><b><a class="button" onclick="getInfo('service?name=restartsocket');">Restart socket server</a></b></li>
+    </ul>
+    <p><strong>For "QT Hiwonder"</strong></p>
+    <ul>
+      <li><b><a class="button" onclick="fetch('http://192.168.1.175:8383/run?cmd=reset&');">RESET</a></b></li>
+      <li><b><a class="button" onclick="fetch('http://192.168.1.175:8383/run?cmd=start&');">START</a></b></li>
+    </ul>
+    <script src="static/camcalib.js"></script>
+    <script>set_device_addr("{{device_addr}}")</script>
+  </body>
+</html>

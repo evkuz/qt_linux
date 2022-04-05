@@ -16,12 +16,15 @@
 <link href="style/type/fontello.css" rel="stylesheet">
 <script>
   iqrSupervisor = {
-    manipulatorAddr: "http://192.168.1.175:8383/",
-    manipulatorCameraAddr: "http://192.168.1.175:5555/",
+    hiwounder_addr: "http://192.168.1.175:8383/",
+    hiwounder_camera_addr: "http://192.168.1.175:5555/",
     //manipulatorCameraAddr: "http://159.93.44.84:5555/",
-    wheeltecAddr: "http://192.168.1.80:5001/",
-    pinkmanAddr: "http://192.168.1.177:5001/",
-    xrrobotAddr: "http://192.168.1.98:5000/",
+    wheeltec_addr: "http://192.168.1.80:5001/",
+    pinkman_addr: "http://192.168.1.177:5001/",
+    blueman_addr: "http://192.168.1.177:5001/",
+    xrrobot_addr: "http://192.168.1.98:5000/",
+    mobman_addr: "http://192.168.1.177:5001/",
+    mobman_camera_addr: "http://192.168.1.177:5001/",
     updateStateInterval: 400,
     tpInterval: 500
   };
@@ -39,7 +42,7 @@
   <div class="dark-wrapper intro">
     <div class="container inner">
       <h1> Robot Control Center </h1>
-      <p>Simulation of the target installation.</p>
+      <p>Cycle presentation.</p>
       <div style="float:right;margin-top:-49px;display:none;">
         <a class="btn btn-red" id="start_tp">Start tech process</a>
       </div>
@@ -57,56 +60,93 @@
       <div class="row text-center services-1 dark-wrapper">
         <div class="col-sm-2">
           <div class="col-wrapper" style="padding:30px 10px;">
-            <a class="btn btn-green" id="step1" onclick="bmStart(iqrSupervisor);">Step 1</a>
+            <a class="btn btn-green" id="step1" onclick="step1(iqrSupervisor);">Step 1</a>
             <div class="divide20"></div>
             <div style="height:80px; clear:both; text-align:left; vertical-align:top;">
-              <p>Find cube, take it with blue manipulator and put it to mobile robot.</p>
+              <p>Pinkman - захват кубика; XRRobot - встать на позицию приёма кубика</p>
             </div>
           </div>
         </div>
         <div class="col-sm-2">
           <div class="col-wrapper" style="padding:30px 10px;">
-            <a class="btn btn-green" id="step2" onclick="m1Transfer(iqrSupervisor);">Step 2</a>
+            <a class="btn btn-green" id="step2" onclick="step2(iqrSupervisor);">Step 2</a>
             <div class="divide20"></div>
             <div style="height:80px; clear:both; text-align:left; vertical-align:top;">
-              <p>Transfer cube from blue manipulator to pink manipulator.</p>
+              <p>PinkMan - установить кубик на XRRobot.</p>
             </div>          
           </div>
         </div>
         <div class="col-sm-2">
           <div class="col-wrapper" style="padding:30px 10px;">
-            <a class="btn btn-green" id="step3" onclick="pmCatchCube(iqrSupervisor);">Step 3</a>
+            <a class="btn btn-green" id="step3" onclick="step3(iqrSupervisor);">Step 3</a>
             <div class="divide20"></div>
             <div style="height:80px; clear:both; text-align:left; vertical-align:top;">
-              <p>Take cube with pink manipulator.</p>
+              <p>XRRobot - переместиться к Hiwonder; PinkMan - вернуться в стартовое положение.</p>
             </div>          
           </div>
         </div>
         <div class="col-sm-2">
           <div class="col-wrapper" style="padding:30px 10px;">
-            <a class="btn btn-green" id="step4" onclick="m1MoveBack(iqrSupervisor);">Step 4</a>
+            <a class="btn btn-green" id="step4" onclick="step4(iqrSupervisor);">Step 4</a>
             <div class="divide20"></div>
             <div style="height:80px; clear:both; text-align:left; vertical-align:top;">
-              <p>Move mobile robot back.</p>
+              <p>Hiwonder - захватить кубик.</p>
             </div>          
           </div>
         </div>
         <div class="col-sm-2">
           <div class="col-wrapper" style="padding:30px 10px;">
-            <a class="btn btn-green" id="step5" onclick="pmPutCube(iqrSupervisor);">Step 5</a>
+            <a class="btn btn-green" id="step5" onclick="step5(iqrSupervisor);">Step 5</a>
             <div class="divide20"></div>
             <div style="height:80px; clear:both; text-align:left; vertical-align:top;">
-              <p>Put cube to pink platform of second mobile robot.</p>
+              <p>Hiwonder - положить кубик; Mobman - переместиться к пункту захвата кубика.</p>
             </div>
           </div>
         </div>
-        <div class="col-sm-2">
-          <div class="col-wrapper" style="padding:30px 10px;">
-            <a class="btn btn-green" id="step6" onclick="m2Transfer(iqrSupervisor);">Step 6</a>
-            <div class="divide20"></div>
-            <div style="height:80px; clear:both; text-align:left; vertical-align:top;">
-              <p>Transfer cube with second mobile robot.</p>
-            </div>
+    </div>
+    <div class="row text-center services-1 dark-wrapper">
+      <div class="col-sm-2">
+        <div class="col-wrapper" style="padding:30px 10px;">
+          <a class="btn btn-green" id="step6" onclick="step6(iqrSupervisor);">Step 6</a>
+          <div class="divide20"></div>
+          <div style="height:80px; clear:both; text-align:left; vertical-align:top;">
+            <p>Mobman_camera - захватить кубик (подъехать, схватить).</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-2">
+        <div class="col-wrapper" style="padding:30px 10px;">
+          <a class="btn btn-green" id="step7" onclick="step7(iqrSupervisor);">Step 1</a>
+          <div class="divide20"></div>
+          <div style="height:80px; clear:both; text-align:left; vertical-align:top;">
+            <p>obman - переместиться к Blueman. Wheeltec переместиться к Blueman.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-2">
+        <div class="col-wrapper" style="padding:30px 10px;">
+          <a class="btn btn-green" id="step8" onclick="step8(iqrSupervisor);">Step 1</a>
+          <div class="divide20"></div>
+          <div style="height:80px; clear:both; text-align:left; vertical-align:top;">
+            <p>Blueman - захватить кубик.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-2">
+        <div class="col-wrapper" style="padding:30px 10px;">
+          <a class="btn btn-green" id="step9" onclick="step9(iqrSupervisor);">Step 1</a>
+          <div class="divide20"></div>
+          <div style="height:80px; clear:both; text-align:left; vertical-align:top;">
+            <p>Blueman - установить кубик на Wheeltec.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-2">
+        <div class="col-wrapper" style="padding:30px 10px;">
+          <a class="btn btn-green" id="step10" onclick="step10(iqrSupervisor);">Step 1</a>
+          <div class="divide20"></div>
+          <div style="height:80px; clear:both; text-align:left; vertical-align:top;">
+            <p>Wheeltec - переместиться к Pinkman; Blueman - вернуться в стартовое положение.</p>
           </div>
         </div>
       </div>

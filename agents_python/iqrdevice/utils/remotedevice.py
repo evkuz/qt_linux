@@ -37,7 +37,7 @@ class RemoteDevice:
         if len(addr_addition) > 0 and addr_addition[0] != '/':
             addr_addition = '/' + addr_addition
         url = self.addr + addr_addition
-        return self.__send_get_request(url, dict())
+        return self.__send_get_request(url, None)
     
     def wait_for_action_finished(self, actionName:str=None):
         while True:
@@ -58,12 +58,14 @@ class RemoteDevice:
 
     def __send_get_request(self, url, params):
         try:
-            resp = requests.get(url=url, params=params)
-            data = resp.json()
-            return data
+            resp = requests.get(url=url, params=params, timeout=30)
         except Exception as e:
             raise e
-
+        try:
+            data = resp.json()
+        except Exception as e:
+            return resp.text
+        return data
 
 if __name__ == '__main__':
     dev = RemoteDevice("http://192.168.1.201:5001")

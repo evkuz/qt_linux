@@ -1,0 +1,21 @@
+[Unit]
+Description=Hiwonder http server daemon
+After=network.target
+
+[Service]
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/home/ubuntu/agents_python/hiwonder
+ExecStart=/home/ubuntu/agents_python/.venv/bin/python \
+          /home/ubuntu/agents_python/hiwonder/runner.py >> "/home/ubuntu/agents_python/hiwonder/error.log"
+Type=simple
+ExecReload=/bin/kill -s HUP $MAINPID
+KillMode=mixed
+TimeoutStopSec=5
+PrivateTmp=true
+Restart=always
+Environment="PYTHONPATH=/home/ubuntu/agents_python/hiwonder"
+Environment="FLASK_ENV=config.ProductionConfig"
+
+[Install]
+WantedBy=multi-user.target

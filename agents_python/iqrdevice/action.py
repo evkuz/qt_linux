@@ -96,6 +96,22 @@ class BaseAction:
         """
         raise NotImplementedError()
 
+    def make_info(self, description:str, parameters:dict={}, statuses:dict=None):
+        if statuses is None:
+            statuses = {
+                "none": "action hasn't been performed yet",
+                "init": "action has just been performed",
+                "run": "action is performong now",
+                "succsess": "action finished succesfully",
+                "fail": "action failed"
+            }
+        return {
+            "name":self.Name,
+            "description": description,
+            "parameters": parameters,
+            "statuses": statuses
+        }
+
     def run(self, **kwargs) -> int:
         if self.__thread is None:
             self.__thread = threading.Thread(target=self.__run_thread_work, kwargs=kwargs)
