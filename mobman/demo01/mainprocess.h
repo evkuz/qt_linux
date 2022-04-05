@@ -14,9 +14,20 @@
 #include <stdint.h>
 #include <QFile>
 #include <QList>
+#include <QDateTime>
+#include <QTime>
 #include "hiwonder.h"  // hiwonder class
 #include "qsimpleserver.h"
 #include "cvdevice.h"
+#include "protocol.h"
+
+#include "clientsocket.h"
+
+#include <QJsonDocument>
+#include <QJsonParseError>
+#include <QJsonObject>
+#include <QJsonValue>
+#include <QJsonArray>
 
 
 //#include "SocketClient.h"
@@ -28,6 +39,7 @@
 
 
 #include <QTcpSocket>
+#include <QDataStream>
 //QT_BEGIN_NAMESPACE
 //namespace Ui { class MainProcess; }
 //QT_END_NAMESPACE
@@ -60,8 +72,9 @@ public:
     //QTcpServer* m_pTCPServer;
 
     QSimpleServer server;
-    QTcpSocket* socketCV;
-    CVDevice* CVdevice;
+    QTcpSocket *socketCV;
+    CVDevice *CVdevice;
+    QThread *threadCV;
 
     //+++++++++++++++++++++++++++++ Threads +++++++++++++++
     int thread_counter ;
@@ -70,11 +83,26 @@ public:
 
     ordered_json jsnStatus; // Ответ на запрос статуса в формате json
     ordered_json jsnAction;  // Ответ на команду Action в формате json
-    //QJsonObject qjsnStatus;
+    ordered_json jsnGetServicesAnswer; // Ответ на команду "/service?name=getservices"
+    ordered_json jsnGetActionsAnswer; // Ответ на команду "/service?name=getactions"
+
+
+    QJsonDocument jsnDoc;    // json-данные, полученные по tcp
+    QJsonObject   jsnObj;    // ОБъект, хранящий весь JSON ответ от девайса
+    QJsonObject   jsndataObj;// ОБъект, хранящий вложенный JSON-объект (вложенный внутри ответа jsnObj)
+                             //   Тут как раз данные о distance
+    QJsonObject   jsnActionAnswer; // Ответ на команду Action в формате json
+    QJsonObject   jsnStatusActionAnswer; // Ответ на команду "status?action=getbox" в формате json
+
+    //QJsonObject   jsnGetServicesAnswer; // Ответ на команду "/service?name=service_name"
+
+    QJsonParseError jsonError; // ОШибка, если полученные данные - не JSON-объект
+
 
 
 //#define
 #define FORWARD     0X31 //049
+#define BACKWARD    0X30 //048
 #define NOT_LAST    0xC8 //200  // Не последняя команда
 #define LASTONE     0xDE //222  // Последняя команда роботу при комплексном движении
 #define BEFORE_LAST 0xE9 //233  // Предпоследняя команда - положить кубик на тележку.
@@ -86,16 +114,21 @@ public:
 #define RC_SUCCESS 0        // запрос выполнен успешно
 #define RC_WRONG_VALUE -1   // неверные параметры
 #define RC_UNDEFINED -2     // action с таким именем не найден
+#define RC_FAIL      -3     // Ошибка самого манипулятора, не открыт serial port
 
 #define AC_RUNNING 0        // action запущен
 #define AC_WRONG_VALUE -1   // action с таким именем не найден
 #define AC_FAILURE -2       // action с таким именем не запустился
 #define AC_ALREADY_HAVE -3  // action с таким именем уже запущен
 
+
 //+++++++++++++++++++++ CV device
 
 #define CVDev_IP     "192.168.1.201"//"192.168.1.201"
 #define CVDev_Port   5001
+#define ARMDev_IP    CVDev_IP
+#define ARMDev_Port  8383
+
 
     QString currentTcpdata; //Нужно, чтоб была глобальная.
     QDataStream in; // НА считывание данных из сокета CV
@@ -106,7 +139,9 @@ public:
     bool DETECTED; // Флаг, показывающий, сработал ли захват изображения.
 
     int parcel_size ;
-    unsigned char Servos [DOF] = {93,93,93,93};
+    unsigned char Servos [DOF] = {70,90,45,180};//==formoving position //{93,93,93,93};
+
+    unsigned int CVDistance;
 
     //void update_data_from_sliders(int index, int value);
 
@@ -122,6 +157,11 @@ public:
     void request_New_CV();
      int my_round(int n); // Округление целого числа до ближайшего кратного 10
 
+   void traversJson(QJsonObject json_obj); // Рекурсивный Парсинг JSON
+   double parseJSON(QString jsnData); // Парсинг JSON из HTTP
+
+   int getIndexCommand(QString myCommand, QList<QString> theList);
+   void ProcessAction (HiWonder::ActionState * actionName);
 
 private:
 //    SocketClient readSocket;
@@ -130,14 +170,19 @@ public slots:
 void Data_From_Web_SLot(QString message);
 void Data_From_TcpClient_Slot(QString);
 
+void Data_from_TcpServer_Slot(QString tcpData);
+
 void newConnection_Slot();
 void server_New_Connect_Slot();
 
 void onSocketConnected_Slot(); // Слот обработки сигнала void QAbstractSocket::connected()
 void CV_onReadyRead_Slot();    // Слот обработка сигнала readyRead()
 void CV_onDisconnected();      // Слот обработки сигнала
+void CV_NEW_onReadyRead_Slot();    // Слот обработка сигнала readyRead() включая парсинг JSON
+void GetBox(unsigned int distance); // Запускаем захват кубика по значению расстояния до него от камеры.
 
-void data_from_CVDevice_Slot(QString);
+
+void data_from_CVDevice_Slot(QString); // class CVDevice - слот обработки сигнала data_from_CVDevice_Signal(QString);
 
 private slots:
     //void on_openButton_clicked();
@@ -186,5 +231,6 @@ signals:
 //    void StartTakeAndPutSignal();
 
 };
+
 
 #endif // MainProcess_H

@@ -48,6 +48,10 @@ response += "]"; //end of action_list
 
 response += "\n}"; //main bracket
 //++++++++++++++++++++++++++++++++++++++++++++++++
+{"rc": 0, "info": "success", "name": "getposition", "data": {"detected": true, "x": -46.0, "y": -70.0, "width": 158, "height": 154, "err_angle": -4.2654448889627625, "distance": 148.3335127743527}}
+{"rc": 0, "info": "success", "name": "getposition", "data": {"detected": true, "x": 0.478125, "y": 0.759375, "width": 0.16875, "height": 0.30625, "distance": 126.61526756664661, "err_angle": -0.9695904180064545}}
+
+//++++++++++++++++++++++++++++++++++++++++++++++++
 
 CV device JSON answer
 {
@@ -82,4 +86,42 @@ CV device JSON answer
 \"distance\": 217.02240483137268
 }
 }
+//+++++++++++++++++++++++++++++++++
+
+        {"action_list", {
+           {
+            {"name", "get_box"},
+            {"state", {"waiting","noDetection", "inprogress", "done", "fail"}},
+            {"info", "Get the box by clamper, ascing CV about distance in advance"},
+            {"st_time", "int - timestamp of last start"},
+            {"fin_time", "int - timestamp of finish"},
+
+            {"result", "int - action return code"}
+           },
+           {
+            {"name", "reset"},
+            {"state", "succsess | fail"},
+            {"info", "Set device status as <Wait>"},
+            {"result", "int - action return code"}
+           },
+           {
+             {"name", "parking"},
+             {"state", "inprogress | done | fail"},
+             {"info", "Set device's clamper in transporting position"},
+             {"result", "int - action return code"}
+            },
+           {
+             {"name", "setservos="},
+             {"state", "inprogress | done | fail"},
+             {"info", "Set device's servos at angles specified by the command"},
+             {"result", "int - action return code"}
+           }
+
+
+
+           } //list
+         }//action_list-field
+
+
+
 */
