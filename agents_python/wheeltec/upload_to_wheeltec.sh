@@ -11,7 +11,8 @@ fi
 
 cd ../../
 
-#wheeltec iqrlit2021
+# ssh wheeltec@192.168.1.80 
+# pass 12345678 
 
 USER=wheeltec
 ADDR=192.168.1.80

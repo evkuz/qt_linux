@@ -42,7 +42,7 @@ class MoveToTakeCube (BaseAction):
                 else:
                     angle = 1.2 if pos['err_angle'] < 0 else -1.2
                     self.remoteDevice.manual_request(f"/run?a={angle}")
-                    sleep(0.7)
+                    sleep(0.6)
                     #self.remoteDevice.wait_for_action_finished()
             else:
                 self._set_state_info("Cube hasn't been detected")

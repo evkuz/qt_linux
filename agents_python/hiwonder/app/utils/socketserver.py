@@ -12,10 +12,11 @@ ACT_SEND_COORDS = 1
 
 
 class SocketServer(object):
-    def __init__(self, socket_path:str, cam:BaseCamera, detector:BaseDetector):
+    def __init__(self, socket_path:str, cam:BaseCamera, detector:BaseDetector, detector_frames:int):
         self.__socket_path = socket_path
         self.__camera = cam
         self.__detector = detector
+        self.__detector_frames = detector_frames
         self.__thread = None
         self.__isWorking = False
         self.__locker = threading.Lock()
@@ -86,9 +87,15 @@ class SocketServer(object):
             logging.info("Socket server thread was stopped")
 
     def get_detector_state(self)->str:
-        self.__camera.wait_for_new_frame()
-        frame = self.__camera.get_last_frame()
-        det_res = self.__detector.detect(frame, False)
+        det_res = { 'detected' : False }
+        try:
+            self.__camera.wait_for_new_frame()
+            for i in range(0, self.__detector_frames):
+                frame = self.__camera.get_last_frame()
+                det_res = self.__detector.detect(frame, False)
+        except Exception as e:
+            logging.error(str(e))
+
         d = 1 if det_res['detected'] else 0
         x = 0 if not det_res['detected'] else det_res['x']
         y = 0 if not det_res['detected'] else det_res['y']

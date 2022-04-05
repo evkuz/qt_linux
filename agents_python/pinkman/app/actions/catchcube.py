@@ -83,7 +83,7 @@ class CatchCubeAction (BaseAction):
         return -126
 
     def move_manip(self, pos:list):
-        self.__manip.move(pos, 80, True)
+        self.__manip.move(pos, 95, True)
         pos, dist = self.__manip.get_position()
         self._set_state_info(f"Current position: ({pos})")
         return pos, dist

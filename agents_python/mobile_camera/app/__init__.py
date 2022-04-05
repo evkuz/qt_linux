@@ -16,7 +16,7 @@ cam = vision.OpenCVCamera(
 )
 detector = vision.SimpleDetector(
     min_area=150,
-    object_area_range=(0.004, 0.06),
+    object_area_range=(0.004, 0.1),
     aspect_ratio_range=(0.6, 1.6),
     result_smoothing=0
 )

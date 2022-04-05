@@ -19,3 +19,4 @@ And several files:
 * **runner.py** - special script to start your robot web-server. You can edit port number and server address here.
 * **start.sh** - system script to start your web server
 
+Sertificates error was fixed with ```sudo apt install ca-certificates```
