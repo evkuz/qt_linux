@@ -9,8 +9,4 @@ export ROS_HOSTNAME=$ROS_IP
 export ROS_MASTER_URI=http://$ROS_IP:11311
 export SVGA_VGPU10=0
 
-
-export XRBASE=tank
-export XRLIDAR=rplidar
-
 rosnode kill -a
