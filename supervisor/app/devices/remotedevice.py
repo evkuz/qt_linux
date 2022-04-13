@@ -1,10 +1,11 @@
 import requests
 import json
 from time import sleep
+from typing import List
 
 
 class RemoteDevice:
-    def __init__(self, addr):
+    def __init__(self, addr:str):
         self.addr = addr
         self.defaultTimeout = 0.1
 
@@ -18,13 +19,13 @@ class RemoteDevice:
         url = self.addr + "/status"
         return self.__send_get_request(url, params, self.defaultTimeout)
 
-    def run_action(self, name, **kwargs):
+    def run_action(self, name:str, **kwargs):
         params = kwargs
         params["name"] = name
         url = self.addr + "/action"
         return self.__send_get_request(url, params, self.defaultTimeout)
 
-    def get_service_info(self, name, timeout=None, **kwargs):
+    def get_service_info(self, name:str, timeout:float=None, **kwargs):
         if timeout is None:
             timeout = self.defaultTimeout
         params = kwargs
@@ -32,7 +33,7 @@ class RemoteDevice:
         url = self.addr + "/service"
         return self.__send_get_request(url, params, timeout)
 
-    def reset_actions(self, actionNames:list):
+    def reset_actions(self, actionNames:List[str]):
         params = dict()
         if len(actionNames) != 0:
             params['action'] = ",".join(actionNames)
@@ -45,7 +46,7 @@ class RemoteDevice:
         url = self.addr + addr_addition
         return self.__send_get_request(url, None, self.defaultTimeout)
     
-    def wait_for_action_finished(self, actionName=None):
+    def wait_for_action_finished(self, actionName:str=None):
         while True:
             st = self.get_status()
             if type(st) is not dict:
@@ -65,7 +66,7 @@ class RemoteDevice:
                     break
             sleep(0.1)
 
-    def __send_get_request(self, url, params, timeout):
+    def __send_get_request(self, url:str, params:dict, timeout:float):
         try:
             resp = requests.get(url=url, params=params, timeout=timeout)
         except Exception as e:

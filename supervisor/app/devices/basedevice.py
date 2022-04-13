@@ -7,20 +7,29 @@ from .basestatus import BaseStatus
 
 
 class BaseDevice:
-    def __init__(self, addr, name, updateStateInterval=100):
+    def __init__(self, addr:str, name:str, updateStateInterval:int=100):
+        """_summary_
+
+        Args:
+            addr (str): device address
+            name (str): device name
+            updateStateInterval (int, optional): interval in milliseconds. Minimum value is 20. Defaults to 100.
+        """
+        # minimal interval is 20 milliseconds
         self.__updateStateInterval = updateStateInterval if updateStateInterval > 20 else 20
         self.remote_device = RemoteDevice(addr)
+        # timeout in remote device is in seconds
         self.remote_device.set_timeout((self.__updateStateInterval - 10)/1000)
         self.name = name
         
         self.__thread = None
         self._isWorking = False
-        self.__state = BaseStatus(name)
+        self._state = BaseStatus(name)
         self.__lastUpdateTime = 0
 
     @property
     def State(self):
-        return self.__state.__copy__()
+        return self._state.__copy__()
     
     @property
     def IsWorking(self):
@@ -49,17 +58,27 @@ class BaseDevice:
         # url = "/run?cmd=status&"
         try:
             self.__lastUpdateTime = time.time()
-            self.update_state()
+            status = self._update_state()
+            self._state.set_connected()
+            if type(status) is not dict:
+                self._state.set_state("Error: can't parse state")
+                return
+            if 'action_list' in status:
+                action_list = status['action_list']
+                self._state.set_actions_list(action_list)
+                if len(action_list) == 0:
+                    status = "waiting"
+                else:
+                    status = "busy with actions:"
+                    status += ",".join([act['name'] for act in action_list])
+                self._state.set_state(status)
         except Exception as e:
-            self.__state.set_disconnected(str(e))
-
-    def update_state(self):
-        raise NotImplementedError()
+            self._state.set_disconnected(str(e))
 
     def run_action(self, actionName:str, **kwargs)->bool:
         #url = self.addr + f"/run?cmd={cmdName}&"
         try:
-            data = self.remote_device.run_action(name=actionName, **kwargs)
+            data = self._run_action(name=actionName, **kwargs)
             if type(data) is not dict:
                 rc = 1
             else:
@@ -71,11 +90,7 @@ class BaseDevice:
     def get_info(self, serviceName:str, **kwargs):
         #url = self.addr + f"/run?cmd={cmdName}&"
         try:
-            data = self.remote_device.get_service_info(
-                name=serviceName,
-                timeout=1.,
-                **kwargs
-            )
+            data = self._get_service_info(serviceName, **kwargs)
             if type(data) is not dict:
                 return None
             else:
@@ -88,7 +103,7 @@ class BaseDevice:
     def stop_actions(self)->bool:
         #url = self.addr + f"/run?cmd={cmdName}&"
         try:
-            data = self.remote_device.reset_actions([])
+            data = self._send_reset()
             if type(data) is not dict:
                 rc = 1
             else:
@@ -97,26 +112,24 @@ class BaseDevice:
         except Exception as e:
             raise e
 
-    def __parse_state(self, data):
-        self.__state.set_connected()
-        if data is None:
-            self.__state.set_state("none")
-            self.__state.set_actions_list([])
-            return
-
-        self.__state.set_actions_list(data['action_list'])
-        if len(data['action_list']) == 0:
-            status = "waiting"
-            active_action = "none"
-        else:
-            status = "busy with actions:"
-            status += ",".join([act['name'] for act in data['action_list']])
-        self.__state.set_state(status)
-
-
     def stop(self):
         if self.__thread is not None:
             self._isWorking = False
+
+    def __del__(self):
+        self.stop()
+
+    def _update_state(self)->dict:
+        raise NotImplementedError()
+
+    def _run_action(self, actionName:str, **kwargs)->dict:
+        raise NotImplementedError()
+
+    def _get_service_info(self, serviceName:str, **kwargs):
+        raise NotImplementedError()
+
+    def _send_reset(self)->dict:
+        raise NotImplementedError()
 
 
 if __name__ == '__main__':
