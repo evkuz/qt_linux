@@ -1,6 +1,7 @@
 import threading
-import requests
 import time
+import logging
+from typing import List
 
 from .remotedevice import RemoteDevice
 from .basestatus import BaseStatus
@@ -30,6 +31,10 @@ class BaseDevice:
     @property
     def State(self):
         return self._state.__copy__()
+
+    @property
+    def Address(self):
+        return self.remote_device.addr
     
     @property
     def IsWorking(self):
@@ -85,22 +90,32 @@ class BaseDevice:
                 rc = int(data['rc'])
             return rc == 0
         except Exception as e:
-            raise e
+            logging.error(str(e))
+            return False
     
-    def get_info(self, serviceName:str, **kwargs):
+    def get_info(self, serviceName:str, **kwargs)->dict:
         #url = self.addr + f"/run?cmd={cmdName}&"
         try:
             data = self._get_service_info(serviceName, **kwargs)
             if type(data) is not dict:
-                return None
-            else:
-                if int(data['rc']) != 0:
-                    return None
-            return data['data']
+                logging.warning(f"service {serviceName} result is not dict")
+                return {
+                    'rc': 0,
+                    'name':serviceName,
+                    'info': '',
+                    'data': data
+                }
+            return data
         except Exception as e:
-            raise e
+            logging.error(str(e))
+            return {
+                'rc': -1,
+                'name':serviceName,
+                'info': str(e),
+                'data': None
+            }
 
-    def stop_actions(self)->bool:
+    def reset_actions(self)->bool:
         #url = self.addr + f"/run?cmd={cmdName}&"
         try:
             data = self._send_reset()
@@ -110,7 +125,8 @@ class BaseDevice:
                 rc = int(data['rc'])
             return rc == 0
         except Exception as e:
-            raise e
+            logging.error(str(e))
+            return False
 
     def stop(self):
         if self.__thread is not None:
@@ -125,11 +141,46 @@ class BaseDevice:
     def _run_action(self, actionName:str, **kwargs)->dict:
         raise NotImplementedError()
 
-    def _get_service_info(self, serviceName:str, **kwargs):
+    def _get_service_info(self, serviceName:str, **kwargs)->dict:
         raise NotImplementedError()
 
     def _send_reset(self)->dict:
         raise NotImplementedError()
+
+    def do_action(self, environment:dict, cubes:dict)->dict:
+        """This method will be prformed by supervisor
+
+        Args:
+            environment (dict): dict with all devices states
+            cubes (dict): dict of cubes states
+
+        Returns:
+            dict: dict with cube names that states was changed
+        """
+        if not self._state.connected:
+            return {}
+        try:
+            return self._do_action(environment, cubes)
+        except Exception as e:
+            logging.error(str(e))
+            return {}
+
+
+
+    def _do_action(self, environment:dict, cubes:dict)->dict:
+        """This method will be prformed by supervisor
+
+        Args:
+            environment (dict): dict with all devices states
+            cubes (dict): dict of cubes states
+
+        Raises:
+            NotImplementedError: _description_
+
+        Returns:
+            dict: dict with cube names that states was changed
+        """
+        raise NotImplementedError
 
 
 if __name__ == '__main__':
