@@ -12,9 +12,6 @@ class CatchCubeAction (BaseAction):
         BaseAction.__init__(self, "catchcube")
         self.__manip = arduino_device
         self.__camera = cam
-        self.__pixToDegreeX = 60.0 / self.__camera.FrameWidth
-        self.__pixToDegreeY = 50.0 / self.__camera.FrameHeight
-        self.__pixToDegreeZ = 0.015
 
     def get_info(self) -> dict:
         return self.make_info(
@@ -88,14 +85,19 @@ class CatchCubeAction (BaseAction):
         self._set_state_info(f"Current position: ({pos})")
         return pos, dist
 
-    def calc_next_position(self, objPos:list, manipPos:list):
-        self.logger.info(f"Errors: {objPos}" )
+    def calc_next_position(self, err:list, manipPos:list):
+        self.logger.info(f"Errors: {err}" )
         self.logger.info(f"CUR_POS: {manipPos}")
+        c_0_x = -0.0140625 * err[0]
+        c_1_y = -0.026041667 * err[1]
+        c_1_z = -0.00375 * err[2]
+        c_2_y = -0.026041667 * err[1]
+        c_2_z = 0.00225 * err[2]
 
         newPos = [
-            int(manipPos[0] - 0.15*(self.__pixToDegreeX * objPos[0])),
-            int(manipPos[1] - 0.25*(self.__pixToDegreeY*objPos[1] + self.__pixToDegreeZ*objPos[2])),
-            int(manipPos[2] - 0.15*(self.__pixToDegreeY*objPos[1] - self.__pixToDegreeZ*objPos[2])),
+            int(manipPos[0] + c_0_x),
+            int(manipPos[1] + c_1_y + c_1_z),
+            int(manipPos[2] + c_2_y + c_2_z),
             GRIP_OPENED
         ]
         self.logger.info(f"NEW_POS: {newPos}")
