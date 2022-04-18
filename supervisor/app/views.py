@@ -4,7 +4,7 @@ import json
 from .supervisor import Supervisor
 
 
-supervisor = Supervisor(200)
+supervisor = Supervisor(0.500)
 
 def obj_to_dict(obj):
     return obj.__dict__

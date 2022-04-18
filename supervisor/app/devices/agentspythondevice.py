@@ -2,13 +2,13 @@ from .basedevice import BaseDevice
 
 
 class AgentsPythonDevice(BaseDevice):
-    def __init__(self, addr:str, name:str, updateStateInterval:int=100):
+    def __init__(self, addr:str, name:str, updateStateInterval:float=0.100):
         """_summary_
 
         Args:
             addr (str): device address
             name (str): device name
-            updateStateInterval (int, optional): interval in milliseconds. Minimum value is 20. Defaults to 100.
+            updateStateInterval (float, optional): interval in seconds. Minimum value is 0.020. Defaults to 0.100.
         """
         BaseDevice.__init__(self, addr, name, updateStateInterval)
         
@@ -21,7 +21,7 @@ class AgentsPythonDevice(BaseDevice):
     def _get_service_info(self, serviceName:str, **kwargs):
         return self.remote_device.get_service_info(
                     name=serviceName,
-                    timeout=1.,
+                    timeout=6.,
                     **kwargs
                 )
 

@@ -3,16 +3,16 @@ if (typeof sv_config == "undefined") {
 }
 
 if(sv_config.devices.hasOwnProperty('pinkman')) {
-    document.getElementById("pinkman_vb_img").src=sv_config.devices.pinkman+"video_feed";
+    document.getElementById("pinkman_vb_img").src=sv_config.devices.pinkman+"/video_feed";
 }
 if(sv_config.devices.hasOwnProperty('hiwonder')) {
-    document.getElementById("hiwonder_vb_img").src=sv_config.devices.hiwonder+"video_feed";
+    document.getElementById("hiwonder_vb_img").src=sv_config.devices.hiwonder+"/video_feed";
 }
 if(sv_config.devices.hasOwnProperty('mobman_camera')) {
-    document.getElementById("mobman_camera_vb_img").src=sv_config.devices.mobman_camera+"video_feed";
+    document.getElementById("mobman_camera_vb_img").src=sv_config.devices.mobman_camera+"/video_feed";
 }
 if(sv_config.devices.hasOwnProperty('blueman')) {
-    document.getElementById("blueman_vb_img").src=sv_config.devices.blueman+"video_feed";
+    document.getElementById("blueman_vb_img").src=sv_config.devices.blueman+"/video_feed";
 }
 
 
@@ -72,6 +72,7 @@ function statusTimeoutFunction(interval){
     if (statusTimeoutIsRuning){
         statusTimeoutId = setTimeout(
             statusTimeoutFunction,
+            interval,
             interval
         );
     }
@@ -107,6 +108,6 @@ updateBtn = document.getElementById("update_btn")
 if (updateBtn != null) {
     updateBtn.onclick = function(){
         if(statusTimeoutIsRuning){ StopStatusUpdate(); }
-        else { StartStatusUpdate(); }
+        else { StartStatusUpdate(sv_config.updateStateInterval); }
     };
 }

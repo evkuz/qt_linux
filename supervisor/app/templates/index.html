@@ -21,7 +21,7 @@
       {{ key }} : '{{ value }}',
       {% endfor %}
     },
-    updateStateInterval: 400,
+    updateStateInterval: 1000,
     tpInterval: 500
   };
 </script>
@@ -217,8 +217,8 @@
           <div class="divide10"></div>
           <h3>Mobman QT</h3>
           <div class="col-wrapper"  style="text-align:left;">
-            <a class="btn btn-green" id="mobman_qt_btn_take" onclick="runAction('mobman_qt', 'getbox');">Take cube</a>
-            <a class="btn btn-green" id="mobman_qt_btn_put" onclick="runAction('mobman_qt', 'putbox');">Put cube</a>
+            <a class="btn btn-green" id="mobman_qt_btn_take" onclick="runAction('mobman_qt', 'get_box');">Take cube</a>
+            <a class="btn btn-green" id="mobman_qt_btn_put" onclick="runAction('mobman_qt', 'put_box');">Put cube</a>
             <a class="btn btn-green" id="mobman_qt_btn_formoving" onclick="runAction('mobman_qt', 'formoving');">For moving</a>
             <a class="btn btn-green" id="mobman_qt_btn_open" onclick="runAction('mobman_qt', 'open');">Open grip</a>
             <a class="btn btn-green" id="mobman_qt_btn_close" onclick="runAction('mobman_qt', 'close');">Close grip</a>
