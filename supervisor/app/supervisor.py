@@ -6,7 +6,7 @@ from .devices import agents
 
 
 class Supervisor(object):
-    def __init__(self, updateStateInterval:int):
+    def __init__(self, updateStateInterval:float):
         self._updateInterval = updateStateInterval
         self._devices = {}
         self._state = {}
@@ -14,7 +14,7 @@ class Supervisor(object):
 
         self.__thread = None
         self._isWorking = False
-        self.__lastUpdateTime = 0
+        self.__lastUpdateTime = 0.0
         
         self._initialize()
         self.start()
@@ -61,6 +61,14 @@ class Supervisor(object):
 
     def _initialize(self):
         self._devices['pinkman'] = agents.Pinkman("http://192.168.1.177:5001", self._updateInterval)
+        self._devices['xrrobot'] = agents.XRRobot("http://192.168.1.98:5001", self._updateInterval)
+        self._devices['hiwonder'] = agents.Hiwonder("http://192.168.1.175:5001", self._updateInterval)
+        self._devices['hiwonder_qt'] = agents.HiwonderQt("http://192.168.1.175:8383", self._updateInterval)
+        self._devices['mobman_move'] = agents.MobmanMove("http://192.168.1.205:5001", self._updateInterval)
+        self._devices['mobman_camera'] = agents.MobmanCamera("http://192.168.1.201:5001", self._updateInterval)
+        self._devices['mobman_qt'] = agents.MobmanQt("http://192.168.1.201:8383", self._updateInterval)
+        self._devices['blueman'] = agents.Blueman("http://192.168.1.158:5001", self._updateInterval)
+        self._devices['wheeltec'] = agents.Wheeltec("http://192.168.1.80:5001", self._updateInterval)
 
     def _update_devices_states(self):
         for name, device in self._devices.items():

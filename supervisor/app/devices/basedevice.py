@@ -6,27 +6,28 @@ from typing import List
 from .remotedevice import RemoteDevice
 from .basestatus import BaseStatus
 
+MINIMAL_TIMEOUT = 0.02
 
 class BaseDevice:
-    def __init__(self, addr:str, name:str, updateStateInterval:int=100):
+    def __init__(self, addr:str, name:str, updateStateInterval:float=0.1):
         """_summary_
 
         Args:
             addr (str): device address
             name (str): device name
-            updateStateInterval (int, optional): interval in milliseconds. Minimum value is 20. Defaults to 100.
+            updateStateInterval (float, optional): interval in seconds. Minimum value is 0.020. Defaults to 0.100.
         """
         # minimal interval is 20 milliseconds
-        self.__updateStateInterval = updateStateInterval if updateStateInterval > 20 else 20
+        self.__updateStateInterval = updateStateInterval if updateStateInterval > MINIMAL_TIMEOUT else MINIMAL_TIMEOUT
         self.remote_device = RemoteDevice(addr)
         # timeout in remote device is in seconds
-        self.remote_device.set_timeout((self.__updateStateInterval - 10)/1000)
+        self.remote_device.set_timeout((self.__updateStateInterval - 0.010))
         self.name = name
         
         self.__thread = None
         self._isWorking = False
         self._state = BaseStatus(name)
-        self.__lastUpdateTime = 0
+        self.__lastUpdateTime = 0.0
 
     @property
     def State(self):
@@ -54,7 +55,7 @@ class BaseDevice:
         while self._isWorking:
             if time.time() - self.__lastUpdateTime > self.__updateStateInterval:
                 self.__update_state()
-            time.sleep(0.02)
+            time.sleep(MINIMAL_TIMEOUT)
 
         self.__thread = None
         self._isWorking = False

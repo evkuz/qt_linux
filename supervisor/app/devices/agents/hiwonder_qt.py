@@ -1,13 +1,13 @@
 import logging
-from ..agentspythondevice import AgentsPythonDevice
+from ..qtagentdevice import QTAgentDevice
 
-class Pinkman(AgentsPythonDevice):
+class HiwonderQt(QTAgentDevice):
     def __init__(self, addr:str, updateStateInterval:float):
-        AgentsPythonDevice.__init__(self, addr, "pinkman", updateStateInterval)
+        QTAgentDevice.__init__(self, addr, "hiwonder_qt", updateStateInterval)
         self.start()
 
     def _do_action(self, environment:dict, cubes:dict)->dict:
-        references = ['wheeltec', 'xrrobot']
+        references = ['mobman_move', 'mobman_camera', 'hiwonder']
         if not all(i in environment for i in references):
             logging.warning(f"not all agents was added to environment ({references})")
             return {}
@@ -15,5 +15,6 @@ class Pinkman(AgentsPythonDevice):
             return {}
         return {}
         
-
+#clamp
+#start
 
