@@ -2,7 +2,7 @@ from iqrdevice.baseresponce import BaseResponce
 
 
 class StatusResponce(BaseResponce):
-    def __init__(self, name:str, status:str, rc:int, info:str="", action_list:list=[]):
+    def __init__(self, name:str, status:str, locked:bool, rc:int, info:str="", action_list:list=[], nodes:dict={}):
         """
         name: str - device name
         rc:   int - request result code
@@ -14,6 +14,8 @@ class StatusResponce(BaseResponce):
         self.name = name
         self.status = status
         self.action_list = action_list
+        self.locked = locked
+        self.nodes=nodes
     
     def set_action_list(self, action_list):
         self.action_list = action_list

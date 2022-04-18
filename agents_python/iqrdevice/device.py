@@ -3,6 +3,7 @@ from iqrdevice.action import BaseAction, ActionResponce
 from iqrdevice.status import StatusResponce
 from iqrdevice.service import BaseService, ServiceResponce
 from iqrdevice.history import History, HistResponce
+from typing import Callable
 
 
 class ListActionsService(BaseService):
@@ -43,6 +44,7 @@ class IQRDevice:
         ]
         self.__actions = []
         self.__history = History()
+        self.__lock_key = None
         self.set_state_init()
     
     def set_name(self, name):
@@ -57,6 +59,26 @@ class IQRDevice:
     def set_state_init(self):
         self.__state = "init"
 
+    def set_lock(self, key:str)->bool:
+        if self.__lock_key is not None:
+            if key != self.__lock_key:
+                return False
+        self.__lock_key = key
+        return True
+
+    def set_unlock(self, key:str)->bool:
+        if self.__lock_key is not None:
+            if key != self.__lock_key:
+                return False
+        self.__lock_key = None
+        return True
+
+    @property
+    def is_locked(self)->bool:
+        return self.__lock_key is not None
+
+    def get_nodes_state(self)->dict:
+        return {}
 
     def get_list_services(self):
         return [x.get_info() for x in self.__services]
@@ -86,6 +108,7 @@ class IQRDevice:
                 return StatusResponce(
                     self.__name,
                     self.__state,
+                    self.is_locked,
                     -2, "Not all specified actions are exist",
                     action_list
                 )
@@ -93,11 +116,17 @@ class IQRDevice:
         return StatusResponce(
                     self.__name,
                     self.__state,
+                    self.is_locked,
                     0, "success",
-                    action_list
+                    action_list,
+                    self.get_nodes_state()
                 )
 
-    def reset_action(self, actions=[]) -> ServiceResponce:
+    def reset_action(self, actions=[], key=None) -> ServiceResponce:
+        if self.__lock_key is not None:
+            if key != self.__lock_key:
+                return ServiceResponce("reset", -7,  "Device control was locked. Your lock key isn't valid.")
+
         reset_statuses = {}
         if len(actions) == 0:
             for a in self.__actions:
@@ -131,6 +160,10 @@ class IQRDevice:
             return HistResponce(-1, "wrong type")  
 
     def run_action(self, action:str, params:dict={}) -> ActionResponce:
+        if self.__lock_key is not None:
+            if 'key' not in params or params['key'] != self.__lock_key:
+                 return ActionResponce(action, -7,  "Device control was locked. Your lock key isn't valid.")
+
         for a in self.__actions:
             if a.Name == action:
                 rc = a.run(**params)
@@ -152,6 +185,10 @@ class IQRDevice:
         else:
             return ServiceResponce(service, -1, "service with this name wasn't found")
         
+        if self.__lock_key is not None:
+            if 'key' not in params or params['key'] != self.__lock_key:
+                 if srv.Lockable:
+                     return ServiceResponce(service, -7,  "Device control was locked. Your lock key isn't valid.")
         try:
             data = srv.get_data(**params)
         except Exception as e:

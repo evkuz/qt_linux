@@ -5,6 +5,7 @@ from iqrdevice.baseresponce import BaseResponce
 from iqrdevice.status import StatusResponce
 from iqrdevice.service import ServiceResponce
 from iqrdevice.history import HistResponce
+from iqrdevice.lockresponce import LockResponce
 
 from iqrdevice import app
 from iqrdevice import device
@@ -110,3 +111,33 @@ def run():
                 resp = ActionResponce(cmd, -4, str(e))
 
     return make_my_responce(resp)
+
+
+@app.route('/control', methods=['get'])
+def control():
+    args = request.args.to_dict()
+    set_arg = args.get("set")
+    key_arg = args.get("key")
+    if key_arg is None:
+        return make_my_responce(LockResponce(device.is_locked, -2, "key wasn't set"))
+    
+    if set_arg == "lock":
+        res = device.set_lock(key_arg)
+    elif set_arg == "unlock":
+        res = device.set_unlock(key_arg)
+    else:
+        return make_my_responce(
+            LockResponce(
+                device.is_locked,
+                -2, "set must be one of [lock, unlock]"
+            )
+        )
+
+    if res:
+        return make_my_responce(
+            LockResponce(device.is_locked, 0, "success")
+        )
+    else:
+        return make_my_responce(
+            LockResponce(device.is_locked, -1, "wrong validation key")
+        )

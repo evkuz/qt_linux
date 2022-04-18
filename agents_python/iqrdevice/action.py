@@ -2,6 +2,7 @@ from time import time
 import threading
 import json
 from iqrdevice.baseresponce import BaseResponce, obj_to_dict
+from typing import Optional
 
 
 class ActionResponce(BaseResponce):
@@ -96,7 +97,7 @@ class BaseAction:
         """
         raise NotImplementedError()
 
-    def make_info(self, description:str, parameters:dict={}, statuses:dict=None):
+    def make_info(self, description:str, parameters:dict={}, statuses:Optional[dict]=None):
         if statuses is None:
             statuses = {
                 "none": "action hasn't been performed yet",

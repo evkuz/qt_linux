@@ -20,12 +20,17 @@ class ServiceResponce(BaseResponce):
 
 
 class BaseService:
-    def __init__(self, name):
+    def __init__(self, name:str, lockable:bool=True):
         self.__name = name
+        self.__lockable = lockable
         
     @property
     def Name(self) -> str:
         return self.__name
+
+    @property
+    def Lockable(self) -> bool:
+        return self.__lockable
 
     def get_data(self, **kwargs):
         raise NotImplementedError()

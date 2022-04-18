@@ -5,6 +5,7 @@ from .basecamera import BaseCamera
 from .basedetector import BaseDetector
 import cv2
 import numpy as np
+from typing import Optional
 
 
 class VideoStreamer(object):
@@ -14,7 +15,7 @@ class VideoStreamer(object):
     jpeg image. This was made for isolation of getting images from camera and
     calculation of datection, because last can long for a significant time.
     """
-    def __init__(self, camera:BaseCamera, detector=None):
+    def __init__(self, camera:BaseCamera, detector:Optional[BaseDetector]=None):
         """Constructor
 
         Args:
