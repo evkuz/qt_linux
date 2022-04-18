@@ -61,6 +61,14 @@ class Supervisor(object):
 
     def _initialize(self):
         self._devices['pinkman'] = agents.Pinkman("http://192.168.1.177:5001", self._updateInterval)
+        self._devices['xrrobot'] = agents.Pinkman("http://192.168.1.177:5001", self._updateInterval)
+        self._devices['hiwonder'] = agents.Pinkman("http://192.168.1.177:5001", self._updateInterval)
+        self._devices['hiwonder_qt'] = agents.Pinkman("http://192.168.1.177:5001", self._updateInterval)
+        self._devices['mobman_move'] = agents.Pinkman("http://192.168.1.177:5001", self._updateInterval)
+        self._devices['mobman_camera'] = agents.Pinkman("http://192.168.1.177:5001", self._updateInterval)
+        self._devices['mobman_qt'] = agents.Pinkman("http://192.168.1.177:5001", self._updateInterval)
+        self._devices['blueman'] = agents.Pinkman("http://192.168.1.177:5001", self._updateInterval)
+        self._devices['wheeltec'] = agents.Pinkman("http://192.168.1.177:5001", self._updateInterval)
 
     def _update_devices_states(self):
         for name, device in self._devices.items():

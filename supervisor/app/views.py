@@ -2,7 +2,6 @@ from app import app
 from flask import render_template, request, make_response
 import json
 from .supervisor import Supervisor
-from supervisor.app.supervisor import Supervisor
 
 
 supervisor = Supervisor(200)
@@ -22,7 +21,7 @@ def index():
     return render_template('index.html', devices=supervisor.ListDevices)
 
 
-@app.route('/state')
+@app.route('/status')
 def get_state():
     return make_json_responce(supervisor.State)
 
@@ -30,22 +29,22 @@ def get_state():
 def run_action():
     args = request.args.to_dict()
     device = args.get("device")
-    command = args.get("command")
-    if device is None or command is None:
+    action = args.get("action")
+    if device is None or action is None:
         return make_json_responce({'rc': -10})
     
-    res = supervisor.run_action(device, command)
+    res = supervisor.run_action(device, action)
     return make_json_responce(res)
 
 @app.route('/get_info', methods=['get'])
 def get_info():
     args = request.args.to_dict()
     device = args.get("device")
-    command = args.get("command")
-    if device is None or command is None:
+    service = args.get("service")
+    if device is None or service is None:
         return make_json_responce({'rc': -10})
     
-    res = supervisor.get_info(device, command)
+    res = supervisor.get_info(device, service)
     return make_json_responce(res)
 
 @app.route('/reset', methods=['get'])
