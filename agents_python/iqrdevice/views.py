@@ -1,11 +1,11 @@
 from flask import render_template, request, make_response
 
-from iqrdevice.action import ActionResponce
-from iqrdevice.baseresponce import BaseResponce
-from iqrdevice.status import StatusResponce
-from iqrdevice.service import ServiceResponce
-from iqrdevice.history import HistResponce
-from iqrdevice.lockresponce import LockResponce
+from .responces import ActionResponce
+from .responces import BaseResponce
+from .responces import ServiceResponce
+from .responces import HistResponce
+from .responces import StatusResponce
+from .responces import LockResponce
 
 from iqrdevice import app
 from iqrdevice import device
@@ -35,7 +35,6 @@ def status():
 
 @app.route('/reset', methods=['get'])
 def reset():
-    #TODO: error if wrong parameters
     args = request.args.to_dict()
     action_arg = args.get("action")
     actions = [] if action_arg is None else action_arg.split(",")

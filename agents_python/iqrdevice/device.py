@@ -1,9 +1,8 @@
-from re import S
-from iqrdevice.action import BaseAction, ActionResponce
-from iqrdevice.status import StatusResponce
-from iqrdevice.service import BaseService, ServiceResponce
-from iqrdevice.history import History, HistResponce
-from typing import Callable
+from iqrdevice.actions import BaseAction
+from iqrdevice.services import BaseService
+from iqrdevice.history import History
+from typing import Callable, Any, List, NoReturn
+from iqrdevice.responces import ActionResponce, ServiceResponce, HistResponce, StatusResponce
 
 
 class ListActionsService(BaseService):
@@ -35,7 +34,7 @@ class ListServicesService(BaseService):
 
 
 class IQRDevice:
-    def __init__(self, name):
+    def __init__(self, name:str):
         self.__name = name
         self.__state = "none"
         self.__services = [
@@ -47,16 +46,16 @@ class IQRDevice:
         self.__lock_key = None
         self.set_state_init()
     
-    def set_name(self, name):
+    def set_name(self, name:str)->None:
         self.__name = name
 
-    def set_state_fail(self):
+    def set_state_fail(self)->None:
         self.__state = "fail"
     
-    def set_state_run(self):
+    def set_state_run(self)->None:
         self.__state = "run"
     
-    def set_state_init(self):
+    def set_state_init(self)->None:
         self.__state = "init"
 
     def set_lock(self, key:str)->bool:
@@ -80,21 +79,21 @@ class IQRDevice:
     def get_nodes_state(self)->dict:
         return {}
 
-    def get_list_services(self):
+    def get_list_services(self)->List[dict]:
         return [x.get_info() for x in self.__services]
 
-    def get_list_actions(self):
+    def get_list_actions(self)->List[dict]:
         return [x.get_info() for x in self.__actions]
 
 
-    def register_action(self, action:BaseAction):
+    def register_action(self, action:BaseAction)->None:
         self.__actions.append(action)
 
-    def register_service(self, service:BaseService):
+    def register_service(self, service:BaseService)->None:
         self.__services.append(service)
 
 
-    def get_status(self, actions=[]) -> StatusResponce:
+    def get_status(self, actions:List[str]=[]) -> StatusResponce:
         action_list = []
         if len(actions) == 0:
             for a in self.__actions:
@@ -122,7 +121,7 @@ class IQRDevice:
                     self.get_nodes_state()
                 )
 
-    def reset_action(self, actions=[], key=None) -> ServiceResponce:
+    def reset_action(self, actions:List[str]=[], key=None) -> ServiceResponce:
         if self.__lock_key is not None:
             if key != self.__lock_key:
                 return ServiceResponce("reset", -7,  "Device control was locked. Your lock key isn't valid.")
@@ -151,7 +150,7 @@ class IQRDevice:
                     reset_statuses
                 )
 
-    def get_hist(self, type:str, names:list=[], n:int=20) -> HistResponce:
+    def get_hist(self, type:str, names:List[str]=[], n:int=20) -> HistResponce:
         if type == "action":
             return self.__history.get_actions(names, n)
         elif type == "system":

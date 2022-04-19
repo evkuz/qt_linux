@@ -1,4 +1,4 @@
-from iqrdevice.baseresponce import BaseResponce, obj_to_dict
+from .baseresponce import BaseResponce
 
 
 class LockResponce(BaseResponce):
