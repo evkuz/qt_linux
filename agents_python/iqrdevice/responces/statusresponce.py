@@ -2,7 +2,7 @@ from .baseresponce import BaseResponce
 
 
 class StatusResponce(BaseResponce):
-    def __init__(self, name:str, status:str, locked:bool, rc:int, info:str="", action_list:list=[], nodes:dict={}):
+    def __init__(self, name:str, status:str, locked:bool, rc:int, info:str="", action_list:list=[], nodes:list=[]):
         """
         name: str - device name
         rc:   int - request result code

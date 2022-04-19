@@ -1,8 +1,9 @@
 from iqrdevice.actions import BaseAction
 from iqrdevice.services import BaseService
 from iqrdevice.history import History
-from typing import Callable, Any, List, NoReturn
+from typing import Callable, Any, List
 from iqrdevice.responces import ActionResponce, ServiceResponce, HistResponce, StatusResponce
+from iqrdevice.nodes import BaseNode
 
 
 class ListActionsService(BaseService):
@@ -37,11 +38,12 @@ class IQRDevice:
     def __init__(self, name:str):
         self.__name = name
         self.__state = "none"
-        self.__services = [
+        self.__services:List[BaseService] = [
             ListActionsService(self),
             ListServicesService(self)
         ]
-        self.__actions = []
+        self.__actions:List[BaseAction] = []
+        self.__nodes:List[BaseNode] = []
         self.__history = History()
         self.__lock_key = None
         self.set_state_init()
@@ -76,8 +78,9 @@ class IQRDevice:
     def is_locked(self)->bool:
         return self.__lock_key is not None
 
-    def get_nodes_state(self)->dict:
-        return {}
+
+    def get_nodes_state(self)->list:
+        return [x.to_json() for x in self.__nodes]
 
     def get_list_services(self)->List[dict]:
         return [x.get_info() for x in self.__services]
@@ -91,6 +94,9 @@ class IQRDevice:
 
     def register_service(self, service:BaseService)->None:
         self.__services.append(service)
+
+    def register_node(self, node:BaseNode)->None:
+        self.__nodes.append(node)
 
 
     def get_status(self, actions:List[str]=[]) -> StatusResponce:
