@@ -1,7 +1,14 @@
-from subprocess import Popen
+import subprocess
 from .baseaction import BaseAction
 from typing import Optional
+import os
+import signal
 
+def kill_process(pid):
+    ps_output = subprocess.run(['pgrep', '-P', str(pid)], stdout=subprocess.PIPE, encoding='utf8')
+    child_process_ids = [int(line) for line in ps_output.stdout.splitlines()]
+    for p in child_process_ids:
+        os.kill(p, signal.SIGKILL)
 
 class ExecuteFileAction (BaseAction):
     def __init__(self, name:str, program:str, scriptPath:Optional[str]=None, args:list=[]):
@@ -38,7 +45,7 @@ class ExecuteFileAction (BaseAction):
             command += self.additional_args
     
         print(command)
-        self.__process = Popen(command)
+        self.__process = subprocess.Popen(command)
         self._set_state_info(f"Process was started with PID {self.__process.pid}")
         
         res = 0
@@ -56,7 +63,9 @@ class ExecuteFileAction (BaseAction):
         """[return result code -126 by default]
         """
         if self.__process is not None:
+            kill_process(self.__process.pid)
             self.__process.terminate()
+
         return -126
 
     def process_line(self, line):
