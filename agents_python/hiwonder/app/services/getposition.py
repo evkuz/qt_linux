@@ -1,4 +1,4 @@
-from iqrdevice.service import BaseService
+from iqrdevice.services import BaseService
 from .. import device
 from iqrdevice.utils.vision import OpenCVCamera, SimpleDetector
 from math import atan2, pi

@@ -1,6 +1,6 @@
 import os
 from time import sleep,time
-from iqrdevice.action import BaseAction
+from iqrdevice.actions import BaseAction
 from ..utils import SerialCommunication, CameraDetector
 from . import GRIP_CLOSED, GRIP_OPENED
 import logging

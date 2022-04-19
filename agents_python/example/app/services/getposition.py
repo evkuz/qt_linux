@@ -1,4 +1,4 @@
-from iqrdevice.service import BaseService
+from iqrdevice.services import BaseService
 from .. import device
 from ..utils import camera
 from math import atan2, pi

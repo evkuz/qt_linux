@@ -1,9 +1,10 @@
 from subprocess import Popen
-from ..action import BaseAction
+from .baseaction import BaseAction
+from typing import Optional
 
 
 class ExecuteFileAction (BaseAction):
-    def __init__(self, name:str, program:str, scriptPath:str=None, args:list=[]):
+    def __init__(self, name:str, program:str, scriptPath:Optional[str]=None, args:list=[]):
         BaseAction.__init__(self, name)
         self.program = program
         self.scriptPath = scriptPath

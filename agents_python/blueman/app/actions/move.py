@@ -1,5 +1,5 @@
 from time import sleep
-from iqrdevice.action import BaseAction
+from iqrdevice.actions import BaseAction
 from ..utils import SerialCommunication
 
 

@@ -1,6 +1,4 @@
-from time import sleep
-
-from iqrdevice.service import BaseService
+from iqrdevice.services import BaseService
 from ..utils import CameraDetector
 
 
