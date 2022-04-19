@@ -18,3 +18,11 @@ device = IQRDevice("agent")
 from iqrdevice import views
 
 #print(device.__repr__())
+
+from iqrdevice.eventbus import EventBus
+
+__all__ = [
+    'app',
+    'device',
+    'EventBus'
+]

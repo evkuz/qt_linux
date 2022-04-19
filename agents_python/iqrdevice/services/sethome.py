@@ -1,9 +1,9 @@
 from iqrdevice.services import BaseService
-from ..utils import SerialCommunication
+from iqrdevice.utils.controllers import ArduinoManipulator
 
 
 class SetHomeService(BaseService):
-    def __init__(self, arduino_device:SerialCommunication):
+    def __init__(self, arduino_device:ArduinoManipulator):
         BaseService.__init__(self, "sethome")
         self.__manip = arduino_device
     

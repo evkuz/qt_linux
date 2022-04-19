@@ -43,8 +43,16 @@ class BaseCamera(object):
         self.__filters = filters
 
     @property
-    def Filters(self):
+    def Filters(self)->List[BaseFilter]:
         return self.__filters
+
+    @property
+    def FrameWidth(self)->int:
+        raise NotImplementedError()
+
+    @property
+    def FrameHeight(self)->int:
+        raise NotImplementedError()
 
     def __start(self):
         """Starts reading frames from device in thread

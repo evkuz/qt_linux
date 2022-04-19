@@ -1,13 +1,13 @@
 from time import sleep
 from iqrdevice.actions import BaseAction
-from ..utils import SerialCommunication
-from . import GRIP_CLOSED, GRIP_OPENED
+from iqrdevice.utils.controllers import ArduinoManipulator
 
 
 class OpenGripAction (BaseAction):
-    def __init__(self, arduino_device:SerialCommunication):
+    def __init__(self, arduino_device:ArduinoManipulator, opened_val:int):
         BaseAction.__init__(self, "opengrip")
         self.__manip = arduino_device
+        self.__opened_val = opened_val
 
     def get_info(self) -> dict:
         return self.make_info(
@@ -17,7 +17,7 @@ class OpenGripAction (BaseAction):
     def run_action(self, **kwargs) -> int:
         res = 0
         currentPos, dist = self.__manip.get_position()
-        currentPos[-1] = GRIP_OPENED
+        currentPos[-1] = self.__opened_val
         if self._workingFlag:
             _ = self.move_manip(currentPos)
         
@@ -36,9 +36,10 @@ class OpenGripAction (BaseAction):
 
 
 class CloseGripAction (BaseAction):
-    def __init__(self, arduino_device:SerialCommunication):
+    def __init__(self, arduino_device:ArduinoManipulator, closed_val:int):
         BaseAction.__init__(self, "closegrip")
         self.__manip = arduino_device
+        self.__closed_val = closed_val
 
     def get_info(self) -> dict:
         return self.make_info(
@@ -48,7 +49,7 @@ class CloseGripAction (BaseAction):
     def run_action(self, **kwargs) -> int:
         res = 0
         currentPos, dist = self.__manip.get_position()
-        currentPos[-1] = GRIP_CLOSED
+        currentPos[-1] = self.__closed_val
         if self._workingFlag:
             _ = self.move_manip(currentPos)
         

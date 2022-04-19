@@ -6,16 +6,24 @@ from .basefilter import BaseFilter
 
 
 class OpenCVCamera(BaseCamera):
-    def __init__(self, camPort, width=640, height=480, filters:List[BaseFilter]=[]):
+    def __init__(self, camPort, width:int=640, height:int=480, filters:List[BaseFilter]=[]):
         super().__init__(filters=filters)
         self.port = camPort
-        self.FrameWidth = width
-        self.FrameHeight = height
+        self._FrameWidth = width
+        self._FrameHeight = height
         self.__cap = cv2.VideoCapture()
 
     @property
     def isOpened(self):
         return self.__cap.isOpened()
+
+    @property
+    def FrameWidth(self) -> int:
+        return self._FrameWidth
+
+    @property
+    def FrameHeight(self) -> int:
+        return self._FrameHeight
 
     def _read_frame(self)->np.ndarray:
         _, frame = self.__cap.read()
@@ -33,10 +41,10 @@ class OpenCVCamera(BaseCamera):
             msg = f"Can't open camera port {self.port}!"
             print(msg)
             raise RuntimeError(msg)
-        if self.FrameWidth is not None:
-            self.__cap.set(cv2.CAP_PROP_FRAME_WIDTH, self.FrameWidth)
-        if self.FrameHeight is not None:
-            self.__cap.set(cv2.CAP_PROP_FRAME_HEIGHT, self.FrameHeight)
+        if self._FrameWidth is not None:
+            self.__cap.set(cv2.CAP_PROP_FRAME_WIDTH, self._FrameWidth)
+        if self._FrameHeight is not None:
+            self.__cap.set(cv2.CAP_PROP_FRAME_HEIGHT, self._FrameHeight)
         self.__cap.set(cv2.CAP_PROP_AUTO_EXPOSURE, 0.0)
         self.__cap.set(cv2.CAP_PROP_EXPOSURE, 0.60)
         self.__cap.set(cv2.CAP_PROP_AUTO_WB, 0.0)

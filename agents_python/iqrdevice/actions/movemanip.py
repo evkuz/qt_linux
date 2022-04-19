@@ -1,11 +1,11 @@
 from time import sleep
 from iqrdevice.actions import BaseAction
-from ..utils import SerialCommunication
+from iqrdevice.utils.controllers import ArduinoManipulator
 
 
-class MoveAction (BaseAction):
-    def __init__(self, arduino_device:SerialCommunication):
-        BaseAction.__init__(self, "move")
+class MoveManipulatorAction (BaseAction):
+    def __init__(self, arduino_device:ArduinoManipulator):
+        BaseAction.__init__(self, "movemanip")
         self.__manip = arduino_device
 
     def get_info(self) -> dict:
@@ -40,7 +40,7 @@ class MoveAction (BaseAction):
         return -126
 
 class MoveHomeAction (BaseAction):
-    def __init__(self, arduino_device:SerialCommunication):
+    def __init__(self, arduino_device:ArduinoManipulator):
         BaseAction.__init__(self, "movehome")
         self.__manip = arduino_device
 

@@ -1,45 +1,55 @@
+from os import stat
 import requests
 import json
 from time import sleep
+from typing import Optional, List
+from .basecontroller import BaseController
 
 
-class RemoteDevice:
-    def __init__(self, addr):
+class RemoteDevice(BaseController):
+    def __init__(self, addr:str, name:str="remote"):
+        BaseController.__init__(self, name)
         self.addr = addr
 
-    def get_status(self, actionNames=[]):
+    @property
+    def channels(self) -> List[str]:
+        return ['status']
+
+    def get_status(self, actionNames:List[str]=[])->dict:
         params = dict()
         if len(actionNames) != 0:
             params['action'] = ",".join(actionNames)
         url = self.addr + "/status"
-        return self.__send_get_request(url, params)
+        res = self.__send_get_request(url, params)
+        self.fire_event("status", res)
+        return res
 
-    def run_action(self, name, **kwargs):
+    def run_action(self, name:str, **kwargs)->dict:
         params = kwargs
         params["name"] = name
         url = self.addr + "/action"
         return self.__send_get_request(url, params)
 
-    def get_service_info(self, name, **kwargs):
+    def get_service_info(self, name:str, **kwargs)->dict:
         params = kwargs
         params["name"] = name
         url = self.addr + "/service"
         return self.__send_get_request(url, params)
 
-    def reset_actions(self, actionNames:list):
+    def reset_actions(self, actionNames:List[str])->dict:
         params = dict()
         if len(actionNames) != 0:
             params['action'] = ",".join(actionNames)
         url = self.addr + "/reset"
         return self.__send_get_request(url, params)
 
-    def manual_request(self, addr_addition:str):
+    def manual_request(self, addr_addition:str)->dict:
         if len(addr_addition) > 0 and addr_addition[0] != '/':
             addr_addition = '/' + addr_addition
         url = self.addr + addr_addition
         return self.__send_get_request(url, None)
     
-    def wait_for_action_finished(self, actionName:str=None):
+    def wait_for_action_finished(self, actionName:Optional[str]=None)->None:
         while True:
             st = self.get_status()
             if st['rc'] != 0:
@@ -56,7 +66,7 @@ class RemoteDevice:
                     break
             sleep(0.1)
 
-    def __send_get_request(self, url, params):
+    def __send_get_request(self, url, params)->dict:
         try:
             resp = requests.get(url=url, params=params, timeout=30)
         except Exception as e:
@@ -64,8 +74,9 @@ class RemoteDevice:
         try:
             data = resp.json()
         except Exception as e:
-            return resp.text
+            return {"value": resp.text}
         return data
+
 
 if __name__ == '__main__':
     dev = RemoteDevice("http://192.168.1.201:5001")

@@ -4,12 +4,14 @@ import serial
 import threading
 import time
 import logging
+from .basecontroller import BaseController
+from typing import List
 
 
 default_timeout = 2.
 
 
-class SerialCommunication:
+class ArduinoManipulator(BaseController):
     @staticmethod
     def serial_ports():
         """Lists serial port names
@@ -40,10 +42,11 @@ class SerialCommunication:
         return result
 
     def __init__(self, name:str="Serial"):
+        BaseController.__init__(self, name)
+
         self.__sp = serial.Serial(timeout=default_timeout*0.5)
         self.__n_servos = 0
         self.__currentState =  ([], 0.)
-        self.__name = name
         
         self.__readingThread = None
         self.__isFreeEvent = threading.Event()
@@ -53,6 +56,10 @@ class SerialCommunication:
         self.__endMovingEvent = threading.Event()
         self.logger = logging.getLogger(__name__)
     
+    @property
+    def channels(self) -> List[str]:
+        return ['position', 'moving']
+
     def __del__(self):
         self.close_device()
 
@@ -75,17 +82,17 @@ class SerialCommunication:
             self.close_device()
         
         if type(port) is int:
-            portList = SerialCommunication.serial_ports()
+            portList = ArduinoManipulator.serial_ports()
             port = portList[port]
         
-        self.logger.info(f"Opening {self.__name} port={port} ({baudrate})...")
+        self.logger.info(f"Opening {self._name} port={port} ({baudrate})...")
         self.__sp.port = port
         self.__sp.baudrate = baudrate
         self.__sp.open()
         if self.is_open:
             self.__readingThread = threading.Thread(target=self.__reading_port_thread_work)
             self.__readingThread.start();
-        self.logger.info(f"{self.__name} port is open: {self.is_open}")
+        self.logger.info(f"{self._name} port is open: {self.is_open}")
         time.sleep(1.)
 
     def close_device(self):
@@ -96,7 +103,7 @@ class SerialCommunication:
         self.__sp.close()
         self.__endMovingEvent.set()
         self.__isFreeEvent.set()
-        self.logger.info(f"{self.__name} port was closed")
+        self.logger.info(f"{self._name} port was closed")
     
     @property
     def is_open(self):
@@ -113,6 +120,7 @@ class SerialCommunication:
         msg = 'm ' + " ".join(map(str, positions)) + ' ' + str(speed) + '\n'
         self.__endMovingEvent.clear()
         self.__send_command_line(msg)
+        self.fire_event("moving", "moving")
 
         if wait:
             self.wait_for_move_done()
@@ -121,6 +129,7 @@ class SerialCommunication:
         msg = 'h ' + str(speed) + '\n'
         self.__endMovingEvent.clear()
         self.__send_command_line(msg)
+        self.fire_event("moving", "moving_home")
 
         if wait:
             self.wait_for_move_done()
@@ -136,8 +145,8 @@ class SerialCommunication:
 
         if self.__stateRecivedEvent.wait(default_timeout):
             return self.__currentState
-        self.logger.error(f"{self.__name}: can't get state for too long")
-        raise RuntimeError(f"{self.__name} can't get state for too long!")
+        self.logger.error(f"{self._name}: can't get state for too long")
+        raise RuntimeError(f"{self._name} can't get state for too long!")
 
     def set_home_position(self, positions:list):
         if len(positions) != self.__n_servos:
@@ -168,13 +177,13 @@ class SerialCommunication:
         self.__isFreeEvent.clear()
         try:
             self.__commandAcceptedEvent.clear()
-            self.logger.info(f"To {self.__name}: {msg[:-1]}")
+            self.logger.info(f"To {self._name}: {msg[:-1]}")
             self.__sp.write(msg.encode("utf-8"))
             self.__sp.flush()
             
             if not self.__commandAcceptedEvent.wait(default_timeout * 0.5):
-                self.logger.error(f"{self.__name}: command not been recived!")
-                raise RuntimeError(f"Can't send command to {self.__name}")
+                self.logger.error(f"{self._name}: command not been recived!")
+                raise RuntimeError(f"Can't send command to {self._name}")
         finally:    
             self.__isFreeEvent.set()
 
@@ -183,11 +192,12 @@ class SerialCommunication:
         while self.__sp.is_open:
             if self.__sp.in_waiting:
                 line = self.__sp.readline().decode("utf-8")[:-1]
-                self.logger.info(f"from {self.__name}: {line}")
+                self.logger.info(f"from {self._name}: {line}")
                 if line.startswith("OK"):
                     self.__commandAcceptedEvent.set()
                 elif line.startswith("END"):
                     self.__endMovingEvent.set()
+                    self.fire_event("moving", "done")
                 elif line.startswith("N_SERVOS"):
                     self.__n_servos = int(line.split(':')[1])
                 else:
@@ -196,17 +206,17 @@ class SerialCommunication:
                         if len(res) == (self.__n_servos + 1):
                             self.__currentState = ([int(s) for s in res[:-1]], float(res[-1]))
                             self.__stateRecivedEvent.set()
+                            self.fire_event("position", ([int(s) for s in res[:-1]], float(res[-1])))
                     except Exception:
                         pass
             else:
                 time.sleep(0.02)
 
 
-
 if __name__ == '__main__':
     logging.basicConfig(filename='test.log', level=logging.INFO, filemode="w")
 
-    s = SerialCommunication("TestDevice")
+    s = ArduinoManipulator("TestDevice")
     try:
         s.open_device(0)
 
