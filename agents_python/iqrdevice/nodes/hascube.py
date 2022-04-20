@@ -8,5 +8,7 @@ class HasCubeNode(BaseNode):
         self.has_cube = has_cube
 
     def process_event(self, channel: str, data: Any)->None:
-        if isinstance(data, bool):
-            self.has_cube = data
+        #in case it is listening for mainbus
+        if channel == "services":
+            if data['name'] == "hascube":
+                self.has_cube = bool(data['name']['data']['has_cube'])
