@@ -8,9 +8,15 @@ class DevelopementConfig(BaseConfig):
     CAMERA_NUM = 0
     APP_DIR = app_dir
     COM_PORT = 0
+    GRIP_CLOSED = 95
+    GRIP_OPENED = 180
+    CATCH_DIST = 3.2
     
 class ProductionConfig(BaseConfig):
     DEBUG = False
     CAMERA_NUM = 0
     APP_DIR = app_dir
     COM_PORT = 0
+    GRIP_CLOSED = 95
+    GRIP_OPENED = 180
+    CATCH_DIST = 3.2

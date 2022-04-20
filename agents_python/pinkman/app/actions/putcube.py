@@ -1,13 +1,14 @@
-from time import sleep
 from iqrdevice.actions import BaseAction
-from ..utils import SerialCommunication
-from . import GRIP_CLOSED, GRIP_OPENED
+from iqrdevice.utils.controllers import ArduinoManipulator
+
 
 
 class PutCubeAction (BaseAction):
-    def __init__(self, arduino_device:SerialCommunication):
+    def __init__(self, arduino_device:ArduinoManipulator, grip_opened_val:int, grip_closed_val:int):
         BaseAction.__init__(self, "putcube")
         self.__manip = arduino_device
+        self._grip_opened_val = grip_opened_val
+        self._grip_closed_val = grip_closed_val
 
     def get_info(self) -> dict:
         return self.make_info(
@@ -17,15 +18,15 @@ class PutCubeAction (BaseAction):
     def run_action(self, **kwargs) -> int:
         res = 0
         if self._workingFlag:
-            _ = self.move_manip([90, 120, 70, GRIP_CLOSED])
+            _ = self.move_manip([90, 120, 70, self._grip_closed_val])
         if self._workingFlag:
-            _ = self.move_manip([153, 120, 70, GRIP_CLOSED])
+            _ = self.move_manip([153, 120, 70, self._grip_closed_val])
         if self._workingFlag:
-            _ = self.move_manip([153, 55, 100, GRIP_CLOSED])
+            _ = self.move_manip([153, 55, 100, self._grip_closed_val])
         if self._workingFlag:
-            _ = self.move_manip([153, 55, 100, GRIP_OPENED])
+            _ = self.move_manip([153, 55, 100, self._grip_opened_val])
         if self._workingFlag:
-            _ = self.move_manip([153, 120, 70, GRIP_OPENED])
+            _ = self.move_manip([153, 120, 70, self._grip_opened_val])
         
         return res
 
