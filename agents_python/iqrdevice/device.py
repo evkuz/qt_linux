@@ -217,6 +217,7 @@ class IQRDevice:
                      return ServiceResponce(service, -7,  "Device control was locked. Your lock key isn't valid.")
         try:
             data = srv.get_data(**params)
+            self.fire_event("services", {"name": service, "data": data})
         except Exception as e:
             return ServiceResponce(service, -2, str(e))
 
