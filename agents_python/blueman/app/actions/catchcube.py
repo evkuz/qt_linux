@@ -7,7 +7,7 @@ import logging
 
 
 class CatchCubeAction (BaseAction):
-    def __init__(self, arduino_device:ArduinoManipulator, cam:BaseCamera, detector:BaseDetector, opened_val:int, closed_val:int):
+    def __init__(self, arduino_device:ArduinoManipulator, cam:BaseCamera, detector:BaseDetector, opened_val:int, closed_val:int, min_catch_dist:float=2.9):
         BaseAction.__init__(self, "catchcube")
         self.logger = logging.getLogger("CatchCubeAction")
         self.__cam = cam
@@ -15,6 +15,7 @@ class CatchCubeAction (BaseAction):
         self.__manip = arduino_device
         self._opened_val = opened_val
         self._closed_val = closed_val
+        self._min_catch_dist = min_catch_dist
         
     def get_info(self) -> dict:
         return self.make_info(
@@ -34,7 +35,7 @@ class CatchCubeAction (BaseAction):
                 frame = self.__cam.get_last_frame()
                 det_res = self.__detector.detect(frame)
                 if det_res['detected']:
-                    errZ = (0.7 - det_res['w'])*self.__cam.FrameWidth
+                    errZ = (0.7 - det_res['width'])*self.__cam.FrameWidth
                     errX = (det_res['x'] - 0.5) * self.__cam.FrameWidth
                     errY = (det_res['y'] - 0.4) * self.__cam.FrameHeight
 
@@ -45,7 +46,8 @@ class CatchCubeAction (BaseAction):
                     notDetectedSteps = 0
                 else:
                     notDetectedSteps += 1
-                if dist < 2.9:
+                # i changing min_catch dist becouse cube will turn a bit after grip closed
+                if dist < (self._min_catch_dist-0.2):
                     currentPos[4] = self._closed_val
                     _ = self.move_manip(currentPos)
                     tp_state+=1
@@ -64,8 +66,12 @@ class CatchCubeAction (BaseAction):
                 ]
                 _ = self.move_manip(pos)
 
-                pos = [currentPos[0], 120, 60, currentPos[3], self._closed_val]
-                _ = self.move_manip(pos)
+                pos = [currentPos[0], 120, 40, currentPos[3], self._closed_val]
+                currentPos, dist = self.move_manip(pos)
+                if dist > self._min_catch_dist:
+                    self._set_state_info("Cube wasn't held by grip")
+                    res = -11
+                    _ = self.__manip.move_home(90)
                 break
         return res
 

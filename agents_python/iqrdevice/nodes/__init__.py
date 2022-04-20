@@ -1,11 +1,13 @@
 from .basenode import BaseNode
-from .cubenode import CubeNode
-from .gripnode import GripNode, ManipGripNode
+from .hascube import HasCubeNode
+from .grip import GripNode, ManipGripNode
+from .position import PositionNode
 
 
 __all__ = [
     "BaseNode",
-    "CubeNode",
+    "HasCubeNode",
+    "PositionNode",
     "GripNode",
     "ManipGripNode"
 ]

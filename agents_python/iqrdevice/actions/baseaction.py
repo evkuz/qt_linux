@@ -1,6 +1,6 @@
 from time import time
 import threading
-from typing import Optional
+from typing import Callable, Optional
 from .actionstate import ActionState
 
 
@@ -10,6 +10,10 @@ class BaseAction:
         self.__isWorking = False
         self.__state = ActionState(name)
         self.__isReset = False
+        
+        self.on_run:Optional[Callable[[str], None]] = None
+        self.on_reset:Optional[Callable[[str], None]] = None
+        self.on_successfully_finished:Optional[Callable[[str], None]] = None
 
     @property
     def State(self):
@@ -59,6 +63,8 @@ class BaseAction:
     def __run_thread_work(self, **kwargs):
         self.__state.set_run()
         try:
+            if self.on_run is not None:
+                self.on_run(self.Name)
             res = self.run_action(**kwargs)
         except Exception as e:
             res = -10
@@ -67,8 +73,11 @@ class BaseAction:
         if not self.__isReset:
             if res == 0:
                 self.__state.set_success(res)
+                if self.on_successfully_finished is not None:
+                    self.on_successfully_finished(self.Name)
             else:
                 self.__state.set_fail(res)
+        
         self.__thread = None
         self.__isWorking = False
     
@@ -97,6 +106,8 @@ class BaseAction:
         self.__state.set_info("reset was sent")
         try:
             res = self.reset_action()
+            if self.on_reset is not None:
+                self.on_reset(self.Name)
         except Exception as e:
             res = -1
             self.__state.set_info("Reset_fail: " + str(e))

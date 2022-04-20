@@ -4,6 +4,7 @@ from iqrdevice.history import History
 from typing import Callable, Any, List
 from iqrdevice.responces import ActionResponce, ServiceResponce, HistResponce, StatusResponce
 from iqrdevice.nodes import BaseNode
+from iqrdevice.eventbus import EventBus
 
 
 class ListActionsService(BaseService):
@@ -46,6 +47,7 @@ class IQRDevice:
         self.__nodes:List[BaseNode] = []
         self.__history = History()
         self.__lock_key = None
+        self.__event_bus:EventBus = EventBus("mainbus")
         self.set_state_init()
     
     def set_name(self, name:str)->None:
@@ -79,8 +81,24 @@ class IQRDevice:
         return self.__lock_key is not None
 
 
+    @property
+    def main_bus(self)->EventBus:
+        return self.__event_bus
+
+    @property
+    def name(self)->str:
+        return self.__name
+
+    @property
+    def channels(self)->List[str]:
+        return ["actions", "services" ]
+
+    def fire_event(self, channel:str, data:Any):
+        self.__event_bus.fire_event(channel, data)
+
+
     def get_nodes_state(self)->list:
-        return [x.to_json() for x in self.__nodes]
+        return [x.to_dict() for x in self.__nodes]
 
     def get_list_services(self)->List[dict]:
         return [x.get_info() for x in self.__services]
@@ -91,6 +109,9 @@ class IQRDevice:
 
     def register_action(self, action:BaseAction)->None:
         self.__actions.append(action)
+        action.on_successfully_finished = lambda name: self.fire_event("actions", {'name': name, 'state':'finished'})
+        action.on_reset = lambda name: self.fire_event("actions", {'name': name, 'state':'reset'})
+        action.on_run = lambda name: self.fire_event("actions", {'name': name, 'state':'run'} )
 
     def register_service(self, service:BaseService)->None:
         self.__services.append(service)

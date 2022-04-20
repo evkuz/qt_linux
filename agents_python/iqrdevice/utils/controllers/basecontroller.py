@@ -22,5 +22,5 @@ class BaseController(object):
         if self.__event_bus is not None:
             if channel not in self.channels:
                 raise ValueError(f"Unregistered channel name: {channel}")
-            self.__event_bus.set_event(f"{self._name}.{channel}", data)
+            self.__event_bus.fire_event(f"{self._name}/{channel}", data)
 

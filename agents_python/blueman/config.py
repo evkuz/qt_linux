@@ -9,7 +9,8 @@ class DevelopementConfig(BaseConfig):
     APP_DIR = app_dir
     COM_PORT = 0
     GRIP_CLOSED = 105
-    GRIP_OPENED = 30
+    GRIP_OPENED = 40
+    CATCH_DIST = 3.95
     
 class ProductionConfig(BaseConfig):
     DEBUG = False
@@ -17,4 +18,5 @@ class ProductionConfig(BaseConfig):
     APP_DIR = app_dir
     COM_PORT = 0
     GRIP_CLOSED = 105
-    GRIP_OPENED = 30
+    GRIP_OPENED = 40
+    CATCH_DIST = 3.95
