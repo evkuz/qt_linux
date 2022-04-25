@@ -37,6 +37,12 @@ class BaseService:
         """
         raise NotImplementedError()
 
+    def make_info(self, description:str, parameters:dict={}):
+        return {
+            "name":self.Name,
+            "description": description,
+            "parameters": parameters
+        }
 
 
 if __name__ == "__main__":

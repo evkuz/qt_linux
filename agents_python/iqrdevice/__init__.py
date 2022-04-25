@@ -1,5 +1,12 @@
 from flask import Flask
 import os, config
+import logging
+logging.basicConfig(
+    filename='agent-server.log',
+    level=logging.INFO,
+    filemode="w",
+    format = "%(asctime)s - %(levelname)s - %(funcName)s: %(lineno)d - %(message)s"
+)
 
 # создание экземпляра приложения
 app = Flask(__name__)

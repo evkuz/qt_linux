@@ -403,7 +403,8 @@ void MainProcess::on_trainButton_clicked()
             GUI_Write_To_Log(0xf014, str);
 
 
-            try_mcinfer(state.objectX, state.objectY); // Тут меняем current_status = "inprogress". Команда 0 - Переместить открытый хват к кубику.
+            int kf = 100000;
+            try_mcinfer(state.objectX*kf, state.objectY*kf); // Тут меняем current_status = "inprogress". Команда 0 - Переместить открытый хват к кубику.
             X = state.objectX;                        //  Хват открывается в процессе движения робота, а не отдельной командой.
             Y = state.objectY;
             std::cout << "DETECTED: " << state.objectX << " " << state.objectY << std::endl;

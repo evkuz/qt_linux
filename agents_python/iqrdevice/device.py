@@ -1,3 +1,4 @@
+from re import S
 from iqrdevice.action import BaseAction, ActionResponce
 from iqrdevice.status import StatusResponce
 from iqrdevice.service import BaseService, ServiceResponce
@@ -13,7 +14,9 @@ class ListActionsService(BaseService):
         return self.__device.get_list_actions()
 
     def get_info(self) -> dict:
-        return {"name": self.Name}
+        return self.make_info(
+            "Returns list of available actions"
+        )
 
 
 class ListServicesService(BaseService):
@@ -25,7 +28,9 @@ class ListServicesService(BaseService):
         return self.__device.get_list_services()
 
     def get_info(self) -> dict:
-        return {"name": self.Name}
+        return self.make_info(
+            "Returns list of available services"
+        )
 
 
 class IQRDevice:
@@ -138,18 +143,25 @@ class IQRDevice:
                 
     
     def get_service_info(self, service:str, params:dict={}) -> ServiceResponce:
-        for srv in self.__services:
-            if srv.Name == service:
-                data = srv.get_data(**params)
-                if data is None:
-                    return ServiceResponce(
-                        service,
-                        -2, 
-                        "can't get responce from service"
-                    )
-                else:
-                    return ServiceResponce(service,0, "success", data)
+        data = None
+        srv = None
+        for s in self.__services:
+            if s.Name == service:
+                srv = s
+                break
+        else:
+            return ServiceResponce(service, -1, "service with this name wasn't found")
+        
+        try:
+            data = srv.get_data(**params)
+        except Exception as e:
+            return ServiceResponce(service, -2, str(e))
 
-        return ServiceResponce(service, -1, "service with this name wasn't found")          
-
-
+        if data is None:
+            return ServiceResponce(
+                service,
+                -2, 
+                "can't get responce from service"
+            )
+        else:
+            return ServiceResponce(service, 0, "success", data)

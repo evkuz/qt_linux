@@ -1,0 +1,62 @@
+<html>
+  <head>
+    <title>WheelTec http server</title>
+    <script>
+      deviceAddr = "{{device_addr}}";
+
+      async function sendRequest(addr){
+        let url = deviceAddr + addr;
+        let response = await fetch(url);
+        if (response.ok) { // если HTTP-статус в диапазоне 200-299
+          // получаем тело ответа (см. про этот метод ниже)
+          let json = await response.json();
+          if (json.rc == 0) {
+              return true;
+          }
+        }
+        return false;
+      }
+
+      async function getInfo(addr){
+        let url = deviceAddr + addr;
+        let response = await fetch(url);
+        if (response.ok) { // если HTTP-статус в диапазоне 200-299
+          // получаем тело ответа (см. про этот метод ниже)
+          let json = await response.json();
+          if (json.rc == 0) {
+            alert(JSON.stringify(json.data)); 
+            return true;
+          }
+        }
+        return false;
+      }
+    </script>
+
+    <style>
+      .button {
+        cursor: pointer;
+        color:darkblue;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>WheelTec http server</h1>
+    <p><strong>Base links:</strong></p>
+    <ul>
+        <li><b><a href="/status">status</a></b></li>
+        <li><b><a href="/service?name=getservices">getservices</a></b></li>
+        <li><b><a href="/service?name=getactions">getactions</a></b></li>
+    </ul>
+
+    <p><strong>Useful links:</strong></p>
+    <ul>
+      <li><b><a class="button" onclick="sendRequest('/action?name=movetoa');">Perform "MoveToA"</a></b></li>  
+      <li><b><a href="/status?action=movetoa" target="_blank">"MoveToA" status</a></b></li><br/>
+      <li><b><a class="button" onclick="sendRequest('/action?name=movetob');">Perform "MoveToB"</a></b></li>  
+      <li><b><a href="/status?action=movetob" target="_blank">"MoveToB" status</a></b></li><br/>
+      <li><b><a class="button" onclick="sendRequest('/reset');">Reset</a></b></li><br/>
+      <li><b><a class="button" onclick="getInfo('/service?name=startrosrun');">START ROSRun</a></b></li>
+      <li><b><a class="button" onclick="getInfo('/service?name=stoprosrun');">STOP ROSRun</a></b></li>
+    </ul>
+  </body>
+</html>
