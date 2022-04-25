@@ -347,16 +347,17 @@ void MainWindow::on_socketButton_clicked()
     Servos[0]=0;
     update_LineDits_from_servos();
 
+    int kf = 100000;
     if (readSocket.GetState(&state) == 0)
       {
         if (state.isDetected){
-            try_mcinfer(state.objectX, state.objectY);
+            try_mcinfer(state.objectX*kf, state.objectY*kf);
             X = state.objectX;
             Y = state.objectY;
             str+="DETECTED: ";
-            str += QString::number(state.objectX);
+            str += QString::number(state.objectX*kf);
             str += ", ";
-            str += QString::number(state.objectY);
+            str += QString::number(state.objectY*kf);
 
 
         } else {
@@ -568,16 +569,17 @@ void MainWindow::on_trainButton_clicked()
     Servos[0]=0;
   //  update_LineDits_from_servos();
 
+    int kf = 100000;
     if (readSocket.GetState(&state) == 0)
       {
         if (state.isDetected){
-            try_mcinfer(state.objectX, state.objectY); // Тут меняем current_status = "inprogress". Команда 0 - Переместить открытый хват к кубику.
+            try_mcinfer(state.objectX*kf, state.objectY*kf); // Тут меняем current_status = "inprogress". Команда 0 - Переместить открытый хват к кубику.
             X = state.objectX;                        //  Хват открывается в процессе движения робота, а не отдельной командой.
             Y = state.objectY;
             str+="DETECTED: ";
-            str += QString::number(state.objectX);
+            str += QString::number(state.objectX*kf);
             str += ", ";
-            str += QString::number(state.objectY);
+            str += QString::number(state.objectY*kf);
             DETECTED = true;
 
         } else {

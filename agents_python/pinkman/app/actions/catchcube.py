@@ -89,10 +89,10 @@ class CatchCubeAction (BaseAction):
         self.logger.info(f"Errors: {err}" )
         self.logger.info(f"CUR_POS: {manipPos}")
         c_0_x = -0.0140625 * err[0]
-        c_1_y = -0.02 * err[1]
-        c_1_z = -0.00875 * err[2]
-        c_2_y = -0.026 * err[1]
-        c_2_z = 0.00425 * err[2]
+        c_1_y = -0.012 * err[1]
+        c_1_z = -0.00665543 * err[2]
+        c_2_y = -0.021 * err[1]
+        c_2_z = 0.00765543 * err[2]
 
         newPos = [
             int(manipPos[0] + c_0_x),
