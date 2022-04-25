@@ -13,6 +13,7 @@ def kill_process(pid):
 
 class RosRun(BaseController):
     def __init__(self, start_script:str, stop_script:str):
+        BaseController.__init__(self, "RosRun")
         self.__start_script = start_script
         self.__stop_script = stop_script
         self.__process = None

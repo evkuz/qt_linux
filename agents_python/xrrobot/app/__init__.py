@@ -36,14 +36,15 @@ mainbus = device.main_bus
 rosrun.set_event_bus(device.main_bus) # all events will be written to this bus
 
 mainbus.add_subscriber(rosrun.name + '/main', rosrun_node)
-mainbus.add_subscriber("services", hascube_node)
+# next line is alternative way, i will add it directly to service
+#mainbus.add_subscriber("services", hascube_node)
 mainbus.add_subscriber("services", position_node)
 mainbus.add_subscriber("actions", position_node)
 
 # this is needed to show nodes in device state
 device.register_node(rosrun_node)
-# next line is alternative way, i will add it directly to service
-#device.register_node(hascube_node) 
+device.register_node(hascube_node)
+device.register_node(position_node)
 
 
 # Configuring Actions

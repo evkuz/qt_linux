@@ -1,10 +1,7 @@
 from time import sleep
-import pathlib
 from iqrdevice.actions import ExecuteFileAction
 
-
-script_path ="move.sh"
-
+script_path = "move.sh"
 
 class MoveToAAction (ExecuteFileAction):
     def __init__(self):
