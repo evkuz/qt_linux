@@ -16,6 +16,7 @@ MainProcess::MainProcess(QObject *parent)
     , readSocket("../iqr.socket")
 
 {
+    int value = 0x0000;
 
     DETECTED = false;
     new_get_request = false;
@@ -94,15 +95,34 @@ MainProcess::MainProcess(QObject *parent)
 
     //+++++++++++++++ ОТкрываем порт Open_Port_Signal(QString portname); ttyUSB0
     // Arduino NANO виден как ttyUSB0
-    // Arduino Mega - как
-    emit Open_Port_Signal("ttyUSB1");
-    //make_json_answer();
+    // Arduino Mega - как "ttyACM0"
+    // emit Open_Port_Signal("ttyUSB1");
+
+    str = "Current Servo values are : ";
+    str += QString::number(Servos[0]);
+    GUI_Write_To_Log(value, str);
+
+    int OKay = Robot->Open_Port_Slot("ttyUSB0");
+    if (!OKay) { //!Robot->SerialIsOpened
+        Robot->current_st_index = 4;
+
+       OKay = Robot->Open_Port_Slot("ttyUSB1");
+
+    } // Robot->current_status = statuslst.at(4)
+
+    if (!OKay){
+                GUI_Write_To_Log(value, "SerialPort  PROBLEM !!!");
+                // ТОгда таймер пускаем ???
+    };
+
+
+
 
     //+++++++++ Проверяем, что работает QSerialPort
     QThread::sleep(2);
-    emit on_clampButton_clicked();
+    on_clampButton_clicked();
     QThread::sleep(1);
-    emit on_clampButton_clicked();
+    on_clampButton_clicked();
 
 
 
@@ -187,98 +207,18 @@ emit Open_Port_Signal(portname);
     }
     */
 }
-//+++++++++++++++++++++++++
-// Go to "sit" position
-void MainProcess::on_sitButton_clicked()
-{
-    QByteArray dd = QByteArray::fromRawData(reinterpret_cast<const char*>(sit_down_position), 6);
-    dd.append(0x31); // Движение "Туда"
-    Robot->GoToPosition(dd);//, sit_down_position
-}
-//+++++++++++++++++++++++++++++++
-// Go to Initial "Start" position
-void MainProcess::on_stand_upButton_clicked()
-{
-  //  this->update_LineDits_from_position(hwr_Start_position);
-    this->update_Servos_from_position(hwr_Start_position);
-    //   this->repaint();
-    QByteArray dd = QByteArray::fromRawData(reinterpret_cast<const char*>(hwr_Start_position), 6);
-    dd.append(0x30); // Движение "Обратно"
-    dd.append(LASTONE);
-    Robot->GoToPosition(dd);//, hwr_Start_position
-
-//    GUI_Write_To_Log(0xff10, str);
-}
 //+++++++++++++++++++++++++++++++
 void MainProcess::on_closeButton_clicked()
 {
     Robot->serial.close();
 }
-//+++++++++++++++++++++++++++++++++++++++++
-//Send data from GUI to robot
-// Раз нажали кнопку, значит это единственная команда, значит добавляем LASTONE
-void MainProcess::on_set_posButton_clicked()
-{
-    //QString str;
-
-
-    // const char *   pchar;
-    //pchar = static_cast<const char *>(static_cast<char *>(Servos));
-   // QByteArray dd = QByteArray::fromRawData(pchar, 6);
-    //GUI_Write_To_Log(0xf003,str);
-    QByteArray dd ;
-    dd.resize(parcel_size);
-    memcpy(dd.data(), Servos, 6);
-    dd.insert(parcel_size-2, 0x31); // Движение "Туда"
-    dd.insert(parcel_size-1, LASTONE);
-    //dd.append(0x31);
-    //dd.resize(64);
-    //QByteArray dd = QByteArray::fromRawData(Servos, 6);
-    Robot->GoToPosition(dd);//, pchar
-}
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-/*
-void MainProcess::on_socketButton_clicked()
-{
-    DetectorState state;
-    QString str;
-    str = "";
-//Сразу открываем захват
-//    if (ui->servo_1_lineEdit->text().toInt() > 0){ ui->servo_1_lineEdit->setText("0"); Servos[0]=0;}
-//    else {ui->servo_1_lineEdit->setText("160"); Servos[0]=160;}
-    Servos[0]=0;
-    update_LineDits_from_servos();
-
-    if (readSocket.GetState(&state) == 0)
-      {
-        if (state.isDetected){
-            try_mcinfer(state.objectX, state.objectY);
-            X = state.objectX;
-            Y = state.objectY;
-            str+="DETECTED: ";
-            str += QString::number(state.objectX);
-            str += ", ";
-            str += QString::number(state.objectY);
-
-
-        } else {
-            str += "NOT DETECTED";
-        }
-
-       std::cout <<  str.toStdString() << std::endl;
-       Robot->Write_To_Log(0xf014, str);
-       GUI_Write_To_Log(0xf014, str);
-    }
-}
-*/
-//+++++++++++++++++++++++++++++++++++++++  ->text().toInt()
 void MainProcess::on_clampButton_clicked()
 {
     if (Servos[0]>0){ Servos[0]=0;}
     else {Servos[0]=90;}
-//    update_LineDits_from_servos();
+    this->send_Data(LASTONE); // Движение "Туда" по умолчанию
 
-    on_set_posButton_clicked();
 }
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -598,16 +538,17 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
    }
 
    if (substr == "sit") {
-
+       // Go to "sit" position
        QByteArray dd = QByteArray::fromRawData(reinterpret_cast<const char*>(sit_down_position), 6);
        dd.append(0x31); // Движение "Туда"
        Robot->GoToPosition(dd);//, sit_down_position
    }//"sit"
 
    if (substr == "standup") {
+       // Go to Initial "Start" position
        QByteArray dd = QByteArray::fromRawData(reinterpret_cast<const char*>(hwr_Start_position), 6);
        dd.append(0x30); // Движение "Обратно"
-       dd.append(LASTONE);
+       dd.append(LASTONE); // Всегда последнее ?
        Robot->GoToPosition(dd);//, hwr_Start_position
 
    }
@@ -615,13 +556,7 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 
        if(Servos[0]==0) { Servos[0]=90;}
        else {Servos[0]=0;}
-
-
        this->send_Data(LASTONE);
-
-//       QByteArray dd = QByteArray::fromRawData(reinterpret_cast<const char*>(sit_down_position), 6);
-//       dd.append(0x31); // Движение "Туда"
-//       Robot->GoToPosition(dd);//, sit_down_position
    }//"clamp"
 
 
@@ -660,7 +595,7 @@ void MainProcess::server_New_Connect_Slot()
 }
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++
-
+// Пришло из GUI-версии. В console-версии тоже нужно.
 void MainProcess::update_Servos_from_position(unsigned char *pos)
 {
     for (int i =0; i< DOF; i++) { Servos[i] = pos[i]; }

@@ -37,7 +37,7 @@ public:
 
     QString     target_name;
     //char       *servos;    //unsigned char
-    QByteArray LineEdits[6];
+    //QByteArray LineEdits[6];
 
     HiWonder *Robot;
 //    Robo_Math * RMath;
@@ -94,19 +94,9 @@ void server_New_Connect_Slot();
 private slots:
     void on_openButton_clicked();
 
-    void on_sitButton_clicked();
-
-    void on_stand_upButton_clicked();
-
     void on_closeButton_clicked();
 
-
-    void on_set_posButton_clicked();
-
-
-//    void on_socketButton_clicked();
-
-    void on_clampButton_clicked();
+    void on_clampButton_clicked(); // Тут тоже используется
 
 
 

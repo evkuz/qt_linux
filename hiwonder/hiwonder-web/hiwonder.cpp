@@ -83,25 +83,46 @@ where <username> is your Linux user name. You will need to log out and log in ag
 
 */
 //+++++++++++ Open Serial port
-void HiWonder::Open_Port_Slot(QString portname)
+int HiWonder::Open_Port_Slot(QString portname)
 
 {
     bool OK;
     int serial_error;
+    int exit_code;
     QString stt;
 
     serial.setPortName(portname); //portname == "ttyUSB0"
     OK = true;
-    serial_error = 1;
+    serial_error = 777;
+    exit_code = 2;
    // OK = serial.open(QIODevice::ReadWrite);
-    if (!serial.open(QIODevice::ReadWrite)) { OK = false; serial_error = serial.error(); this->Write_To_Log(0xFF00, "Error opening Serial port !!!");} //"Error opening Serial port !!!");}
-    stt = QString::number (serial_error);
-    this->Write_To_Log(0xFF00,stt);
+    if (!serial.open(QIODevice::ReadWrite))
+    {
+        OK = false; serial_error = serial.error();
+        this->Write_To_Log(0xFF00, "Error opening Serial port !!! "+portname);
+        SerialIsOpened = false;
 
-    // https://www.linuxhowtos.org/data/6/perror.txt
-//    if (!serial.open(QIODevice::ReadWrite)) {
-//        processError(tr("Can't open %1, error code %2")
-//                     .arg(serial.portName()).arg()));
+        stt = "Error code is ";
+        stt += QString::number (serial_error);
+        //https://doc.qt.io/qt-5/qserialport.html#SerialPortError-enum
+        if (serial_error == 1) {stt += " - Device NOT found.";}
+        if (serial_error == 2) {stt += " - An error occurred while attempting to open an already opened device by another process or a user not having enough permission and credentials to open.";}
+        if (serial_error == 3) {stt += " - attempting to open an already opened device";}
+        this->Write_To_Log(0xFF00,stt);
+        serial.clearError(); //Очищаем ошибку, чтобы заново запустить
+        exit_code = 0; //false
+
+        //Тут запускаем таймер и открываем порт в таймере
+
+
+
+    } //if
+    else {
+        SerialIsOpened = true;
+        // https://www.linuxhowtos.org/data/6/perror.txt
+        //    if (!serial.open(QIODevice::ReadWrite)) {
+        //        processError(tr("Can't open %1, error code %2")
+        //                     .arg(serial.portName()).arg()));
 
 
     serial.setBaudRate(QSerialPort::Baud115200);
@@ -111,6 +132,9 @@ void HiWonder::Open_Port_Slot(QString portname)
     serial.setFlowControl(QSerialPort::NoFlowControl);
     QString str = "Serial port "; str += portname; str += " is opened";
     if (OK) this->Write_To_Log(0xFF00, str);
+    exit_code = 1; //success
+    }//else
+    return exit_code;
 
 }
 //++++++++++++++++++++++
@@ -141,6 +165,7 @@ void HiWonder::GoToPosition(QByteArray &position)//, const char *servo)
 
 }
 //+++++++++++++++++++++++++++++++
+// Слот обработки сигнала QSerialPort::readyRead()
 // Считываем данные из Serial port, т.е. от робота.  code From Robot :
 void HiWonder::ReadFromSerial_Slot ()
 {

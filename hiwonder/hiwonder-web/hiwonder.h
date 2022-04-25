@@ -38,11 +38,12 @@ public:
     QByteArray qbuf;
     bool MOVEMENT_DONE;  // Флаг показывает, что получено сообщение от робота о заврешении цикла движения
 
-
+    bool SerialIsOpened; //Флаг показывает, открыт ли Serial port
 
     QList<QString> statuslst = { "wait", "init", "inprogress", "done" };
     // Ответ робота состоит из 4 полей
     QString current_status; // Текущий статус
+    int current_st_index;   // Индекс текущего статуса в списке statuslst
     QString return_code;    // результат обработки запроса - понял/не понял
     QString active_command; // команда, которая сейчас исполняется
     QString comment;        // любые дополнительные данные
@@ -54,7 +55,7 @@ public:
     void Source_Points_File_Open (QString fname);
 
     void Write_To_Log (int value, QString log_message);
-    void Write_To_Source(int value, QString points_data); // Запись в файл координат кубика и 6 приводов в виде строки.
+    void Write_To_Source(int value, QString points_data); // Запись в файл координат кубика и 6 приводов в виде строки. Используется при создании ОС.
 
     void GoToPosition(QByteArray &position); //, const char *servo Оправляет данные для новой позиции приводов в порт (Роботу)
 
@@ -73,8 +74,8 @@ signals:
 
 
 public slots:
-    void Open_Port_Slot(QString portname);
-    void ReadFromSerial_Slot();
+    int Open_Port_Slot(QString portname); // https://doc.qt.io/qt-5/qserialport.html#SerialPortError-enum - список ошибок при открытии порта.
+    void ReadFromSerial_Slot(); // Слот обработки сигнала readyRead()
 };
 
 #endif // HIWONDER_H
