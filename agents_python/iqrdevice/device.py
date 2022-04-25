@@ -195,8 +195,10 @@ class IQRDevice:
                 rc = a.run(**params)
                 if rc == 0:
                     return ActionResponce(action, 0, "action started")
-                else:
+                elif rc == -3:
                     return ActionResponce(action, -3, "action is already running")
+                else:
+                    return ActionResponce(action, -2, "can't start action")
 
         return ActionResponce(action, -1,  "action with this name wasn't found")                
                 

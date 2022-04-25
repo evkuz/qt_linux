@@ -11,4 +11,6 @@ export ROS_MASTER_URI=http://$ROS_IP:11311
 export XRBASE=tank
 export XRLIDAR=rplidar
 
-roslaunch /home/xrrobot/bring_slam.launch
+roslaunch /home/xrrobot/bring_slam.launch &
+
+python /home/xrrobot/sss/mvrasp.py

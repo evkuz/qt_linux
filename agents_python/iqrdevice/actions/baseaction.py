@@ -1,19 +1,22 @@
 from time import time
 import threading
-from typing import Callable, Optional
+from typing import Callable, List, Optional
 from .actionstate import ActionState
 
 
 class BaseAction:
     def __init__(self, name):
         self.__thread = None
+        self.__reset_thread = None
         self.__isWorking = False
         self.__state = ActionState(name)
         self.__isReset = False
-        
+        self.__blocking_actions:List[BaseAction] = []
+
         self.on_run:Optional[Callable[[str], None]] = None
         self.on_reset:Optional[Callable[[str], None]] = None
         self.on_successfully_finished:Optional[Callable[[str], None]] = None
+
 
     @property
     def State(self):
@@ -26,6 +29,9 @@ class BaseAction:
     @property
     def Name(self):
         return self.__state.name
+
+    def add_blocking_actions(self, action:'BaseAction'):
+        self.__blocking_actions.append(action)
 
     def get_info(self) -> dict:
         """Must be redefined in child classes,
@@ -52,13 +58,17 @@ class BaseAction:
 
     def run(self, **kwargs) -> int:
         if self.__thread is None:
+            if len(self.__blocking_actions) != 0:
+                for ba in self.__blocking_actions:
+                    if ba.IsWorking:
+                        return -2
             self.__thread = threading.Thread(target=self.__run_thread_work, kwargs=kwargs)
             self.__state.set_start()
             self.__isWorking = True
             self.__isReset = False
             self.__thread.start()
             return 0
-        return -2
+        return -3
 
     def __run_thread_work(self, **kwargs):
         self.__state.set_run()
@@ -94,24 +104,28 @@ class BaseAction:
             self._isReset = True
             if self.__thread is not None:
                 self.__isWorking = False
-            
-            self.__state.set_info("reset was send")
-            t = threading.Thread(target=self.__reset_thread_work)
-            t.start()
+
+            if self.__reset_thread is not None:
+                return -3
+
+            self.__state.set_info("reset was sent")
+            self.__reset_thread = threading.Thread(target=self.__reset_thread_work)
+            self.__reset_thread.start()
             return 0
         return -2
 
     def __reset_thread_work(self):
-        if self.__thread is not None: self.__thread.join()
-        self.__state.set_info("reset was sent")
         try:
             res = self.reset_action()
+            if self.__thread is not None:
+                self.__thread.join()
             if self.on_reset is not None:
                 self.on_reset(self.Name)
         except Exception as e:
             res = -1
             self.__state.set_info("Reset_fail: " + str(e))
 
+        self.__reset_thread = None
         self.__state.set_fail(res)
 
     def reset_action(self) -> int:

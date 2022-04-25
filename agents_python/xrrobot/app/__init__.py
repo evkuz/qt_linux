@@ -33,7 +33,7 @@ position_node = nodes.VehiclePositionNode()
 
 # this is needed for connecting events with subscripers
 mainbus = device.main_bus
-rosrun.set_event_bus(device.main_bus) # all events will be written to this bus
+rosrun.set_event_bus(mainbus) # all events will be written to this bus
 
 mainbus.add_subscriber(rosrun.name + '/main', rosrun_node)
 # next line is alternative way, i will add it directly to service
@@ -48,8 +48,12 @@ device.register_node(position_node)
 
 
 # Configuring Actions
-device.register_action(actions.MoveToAAction())
-device.register_action(actions.MoveToBAction())
+movetoa = actions.MoveToAAction()
+movetob = actions.MoveToBAction()
+movetoa.add_blocking_actions(movetob)
+movetob.add_blocking_actions(movetoa)
+device.register_action(movetoa)
+device.register_action(movetob)
 
 
 # Configuring Services

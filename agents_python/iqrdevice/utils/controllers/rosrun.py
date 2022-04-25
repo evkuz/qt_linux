@@ -23,6 +23,9 @@ class RosRun(BaseController):
         return ['main']
 
     def run(self) -> bool:
+        if self.__process is not None:
+            return False
+            
         command = ["/bin/bash", self.__start_script]
         try:
             self.__process = subprocess.Popen(
@@ -30,7 +33,7 @@ class RosRun(BaseController):
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL,
             )
-            self.fire_event("main", "run")
+            self.fire_event("main", True)
         except Exception as e:
             print("Error:", e)  
             self.stop()
@@ -50,6 +53,6 @@ class RosRun(BaseController):
             stderr=subprocess.DEVNULL,
             check=False
         )
-        self.fire_event("main", "stop")
+        self.fire_event("main", False)
 
         return True

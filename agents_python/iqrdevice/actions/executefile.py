@@ -1,6 +1,7 @@
+import logging
 import subprocess
 from .baseaction import BaseAction
-from typing import Optional
+from typing import Optional, List
 import os
 import signal
 
@@ -11,10 +12,17 @@ def kill_process(pid):
         os.kill(p, signal.SIGKILL)
 
 class ExecuteFileAction (BaseAction):
-    def __init__(self, name:str, program:str, scriptPath:Optional[str]=None, args:list=[]):
+    def __init__(self, name:str, program:str, args:List[str]=[]):
+        """_summary_
+
+        Args:
+            name (str): action_name, will be in actionslist
+            program (str): name or path of program that will be performed
+            args (list, optional): _description_. Defaults to [].
+            blocking_actions (List[BaseAction], optional): actions that cannot be performed simultainiosly with this action. Defaults to [].
+        """
         BaseAction.__init__(self, name)
         self.program = program
-        self.scriptPath = scriptPath
         self.additional_args = args
         self.__process = None
 
@@ -23,12 +31,7 @@ class ExecuteFileAction (BaseAction):
         Returns:
             dict: "name": self.Name, ["parameter":"description", ...]
         """ 
-        descr = ""
-        if self.scriptPath is None:
-            descr = f"Performs {self.program}"
-        else:
-            descr = "Perform script {self.scriptPath} with {self.program}"
-
+        descr = f"Performs {self.program}"
         if len(self.additional_args) > 0:
             descr += f" with args: {self.additional_args}"
 
@@ -39,12 +42,9 @@ class ExecuteFileAction (BaseAction):
         """
         res = 0
         command = [self.program]
-        if self.scriptPath is not None:
-            command.append(self.scriptPath)
         if len(self.additional_args) > 0:
             command += self.additional_args
     
-        print(command)
         self.__process = subprocess.Popen(command)
         self._set_state_info(f"Process was started with PID {self.__process.pid}")
         
@@ -63,8 +63,10 @@ class ExecuteFileAction (BaseAction):
         """[return result code -126 by default]
         """
         if self.__process is not None:
-            kill_process(self.__process.pid)
-            self.__process.terminate()
+            try:
+                kill_process(self.__process.pid)
+            except Exception as e:
+                logging.error((str(e)))
 
         return -126
 
@@ -72,7 +74,7 @@ class ExecuteFileAction (BaseAction):
         self.line = line
 
 if __name__ == '__main__':
-    a = ExecuteFileAction("test", "/bin/bash", None,["-c", "cat ~/.bashrc"])
+    a = ExecuteFileAction("test", "/bin/bash", ["-c", "cat ~/.bashrc"])
     res = a.run_action()
     print(a.State)
     exit(res)

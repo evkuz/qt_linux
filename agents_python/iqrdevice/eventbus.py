@@ -16,6 +16,7 @@ class EventBus(object):
 
     def fire_event(self, channel:str, data:Any)->None:
         #TODO: processing in other thread
+        logging.debug(f"New event in {self._name}: {channel} - {str(data)}")
         if channel in self.__channels.keys():
             for s in self.__channels[channel]:
                 try:

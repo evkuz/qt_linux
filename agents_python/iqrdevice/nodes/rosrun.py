@@ -11,8 +11,9 @@ class RosRunNode(BaseNode):
         #in case it is listening for mainbus
         if channel == "services":
             if data['name'] == "startrosrun":
-                self.run = True
+                if data['data']["status"] == "OK":
+                    self.run = True
             elif data['name'] == "stoprosrun":
-                self.run = False
+                self.run = False if data['data']["status"] == "OK" else self.run
         elif isinstance(data, bool):
             self.run = data
