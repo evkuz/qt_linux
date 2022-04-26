@@ -57,7 +57,7 @@ void HiWonder::Write_To_Log (int value, QString log_message)
 
 }
 //++++++++++++++++++++++++++++
-void HiWonder::Write_To_Source(int value, QString points_data)
+void HiWonder::Write_To_Source(QString points_data)
 {
     QDateTime curdate ;
     QTextStream uin(&SourceFile);
@@ -86,19 +86,19 @@ where <username> is your Linux user name. You will need to log out and log in ag
 int HiWonder::Open_Port_Slot(QString portname)
 
 {
-    bool OK;
+
     int serial_error;
     int exit_code;
     QString stt;
 
     serial.setPortName(portname); //portname == "ttyUSB0"
-    OK = true;
-    serial_error = 777;
-    exit_code = 2;
+
+//    serial_error = 777;
+
    // OK = serial.open(QIODevice::ReadWrite);
     if (!serial.open(QIODevice::ReadWrite))
     {
-        OK = false; serial_error = serial.error();
+        serial_error = serial.error();
         this->Write_To_Log(0xFF00, "Error opening Serial port !!! "+portname);
         SerialIsOpened = false;
 
@@ -131,7 +131,7 @@ int HiWonder::Open_Port_Slot(QString portname)
     serial.setStopBits(QSerialPort::OneStop);
     serial.setFlowControl(QSerialPort::NoFlowControl);
     QString str = "Serial port "; str += portname; str += " is opened";
-    if (OK) this->Write_To_Log(0xFF00, str);
+    this->Write_To_Log(0xFF00, str);
     exit_code = 1; //success
     }//else
     return exit_code;
