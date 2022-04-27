@@ -17,7 +17,7 @@
 <script>
   sv_config = {
     devices: {
-      {% for key, value in devices.items() %}
+      {% for key, value in video_devices.items() %}
       {{ key }} : '{{ value }}',
       {% endfor %}
     },
@@ -39,8 +39,8 @@
     <div class="container inner">
       <h1> Robot Control Center </h1>
       <p>Cycle presentation.</p>
-      <div style="float:right;margin-top:-49px;display:none;">
-        <a class="btn btn-red" id="start_tp">Start tech process</a>
+      <div style="float:right;margin-top:-49px;display:block;">
+        <a class="btn btn-green" id="start_tp">Start tech process</a>
       </div>
     </div>
     <!--/.container -->
@@ -272,11 +272,7 @@
 <script src="style/js/scripts.js"></script> -->
 <script src="scripts/footer.js"></script>
 <script>/*<![CDATA[*/
-  startBtn = document.getElementById("start_tp")
-  startBtn.onclick = function(){
-    if (!tpInProgress) { StartTP();}
-    else { StopTP(); }
-  };
+  
   // END -- Region  TECH PROCESS
 
   /*]]>*/

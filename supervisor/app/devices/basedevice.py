@@ -31,7 +31,7 @@ class BaseDevice:
 
     @property
     def State(self):
-        return self._state.__copy__()
+        return dict(self._state.__dict__)
 
     @property
     def Address(self):
@@ -148,38 +148,28 @@ class BaseDevice:
     def _send_reset(self)->dict:
         raise NotImplementedError()
 
-    def do_action(self, environment:dict, cubes:dict)->dict:
+    def do_action(self, environment:dict)->None:
         """This method will be prformed by supervisor
 
         Args:
             environment (dict): dict with all devices states
-            cubes (dict): dict of cubes states
-
-        Returns:
-            dict: dict with cube names that states was changed
         """
         if not self._state.connected:
-            return {}
+            return
         try:
-            return self._do_action(environment, cubes)
+            self._do_action(environment)
         except Exception as e:
             logging.error(str(e))
-            return {}
 
 
-
-    def _do_action(self, environment:dict, cubes:dict)->dict:
+    def _do_action(self, environment:dict)->dict:
         """This method will be prformed by supervisor
 
         Args:
             environment (dict): dict with all devices states
-            cubes (dict): dict of cubes states
-
+            
         Raises:
             NotImplementedError: _description_
-
-        Returns:
-            dict: dict with cube names that states was changed
         """
         raise NotImplementedError
 

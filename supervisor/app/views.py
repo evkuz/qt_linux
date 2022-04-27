@@ -18,7 +18,7 @@ def make_json_responce(data:dict):
 
 @app.route('/')
 def index():
-    return render_template('index.html', devices=supervisor.ListDevices)
+    return render_template('index.html', video_devices=supervisor.ListVideoDevices)
 
 
 @app.route('/status')
@@ -58,18 +58,19 @@ def reset():
     return make_json_responce(res)
 
 
+@app.route('/techproc', methods=['get'])
+def techproc():
+    args = request.args.to_dict()
+    set_value = args.get("set")
+    if set_value is None:
+        return make_json_responce({'rc': -10})
+    
+    val = set_value.lower()
+    if val == 'true' or val == '1':
+        supervisor.set_tech_process_state(True)
+    elif val == 'false' or val == '0':
+        supervisor.set_tech_process_state(False)
+    else:
+        return make_json_responce({'rc': -10})
 
-
-
-
-
-
-@app.route('/pinkman')
-def pinkman():
-    return render_template('calibrate_pinkmanip.html')
-
-
-@app.route('/simple')
-def simple_page():
-    return render_template('index_simple.html')
-
+    return make_json_responce({'rc': 0, 'info': 'success'})

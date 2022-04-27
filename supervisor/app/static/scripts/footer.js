@@ -19,6 +19,7 @@ if(sv_config.devices.hasOwnProperty('blueman')) {
 let statusTimeoutIsRuning = false;
 let statusTimeoutId = null;
 let devices_prev_state = {};
+let tpInProgress = false;
 
 function updateState(){
     getState().then(st => {
@@ -31,6 +32,25 @@ function updateState(){
             let device = st[key];
             let needToUpdate = false;
             
+            if (key == "supervisor"){
+                if (tpInProgress != device.techprocess) {
+                    tpInProgress = device.techprocess
+                    tpBtn = document.getElementById("start_tp")
+                    if (tpInProgress) {
+                        tpBtn.onclick = function(){ sendTechProcess('false'); }
+                        tpBtn.classList.remove('btn-green');
+                        tpBtn.classList.add('btn-red');
+                        tpBtn.innerHTML = "Stop tech process";
+                    } else {
+                        tpBtn.onclick = function(){ sendTechProcess('true'); }
+                        tpBtn.classList.remove('btn-red');
+                        tpBtn.classList.add('btn-green');
+                        tpBtn.innerHTML = "Start tech process";
+                    } 
+                }
+                return;
+            }
+
             if (devices_prev_state.hasOwnProperty(key)){
                 if (devices_prev_state[key] != device.connected){
                     devices_prev_state[key] = device.connected;
@@ -111,3 +131,8 @@ if (updateBtn != null) {
         else { StartStatusUpdate(sv_config.updateStateInterval); }
     };
 }
+
+tpBtn = document.getElementById("start_tp");
+tpBtn.onclick = function(){ sendTechProcess('true'); };
+
+StartStatusUpdate(sv_config.updateStateInterval);

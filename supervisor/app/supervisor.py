@@ -2,15 +2,18 @@ import threading
 import json
 import time
 import logging
+from typing import Optional, Dict
+
+from .devices import BaseDevice
 from .devices import agents
 
 
 class Supervisor(object):
     def __init__(self, updateStateInterval:float):
         self._updateInterval = updateStateInterval
-        self._devices = {}
-        self._state = {}
-        self._cubes = {}
+        self._devices:Dict[str, BaseDevice] = {}
+        self._state:Dict[str,dict] = {'supervisor':{}}
+        self.set_tech_process_state(False)
 
         self.__thread = None
         self._isWorking = False
@@ -19,15 +22,22 @@ class Supervisor(object):
         self._initialize()
         self.start()
         
+        
     @property
     def State(self)->dict:
         return dict(self._state)
     
+    def set_tech_process_state(self, value:bool)->None:
+        self.__tech_process = value
+        self._state['supervisor']['techprocess'] = value
+
     @property
-    def ListDevices(self)->dict:
+    def ListVideoDevices(self)->dict:
+        video_devices = ['pinkman', 'hiwonder', 'mobman_camera', 'blueman']
         res = {}
-        for name, device in self._devices.items():
-            res[name] = device.Address
+        for name in video_devices:
+            if name in self._devices:
+                res[name] = self._devices[name].Address
         return res
 
     @property
@@ -45,7 +55,8 @@ class Supervisor(object):
             if time.time() - self.__lastUpdateTime > self._updateInterval:
                 self._update_devices_states()
                 self.__lastUpdateTime = time.time()
-                self._do_actions()
+                if self.__tech_process:
+                    self._do_actions()
             time.sleep(0)
 
         self.__thread = None
@@ -76,9 +87,7 @@ class Supervisor(object):
     
     def _do_actions(self):
         for device_name, device in self._devices.items():
-            changed_cubes = device.do_action(self._state, self._cubes)
-            for name, state in changed_cubes.items():
-                self._cubes[name] = state
+            device.do_action(self._state)
             self._state[device_name] = device.State
 
     
@@ -89,9 +98,14 @@ class Supervisor(object):
             return {'rc' : 0, 'info' : "success"}
         return {'rc' : -1, 'info' : "fail"}
 
-    def reset_actions(self, device:str)->dict:
-        if not device in self._devices:
+    def reset_actions(self, device:Optional[str])->dict:
+        if device is None:
+            for d in self._devices.values():
+                d.reset_actions()
+            return {'rc' : 0, 'info' : "success"}
+        elif device not in self._devices:
             return {'rc' : -9, 'info' : "No device was found!"}
+        
         if self._devices[device].reset_actions():
             return {'rc' : 0, 'info' : "success"}
         return {'rc' : -1, 'info' : "fail"}
