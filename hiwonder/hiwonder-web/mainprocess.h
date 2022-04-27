@@ -1,4 +1,4 @@
-/*
+﻿/*
  *
  * В GUI-версии это класс MainWindow, или класс основного потока, поэтому в текущей, консольной версии - класс MainProcess
  *
@@ -7,7 +7,7 @@
 #ifndef MainProcess_H
 #define MainProcess_H
 
-#include <QtCore>
+
 #include <QSerialPort>
 #include <QSerialPortInfo>
 #include <QByteArray>
@@ -31,7 +31,7 @@ class MainProcess : public QObject
 public:
     MainProcess(QObject *parent = nullptr);
     ~MainProcess();
-    QSerialPort serial;
+    //QSerialPort serial;
     QByteArray *buff;
     QString     target_name;
     HiWonder *Robot;
@@ -58,7 +58,7 @@ public:
     unsigned char Servos [6] = {93,93,93,93,93,93};
 
 
-    void GUI_Write_To_Log (int value, QString log_message); //Пишет в лог-файл номер ошибки value и сообщение message
+    void GUI_Write_To_Log (int value, QString log_message); //Пишет в лог-файл (тот же, что и в классе HiWonder) номер ошибки value и сообщение message
     void try_mcinfer(float x, float y);
     void update_Servos_from_position(unsigned char *pos); // Фактически - это копирование { Servos[i] = pos[i]; }, либо memcpy(Servos, hwr_Start_position, DOF);
 

@@ -174,8 +174,8 @@ void parse_command ()
       message = "";
       for (int i=0; i<numReaded; i++)
       {
-          message += String(ints[i]); message += " ";
-      }
+          message += String(ints[i]); message += " "; // 17 байт - это 7мь 2-значных цифр + 1 3х-значное число + 7 пробелов между всем числами, 
+      }                                               // итого - 24 байта, только дублирование пришедших цифр.
 
       message.remove(message.length()-1);
       strcpy(buf, message.c_str());
@@ -281,10 +281,10 @@ void Go_To_Position(byte *pos)
 
 // Проверяем, последняя ли команда
 if (pos[7]==0xDE) {
-   message = "Robot movement DONE! LAST !!"; 
+   message = "Robot movement FINISHED! LAST !!"; // А всего их 32
   }
   else {
-   message = "Robot current movement DONE!"; //28 bytes  //message += String(numBytes);}
+   message = "Robot current movement DONE! !!!"; //28 bytes  //message += String(numBytes);}
   }
     
 

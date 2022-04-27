@@ -62,8 +62,7 @@ void QSimpleServer::Command_4_Parsing_Slot(QString message)
 
 }
 
-
-
+//++++++++++++
 //Added by Miksarus
 void QSimpleServer::SetCurrentState(QString newStatus){
     //this->current_status = newStatus;

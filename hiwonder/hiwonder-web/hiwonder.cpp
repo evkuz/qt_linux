@@ -92,10 +92,6 @@ int HiWonder::Open_Port_Slot(QString portname)
     QString stt;
 
     serial.setPortName(portname); //portname == "ttyUSB0"
-
-//    serial_error = 777;
-
-   // OK = serial.open(QIODevice::ReadWrite);
     if (!serial.open(QIODevice::ReadWrite))
     {
         serial_error = serial.error();
