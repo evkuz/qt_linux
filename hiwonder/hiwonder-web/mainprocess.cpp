@@ -11,7 +11,8 @@
 #include <thread>
 //(QObject *parent)
 
-MainProcess::MainProcess(QObject *parent)
+MainProcess::
+MainProcess(QObject *parent)
     : QObject(parent)
     , readSocket("../iqr.socket")
 
@@ -107,10 +108,21 @@ MainProcess::MainProcess(QObject *parent)
                 // ТОгда таймер пускаем ???
     };
     //+++++++++ Проверяем, что работает QSerialPort, открываем/закрываем хват
-    QThread::sleep(2);
-    on_clampButton_clicked();
-    QThread::sleep(1);
-    on_clampButton_clicked();
+//    QThread::sleep(2);
+//    //on_clampButton_clicked();
+//    str = "Make UNLOCK";
+//    GUI_Write_To_Log(value, str);
+//    Data_From_TcpClient_Slot("unlock");
+//    QThread::sleep(1);
+//    //on_clampButton_clicked();
+//    str = "Make LOCK";
+//    GUI_Write_To_Log(value, str);
+//    Data_From_TcpClient_Slot("lock");
+//    QThread::sleep(1);
+//    str = "And NOW Current Servo[0] value is : ";
+//    str += QString::number(Servos[0]);
+//    GUI_Write_To_Log(value, str);
+
 
 } //MainProcess
 //++++++++++++++++++++++++++++++++++++++++++++++
@@ -214,19 +226,19 @@ if (DETECTED)
    //++++++++++++++++++++ 2 make stand up, встаем в исходную точку
    //on_stand_upButton_clicked();
   // this->update_Servos_from_position(hwr_Start_position);
-   memcpy(Servos, hwr_Start_position, DOF);
-   this->send_Data(NOT_LAST);
+//   memcpy(Servos, hwr_Start_position, DOF);
+//   this->send_Data(LASTONE);
 
    //+++++++++++++++++++++ 3 put the cube, наклоняем захват с кубиком к транспортировщику
    // {60, 93, 100, 35, 145, 35};
-   this->update_Servos_from_position(put_2_mobman);
-   memcpy(dd.data(), Servos, 6);
-   dd.insert(6, 0x31); // Движение "Туда"
-   this->send_Data(NOT_LAST); //BEFORE_LAST==0xE9, NOT_LAST ==C8
-   //+++++++++++++++++++++ 4  Unclamp the gripper, открываем захват, т.е. кладем кубик на пол, чтобы его взял транспортировщик
-   //on_clampButton_clicked();
-   Servos[0]=0;
-   this->send_Data(NOT_LAST);
+//   this->update_Servos_from_position(put_2_mobman);
+//   memcpy(dd.data(), Servos, 6);
+//   dd.insert(6, 0x31); // Движение "Туда"
+//   this->send_Data(NOT_LAST); //BEFORE_LAST==0xE9, NOT_LAST ==C8
+//   //+++++++++++++++++++++ 4  Unclamp the gripper, открываем захват, т.е. кладем кубик на пол, чтобы его взял транспортировщик
+//   //on_clampButton_clicked();
+//   Servos[0]=0;
+//   this->send_Data(NOT_LAST);
    //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
    //+++++++++++++++++++++++++++++++++ 5 Приподнять хват, чтобы не задеть тележку.
 //      this->update_Servos_from_position(after_put_2_mobman);
@@ -351,6 +363,7 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
        // Go to "sit" position
        QByteArray dd = QByteArray::fromRawData(reinterpret_cast<const char*>(sit_down_position), 6);
        dd.append(0x31); // Движение "Туда"
+       dd.append(LASTONE); // Всегда последнее ?
        Robot->GoToPosition(dd);//, sit_down_position
    }//"sit"
 
@@ -362,12 +375,53 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
        Robot->GoToPosition(dd);//, hwr_Start_position
 
    }
+
    if (substr =="clamp") {
 
+       str = "######## Try to lock/unlock the gripper #########";
+       str += "\n";
+       str += "Current clamper value is ";
+       str += QString::number(Servos[0]);
+       GUI_Write_To_Log(value, str);
        if(Servos[0]==0) { Servos[0]=90;}
        else {Servos[0]=0;}
        this->send_Data(LASTONE);
    }//"clamp"
+
+   if (substr =="lock") {
+
+       str = "######## Try to lock the gripper ######### ";
+       str += "Current clamper value is ";
+       str += QString::number(Servos[0]);
+       GUI_Write_To_Log(value, str);
+       Servos[0]=90;
+       this->send_Data(LASTONE);
+   }//"lock"
+
+   if (substr =="unlock") {
+
+       str = "######## Try to UNlock the gripper ######### ";
+       str += "Current clamper value is ";
+       str += QString::number(Servos[0]);
+       GUI_Write_To_Log(value, str);
+       Servos[0]=0;
+       this->send_Data(LASTONE);
+   }//"unlock"
+
+   if (substr == "close") {
+       Robot->serial.close();
+
+   }
+
+   // Запрашиваем в Arduino значения углов сервоприводов
+   if (substr == "getservos") {
+       QByteArray dd ;
+       dd.resize(parcel_size);
+       memcpy(dd.data(), get_values_position, parcel_size);
+       Robot->GoToPosition(dd);
+
+   }
+
 
 
 }

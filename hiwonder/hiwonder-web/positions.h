@@ -8,6 +8,7 @@
 
 #include <QtCore>
 
+unsigned char get_values_position [8] = {200, 200, 200, 200, 200, 200, 250, 250}; // sum = 1700
 unsigned char hwr_Start_position [6] = {93, 93, 93, 93, 93, 93}; // servo1,,,servo6
 unsigned char sit_down_position [6] = {93, 93, 93, 48, 48, 93} ; // Поза сидя. Сдвинуты 4,5 приводы (относительно 93)
 unsigned char sit_45_position [6] = {93, 93, 5, 5, 10, 45};

@@ -25,6 +25,7 @@ HiWonder::HiWonder()
 HiWonder::~HiWonder()
 {
     LogFile.close();
+    serial.close();
     }
 //++++++++++++++++++++++++++++++
 void HiWonder::Log_File_Open(QString lname)
@@ -139,9 +140,9 @@ void HiWonder::GoToPosition(QByteArray &position)//, const char *servo)
 {
     QString str;
     this->MOVEMENT_DONE = false;
-   position.resize (szData);
-   serial.write(position);
-   serial.waitForBytesWritten();
+    position.resize (szData);
+    serial.write(position);
+    serial.waitForBytesWritten();
 
 //    void *const tmp = const_cast<char*>(servo);
 //    unsigned char* sData = static_cast<unsigned char*>(tmp);
@@ -190,7 +191,7 @@ void HiWonder::ReadFromSerial_Slot ()
 //        }
         str="DONE!";
         if (list_str.contains (str)) {this->MOVEMENT_DONE = true; this->Write_To_Log(0xF001, "Robot finished"); }
-        else this->Write_To_Log(0xF001, "Robot still running");
+        //else this->Write_To_Log(0xF001, "Robot still running");
 
 
         str="LAST";

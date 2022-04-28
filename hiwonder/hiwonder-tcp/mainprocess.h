@@ -6,6 +6,7 @@
 #include <QtCore>
 #include "serialdevice.h"
 #include "robot.h"
+#include "SocketClient.h"
 
 class MainProcess : public QObject
 {

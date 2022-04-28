@@ -24,8 +24,9 @@ public:
     ~HiWonder();
 
     #define serial_speed Baud115200
-    #define robot_buffer_SIZE 32
+    #define robot_buffer_SIZE 512
     #define Log_File_Name        "./hiwonder.log"
+    #define Serial_Output_File   "./serialData.log"
     #define SOURCE_POINTS_FILE  "../source_points.xls"
     #define DOF 6
     #define szData 8 //Размер посылки в байтах

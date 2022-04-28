@@ -51,7 +51,7 @@ public slots:
     // Срабатывает по сигналу ommand_4_Parsing_Signal(QString);
     void Command_4_Parsing_Slot(QString);
     //Added by Miksarus
-    void SetCurrentState(QString);
+//    void SetCurrentState(QString);
 
 };
 
