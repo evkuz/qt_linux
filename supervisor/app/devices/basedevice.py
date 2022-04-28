@@ -73,11 +73,13 @@ class BaseDevice:
                 action_list = status['action_list']
                 self._state.set_actions_list(action_list)
                 if len(action_list) == 0:
-                    status = "waiting"
+                    status_str = "waiting"
                 else:
-                    status = "busy with actions:"
-                    status += ",".join([act['name'] for act in action_list])
-                self._state.set_state(status)
+                    status_str = "busy with actions:"
+                    status_str += ",".join([act['name'] for act in action_list])
+                self._state.set_state(status_str)
+            if 'nodes' in status:
+                self._state.nodes = status['nodes']
         except Exception as e:
             self._state.set_disconnected(str(e))
 
@@ -162,8 +164,8 @@ class BaseDevice:
             logging.error(str(e))
 
 
-    def _do_action(self, environment:dict)->dict:
-        """This method will be prformed by supervisor
+    def _do_action(self, environment:dict)->None:
+        """This method must be reimplemented in derived.
 
         Args:
             environment (dict): dict with all devices states

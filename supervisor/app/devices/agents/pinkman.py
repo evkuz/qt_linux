@@ -6,14 +6,10 @@ class Pinkman(AgentsPythonDevice):
         AgentsPythonDevice.__init__(self, addr, "pinkman", updateStateInterval)
         self.start()
 
-    def _do_action(self, environment:dict, cubes:dict)->dict:
+    def _do_action(self, environment:dict)->None:
         references = ['wheeltec', 'xrrobot']
         if not all(i in environment for i in references):
             logging.warning(f"not all agents was added to environment ({references})")
-            return {}
-        if len(cubes) == 0:
-            return {}
-        return {}
+            return
         
-
-
+        return

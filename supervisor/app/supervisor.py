@@ -57,7 +57,7 @@ class Supervisor(object):
                 self.__lastUpdateTime = time.time()
                 if self.__tech_process:
                     self._do_actions()
-            time.sleep(0)
+            time.sleep(20)
 
         self.__thread = None
         self._isWorking = False
