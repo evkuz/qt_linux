@@ -225,8 +225,8 @@ if (DETECTED)
    //++++++++++++++++++++ 2 make stand up, встаем в исходную точку
    //on_stand_upButton_clicked();
   // this->update_Servos_from_position(hwr_Start_position);
-   memcpy(Servos, hwr_Start_position, DOF);
-   this->send_Data(LASTONE);
+        memcpy(Servos, hwr_Start_position, DOF);
+        this->send_Data(LASTONE);
 
    //+++++++++++++++++++++ 3 put the cube, наклоняем захват с кубиком к транспортировщику
    // {60, 93, 100, 35, 145, 35};
@@ -266,7 +266,7 @@ void MainProcess::send_Data(unsigned char thelast)
 {
     QByteArray dd ;
     dd.resize(parcel_size);
-    memcpy(dd.data(), Servos, 6);
+    memcpy(dd.data(), Servos, DOF);
     dd.insert(parcel_size-2, 0x31); // Движение "Туда"
     dd.insert(parcel_size-1, thelast);
     Robot->GoToPosition(dd);
@@ -303,8 +303,46 @@ void MainProcess::make_json_answer()
   GUI_Write_To_Log(value, str);
 
   // Строку подготовили, отправляем в TcpServer
- this->rAnswer = jsn_str;
- }
+  this->rAnswer = jsn_str;
+}
+//++++++++++++++++++++++++++++++++++++++++++++++++++++
+void MainProcess::put_box()
+{
+    QByteArray dd ;
+    dd.resize(parcel_size);
+
+    //+++++++++++++++++++++ 3 put the cube, наклоняем захват с кубиком к транспортировщику
+    // {60, 93, 100, 35, 145, 35};
+    //this->update_Servos_from_position(put_2_mobman);
+    //memcpy(dd.data(), put_2_mobman, 6);
+    memcpy(Servos, put_2_mobman, DOF);
+    this->send_Data(NOT_LAST);
+//    dd.insert(parcel_size-2, 0x31); // Движение "Туда"
+//    dd.insert(parcel_size-1, NOT_LAST);
+    //BEFORE_LAST==0xE9, NOT_LAST ==C8
+//    Robot->GoToPosition(dd);
+    //+++++++++++++++++++++ 4  Unclamp the gripper, открываем захват, т.е. кладем кубик на пол, чтобы его взял транспортировщик
+    //unlock
+    Servos[0]=0;
+    this->send_Data(NOT_LAST);
+    //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    //+++++++++++++++++++++++++++++++++ 5 Приподнять хват, чтобы не задеть тележку.
+//       this->update_Servos_from_position(after_put_2_mobman);
+       memcpy(dd.data(), after_put_2_mobman, DOF);
+       dd.insert(parcel_size-2, 0x30); // Движение "обратно"
+       dd.insert(parcel_size-1, AFTER_PUT);
+       Robot->GoToPosition(dd);
+
+    //+++++++++++++++++++++ 6 go back to start position
+//    this->update_Servos_from_position(hwr_Start_position);
+    memcpy(dd.data(), hwr_Start_position, 6);
+    dd.insert(parcel_size-2, 0x30); // Движение "Обратно"
+    dd.insert(parcel_size-1, LASTONE);
+
+    // this->ssend_Data(dd); // Нет. т.к. там всегда движения "Туда"
+    Robot->GoToPosition(dd);
+
+}
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++
 //+++++++ Получили данные (запрос) от клиента. Парсим.
@@ -319,21 +357,24 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 
         substr = message;
 
-        // changed by Miksarus
         if (substr == "start") {
-            //on_clampButton_clicked ();
             Robot->SetCurrentStatus ("init"); // Перед запуском распознавания
-            //emit StartTakeAndPutSignal();
 
-            // Движение только начинаем, поэтому обнулим значение LASTONE
             on_trainButton_clicked ();
             str = "Robot current status is ";
             str += Robot->current_status;
             Robot->Write_To_Log(0xf00F, str);
 
-            str = Robot->current_status;
-            emit Write_2_TcpClient_Signal (str);
+//            str = Robot->current_status;
+//            emit Write_2_TcpClient_Signal (str);
          }
+
+        if (substr == "put_box"){
+            Robot->SetCurrentStatus ("inprogress"); // Перед запуском распознавания
+            put_box();
+
+
+        }
 
         if (substr == "reset") {
             if (Robot->GetCurrentStatus () != "wait"){
@@ -425,6 +466,7 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 
 }
 //++++++++++++++++++++++++++
+// Слот сигнала HiWonder::Moving_Done_Signal
 // Пишем в лог сообщение, что комплексная команда (например,взять кубик в одной точке и положить в другую)
 // А также это индикатор, что команда выполнена и можно, например, отправить эти данные вебсерверу.
 void MainProcess::Moving_Done_Slot()

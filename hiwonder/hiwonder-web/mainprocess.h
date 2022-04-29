@@ -64,6 +64,7 @@ public:
 
     void send_Data(unsigned char thelast);
     void make_json_answer();   // подготовка json-строки с полями ответа в TCP сокет.
+    void put_box();  //Положить кубик на пол
 
 
 private:

@@ -41,11 +41,6 @@ void MainProcess::try_mcinfer(float x, float y){
         }
 
         Robot->Write_To_Log(0xf020, str.append(" \n"));
-//494, 796
-
-    // Значения серво уже пришли из нейронки
-//    this->update_LineDits_from_servos();
-//    this->repaint();
 
     Robot->current_status = "inprogress";
     str = "Robot current status is ";
@@ -54,8 +49,6 @@ void MainProcess::try_mcinfer(float x, float y){
 
     // Неправильно, так не делать !!! влияет на статус !!!
     //on_set_posButton_clicked();
-
-//    this->update_Servos_from_LineEdits();
     send_Data (NOT_LAST);
 
 
