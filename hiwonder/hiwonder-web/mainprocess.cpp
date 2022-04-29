@@ -487,6 +487,18 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
        emit Write_2_TcpClient_Signal (str);
 
    }
+   //++++++++++++++ /service?name=getactions
+      if (substr == "getactions") {
+        jsnStore->jsnGetActionsAnswer["rc"] = RC_SUCCESS;
+          int indent = 3;
+          std::string s2 = jsnStore->jsnGetActionsAnswer.dump(indent);
+          str = QString::fromStdString(s2);
+          GUI_Write_To_Log(value, "!!!!!!!!!!! Current Actions LIST is ");
+          GUI_Write_To_Log(value, str);
+
+          emit Write_2_TcpClient_Signal (str);
+
+      }//substr == "getactions"
 
 
 

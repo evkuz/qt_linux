@@ -45,18 +45,36 @@ void QSocketThread::onReadyRead()
    // qDebug() << "!!!!!!!!!!!!!!!!!!!!!11 Get Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!!1";
 
     //Парсим команду.
-    QString message, substr;
+    QString message, substr, searchstr;
     message = QString(qbmessage);
     int sPosition, ePosition; // Индекс строки run в запросе.
-    sPosition = message.indexOf("/run?cmd=");
+    //sPosition = message.indexOf("/run?cmd=");
+    bool matched = false;
+    int i = 0;
+    while (!matched and i< strcommand.size()){
+        sPosition = message.indexOf(strcommand.at(i));
+        if (sPosition != -1) {
+             matched = true; qDebug() << "Inside sPosition is " << sPosition;
+             qDebug() << "Inside Index is " << i;
+        }
+        ++i;
+    }
+    qDebug() << "Index value is" << i--;
+    qDebug() << "Now current Index value is" << i;
+    qDebug() << "Matched command sPosition is " << sPosition;
+    if (i>=0) {qDebug() << "Matched string is " << strcommand.at(i);}
+    else return;
+
+    searchstr = strcommand.at(i);
 
    QString  wrong_mess = "/favicon.ico HTTP/1.1";
 
     if (!message.contains (wrong_mess))
     {
-        sPosition += 9;
+        sPosition += searchstr.size();
         ePosition = message.indexOf("&", sPosition);
         substr = message.mid(sPosition, (ePosition - sPosition));
+        if(substr == "") substr = searchstr;
 
         // Получили команду. Передаем её наверх
         qDebug() << "!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET !!!!!!!!!!!!!!!!!!!";

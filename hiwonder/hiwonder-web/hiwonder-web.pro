@@ -19,7 +19,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    json_info.cpp \
     jsoninfo.cpp \
         main.cpp \
     hiwonder.cpp \
@@ -38,7 +37,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     evkuz.h \
     hiwonder.h \
-    json_info.h \
     jsoninfo.h \
     mcinfer.h \
     neuron.h \
