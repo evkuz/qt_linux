@@ -9,29 +9,29 @@ void move_servo_together (byte *pos, byte start_servo, byte end_servo) // addres
   maxdt = get_max_delta(delta, start_servo, end_servo); // индекс в массиве delta, а не абсолютное значение/
   
   
-  message = "Servo index with max delta is ";
-  message += String(maxdt);
-  Serial.println(message);
-  Serial.flush();
+//  message = "Servo index with max delta is ";
+//  message += String(maxdt);
+//  Serial.println(message);
+//  Serial.flush();
   
   if (maxdt==100) {return;}
   
-  message = "Max delta value is ";
-  message += String(delta[maxdt]);
-
-  Serial.println(message);
-  Serial.flush();
-  message = "DF values are : ";
-  for (byte i=0; i<= serv_number -1; i++){ message += String(DF[i]); message += ", ";}
-  Serial.println(message);
-  Serial.flush();
-
-
-
-     message = "Current Max delta value is ";
-message += String(delta[maxdt]);
-Serial.println(message);
-Serial.flush();
+//  message = "Max delta value is ";
+//  message += String(delta[maxdt]);
+//
+//  Serial.println(message);
+//  Serial.flush();
+//  message = "DF values are : ";
+//  for (byte i=0; i<= serv_number -1; i++){ message += String(DF[i]); message += ", ";}
+//  Serial.println(message);
+//  Serial.flush();
+//
+//
+//
+//     message = "Current Max delta value is ";
+//message += String(delta[maxdt]);
+//Serial.println(message);
+//Serial.flush();
  
 
 

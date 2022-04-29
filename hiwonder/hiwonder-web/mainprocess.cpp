@@ -214,20 +214,19 @@ void MainProcess::on_trainButton_clicked()
 if (DETECTED)
     {
 
-    QByteArray dd ;
-    dd.resize(parcel_size);
-   str = "Next movement to robot";
-   this->GUI_Write_To_Log (0xF055, str);
+        QByteArray dd ;
+        dd.resize(parcel_size);
+        str = "Next movement to robot";
+        this->GUI_Write_To_Log (0xF055, str);
    //+++++++++++++++++ 1 make clamp, хватаем кубик
    //on_clampButton_clicked();
-   if (Servos[0] > 0){ Servos[0]=0;}
-   else {Servos[0]=90;}
-   this->send_Data(NOT_LAST);
+        Servos[0]=90;
+        this->send_Data(NOT_LAST); // Движение "Туда" по умолчанию
    //++++++++++++++++++++ 2 make stand up, встаем в исходную точку
    //on_stand_upButton_clicked();
   // this->update_Servos_from_position(hwr_Start_position);
-//   memcpy(Servos, hwr_Start_position, DOF);
-//   this->send_Data(LASTONE);
+   memcpy(Servos, hwr_Start_position, DOF);
+   this->send_Data(LASTONE);
 
    //+++++++++++++++++++++ 3 put the cube, наклоняем захват с кубиком к транспортировщику
    // {60, 93, 100, 35, 145, 35};
@@ -382,7 +381,7 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
        str += "\n";
        str += "Current clamper value is ";
        str += QString::number(Servos[0]);
-       GUI_Write_To_Log(value, str);
+ //      GUI_Write_To_Log(value, str);
        if(Servos[0]==0) { Servos[0]=90;}
        else {Servos[0]=0;}
        this->send_Data(LASTONE);
@@ -393,9 +392,9 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
        str = "######## Try to lock the gripper ######### ";
        str += "Current clamper value is ";
        str += QString::number(Servos[0]);
-       GUI_Write_To_Log(value, str);
+//       GUI_Write_To_Log(value, str);
        Servos[0]=90;
-       this->send_Data(LASTONE);
+       this->send_Data(NOT_LAST); //NOT_LAST LASTONE
    }//"lock"
 
    if (substr =="unlock") {
@@ -403,9 +402,9 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
        str = "######## Try to UNlock the gripper ######### ";
        str += "Current clamper value is ";
        str += QString::number(Servos[0]);
-       GUI_Write_To_Log(value, str);
+//       GUI_Write_To_Log(value, str);
        Servos[0]=0;
-       this->send_Data(LASTONE);
+       this->send_Data(NOT_LAST); //NOT_LAST LASTONE
    }//"unlock"
 
    if (substr == "close") {

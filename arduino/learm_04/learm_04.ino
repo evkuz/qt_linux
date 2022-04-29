@@ -139,8 +139,8 @@ void get_all_servos(String when)
     }
     message.remove(message.length()-1);
     message += "\n";
-    Serial.println(message);
-    Serial.flush();
+//    Serial.println(message);
+//    Serial.flush();
 }//get_all_servos()
 
 //+++++++++++++++++++++++++++++++++++
