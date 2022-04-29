@@ -1,7 +1,7 @@
 #include "mainprocess.h"
 //#include "ui_MainProcess.h"
 #include "positions.h"
-#include "hiwonder.h"
+//#include "hiwonder.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -11,8 +11,7 @@
 #include <thread>
 //(QObject *parent)
 
-MainProcess::
-MainProcess(QObject *parent)
+MainProcess::MainProcess(QObject *parent)
     : QObject(parent)
     , readSocket("../iqr.socket")
 
@@ -27,6 +26,8 @@ MainProcess(QObject *parent)
     //QByteArray ba = target_name.toLocal8Bit();
     //g/const char *c_str = ba.data();
     //printf("Appname : %s", c_str);
+    jsnStore = new JsonInfo();
+    jsnStore->init_json();
     Robot = new HiWonder(); // Без этого будет "The program has unexpectedly finished", хотя в начале говорила, что это ambiguous
 
     Robot->Log_File_Open(Log_File_Name);
@@ -383,8 +384,10 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
                 str += Robot->current_status;
 
                 GUI_Write_To_Log (value, str);
-                str = Robot->current_status;
                 //str = "status_from_robot";
+                str  = "{\n\t\"status\":\"";
+                str += Robot->current_status;
+                str += "\"\n}";
                 emit Write_2_TcpClient_Signal (str);
             }
          }
@@ -392,11 +395,12 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 
 
    if (substr == "status") {
-      // str  = "{\n\t\"status\":\"";
-       str = Robot->current_status;
-     //  str += "\"\n}";
+        // response += "{\n\t\"status\":\"";
+        str  = "{\n\t\"status\":\"";
+        str += Robot->current_status;
+        str += "\"\n}";
 
-       emit Write_2_TcpClient_Signal (str);
+        emit Write_2_TcpClient_Signal (str);
    }
 
    if (substr == "sit") {
@@ -459,6 +463,28 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
        dd.resize(parcel_size);
        memcpy(dd.data(), get_values_position, parcel_size);
        Robot->GoToPosition(dd);
+
+   }
+
+   if (substr == "info") {
+       str = Robot->current_status;
+       jsnStore->jsnInfo["state"] = str.toStdString();
+       jsnStore->jsnInfo["rc"] = RC_SUCCESS;
+       //jsnStatus[""]
+
+       // serialization with pretty printing
+       // pass in the amount of spaces to indent
+       int indent = 3;
+       std::string s2 = jsnStore->jsnInfo.dump(indent);
+       str = QString::fromStdString(s2);
+
+       GUI_Write_To_Log(value, "!!!!!!!!!!! Current STATUS is ");
+       GUI_Write_To_Log(value, str);
+
+       //str = QString::fromStdString(s2);
+       //str = QJsonDocument(jsnStatus).toJson(QJsonDocument::Compact);
+
+       emit Write_2_TcpClient_Signal (str);
 
    }
 

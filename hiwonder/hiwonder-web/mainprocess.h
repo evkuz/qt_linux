@@ -17,7 +17,7 @@
 #include "hiwonder.h"  // hiwonder class
 #include "qsimpleserver.h"
 #include "SocketClient.h"
-
+#include "jsoninfo.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -44,6 +44,7 @@ public:
     int thread_counter ; // Было нужно при отладке старт/останов потоков
 
     QString rAnswer; // Ответ робота - статус, return_code, etc
+    JsonInfo *jsnStore;
 
 
 #define parcel_size 8           // размер посылки в байтах от ПК к роботу
@@ -64,6 +65,7 @@ public:
 
     void send_Data(unsigned char thelast);
     void make_json_answer();   // подготовка json-строки с полями ответа в TCP сокет.
+    void init_json(); // Подготовка общего ответа на status
     void put_box();  //Положить кубик на пол
 
 

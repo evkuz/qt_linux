@@ -36,7 +36,9 @@ void QSocketThread::process_TheSocket()
 //Данные считываем, готовим ответ.
 void QSocketThread::onReadyRead()
 {
+    QList<QString>  strcommand = { "/run?cmd=", "/service?name=", "/status", "/status?action="};
     //Чтение информации из сокета и вывод в консоль
+
     QByteArray qbmessage;
     qbmessage = socket->readAll();
     qDebug() << qbmessage;
@@ -88,9 +90,9 @@ void QSocketThread::Data_2_TcpClient_Slot(QString data)
     response += "content-type: application/json\r\n";
     response += "Access-Control-Allow-Origin: *\r\n";
     response += "\r\n";
-    response += "{\n\t\"status\":\"";
+    //response += "{\n\t\"status\":\"";
     response += data2Client;
-    response += "\"\n}";
+    //response += "\"\n}";
 
     socket->write(response.toUtf8());
 
