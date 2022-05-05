@@ -28,6 +28,10 @@ MainProcess::MainProcess(QObject *parent)
     //printf("Appname : %s", c_str);
     jsnStore = new JsonInfo();
     jsnStore->init_json();
+    mainjsnObj = jsnStore->jsnObj;
+
+   // traversJson(jsnStore->jsnObj);
+
     Robot = new HiWonder(); // Без этого будет "The program has unexpectedly finished", хотя в начале говорила, что это ambiguous
 
     Robot->Log_File_Open(Log_File_Name);
@@ -45,6 +49,7 @@ MainProcess::MainProcess(QObject *parent)
         GUI_Write_To_Log(0000, str);
     }
 
+     traversJson(jsnStore->jsnObj);
     //+++++++++++++++++++++++++++++++++  signal/slot of Get Request to webserver
     // Отправка данных от сервера клиенту (в  ЦУП)
     connect(this, &MainProcess::Write_2_TcpClient_Signal, &server, &QSimpleServer::Write_2_TcpClient_SLot); // works ?
@@ -344,6 +349,110 @@ void MainProcess::put_box()
     Robot->GoToPosition(dd);
 
 }
+//+++++++++++++++++++++++++++++++++++++++++++++++++++
+
+void MainProcess::traversJson(QJsonObject json_obj)
+{
+    QString str;
+    bool isDetected, boolValue;
+    int thevalue = 0x5555;
+    foreach(const QString& key, json_obj.keys()) {
+        str = "";
+        QJsonValue value = json_obj.value(key);
+        if(!value.isObject() ){
+                      str +=  "Key = "; str += key; str += ", Value = ";
+                      // Важно. Сначала нужно привести к типу bool
+                      //  QVariant(value).toBool() - не работает
+                      if (value.isBool()) {boolValue = value.toBool(); str += QVariant(boolValue).toString();}
+                      if (value.isString()) {str += QVariant(value).toString();}
+                      if (value.isDouble()) {str += QString::number( QVariant(value).toDouble());}
+                      // Хотя у CV в ответе и нет никакого массива, но все же добавим.
+                      if (value.isArray()) {
+                          QJsonArray jsnArray = value.toArray();
+                          // А еще желательно проверить, что у этого value соответствующий key ==  "action_list":
+                          // Тут выводим элементы массива, точнее только имена экшенов, т.е. значение name
+                          // ... и где ??? Переводим массив в объект и передаем на рекурсию ?
+                          if (key == "action_list") {str += "Many actions, look at output above";}
+                          str += "All values above";
+                          QJsonObject arrObj;
+                          for (int i =0; i < jsnArray.size(); ++i){
+                              arrObj = jsnArray[i].toObject();
+                              traversJson(arrObj);
+                          }
+                      }
+
+
+                     // str += value.toString();
+                      GUI_Write_To_Log(0x5555, str);
+                      str = "";
+
+          //qDebug() << "Key = " << key << ", Value = " << value;
+         }
+        else{
+            // А теперь определяем тип данных поля.
+             //jsndataObj = json_obj["data"].toObject(); // Так тоже работает, но уже есть привязка к конкретному случаю.
+            QJsonObject jsndataObj;
+
+            jsndataObj = value.toObject(); // В нашем случае объект единственный - "data"
+             // check if there is the key "detected"
+             if (jsndataObj.contains("detected")){
+
+                 isDetected = jsndataObj.value("detected").toBool();
+
+                 str = "Detected value is ";
+                 str += QVariant(isDetected).toString();
+                 GUI_Write_To_Log(thevalue, str);
+
+                 if (!isDetected){
+                     GUI_Write_To_Log(thevalue, "!!!!!! Exit. Try Again !!!!!!!!!!!");
+                     return;
+                 }
+
+                 traversJson(jsndataObj);
+
+             } //if (jsndataObj.contains("detected"))
+
+             //traversJson(value.toObject());
+
+
+        }//else
+
+        GUI_Write_To_Log(0x5555, str);
+
+
+    }//foreach
+
+}//traverseJson
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++
+
+int MainProcess::getIndexCommand(QString myCommand, QList<QString> theList)
+{
+    bool matched = false;
+    int i = 0;
+    QString message, str ;
+    message = myCommand;
+    int sPosition; // Индекс искомой строки в тексте.
+    int value = 0x3355;
+
+    while (!matched and i< theList.size()){
+        sPosition = message.indexOf(theList.at(i));
+        if (sPosition != -1) {matched = true; qDebug() << "Inside sPosition is " << sPosition;}
+        ++i;
+    }
+
+    if (!matched) {
+        str = "There is now any Matching in command list !!! Unknown command";
+        GUI_Write_To_Log(value, str);
+        return -1;
+    }
+    qDebug() << "Index value is" << --i;
+    qDebug() << "Matched command sPosition is " << sPosition;
+    if (i>=0) {qDebug() << "Matched string is " << theList.at(i);}
+
+    return i;
+
+}// getIndexCommand
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++
 //+++++++ Получили данные (запрос) от клиента. Парсим.
@@ -356,7 +465,23 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
     str = "From TCP Get new command : "; str += message;
     GUI_Write_To_Log(0xf00f, str);
 
-        substr = message;
+    substr = message;
+    // Определяем индекс команды в списке MainProcess::tcpCommand
+    int comIndex = getIndexCommand(substr, tcpCommand);
+    if (comIndex < 0) {str = "WRONG DATA !!!"; GUI_Write_To_Log(value, str);return;}
+    str = "Index value is "; str += QString::number(comIndex); str += ",\n";
+    str += "List value on that index is \""; str += tcpCommand.at(comIndex); str += "\"";
+    GUI_Write_To_Log(value, str);
+
+    // So here we've got the index of elemnt representing the command received by TCP
+    // set value of Robot->active_command
+    Robot->active_command = tcpCommand.at(comIndex);
+    str = "Current active command is ";
+    str += Robot->active_command;
+    GUI_Write_To_Log(value, str);
+
+    jsnStore->action_command = tcpCommand.at(comIndex); // сигнал updateAction_List_Signal
+
 
         if (substr == "start") {
             Robot->SetCurrentStatus ("init"); // Перед запуском распознавания
@@ -400,7 +525,38 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
         str += Robot->current_status;
         str += "\"\n}";
 
-        emit Write_2_TcpClient_Signal (str);
+//        emit Write_2_TcpClient_Signal (str);
+
+        str = "Robot current status is ";
+        str += Robot->current_status;
+        Robot->Write_To_Log(value, str);
+        //+++++++++++++ Now new format of answer +++++++++++++++++++++++++++++++
+       str = Robot->current_status;
+       jsnStore->action_command = Robot->current_status;
+       jsnStore->jsnStatus["state"] = str.toStdString();
+//       str = "JSON VALUE OF state is ";
+//       std::string s1 = jsnStore->jsnStatus["state"];
+//       str += QString::fromStdString(s1);
+//       Robot->Write_To_Log(value, str);
+//       jsnStore->jsnStatus["rc"] = RC_SUCCESS;
+       // Теперь надо данные структуры jsnStore->currentStatus добавить к объекту jsnStore->jsnStatus
+       // А значит, надо по значению jsnStore->action_command сформировать соответствующий jsnStore->currentStatus.action_list
+       // Значит создаем сигнал/слот для запуска такой процедуры в классе JsonInfo.
+
+
+       int indent = 3;
+       std::string s2 = jsnStore->jsnStatus.dump(indent);
+       str = QString::fromStdString(s2);
+       //str = QJsonDocument(jsnStore->jsnStatus).toJson(QJsonDocument::Compact);
+
+       emit Write_2_TcpClient_Signal (str);
+       QString S3 = "Send JSON data : \n";
+       S3 += str;
+       Robot->Write_To_Log(value, S3);
+
+       //+++++++++++++++
+
+
    }
 
    if (substr == "sit") {
@@ -483,6 +639,7 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 
        //str = QString::fromStdString(s2);
        //str = QJsonDocument(jsnStatus).toJson(QJsonDocument::Compact);
+
 
        emit Write_2_TcpClient_Signal (str);
 

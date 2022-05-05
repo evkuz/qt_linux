@@ -38,9 +38,13 @@
 
 
 
-/* */
+/*
+ * Идея списка команд в том, что у каждого робота/девайса он будет разный. А вот унифицировать обработку - это возможно.
+ * Т.е. цель - создать один файл - парсер/обработчик приходящих команд и использовать его в разных проектах с минимальными доработками, в идеале только список меняем.
+*/
 
-//                                              1                 3                    5                           7
- const QList<QString> tcpCommand = {"clamp", "status", "sit", "standup", "start", "getactions", "getservices", "setservos=", "reset"};
+//                                              1                 3                    5                           7                      9                 11
+    const QList<QString> tcpCommand = {"clamp", "status", "sit", "standup", "start", "put_box", "getactions", "getservices", "getservos", "reset", "lock", "unlock", "info"};
+ //from QSocketThread QList<QString>  strcommand = { "/run?cmd=", "/service?name=", "/status", "/status?action="};
 //
 #endif // PROTOCOL_H

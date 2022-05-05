@@ -18,7 +18,7 @@
 #include "qsimpleserver.h"
 #include "SocketClient.h"
 #include "jsoninfo.h"
-
+#include "protocol.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainProcess; }
@@ -45,6 +45,7 @@ public:
 
     QString rAnswer; // Ответ робота - статус, return_code, etc
     JsonInfo *jsnStore;
+    QJsonObject mainjsnObj;
 
 
 #define parcel_size 8           // размер посылки в байтах от ПК к роботу
@@ -67,7 +68,8 @@ public:
     void make_json_answer();   // подготовка json-строки с полями ответа в TCP сокет.
     void init_json(); // Подготовка общего ответа на status
     void put_box();  //Положить кубик на пол
-
+    void traversJson(QJsonObject json_obj); // Рекурсивный Парсинг JSON
+    int getIndexCommand(QString myCommand, QList<QString> theList);  // Определяем индекс команды в списке MainProcess::tcpcommand
 
 private:
     SocketClient readSocket;
