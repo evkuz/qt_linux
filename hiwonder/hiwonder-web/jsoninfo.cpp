@@ -1,10 +1,10 @@
-#include "jsoninfo.h"
+﻿#include "jsoninfo.h"
 
 JsonInfo::JsonInfo()
 {
-    currentStatus = {DEV_NAME, RC_SUCCESS,  "OK", DEV_STATE_WAIT}; //, ""
+    currentStatus = {DEV_NAME, RC_SUCCESS,  "OK", DEV_STATE_WAIT}; // Инициализируем структуру
     action_command = "nothing";
-    struc_2_json(jsnOB1, currentStatus);
+    struc_2_json(jsnOB1, currentStatus); // Инициализируем  jsnOB1 данными из структуры выше
 
 }
 //+++++++++++++++++++++
@@ -119,7 +119,7 @@ void JsonInfo::init_json()
         {"rc", RC_UNDEFINED}, //RC_SUCCESS
         {"info", "Request Accepted"},
         {"state", "Wait"},
-        {"action_list", {
+/*        {"action_list", {
              {
               {"name", "start"},
               {"state", {"running","waiting","noDetection", "inprogress", "done", "fail"}},
@@ -136,7 +136,7 @@ void JsonInfo::init_json()
               }
          } //list
        }//action_list-field
-
+*/
 
     }; //jsnStatus
 
@@ -347,4 +347,61 @@ void JsonInfo::makeJson_Answer_Slot(QString theAction)
 {
     this->jsnData = merge_json(jsnObj2, jsnObj);
     // Теперь результат объединения находится в jsnObj2
-}// init_json
+}// makeJson_Answer_Slot
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+QJsonObject JsonInfo::returnJsonObject()
+{
+    // Передаем основной json-object на обработку/парсинг
+    return jsnObj;
+} // returnJsonObject
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+QJsonObject JsonInfo::returnJsnInfo()
+{
+// Берем данные из ordered_json jsnInfo и передаем через QJsonObject
+    int indent = 3;
+    std::string s2 = jsnInfo.dump(indent);
+    jsnData = QString::fromStdString(s2);
+    jsnDoc = QJsonDocument::fromJson(jsnData.toUtf8(), &jsonError);
+
+    //Get the main JSON object and get the data in it
+    jsnObj = jsnDoc.object();
+
+    return jsnObj;
+} // returnJsnInfo()
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+QJsonObject JsonInfo::returnJsnStatus()
+{
+    // Берем данные из ordered_json jsnStatus и передаем через QJsonObject
+        int indent = 3;
+        std::string s2 = jsnStatus.dump(indent);
+        jsnData = QString::fromStdString(s2);
+        jsnDoc = QJsonDocument::fromJson(jsnData.toUtf8(), &jsonError);
+
+        //Get the main JSON object and get the data in it
+        jsnObj = jsnDoc.object();
+
+        return jsnObj;
+
+}// returnJsnStatus()
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+QString JsonInfo::returnJsnData()
+{
+    return this->jsnData;
+}
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+QJsonObject JsonInfo::returnJsonObject2()
+{
+    return this->jsnObj2;
+}// returnJsnData()
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Передаем строковое значение theAction, а возможно лучше индекс...
+void JsonInfo::setCurrentAction(QString theAction)
+{
+    //Меняем значение текущего экшена. И в целом, сам QJsonObject
+    this->action_command = theAction;
+    // И дальше, по имени экшена меняем остальные параметры JSON, если необходимо.
+
+}// setCurrentAction

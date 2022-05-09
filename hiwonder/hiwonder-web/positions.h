@@ -8,18 +8,18 @@
 
 #include <QtCore>
 
-unsigned char get_values_position [8] = {200, 200, 200, 200, 200, 200, 250, 250}; // sum = 1700
-unsigned char hwr_Start_position [6] = {93, 93, 93, 93, 93, 93}; // servo1,,,servo6
-unsigned char sit_down_position [6] = {93, 93, 93, 48, 48, 93} ; // Поза сидя. Сдвинуты 4,5 приводы (относительно 93)
-unsigned char sit_45_position [6] = {93, 93, 5, 5, 10, 45};
-unsigned char train_position [6] = {0, 93, 78, 25, 145, 148}; // координаты : 301, 553,
+const unsigned char get_values_position [8] = {200, 200, 200, 200, 200, 200, 250, 250}; // sum = 1700
+const unsigned char hwr_Start_position [6] = {93, 93, 93, 93, 93, 93}; // servo1,,,servo6
+const unsigned char sit_down_position [6] = {93, 93, 93, 48, 48, 93} ; // Поза сидя. Сдвинуты 4,5 приводы (относительно 93)
+const unsigned char sit_45_position [6] = {93, 93, 5, 5, 10, 45};
+const unsigned char train_position [6] = {0, 93, 78, 25, 145, 148}; // координаты : 301, 553,
 //unsigned char put_position [6] = {93, 93, 78, 25, 145, 45}; //60, 93, 100, 35, 145, 35
-unsigned char put_position [6] = {60, 93, 90, 40, 140, 30};
+const unsigned char put_position [6] = {60, 93, 90, 40, 140, 30};
                             //      60, 93, 100, 35, 145, 35
-unsigned char after_put_position [6] = {0, 93, 90, 45, 135, 30};
+const unsigned char after_put_position [6] = {0, 93, 90, 45, 135, 30};
 
-unsigned char put_2_mobman [6] = {90, 90, 45, 60, 155, 163};
-unsigned char after_put_2_mobman [6] = {60, 93, 90, 140, 140, 140};
+const unsigned char put_2_mobman [6] = {90, 90, 45, 60, 155, 163};
+const unsigned char after_put_2_mobman [6] = {60, 93, 90, 140, 140, 140};
 
 //93, 93, 100, 50, 120, 30
 // 60, 93,90, 40, 145, 30

@@ -7,7 +7,7 @@
 #ifndef MainProcess_H
 #define MainProcess_H
 
-
+#include <QtCore>
 #include <QSerialPort>
 #include <QSerialPortInfo>
 #include <QByteArray>
@@ -24,6 +24,9 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MainProcess; }
 QT_END_NAMESPACE
 
+
+using ordered_json = nlohmann::ordered_json;
+
 class MainProcess : public QObject
 {
     Q_OBJECT
@@ -31,10 +34,9 @@ class MainProcess : public QObject
 public:
     MainProcess(QObject *parent = nullptr);
     ~MainProcess();
-    //QSerialPort serial;
     QByteArray *buff;
-    QString     target_name;
-    HiWonder *Robot;
+    QString    target_name;
+    HiWonder   *Robot;
 
     bool new_get_request; // Флаг сигнализирует, что есть неотвеченный GET-запрос от webserver.
 
@@ -43,8 +45,8 @@ public:
     //+++++++++++++++++++++++++++++ Threads +++++++++++++++
     int thread_counter ; // Было нужно при отладке старт/останов потоков
 
-    QString rAnswer; // Ответ робота - статус, return_code, etc
-    JsonInfo *jsnStore;
+    QString     rAnswer; // Ответ робота - статус, return_code, etc
+    JsonInfo    *jsnStore;
     QJsonObject mainjsnObj;
 
 
@@ -70,7 +72,7 @@ public:
     void put_box();  //Положить кубик на пол
     void traversJson(QJsonObject json_obj); // Рекурсивный Парсинг JSON
     int getIndexCommand(QString myCommand, QList<QString> theList);  // Определяем индекс команды в списке MainProcess::tcpcommand
-
+    void ProcessAction(int indexOfCommand); // Отрабатывает команду по заданному индексу из списка QList<QString> theList
 private:
     SocketClient readSocket;
 

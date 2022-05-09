@@ -24,44 +24,17 @@ class JsonInfo
 {
 public:
     JsonInfo();
-    ordered_json jsnStatus; // Ответ на запрос статуса в формате json
-    ordered_json jsnStatus01; //Модифицированный Ответ на запрос статуса в формате json
-    ordered_json jsnAction;  // Хранит данные текущего экшена
-    ordered_json jsnGetServicesAnswer; // Ответ на команду "/service?name=getservices"
-    ordered_json jsnGetActionsAnswer; // Ответ на команду "/service?name=getactions"
-    ordered_json jsnList; // JSON-объект Хранит JSON-список
+     QJsonObject jsnObj1;
+     QJsonObject jsnObj2;
 
-    ordered_json jsnInfo;
-    ordered_json jsnActionTST; // Оъект для тестов
+//     QJsonParseError jsonError; // ОШибка, если полученные данные - не JSON-объект
 
-    ordered_json jsnOB1;  // Объект для шапки, "заголовок"
-    ordered_json jsnOB2;  // Объект для списка
-    ordered_json jsnOB3;  // Объект результирующий.
+//     QString jsnData;
+//     QJsonArray actions_list;
 
+     std::string s1;
+     QVariantMap map;
 
-
-
-    QJsonObject qjsnAnswer;
-
-    QJsonDocument jsnDoc;    // json-данные, полученные по tcp
-    QJsonObject   jsnObj;    // ОБъект, хранящий весь JSON ответ от девайса
-    QJsonObject   jsndataObj;// ОБъект, хранящий вложенный JSON-объект (вложенный внутри ответа jsnObj)
-                             //   Тут как раз данные о distance
-   // QJsonObject   jsnActionTST; // Оъект для тестов
-    QJsonObject   jsnActionAnswer; // Ответ на команду Action в формате json
-    QJsonObject   jsnStatusActionAnswer; // Ответ на команду "status?action=getbox" в формате json
-
-    //QJsonObject   jsnGetServicesAnswer; // Ответ на команду "/service?name=service_name"
-    QJsonObject jsnObj1;
-    QJsonObject jsnObj2;
-
-    QJsonParseError jsonError; // ОШибка, если полученные данные - не JSON-объект
-
-    QString jsnData;
-    QJsonArray actions_list;
-
-    std::string s1;
-    QVariantMap map;
 
     //++++++++++++++++++++++ JSON data +++++++++++++++++++++++++++++++++++++++++++++
 
@@ -82,6 +55,14 @@ public:
     #define AC_ALREADY_HAVE -3  // action с таким именем уже запущен
     void init_json();
     QString merge_json(QJsonObject &src, QJsonObject &dst);
+
+    QJsonObject returnJsonObject();
+    QJsonObject returnJsnInfo();
+    QJsonObject returnJsnStatus();
+    QString     returnJsnData();
+    QJsonObject returnJsonObject2();
+
+    void setCurrentAction(QString theAction);
 
     // Структура хранит данные для json-ответа.
     struct StatusAnswer {
@@ -113,5 +94,44 @@ public:
 public slots:
 
 void makeJson_Answer_Slot(QString theAction);
+protected:
+
+private:
+    ordered_json jsnStatus; // Ответ на запрос статуса в формате json
+    ordered_json jsnStatus01; //Модифицированный Ответ на запрос статуса в формате json
+    ordered_json jsnAction;  // Хранит данные текущего экшена
+    ordered_json jsnGetServicesAnswer; // Ответ на команду "/service?name=getservices"
+    ordered_json jsnGetActionsAnswer; // Ответ на команду "/service?name=getactions"
+    ordered_json jsnList; // JSON-объект Хранит JSON-список
+
+    ordered_json jsnInfo;
+    ordered_json jsnActionTST; // Оъект для тестов
+
+    ordered_json jsnOB1;  // Объект для шапки, "заголовок"
+    ordered_json jsnOB2;  // Объект для списка
+    ordered_json jsnOB3;  // Объект результирующий.
+
+
+
+    QJsonObject qjsnAnswer;
+
+    QJsonDocument jsnDoc;    // json-данные, полученные по tcp
+    QJsonObject   jsnObj;    // ОБъект, хранящий весь JSON ответ от девайса
+                             // В него подставляем разные QJsonDocument из разных ordered_json объектов
+                             // Это общая переменная для хранения json-объекта с разными данныими, из разных переменных.
+    QJsonObject   jsndataObj;// ОБъект, хранящий вложенный JSON-объект (вложенный внутри ответа jsnObj)
+                             //   Тут как раз данные о distance
+    QJsonObject   jsnActionAnswer; // Ответ на команду Action в формате json
+    QJsonObject   jsnStatusActionAnswer; // Ответ на команду "status?action=getbox" в формате json
+
+    //QJsonObject   jsnGetServicesAnswer; // Ответ на команду "/service?name=service_name"
+
+    QJsonParseError jsonError; // ОШибка, если полученные данные - не JSON-объект
+
+    QString jsnData;
+    QJsonArray actions_list;
+
+
+
 }; // class JsonInfo
 #endif // JSONINFO_H

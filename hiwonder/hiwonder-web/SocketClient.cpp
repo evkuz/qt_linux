@@ -61,10 +61,10 @@ int SocketClient::GetState(DetectorState *state) {
   }
 
   sprintf(buffer, "%i", ServerCommand::ACT_SEND_COORDS);
-  write(sockfd, buffer, strlen(buffer));
+  n = write(sockfd, buffer, strlen(buffer));
 
   n = read(sockfd, buffer, 80);
-  //*(buffer + n) = '\0';
+  n+=1; //avoid "set but not used " warning  //*(buffer + n) = '\0';
   //std::cout << "Recived message: " << buffer << std::endl;
   int isDetected(0);
   float x(0), y(0);

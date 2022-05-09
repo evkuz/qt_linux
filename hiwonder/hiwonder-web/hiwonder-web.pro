@@ -27,7 +27,8 @@ SOURCES += \
     qsocketthread.cpp \
     SocketClient.cpp \
     mainprocess.cpp \
-    mcinfer.cpp
+    mcinfer.cpp \
+    tcpParcing.cpp
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

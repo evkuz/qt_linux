@@ -27,17 +27,15 @@ MainProcess::MainProcess(QObject *parent)
     //QByteArray ba = target_name.toLocal8Bit();
     //g/const char *c_str = ba.data();
     //printf("Appname : %s", c_str);
+
+    // Инициализируем все json-статусы
     jsnStore = new JsonInfo();
     jsnStore->init_json();
-    mainjsnObj = jsnStore->jsnObj;
+// Сейчас объект jsnObj хранит данные из jsnOB1.
+// Получаем объект jsnObj через returnJsonObject()
 
-
-    int indent = 3;
-    std::string s2 = jsnStore->jsnOB1.dump(indent); // шапка json-объекта
-    str = QString::fromStdString(s2);
-    //str = QJsonDocument(jsnStore->jsnStatus).toJson(QJsonDocument::Compact);
-
-    QString S3 = "JSON object : \n";
+    str = QJsonDocument(jsnStore->returnJsonObject()).toJson(QJsonDocument::Indented);
+    QString S3 = "JSON object 1 : \n";
     S3 += str;
 
 
@@ -62,14 +60,18 @@ MainProcess::MainProcess(QObject *parent)
 
     Robot->Write_To_Log(value, S3);
 
-    str = QString::fromStdString(jsnStore->s1); // json-овтет остальное
+//  s1 хранит данные данные об одном экшене : nlohmann::jsnActionTST, преобразуем его в QJsonObject jsnObj2
+//    str = QString::fromStdString(jsnStore->s1); // json-овтет остальное
+    str = QJsonDocument(jsnStore->returnJsonObject2()).toJson(QJsonDocument::Indented);
     S3 = "JSON ACTION object : \n";
     S3 += str;
     Robot->Write_To_Log(value, S3);
 
-    // Вызываем объединение json-объектов по имени экшена
-     jsnStore->makeJson_Answer_Slot("clamp");
-     str = jsnStore->jsnData;
+    // Вызываем объединение json-объектов по имени экшена. Т.е. к шапке добавляем данные
+    // конкретного экшена. В данном случае эти данные заранее в переменной s1
+     jsnStore->makeJson_Answer_Slot("clamp"); // Получаем строку из 2 объектов в переменной jsnData
+//     str = jsnStore->jsnData;
+     str = jsnStore->returnJsnData();
      S3 = "JSON MERGED object : \n";
      S3 += str;
      Robot->Write_To_Log(value, S3);
@@ -79,6 +81,8 @@ MainProcess::MainProcess(QObject *parent)
 
 
 //    traversJson(jsnStore->jsnObj);
+// Тут мы знаем имя переменной. Или достаточно имя метода...
+     traversJson(jsnStore->returnJsonObject());
     //+++++++++++++++++++++++++++++++++  signal/slot of Get Request to webserver
     // Отправка данных от сервера клиенту (в  ЦУП)
     connect(this, &MainProcess::Write_2_TcpClient_Signal, &server, &QSimpleServer::Write_2_TcpClient_SLot); // works ?
@@ -283,7 +287,8 @@ if (DETECTED)
 
 
    //+++++++++++++++++++++ 6 go back to start position
-   this->update_Servos_from_position(hwr_Start_position);
+   //this->update_Servos_from_position(hwr_Start_position);
+   memcpy(Servos, hwr_Start_position, 6);
    memcpy(dd.data(), Servos, 6);
    dd.insert(parcel_size-2, 0x30); // Движение "Обратно"
    dd.insert(parcel_size-1, LASTONE);
@@ -482,87 +487,125 @@ int MainProcess::getIndexCommand(QString myCommand, QList<QString> theList)
     return i;
 
 }// getIndexCommand
+//+++++++++++++++++++++++++++++++++++++++++++++++++++
+void MainProcess::ProcessAction(int indexOfCommand)
+{
+    int value;
+    QString str;
+
+    value = 0x1122;
+    // Пока 2 вида обработки - вернуть статус, выполнить экшен.
+    switch (indexOfCommand) {
+        case 0: // "status"
+                str = "Current JSON data of STATUS are as follows ";
+                //str += Robot->current_status;
+                Robot->Write_To_Log(value, str);
+                jsnStore->setCurrentAction(Robot->current_status);
+
+                // Выдаем значение ordered_json jsnStatus в виде QJsonObject, дальше нарастим информативность.
+                str = QJsonDocument(jsnStore->returnJsnStatus()).toJson(QJsonDocument::Indented);
+                emit Write_2_TcpClient_Signal(str);
+                GUI_Write_To_Log(value, str);
+
+        break;
+
+        case 1: // "start"
+                Robot->SetCurrentStatus ("init"); // Перед запуском распознавания
+
+                on_trainButton_clicked ();
+                str = "Robot current status is ";
+                str += Robot->current_status;
+                Robot->Write_To_Log(0xf00F, str);
+
+        break;
+
+    default :
+        str = "There is no command with such the index ";
+        str += QString::number(indexOfCommand);
+        GUI_Write_To_Log(value, str);
+
+
+    }
+
+
+}// ProcessAction
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++
 //+++++++ Получили данные (запрос) от клиента. Парсим.
-void MainProcess::Data_From_TcpClient_Slot(QString message)
-{
-    QString str, substr;
-    int value = 0xf00f;
-    new_get_request = true;
-    //str = "!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSimpleServer->Info_2_Log_Signal !!!!!!!!!!!!!!!!!!!";
-    str = "From TCP Get new command : "; str += message;
-    GUI_Write_To_Log(0xf00f, str);
+//void MainProcess::Data_From_TcpClient_Slot(QString message)
+//{
+//    QString str, substr;
+//    int value = 0xf00f;
+//    new_get_request = true;
+//    //str = "!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSimpleServer->Info_2_Log_Signal !!!!!!!!!!!!!!!!!!!";
+//    str = "From TCP Get new command : "; str += message;
+//    GUI_Write_To_Log(0xf00f, str);
 
-    substr = message;
-    // Определяем индекс команды в списке MainProcess::tcpCommand
-    int comIndex = getIndexCommand(substr, tcpCommand);
-    if (comIndex < 0) {str = "WRONG DATA !!!"; GUI_Write_To_Log(value, str);return;}
-    str = "Index value is "; str += QString::number(comIndex); str += ",\n";
-    str += "List value on that index is \""; str += tcpCommand.at(comIndex); str += "\"";
-    GUI_Write_To_Log(value, str);
+//    substr = message;
+//    // Определяем индекс команды в списке MainProcess::tcpCommand
+//    int comIndex = getIndexCommand(substr, tcpCommand);
+//    if (comIndex < 0) {str = "WRONG DATA !!!"; GUI_Write_To_Log(value, str);return;}
+//    str = "Index value is "; str += QString::number(comIndex); str += ",\n";
+//    str += "List value on that index is \""; str += tcpCommand.at(comIndex); str += "\"";
+//    GUI_Write_To_Log(value, str);
 
-    // So here we've got the index of elemnt representing the command received by TCP
-    // set value of Robot->active_command
-    Robot->active_command = tcpCommand.at(comIndex);
-    str = "Current active command is ";
-    str += Robot->active_command;
-    GUI_Write_To_Log(value, str);
+//    // So here we've got the index of elemnt representing the command received by TCP
+//    // set value of Robot->active_command
+//    Robot->active_command = tcpCommand.at(comIndex);
+//    str = "Current active command is ";
+//    str += Robot->active_command;
+//    GUI_Write_To_Log(value, str);
 
-    jsnStore->action_command = tcpCommand.at(comIndex); // сигнал updateAction_List_Signal
-
-
-        if (substr == "start") {
-            Robot->SetCurrentStatus ("init"); // Перед запуском распознавания
-
-            on_trainButton_clicked ();
-            str = "Robot current status is ";
-            str += Robot->current_status;
-            Robot->Write_To_Log(0xf00F, str);
-
-//            str = Robot->current_status;
-//            emit Write_2_TcpClient_Signal (str);
-         }
-
-        if (substr == "put_box"){
-            Robot->SetCurrentStatus ("inprogress"); // Перед запуском распознавания
-            put_box();
+//    jsnStore->action_command = tcpCommand.at(comIndex); // сигнал updateAction_List_Signal
 
 
-        }
+//        if (substr == "start") {
+//            Robot->SetCurrentStatus ("init"); // Перед запуском распознавания
 
-        if (substr == "reset") {
-            if (Robot->GetCurrentStatus () != "wait"){
-                Robot->SetCurrentStatus ("wait");
-                str = "Robot changed status, now it is : ";
-                str += Robot->current_status;
+//            on_trainButton_clicked ();
+//            str = "Robot current status is ";
+//            str += Robot->current_status;
+//            Robot->Write_To_Log(0xf00F, str);
 
-                GUI_Write_To_Log (value, str);
-                //str = "status_from_robot";
-                str  = "{\n\t\"status\":\"";
-                str += Robot->current_status;
-                str += "\"\n}";
-                emit Write_2_TcpClient_Signal (str);
-            }
-         }
+//         }
+
+//        if (substr == "put_box"){
+//            Robot->SetCurrentStatus ("inprogress"); // Перед запуском распознавания
+//            put_box();
+
+
+//        }
+
+//        if (substr == "reset") {
+//            if (Robot->GetCurrentStatus () != "wait"){
+//                Robot->SetCurrentStatus ("wait");
+//                str = "Robot changed status, now it is : ";
+//                str += Robot->current_status;
+
+//                GUI_Write_To_Log (value, str);
+//                //str = "status_from_robot";
+//                str  = "{\n\t\"status\":\"";
+//                str += Robot->current_status;
+//                str += "\"\n}";
+//                emit Write_2_TcpClient_Signal (str);
+//            }
+//         }
 //         ///run?cmd=status&123
 
 
-   if (substr == "status") {
-        // response += "{\n\t\"status\":\"";
-        str  = "{\n\t\"status\":\"";
-        str += Robot->current_status;
-        str += "\"\n}";
+//   if (substr == "status") {
+//        // response += "{\n\t\"status\":\"";
+//        str  = "{\n\t\"status\":\"";
+//        str += Robot->current_status;
+//        str += "\"\n}";
 
-//        emit Write_2_TcpClient_Signal (str);
-
-        str = "Robot current status is ";
-        str += Robot->current_status;
-        Robot->Write_To_Log(value, str);
-        //+++++++++++++ Now new format of answer +++++++++++++++++++++++++++++++
-       str = Robot->current_status;
-       jsnStore->action_command = Robot->current_status;
-       jsnStore->jsnStatus["state"] = str.toStdString();
+//        str = "Robot current status is ";
+//        str += Robot->current_status;
+//        Robot->Write_To_Log(value, str);
+//        //+++++++++++++ Now new format of answer +++++++++++++++++++++++++++++++
+//       str = Robot->current_status;
+//       jsnStore->action_command = Robot->current_status;
+//       jsnStore->jsnStatus["state"] = str.toStdString();
 //       str = "JSON VALUE OF state is ";
 //       std::string s1 = jsnStore->jsnStatus["state"];
 //       str += QString::fromStdString(s1);
@@ -573,122 +616,120 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
        // Значит создаем сигнал/слот для запуска такой процедуры в классе JsonInfo.
 
 
-       int indent = 3;
-       std::string s2 = jsnStore->jsnStatus.dump(indent);
-       str = QString::fromStdString(s2);
-       //str = QJsonDocument(jsnStore->jsnStatus).toJson(QJsonDocument::Compact);
+//       int indent = 3;
+//       std::string s2 = jsnStore->jsnStatus.dump(indent);
+//       str = QString::fromStdString(s2);
+//       //str = QJsonDocument(jsnStore->jsnStatus).toJson(QJsonDocument::Compact);
 
-       emit Write_2_TcpClient_Signal (str);
-       QString S3 = "Send JSON data : \n";
-       S3 += str;
-       Robot->Write_To_Log(value, S3);
+//       emit Write_2_TcpClient_Signal (str);
+//       QString S3 = "Send JSON data : \n";
+//       S3 += str;
+//       Robot->Write_To_Log(value, S3);
 
-       //+++++++++++++++
+//       //+++++++++++++++
 
 
-   }
+//   }
 
-   if (substr == "sit") {
-       // Go to "sit" position
-       QByteArray dd = QByteArray::fromRawData(reinterpret_cast<const char*>(sit_down_position), 6);
-       dd.append(0x31); // Движение "Туда"
-       dd.append(LASTONE); // Всегда последнее ?
-       Robot->GoToPosition(dd);//, sit_down_position
-   }//"sit"
+//   if (substr == "sit") {
+//       // Go to "sit" position
+//       QByteArray dd = QByteArray::fromRawData(reinterpret_cast<const char*>(sit_down_position), 6);
+//       dd.append(0x31); // Движение "Туда"
+//       dd.append(LASTONE); // Всегда последнее ?
+//       Robot->GoToPosition(dd);//, sit_down_position
+//   }//"sit"
 
-   if (substr == "standup") {
-       // Go to Initial "Start" position
-       QByteArray dd = QByteArray::fromRawData(reinterpret_cast<const char*>(hwr_Start_position), 6);
-       dd.append(0x30); // Движение "Обратно"
-       dd.append(LASTONE); // Всегда последнее ?
-       Robot->GoToPosition(dd);//, hwr_Start_position
+//   if (substr == "standup") {
+//       // Go to Initial "Start" position
+//       QByteArray dd = QByteArray::fromRawData(reinterpret_cast<const char*>(hwr_Start_position), 6);
+//       dd.append(0x30); // Движение "Обратно"
+//       dd.append(LASTONE); // Всегда последнее ?
+//       Robot->GoToPosition(dd);//, hwr_Start_position
 
-   }
+//   }
 
-   if (substr =="clamp") {
+//   if (substr =="clamp") {
 
-       str = "######## Try to lock/unlock the gripper #########";
-       str += "\n";
-       str += "Current clamper value is ";
-       str += QString::number(Servos[0]);
- //      GUI_Write_To_Log(value, str);
-       if(Servos[0]==0) { Servos[0]=90;}
-       else {Servos[0]=0;}
-       this->send_Data(LASTONE);
-   }//"clamp"
+//       str = "######## Try to lock/unlock the gripper #########";
+//       str += "\n";
+//       str += "Current clamper value is ";
+//       str += QString::number(Servos[0]);
+//       if(Servos[0]==0) { Servos[0]=90;}
+//       else {Servos[0]=0;}
+//       this->send_Data(LASTONE);
+//   }//"clamp"
 
-   if (substr =="lock") {
+//   if (substr =="lock") {
 
-       str = "######## Try to lock the gripper ######### ";
-       str += "Current clamper value is ";
-       str += QString::number(Servos[0]);
+//       str = "######## Try to lock the gripper ######### ";
+//       str += "Current clamper value is ";
+//       str += QString::number(Servos[0]);
+//       Servos[0]=90;
+//       this->send_Data(NOT_LAST); //NOT_LAST LASTONE
+//   }//"lock"
+
+//   if (substr =="unlock") {
+
+//       str = "######## Try to UNlock the gripper ######### ";
+//       str += "Current clamper value is ";
+//       str += QString::number(Servos[0]);
+//       Servos[0]=0;
+//       this->send_Data(NOT_LAST); //NOT_LAST LASTONE
+//   }//"unlock"
+
+//   if (substr == "close") {
+//       Robot->serial.close();
+
+//   }
+
+//   // Запрашиваем в Arduino значения углов сервоприводов
+//   if (substr == "getservos") {
+//       QByteArray dd ;
+//       dd.resize(parcel_size);
+//       memcpy(dd.data(), get_values_position, parcel_size);
+//       Robot->GoToPosition(dd);
+
+//   }
+
+//   if (substr == "info") {
+//       // Вот тут делаем присвоение статуса.
+//       str = Robot->current_status;
+//       jsnStore->jsnInfo["state"] = str.toStdString();
+//       jsnStore->jsnInfo["rc"] = RC_SUCCESS;
+//       //jsnStatus[""]
+
+//       // serialization with pretty printing
+//       // pass in the amount of spaces to indent
+//       int indent = 3;
+//       std::string s2 = jsnStore->jsnInfo.dump(indent);
+//       str = QString::fromStdString(s2);
+
+//       GUI_Write_To_Log(value, "!!!!!!!!!!! Current STATUS is ");
 //       GUI_Write_To_Log(value, str);
-       Servos[0]=90;
-       this->send_Data(NOT_LAST); //NOT_LAST LASTONE
-   }//"lock"
 
-   if (substr =="unlock") {
-
-       str = "######## Try to UNlock the gripper ######### ";
-       str += "Current clamper value is ";
-       str += QString::number(Servos[0]);
-//       GUI_Write_To_Log(value, str);
-       Servos[0]=0;
-       this->send_Data(NOT_LAST); //NOT_LAST LASTONE
-   }//"unlock"
-
-   if (substr == "close") {
-       Robot->serial.close();
-
-   }
-
-   // Запрашиваем в Arduino значения углов сервоприводов
-   if (substr == "getservos") {
-       QByteArray dd ;
-       dd.resize(parcel_size);
-       memcpy(dd.data(), get_values_position, parcel_size);
-       Robot->GoToPosition(dd);
-
-   }
-
-   if (substr == "info") {
-       str = Robot->current_status;
-       jsnStore->jsnInfo["state"] = str.toStdString();
-       jsnStore->jsnInfo["rc"] = RC_SUCCESS;
-       //jsnStatus[""]
-
-       // serialization with pretty printing
-       // pass in the amount of spaces to indent
-       int indent = 3;
-       std::string s2 = jsnStore->jsnInfo.dump(indent);
-       str = QString::fromStdString(s2);
-
-       GUI_Write_To_Log(value, "!!!!!!!!!!! Current STATUS is ");
-       GUI_Write_To_Log(value, str);
-
-       //str = QString::fromStdString(s2);
-       //str = QJsonDocument(jsnStatus).toJson(QJsonDocument::Compact);
+//       //str = QString::fromStdString(s2);
+//       //str = QJsonDocument(jsnStatus).toJson(QJsonDocument::Compact);
 
 
-       emit Write_2_TcpClient_Signal (str);
+//       emit Write_2_TcpClient_Signal (str);
 
-   }
+//   }
    //++++++++++++++ /service?name=getactions
-      if (substr == "getactions") {
-        jsnStore->jsnGetActionsAnswer["rc"] = RC_SUCCESS;
-          int indent = 3;
-          std::string s2 = jsnStore->jsnGetActionsAnswer.dump(indent);
-          str = QString::fromStdString(s2);
-          GUI_Write_To_Log(value, "!!!!!!!!!!! Current Actions LIST is ");
-          GUI_Write_To_Log(value, str);
+//      if (substr == "getactions") {
+//        jsnStore->jsnGetActionsAnswer["rc"] = RC_SUCCESS;
+//          int indent = 3;
+//          std::string s2 = jsnStore->jsnGetActionsAnswer.dump(indent);
+//          str = QString::fromStdString(s2);
+//          GUI_Write_To_Log(value, "!!!!!!!!!!! Current Actions LIST is ");
+//          GUI_Write_To_Log(value, str);
 
-          emit Write_2_TcpClient_Signal (str);
+//          emit Write_2_TcpClient_Signal (str);
 
-      }//substr == "getactions"
+//      }//substr == "getactions"
 
 
 
-}
+//}
 //++++++++++++++++++++++++++
 // Слот сигнала HiWonder::Moving_Done_Signal
 // Пишем в лог сообщение, что комплексная команда (например,взять кубик в одной точке и положить в другую)

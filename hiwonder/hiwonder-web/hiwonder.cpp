@@ -20,7 +20,7 @@ HiWonder::HiWonder()
     memset(outputData, 0xDD, szData); //Инициализация массива с данными для отправки
    // this->SetCurrentStatus ("wait");
     this->current_status = "wait";
-     active_command = "nothing";
+    active_command = "nothing";
 }
 //+++++++++++++++++
 HiWonder::~HiWonder()
