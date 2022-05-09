@@ -47,4 +47,23 @@
     const QList<QString> tcpCommand = {"clamp", "status", "sit", "standup", "start", "put_box", "getactions", "getservices", "getservos", "reset", "lock", "unlock", "info"};
  //from QSocketThread QList<QString>  strcommand = { "/run?cmd=", "/service?name=", "/status", "/status?action="};
 //
+
+//  1.  Use QJsonObject::toVariantMap to convert all JSON objects to QVariantMap
+
+//  2.  Use QMap::insert to insert all maps into one
+
+//  3.  Use QJsonObject::fromVariantMap to convert the resulting map back to JSON object
+
+
+
+//    QJsonObject json1{{"foo_key", "foo_value"}};
+//    QJsonObject json2{{"moo_key", "moo_value"}, {"boo_key", "boo_value"}};
+//    QVariantMap map = json1.toVariantMap();
+
+//    map.insert(json2.toVariantMap());
+
+//    qDebug() << QJsonObject::fromVariantMap(map);
+
+
+
 #endif // PROTOCOL_H

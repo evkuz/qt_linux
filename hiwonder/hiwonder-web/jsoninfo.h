@@ -14,7 +14,7 @@
 #include <QJsonValue>
 #include <QJsonArray>
 #include <QJsonParseError>
-
+#include <QVariantMap>
 
 using ordered_json = nlohmann::ordered_json;
 
@@ -32,6 +32,14 @@ public:
     ordered_json jsnList; // JSON-объект Хранит JSON-список
 
     ordered_json jsnInfo;
+    ordered_json jsnActionTST; // Оъект для тестов
+
+    ordered_json jsnOB1;  // Объект для шапки, "заголовок"
+    ordered_json jsnOB2;  // Объект для списка
+    ordered_json jsnOB3;  // Объект результирующий.
+
+
+
 
     QJsonObject qjsnAnswer;
 
@@ -39,16 +47,21 @@ public:
     QJsonObject   jsnObj;    // ОБъект, хранящий весь JSON ответ от девайса
     QJsonObject   jsndataObj;// ОБъект, хранящий вложенный JSON-объект (вложенный внутри ответа jsnObj)
                              //   Тут как раз данные о distance
+   // QJsonObject   jsnActionTST; // Оъект для тестов
     QJsonObject   jsnActionAnswer; // Ответ на команду Action в формате json
     QJsonObject   jsnStatusActionAnswer; // Ответ на команду "status?action=getbox" в формате json
 
     //QJsonObject   jsnGetServicesAnswer; // Ответ на команду "/service?name=service_name"
+    QJsonObject jsnObj1;
+    QJsonObject jsnObj2;
 
     QJsonParseError jsonError; // ОШибка, если полученные данные - не JSON-объект
 
     QString jsnData;
     QJsonArray actions_list;
 
+    std::string s1;
+    QVariantMap map;
 
     //++++++++++++++++++++++ JSON data +++++++++++++++++++++++++++++++++++++++++++++
 
@@ -68,14 +81,15 @@ public:
     #define AC_FAILURE -2       // action с таким именем не запустился
     #define AC_ALREADY_HAVE -3  // action с таким именем уже запущен
     void init_json();
+    QString merge_json(QJsonObject &src, QJsonObject &dst);
 
     // Структура хранит данные для json-ответа.
     struct StatusAnswer {
-        QString name;
+        std::string name;
         int     rc;    // "int - request result code",
-        QString info;  // text interpretation of return code
-        QString state; // "str - global device status: init | run | fail",
-        QString action_list; // Список активных на данных моментэкшенов. И вот тут вопрос :
+        std::string  info;  // text interpretation of return code
+        std::string  state; // "str - global device status: init | run | fail",
+//        QString action_list; // Список активных на данных моментэкшенов. И вот тут вопрос :
                              // Или как jsnDocument или как nlohmann::ordered_json;
 
 
@@ -91,7 +105,13 @@ public:
 
     StatusAnswer currentStatus;
     QString action_command; // команда, которая сейчас исполняется
+    //                                             1                     3                         5                7
     const QList<QString> action_lst = {"clamp", "start", "put_box", "getactions", "getservices","reset", "lock", "unlock", "info"};
 
+    void struc_2_json(ordered_json& jsn, const StatusAnswer& header);  // конвертируем структуру в json object
+
+public slots:
+
+void makeJson_Answer_Slot(QString theAction);
 }; // class JsonInfo
 #endif // JSONINFO_H

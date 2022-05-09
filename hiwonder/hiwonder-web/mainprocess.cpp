@@ -17,6 +17,7 @@ MainProcess::MainProcess(QObject *parent)
 
 {
     int value = 0x0000;
+    QString str;
 
     DETECTED = false;
     new_get_request = false;
@@ -30,6 +31,16 @@ MainProcess::MainProcess(QObject *parent)
     jsnStore->init_json();
     mainjsnObj = jsnStore->jsnObj;
 
+
+    int indent = 3;
+    std::string s2 = jsnStore->jsnOB1.dump(indent); // шапка json-объекта
+    str = QString::fromStdString(s2);
+    //str = QJsonDocument(jsnStore->jsnStatus).toJson(QJsonDocument::Compact);
+
+    QString S3 = "JSON object : \n";
+    S3 += str;
+
+
    // traversJson(jsnStore->jsnObj);
 
     Robot = new HiWonder(); // Без этого будет "The program has unexpectedly finished", хотя в начале говорила, что это ambiguous
@@ -37,7 +48,7 @@ MainProcess::MainProcess(QObject *parent)
     Robot->Log_File_Open(Log_File_Name);
   //  Robot->Source_Points_File_Open (SOURCE_POINTS_FILE);
 
-    QString str = "The application \"";  str +=target_name; str += "\"";
+    str = "The application \"";  str +=target_name; str += "\"";
     Robot->Write_To_Log(0xf000, str.append(" is started successfully!!!\n"));
 
     GUI_Write_To_Log(0000, "Going to Start QTcpSErver");
@@ -49,7 +60,25 @@ MainProcess::MainProcess(QObject *parent)
         GUI_Write_To_Log(0000, str);
     }
 
-     traversJson(jsnStore->jsnObj);
+    Robot->Write_To_Log(value, S3);
+
+    str = QString::fromStdString(jsnStore->s1); // json-овтет остальное
+    S3 = "JSON ACTION object : \n";
+    S3 += str;
+    Robot->Write_To_Log(value, S3);
+
+    // Вызываем объединение json-объектов по имени экшена
+     jsnStore->makeJson_Answer_Slot("clamp");
+     str = jsnStore->jsnData;
+     S3 = "JSON MERGED object : \n";
+     S3 += str;
+     Robot->Write_To_Log(value, S3);
+
+
+
+
+
+//    traversJson(jsnStore->jsnObj);
     //+++++++++++++++++++++++++++++++++  signal/slot of Get Request to webserver
     // Отправка данных от сервера клиенту (в  ЦУП)
     connect(this, &MainProcess::Write_2_TcpClient_Signal, &server, &QSimpleServer::Write_2_TcpClient_SLot); // works ?
@@ -97,9 +126,9 @@ MainProcess::MainProcess(QObject *parent)
     // Arduino Mega - как "ttyACM0"
     // emit Open_Port_Signal("ttyUSB1");
 
-    str = "Current Servo values are : ";
-    str += QString::number(Servos[0]);
-    GUI_Write_To_Log(value, str);
+//    str = "Current Servo values are : ";
+//    str += QString::number(Servos[0]);
+//    GUI_Write_To_Log(value, str);
 
     int OKay = Robot->Open_Port_Slot("ttyUSB0");
     if (!OKay) { //!Robot->SerialIsOpened
