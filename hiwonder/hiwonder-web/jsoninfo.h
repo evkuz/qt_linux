@@ -19,7 +19,6 @@
 using ordered_json = nlohmann::ordered_json;
 
 
-
 class JsonInfo
 {
 public:

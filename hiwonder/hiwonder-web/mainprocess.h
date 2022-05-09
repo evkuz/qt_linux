@@ -15,7 +15,8 @@
 #include <QFile>
 #include <QList>
 #include "hiwonder.h"  // hiwonder class
-#include "qsimpleserver.h"
+//#include "qsimpleserver.h"
+#include "manipulator/qsimpleserver.h"
 #include "SocketClient.h"
 #include "jsoninfo.h"
 #include "protocol.h"
