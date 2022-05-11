@@ -140,7 +140,7 @@ MainProcess::MainProcess(QObject *parent)
 
        OKay = Robot->Open_Port_Slot("ttyUSB1");
 
-    } // Robot->current_status = statuslst.at(4)
+    } // Robot->GetCurrentStatus() = statuslst.at(4)
 
     if (!OKay){
                 GUI_Write_To_Log(value, "SerialPort  PROBLEM !!!");
@@ -241,6 +241,15 @@ void MainProcess::on_trainButton_clicked()
 
         } else {
             str += "NOT DETECTED";
+            // change status to "NoDetection"
+            jsnStore->currentStatus.rc = -5; // No Detection
+            jsnStore->currentStatus.info = "No Detection";
+            jsnStore->currentStatus.state = jsnStore->statuslst.at(jsnStore->INDEX_NODETECTION).toStdString();
+            jsnStore->struc_2_jsnObj(); // Копируем данные структуры в ordered_json jsnStatus
+
+            jsnStore->returnJsnStatus(); // Берем данные из ordered_json jsnStatus и передаем в QJsonObject::jsnObj
+
+
         }
 
        std::cout <<  str.toStdString() << std::endl;
@@ -320,7 +329,7 @@ void MainProcess::make_json_answer()
   jsn_str += "\r\n";
   jsn_str += "\"status\":";
   jsn_str += "\"";
-  jsn_str += Robot->current_status;
+  jsn_str += Robot->GetCurrentStatus();
   jsn_str += "\","; jsn_str += "\r\n";
   jsn_str += "\"return_code\":";
   jsn_str += "\"";
@@ -494,13 +503,15 @@ void MainProcess::ProcessAction(int indexOfCommand)
     QString str;
 
     value = 0x1122;
+    str = "I'm in  ProcessAction"; GUI_Write_To_Log(value, str);
+
     // Пока 2 вида обработки - вернуть статус, выполнить экшен.
     switch (indexOfCommand) {
         case 0: // "status"
-                str = "Current JSON data of STATUS are as follows ";
-                //str += Robot->current_status;
+                str = "Current JSON data of action_command (STATUS) are as follows ";
+                //str += Robot->GetCurrentStatus();
                 Robot->Write_To_Log(value, str);
-                jsnStore->setCurrentAction(Robot->current_status);
+                jsnStore->setCurrentAction(Robot->GetCurrentStatus());
 
                 // Выдаем значение ordered_json jsnStatus в виде QJsonObject, дальше нарастим информативность.
                 str = QJsonDocument(jsnStore->returnJsnStatus()).toJson(QJsonDocument::Indented);
@@ -509,13 +520,13 @@ void MainProcess::ProcessAction(int indexOfCommand)
 
         break;
 
-        case 1: // "start"
+        case 5: // "start"
                 Robot->SetCurrentStatus ("init"); // Перед запуском распознавания
 
                 on_trainButton_clicked ();
                 str = "Robot current status is ";
-                str += Robot->current_status;
-                Robot->Write_To_Log(0xf00F, str);
+                str += Robot->GetCurrentStatus();
+                Robot->Write_To_Log(value, str);
 
         break;
 
@@ -523,6 +534,7 @@ void MainProcess::ProcessAction(int indexOfCommand)
         str = "There is no command with such the index ";
         str += QString::number(indexOfCommand);
         GUI_Write_To_Log(value, str);
+        break;
 
 
     }
@@ -564,7 +576,7 @@ void MainProcess::ProcessAction(int indexOfCommand)
 
 //            on_trainButton_clicked ();
 //            str = "Robot current status is ";
-//            str += Robot->current_status;
+//            str += Robot->GetCurrentStatus();
 //            Robot->Write_To_Log(0xf00F, str);
 
 //         }
@@ -580,12 +592,12 @@ void MainProcess::ProcessAction(int indexOfCommand)
 //            if (Robot->GetCurrentStatus () != "wait"){
 //                Robot->SetCurrentStatus ("wait");
 //                str = "Robot changed status, now it is : ";
-//                str += Robot->current_status;
+//                str += Robot->GetCurrentStatus();
 
 //                GUI_Write_To_Log (value, str);
 //                //str = "status_from_robot";
 //                str  = "{\n\t\"status\":\"";
-//                str += Robot->current_status;
+//                str += Robot->GetCurrentStatus();
 //                str += "\"\n}";
 //                emit Write_2_TcpClient_Signal (str);
 //            }
@@ -596,15 +608,15 @@ void MainProcess::ProcessAction(int indexOfCommand)
 //   if (substr == "status") {
 //        // response += "{\n\t\"status\":\"";
 //        str  = "{\n\t\"status\":\"";
-//        str += Robot->current_status;
+//        str += Robot->GetCurrentStatus();
 //        str += "\"\n}";
 
 //        str = "Robot current status is ";
-//        str += Robot->current_status;
+//        str += Robot->GetCurrentStatus();
 //        Robot->Write_To_Log(value, str);
 //        //+++++++++++++ Now new format of answer +++++++++++++++++++++++++++++++
-//       str = Robot->current_status;
-//       jsnStore->action_command = Robot->current_status;
+//       str = Robot->GetCurrentStatus();
+//       jsnStore->action_command = Robot->GetCurrentStatus();
 //       jsnStore->jsnStatus["state"] = str.toStdString();
 //       str = "JSON VALUE OF state is ";
 //       std::string s1 = jsnStore->jsnStatus["state"];
@@ -693,7 +705,7 @@ void MainProcess::ProcessAction(int indexOfCommand)
 
 //   if (substr == "info") {
 //       // Вот тут делаем присвоение статуса.
-//       str = Robot->current_status;
+//       str = Robot->GetCurrentStatus();
 //       jsnStore->jsnInfo["state"] = str.toStdString();
 //       jsnStore->jsnInfo["rc"] = RC_SUCCESS;
 //       //jsnStatus[""]
@@ -742,7 +754,7 @@ void MainProcess::Moving_Done_Slot()
     Robot->SetCurrentStatus ("done");
     if (new_get_request) // Тогда даем сигнал серверу на отправку данных клиенту. Данные уже в буфере TheWeb->status_buffer
     {
-     // emit Write_2_Client_Signal(Robot->current_status);
+     // emit Write_2_Client_Signal(Robot->GetCurrentStatus());
       new_get_request = false;
     }
 

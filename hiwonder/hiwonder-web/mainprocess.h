@@ -17,7 +17,7 @@
 #include "hiwonder.h"  // hiwonder class
 //#include "qsimpleserver.h"
 #include "manipulator/qsimpleserver.h"
-#include "SocketClient.h"
+#include "manipulator/SocketClient.h"
 #include "jsoninfo.h"
 #include "protocol.h"
 

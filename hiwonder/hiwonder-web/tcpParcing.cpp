@@ -43,8 +43,8 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 
     //jsnStore->action_command = tcpCommand.at(comIndex); // сигнал updateAction_List_Signal
     jsnStore->setCurrentAction(tcpCommand.at(comIndex));
-
-    if (comIndex==0 or comIndex==1) {
+    // 0 - status, 5 - start
+    if (comIndex==0 or comIndex==5 or comIndex==7) {
         ProcessAction(comIndex);
     }
 
@@ -61,12 +61,12 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
         if (Robot->GetCurrentStatus () != "wait"){
             Robot->SetCurrentStatus ("wait");
             str = "Robot changed status, now it is : ";
-            str += Robot->current_status;
+            str += Robot->GetCurrentStatus();
 
             GUI_Write_To_Log (value, str);
             //str = "status_from_robot";
             str  = "{\n\t\"status\":\"";
-            str += Robot->current_status;
+            str += Robot->GetCurrentStatus();
             str += "\"\n}";
             emit Write_2_TcpClient_Signal (str);
         }
@@ -136,7 +136,7 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 
     if (substr == "info") {
         // Вот тут делаем присвоение статуса.
-        str = Robot->current_status;
+        str = Robot->GetCurrentStatus();
         jsnStore->setCurrentAction(substr);
 
         str = QJsonDocument(jsnStore->returnJsnInfo()).toJson(QJsonDocument::Indented);

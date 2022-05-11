@@ -163,6 +163,11 @@ void HiWonder::GoToPosition(QByteArray &position)//, const char *servo)
 
 }
 //+++++++++++++++++++++++++++++++
+
+QString HiWonder::GetCurrentStatus() {
+    return this->current_status;
+} // GetCurrentStatus
+//+++++++++++++++++++++++++++++++
 // Слот обработки сигнала QSerialPort::readyRead()
 // Считываем данные из Serial port, т.е. от робота.  code From Robot :
 void HiWonder::ReadFromSerial_Slot ()

@@ -23,12 +23,13 @@ SOURCES += \
         main.cpp \
     hiwonder.cpp \
     neuron.cpp \
-    qsocketthread.cpp \
-    SocketClient.cpp \
+    $$(EXTLIBS)/manipulator/SocketClient.cpp \
     mainprocess.cpp \
-    mcinfer.cpp \
+    $$(EXTLIBS)/manipulator/mcinfer.cpp \
     tcpParcing.cpp \
-    $$(EXTLIBS)/manipulator/qsimpleserver.cpp
+    $$(EXTLIBS)/manipulator/qsimpleserver.cpp \
+    $$(EXTLIBS)/manipulator/qsocketthread.cpp
+#     qsocketthread.cpp \
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -39,11 +40,12 @@ HEADERS += \
     evkuz.h \
     hiwonder.h \
     jsoninfo.h \
-    mcinfer.h \
+    $$(EXTLIBS)/manipulator/mcinfer.h \
     neuron.h \
     positions.h \
     protocol.h \
-    qsocketthread.h \
-    SocketClient.h \
+    $$(EXTLIBS)/manipulator/SocketClient.h \
     mainprocess.h \
-    $$(EXTLIBS)/manipulator/qsimpleserver.h
+    $$(EXTLIBS)/manipulator/qsimpleserver.h \
+    $$(EXTLIBS)/manipulator/qsocketthread.h
+#     qsocketthread.h \

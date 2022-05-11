@@ -16,6 +16,54 @@
  *
  * Запускаем supervisor  по адресу http://localhost:5050/
  *
+ *
+ * //++++++++++++++++++++++++++++++++++++++++++++
+ * 11.05.2022
+ *
+ * Меняем значение environment variable "EXTLIBS"
+ * Текущее значение EXTLIBS="/home/ubuntu/extlibs/json/single_include" не устраивает тем, что создано под конкретную библиотеку nlohmann.
+ * А ведь задумано было, что $EXTLIBS - общий путь к внешним библиотекам и в коде нужно конкретизировать путь до нужной библиотеки.
+ * В общем нужно такое значение : EXTLIBS="/home/ubuntu/extlibs.
+ * Смена значения EXTLIBS в ~/.profile - НЕ ПОМОГЛА !!! Даже после перезагрузки компа !
+ * В /etc/profile нет настроек для EXTLIBS.
+ * Осталась старая настройка в ~/.bashrc значит она решающая ???
+ *
+ * По поводу файлов ~/.bashrc, ~/.bash_profile, and ~/.bash_login в мануале сказано следующее :
+ * Shell config files such as ~/.bashrc, ~/.bash_profile, and ~/.bash_login are often suggested for setting environment variables.
+ * While this may work on Bash shells for programs started from the shell, variables set in those files are not available by default
+ * to programs started from the graphical environment in a desktop session.
+ * Ну, будем знать. Удаляем из ~/.bashrc - и, наверное, достаточно было перелогиниться, т.е. закрыть/открыть терминал, но перегрузился и все стало как надо.
+ *
+ * Сохранил копии файлов qsimpleserver, qsocketthread, SocketClient с другим именем, чтобы они в гите были.
+ * Т.к. сейчас они уже в библиотечной папке, которая внешняя для папки репозитория.
+ * Надо будет потом вернуть библиотеку в репозиторий.
+ *
+ * Смена данных JSON в "шапке" происходит следующим образом :
+ * - меняем данные в структуре JsonInfo::StatusAnswer
+ * - Вызываем ф-цию jsnStore->struc_2_jsnObj() где Копируем данные структуры в ordered_json jsnStatus, да именно в конкретную переменную jsnStatus
+ * - Вызываем ф-цию jsnStore->returnJsnStatus() где Берем данные из ordered_json jsnStatus и передаем в QJsonObject::jsnObj, да, конкретно из jsnStatus в конкретно jsnObj
+ *
+ * Далее, при выводе статуса (например, в ProcessAction),  берем QJsonObject::jsnObj из ф-ции QJsonObject JsonInfo::returnJsnStatus(),
+ * и преобразуем QJsonObject->QJsonDocument->QString
+ * ...
+ * Что-то слишком сложно... Попробовать через сигнал/слот ? Внутри слота можно менять private-переменные.
+ *
+ * Сегодня уточнили все вопросы по протоколу.
+ * Сразу после запуска программы, еще до запуска первого экшена ответ на статус со списком action_list будет выглядеть так :
+{
+    "info": "No Detection",
+    "name": "HIWONDER",
+    "rc": -5,
+    "state": "NoDetection",
+    "action_list" : []
+}
+ * Теперь еще вопрос с выводом.
+ * В ordered_json все выводится в заданном порядке, а в QJsonObject - как повезет... Надо с этим разобраться.
+
+ *
+ *
+ *
+ *
  * //++++++++++++++++++++++++++++++++++++++++++++
  * 09.05.2022
  * Работаем в праздники :) Одтохнули уже достаточно. Работа тянет :)

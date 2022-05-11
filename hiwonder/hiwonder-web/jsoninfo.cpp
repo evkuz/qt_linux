@@ -117,8 +117,8 @@ void JsonInfo::init_json()
     jsnStatus = {
         {"name", DEV_NAME},
         {"rc", RC_UNDEFINED}, //RC_SUCCESS
-        {"info", "Request Accepted"},
         {"state", "Wait"},
+        {"info", "Request Accepted"},
 /*        {"action_list", {
              {
               {"name", "start"},
@@ -340,6 +340,23 @@ void JsonInfo::struc_2_json(ordered_json &jsn, const StatusAnswer &header)
     };
 
 }//struc_2_json
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Копируем данные структуры в ordered_json jsnStatus
+void JsonInfo::struc_2_jsnObj()
+{
+    jsnStatus["name"] = currentStatus.name;
+    jsnStatus["rc"] = currentStatus.rc;
+    jsnStatus["info"] = currentStatus.info;
+    jsnStatus["state"] = currentStatus.state;
+//QJsonObject jsnaa
+//            {
+//                {"name", header.name},
+//                {"rc", header.rc},
+//                {"info", header.info},
+//                {"state", header.state}
+//             };
+
+}//
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // Слот сигнала MainProcess::makeJson_Answer_Signal(QString theAction)
 // ГОтовим json-ответ - статус экшена
@@ -395,6 +412,19 @@ QString JsonInfo::returnJsnData()
 QJsonObject JsonInfo::returnJsonObject2()
 {
     return this->jsnObj2;
+}
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+void JsonInfo::setJsnStatus()
+{
+    // Берем данные из ordered_json jsnStatus и передаем через QJsonObject
+        int indent = 3;
+        std::string s2 = jsnStatus.dump(indent);
+        jsnData = QString::fromStdString(s2);
+        jsnDoc = QJsonDocument::fromJson(jsnData.toUtf8(), &jsonError);
+
+        //Get the main JSON object and get the data in it
+        jsnObj = jsnDoc.object();
 }// returnJsnData()
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // Передаем строковое значение theAction, а возможно лучше индекс...
