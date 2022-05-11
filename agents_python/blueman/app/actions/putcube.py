@@ -17,15 +17,15 @@ class PutCubeAction (BaseAction):
     def run_action(self, **kwargs) -> int:
         res = 0
         if self._workingFlag:
-            _ = self.move_manip([180, 150, 30, 90, self._grip_closed_val])
+            _ = self.move_manip([180, 150, 30, 83, self._grip_closed_val])
         if self._workingFlag:
-            _ = self.move_manip([180, 130, 45, 90, self._grip_closed_val])
+            _ = self.move_manip([180, 130, 45, 83, self._grip_closed_val])
         if self._workingFlag:
-            _ = self.move_manip([180, 130, 45, 90, self._grip_opened_val])
+            _ = self.move_manip([180, 130, 45, 83, self._grip_opened_val])
         if self._workingFlag:
-            _ = self.move_manip([180, 150, 30, 90, self._grip_opened_val])
+            _ = self.move_manip([180, 150, 30, 83, self._grip_opened_val])
         if self._workingFlag:
-            _ = self.move_manip([91, 120, 60, 90, self._grip_opened_val])
+            _ = self.move_manip([91, 120, 60, 83, self._grip_opened_val])
         if self._workingFlag:
             self.__manip.move_home()
             pos, dist = self.__manip.get_position()

@@ -317,8 +317,9 @@ void set_start_moving(const int *newPos, int servoSpeed) {
     } else {
       goalPos[i] = *(newPos + i);
     }
+    curPos[i] = srv[i].read();
   }
-  
+
   movingFlag = true;
   set_speed(servoSpeed);
 }
@@ -378,20 +379,18 @@ void move_servos()
 {
   isFinished = true;
   for(i=0; i < nServos; i++){
-    curPos[i] = srv[i].read();
     if (curPos[i] > goalPos[i]) {
       curPos[i]--;
       srv[i].write(curPos[i]);
-      delay (servoDelay);
       isFinished = false;
     } else if (curPos[i] < goalPos[i]) {
       curPos[i]++;
       srv[i].write(curPos[i]);
-      delay (servoDelay);
       isFinished = false;
     }
   }
-  
+  delay (servoDelay);
+
   if (isFinished) {
     set_stop_moving();
   }

@@ -83,7 +83,7 @@ class CatchCubeAction (BaseAction):
                         self.__cam.wait_for_new_frame()
                         frame = self.__cam.get_last_frame()
                         det_res = self.__detector.detect(frame)
-                        if not det_res['detected']:
+                        if not 'y' in det_res or det_res['y'] < 0.65:
                             self._set_state_info("Cube wasn't held by grip")
                             res = -11
                             _ = self.__manip.move_home(90)
