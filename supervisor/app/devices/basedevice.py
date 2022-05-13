@@ -86,7 +86,7 @@ class BaseDevice:
     def run_action(self, actionName:str, **kwargs)->bool:
         #url = self.addr + f"/run?cmd={cmdName}&"
         try:
-            data = self._run_action(name=actionName, **kwargs)
+            data = self._run_action(actionName, **kwargs)
             if type(data) is not dict:
                 rc = 1
             else:

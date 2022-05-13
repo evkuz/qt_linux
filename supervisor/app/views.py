@@ -43,8 +43,12 @@ def get_info():
     service = args.get("service")
     if device is None or service is None:
         return make_json_responce({'rc': -10})
-    
-    res = supervisor.get_info(device, service)
+    kwargs = {}
+    for k, v in args.items():
+        if k in ["device", 'service']:
+            continue
+        kwargs[k] = v
+    res = supervisor.get_info(device, service, **kwargs)
     return make_json_responce(res)
 
 @app.route('/reset', methods=['get'])

@@ -92,6 +92,7 @@
           </div>
           <div class="divide20"></div>
           <div id="blueman_status" style="text-align:left;" class="alert alert-info">No information</div>
+          <div id="blueman_hascube" style="text-align:left;" class="alert alert-info">No information</div>
         </div>
       </div>
       <div class="col-sm-6 dark-wrapper">
@@ -114,6 +115,7 @@
           </div>
           <div class="divide20"></div>
           <div id="pinkman_status" style="text-align:left;" class="alert alert-info">No information</div>
+          <div id="pinkman_hascube" style="text-align:left;" class="alert alert-info">No information</div>
         </div>
       </div>
     </div>
@@ -130,10 +132,21 @@
             <a class="btn btn-green" id="wheeltec_btn_movetoa" onclick="runAction('wheeltec', 'movetob');">Move to 'B'</a>
             <a class="btn btn-green" id="wheeltec_btn_startros" onclick="getInfo('wheeltec', 'startrosrun');">Start ROS</a>
             <a class="btn btn-green" id="wheeltec_btn_stopros" onclick="getInfo('wheeltec', 'stoprosrun');">Stop ROS</a>
+            <a class="btn btn-green" id="wheeltec_btn_sethascube" onclick="setHasCube('wheeltec', true);">Put CUBE</a>
+            <a class="btn btn-green" id="wheeltec_btn_setnocube" onclick="setHasCube('wheeltec', false);">Remove CUBE</a>
             <a class="btn btn-red" id="wheeltec_reset" onclick="sendReset('wheeltec');">Reset</a>
           </div>
           <div class="divide20"></div>
           <div id="wheeltec_status" style="text-align:left;" class="alert alert-info">No information</div>
+          <div style="text-align:left;" class="alert alert-info">
+            <p>
+              <strong>Has cube:</strong><span id="wheeltec_hascube" style="text-align:left; margin:3px;">No information</span><br/>
+            </p>
+            <p>
+              <a class="btn btn-green" id="wheeltec_btn_sethascube" onclick="setHasCube('wheeltec', true);">Put CUBE</a>
+              <a class="btn btn-green" id="wheeltec_btn_setnocube" onclick="setHasCube('wheeltec', false);">Remove CUBE</a>
+            </p>
+          </div>
         </div>
       </div>
       <div class="col-sm-6 dark-wrapper">
@@ -149,6 +162,16 @@
           </div>
           <div class="divide20"></div>
           <div id="xrrobot_status" style="text-align:left;" class="alert alert-info">No information</div>
+          <div id="" style="text-align:left;" class="alert alert-info">No information</div>
+          <div style="text-align:left;" class="alert alert-info">
+            <p>
+              <strong>Has cube:</strong><span id="xrrobot_hascube" style="text-align:left; margin:3px;">No information</span>
+            </p>
+            <p>
+              <a class="btn btn-green" id="xrrobotc_btn_sethascube" onclick="setHasCube('xrrobot', true);">Put CUBE</a>
+              <a class="btn btn-green" id="xrrobot_btn_setnocube" onclick="setHasCube('xrrobot', false);">Remove CUBE</a>
+            </p>
+          </div>
         </div>
       </div>
     </div><!-- /.services -->
@@ -172,6 +195,7 @@
           </div>
           <div class="divide20"></div>
           <div id="hiwonder_status" style="text-align:left;" class="alert alert-info">No information</div>
+          <div id="hiwonder_hascube" style="text-align:left;" class="alert alert-info">No information</div>
         </div>
       </div>
       <div class="col-sm-6 dark-wrapper">
@@ -226,6 +250,7 @@
           </div>
           <div class="divide20"></div>
           <div id="mobman_qt_status" style="text-align:left;" class="alert alert-info">No information</div>
+          <div id="mobman_qt_hascube" style="text-align:left;" class="alert alert-info">No information</div>
         </div>
       </div>
     </div><!-- /.services -->

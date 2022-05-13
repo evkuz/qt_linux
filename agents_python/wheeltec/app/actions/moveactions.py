@@ -8,8 +8,7 @@ class MoveToAAction (ExecuteFileAction):
         ExecuteFileAction.__init__(
             self, "movetoa",
             "/bin/bash", 
-            script_path,
-            ['a']
+            [script_path, 'a']
          )
 
 
@@ -18,6 +17,5 @@ class MoveToBAction (ExecuteFileAction):
         ExecuteFileAction.__init__(
             self, "movetob",
             "/bin/bash", 
-            script_path,
-            ['b']
+            [script_path, 'b']
          )
