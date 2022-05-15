@@ -38,10 +38,11 @@ public:
     //++++++++++++++++++++++ JSON data +++++++++++++++++++++++++++++++++++++++++++++
 
     #define DEV_NAME "HIWONDER"   // device name - mobile manipulator
-    #define RC_SUCCESS 0        // запрос выполнен успешно
-    #define RC_WRONG_VALUE -1   // неверные параметры
-    #define RC_UNDEFINED -2     // action с таким именем не найден
-    #define RC_FAIL      -3     // Ошибка самого манипулятора, не открыт serial port
+    #define RC_SUCCESS 0             // запрос выполнен успешно
+    #define RC_WRONG_VALUE  -1     // неверные параметры
+    #define RC_UNDEFINED    -2       // action с таким именем не найден
+    #define RC_FAIL         -3       // Ошибка самого манипулятора, не открыт serial port
+//    #define RC_NO_DETECTION -5      // Нет детекции объекта.
 
     #define DEV_STATE_RUN  "Running"
     #define DEV_STATE_WAIT "Waiting"
@@ -52,6 +53,9 @@ public:
     #define AC_WRONG_VALUE -1   // action с таким именем не найден
     #define AC_FAILURE -2       // action с таким именем не запустился
     #define AC_ALREADY_HAVE -3  // action с таким именем уже запущен
+
+    const int RC_NO_DETECTION = -5;      // Нет детекции объекта.
+    const short INDEX_NODETECTION = 4;
     void init_json();
     QString merge_json(QJsonObject &src, QJsonObject &dst);
 
@@ -60,6 +64,8 @@ public:
     QJsonObject returnJsnStatus();
     QString     returnJsnData();
     QJsonObject returnJsonObject2();
+
+    void setJsnStatus();
 
     void setCurrentAction(QString theAction);
 
@@ -87,9 +93,11 @@ public:
     QString action_command; // команда, которая сейчас исполняется
     //                                             1                     3                         5                7
     const QList<QString> action_lst = {"clamp", "start", "put_box", "getactions", "getservices","reset", "lock", "unlock", "info"};
+    //                                             1                    3
+     QList<QString> statuslst = { "wait", "init", "inprogress", "done", "NoDetection" };
 
-    void struc_2_json(ordered_json& jsn, const StatusAnswer& header);  // конвертируем структуру в json object
-
+    void struc_2_json(ordered_json& jsn, const StatusAnswer& header);   // конвертируем структуру в nlohmann::json object
+    void struc_2_jsnObj();  // QJsonObject& jsn, const StatusAnswer& header конвертируем структуру в QJsonObject::jsn
 public slots:
 
 void makeJson_Answer_Slot(QString theAction);

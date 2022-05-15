@@ -41,9 +41,9 @@ public:
 
     bool SerialIsOpened; //Флаг показывает, открыт ли Serial port
 
-    QList<QString> statuslst = { "wait", "init", "inprogress", "done" };
+    QList<QString> statuslst = { "wait", "init", "inprogress", "done", "NoDetection" };
     // Ответ робота состоит из 4 полей
-    QString current_status; // Текущий статус
+//    QString current_status; // Текущий статус
     int current_st_index;   // Индекс текущего статуса в списке statuslst
     QString return_code;    // результат обработки запроса - понял/не понял
     QString active_command; // команда, которая сейчас исполняется
@@ -63,10 +63,10 @@ public:
     void Write_Status(QByteArray &status);  // Тоже надстройка над QSerialPort
 
 private:
-    //QString current_status;
+    QString current_status; // Текущий статус
 
 public:
-    QString GetCurrentStatus() { return this->current_status; }
+    QString GetCurrentStatus();
     void SetCurrentStatus(QString);
 
 signals:

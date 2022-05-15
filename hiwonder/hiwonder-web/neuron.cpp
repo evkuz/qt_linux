@@ -42,9 +42,9 @@ void MainProcess::try_mcinfer(float x, float y){
 
         Robot->Write_To_Log(0xf020, str.append(" \n"));
 
-    Robot->current_status = "inprogress";
+    Robot->SetCurrentStatus("inprogress");
     str = "Robot current status is ";
-    str += Robot->current_status;
+    str += Robot->GetCurrentStatus();
     Robot->Write_To_Log(0xf020, str);
 
     // Неправильно, так не делать !!! влияет на статус !!!

@@ -23,9 +23,9 @@ SOURCES += \
         main.cpp \
     hiwonder.cpp \
     neuron.cpp \
-    SocketClient.cpp \
+    $$(EXTLIBS)/manipulator/SocketClient.cpp \
     mainprocess.cpp \
-    mcinfer.cpp \
+    $$(EXTLIBS)/manipulator/mcinfer.cpp \
     tcpParcing.cpp \
     $$(EXTLIBS)/manipulator/qsimpleserver.cpp \
     $$(EXTLIBS)/manipulator/qsocketthread.cpp
@@ -39,11 +39,11 @@ HEADERS += \
     evkuz.h \
     hiwonder.h \
     jsoninfo.h \
-    mcinfer.h \
+    $$(EXTLIBS)/manipulator/mcinfer.h \
     neuron.h \
     positions.h \
     protocol.h \
-    SocketClient.h \
+    $$(EXTLIBS)/manipulator/SocketClient.h \
     mainprocess.h \
     $$(EXTLIBS)/manipulator/qsimpleserver.h \
     $$(EXTLIBS)/manipulator/qsocketthread.h
