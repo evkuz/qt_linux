@@ -24,7 +24,7 @@ void JsonInfo::init_json()
           }//list
         }//action_clamp
      };
-
+// nlohmann::json -> QString -> QJsonDocument -> QJsonObject
     s1 = jsnActionTST.dump(3);
     jsnData = QString::fromStdString(s1);
     jsnDoc = QJsonDocument::fromJson(jsnData.toUtf8(), &jsonError);
@@ -35,6 +35,8 @@ void JsonInfo::init_json()
 
     //Get the main JSON object and get the data in it
     jsnObj2 = jsnDoc.object();
+//++++++++++++++++++++++++++++++++++++++++++++++
+
 
 
 // JSON-объект - это всегда пара "ключ" : "значение"
@@ -313,10 +315,34 @@ void JsonInfo::init_json()
     //Get the main JSON object and get the data in it
     jsnObj = jsnDoc.object();
 
+//+++++++++++++++++++++++++++++
+//jsnActionClamp.insert("name", "myname");
+// init actionList
+//    for (int i=0; i < structActionList.size(); i++){
+//        structActionList.at(i).name = "myname";
 
-}//init_json
+
+//    }
+//+++++++++++++++++++++++++++++++++++++++++++++++++
+    jsnActionClamp = {
+        {"name", "clamp"},
+        {"state", "waiting"},
+        {"info", "Open/Close clamper"},
+        {"rc", RC_WAIT} // "int - action return code"
+     };
+
+    jsnActionStart = {
+        {"name", "start"},
+        {"state", "waiting"},
+        {"info", "Get the box by clamper, asking CV about distance in advance"},
+        {"result", RC_WAIT}
+      };
+//++++++++++++++++++++++++++++++++
+// Инициализируем this->action_command крайним значением из списка
+//    setCurrentAction(action_lst.at(action_lst.size()-1));
+}///init_json
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// merge src and dst QJsonObjrcts and return string representation of the result
+// merge src and dst QJsonObjrcts and return QString representation of the result
 QString JsonInfo::merge_json(QJsonObject &src, QJsonObject &dst)
 {
     map = src.toVariantMap();
@@ -330,7 +356,7 @@ QString JsonInfo::merge_json(QJsonObject &src, QJsonObject &dst)
 
 }
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-void JsonInfo::struc_2_json(ordered_json &jsn, const StatusAnswer &header)
+void JsonInfo::struc_2_json(ordered_json &jsn, const Action &header)
 {
     jsn = ordered_json{
                         {"name", header.name},
@@ -412,6 +438,11 @@ QString JsonInfo::returnJsnData()
 QJsonObject JsonInfo::returnJsonObject2()
 {
     return this->jsnObj2;
+}
+//+++++++++++++++++++++++++++++++++++++++++++
+QJsonObject JsonInfo::returnJsnActionStart()
+{
+    return this->jsnActionStart;
 }
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 

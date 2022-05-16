@@ -48,6 +48,19 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
         ProcessAction(comIndex);
     }
 
+    switch (comIndex) {
+    case 0: // status
+
+        break;
+    case 2: // clamp
+
+        break;
+
+    case 5: // "start"
+        ProcessAction(comIndex, jsnStore->returnJsnActionStart());
+        break;
+    }
+
     // ++++++++++++++++++++++++++++++++ Теперь всё остальное
 
     if (substr == "put_box"){

@@ -16,7 +16,275 @@
  *
  * Запускаем supervisor  по адресу http://localhost:5050/
  *
- *
+ * //++++++++++++++++++++++++++++++++++++++++++++
+ * 15.05.2022
+ * Пишем процедуру инициализации json-объектов для каждого экшена.
+ * Идем по списку экшенов "action_lst", инициализируем список json-объектов.
+ * Проблема, что инициализировать список из элементов типа "struct" мы можем в цикле,
+ * т.к. у структуры есть поля. А вот инициализировать - В ЦИКЛЕ - список из элементов
+ * "nlohmann:json" - непонятно как. Поэтому пока инициализируем структуру, потом снова
+ * в цикле  копируем данные из структуры в json-объект.
+ * ...
+ * Пробуем инициализировать список из QJsonObject через QJsonObject Class
+The QJsonObject class encapsulates a JSON object. More...
+
+Header:	#include <QJsonObject>
+qmake:	QT += core
+Since:	Qt 5.0
+This class was introduced in Qt 5.0.
+
+List of all members, including inherited members
+Note: All functions in this class are reentrant.
+
+Public Types
+class	const_iterator
+class	iterator
+typedef	ConstIterator
+typedef	Iterator
+typedef	key_type
+typedef	mapped_type
+typedef	size_type
+Public Functions
+QJsonObject(QJsonObject &&other)
+QJsonObject(const QJsonObject &other)
+QJsonObject(std::initializer_list<QPair<QString, QJsonValue> > args)
+QJsonObject()
+QJsonObject &	operator=(QJsonObject &&other)
+QJsonObject &	operator=(const QJsonObject &other)
+~QJsonObject()
+QJsonObject::iterator	begin()
+QJsonObject::const_iterator	begin() const
+QJsonObject::const_iterator	constBegin() const
+QJsonObject::const_iterator	constEnd() const
+QJsonObject::const_iterator	constFind(const QString &key) const
+QJsonObject::const_iterator	constFind(QStringView key) const
+QJsonObject::const_iterator	constFind(QLatin1String key) const
+bool	contains(const QString &key) const
+bool	contains(QStringView key) const
+bool	contains(QLatin1String key) const
+int	count() const
+bool	empty() const
+QJsonObject::iterator	end()
+QJsonObject::const_iterator	end() const
+QJsonObject::iterator	erase(QJsonObject::iterator it)
+QJsonObject::iterator	find(const QString &key)
+QJsonObject::const_iterator	find(const QString &key) const
+QJsonObject::iterator	find(QStringView key)
+QJsonObject::iterator	find(QLatin1String key)
+QJsonObject::const_iterator	find(QStringView key) const
+QJsonObject::const_iterator	find(QLatin1String key) const
+QJsonObject::iterator	insert(const QString &key, const QJsonValue &value)
+QJsonObject::iterator	insert(QStringView key, const QJsonValue &value)
+QJsonObject::iterator	insert(QLatin1String key, const QJsonValue &value)
+bool	isEmpty() const
+QStringList	keys() const
+int	length() const
+void	remove(const QString &key)
+void	remove(QStringView key)
+void	remove(QLatin1String key)
+int	size() const
+void	swap(QJsonObject &other)
+QJsonValue	take(const QString &key)
+QJsonValue	take(QStringView key)
+QJsonValue	take(QLatin1String key)
+QVariantHash	toVariantHash() const
+QVariantMap	toVariantMap() const
+QJsonValue	value(const QString &key) const
+QJsonValue	value(QStringView key) const
+QJsonValue	value(QLatin1String key) const
+bool	operator!=(const QJsonObject &other) const
+bool	operator==(const QJsonObject &other) const
+QJsonValue	operator[](const QString &key) const
+QJsonValueRef	operator[](const QString &key)
+QJsonValue	operator[](QStringView key) const
+QJsonValue	operator[](QLatin1String key) const
+QJsonValueRef	operator[](QStringView key)
+QJsonValueRef	operator[](QLatin1String key)
+Static Public Members
+QJsonObject	fromVariantHash(const QVariantHash &hash)
+QJsonObject	fromVariantMap(const QVariantMap &map)
+Detailed Description
+A JSON object is a list of key value pairs, where the keys are unique strings and the values are represented by a QJsonValue.
+
+A QJsonObject can be converted to and from a QVariantMap. You can query the number of (key, value) pairs with size(), insert(), and remove() entries from it and iterate over its content using the standard C++ iterator pattern.
+
+QJsonObject is an implicitly shared class, and shares the data with the document it has been created from as long as it is not being modified.
+
+You can convert the object to and from text based JSON through QJsonDocument.
+
+See also JSON Support in Qt and JSON Save Game Example.
+
+Member Type Documentation
+typedef QJsonObject::ConstIterator
+Qt-style synonym for QJsonObject::const_iterator.
+
+typedef QJsonObject::Iterator
+Qt-style synonym for QJsonObject::iterator.
+
+typedef QJsonObject::key_type
+Typedef for QString. Provided for STL compatibility.
+
+typedef QJsonObject::mapped_type
+Typedef for QJsonValue. Provided for STL compatibility.
+
+typedef QJsonObject::size_type
+Typedef for int. Provided for STL compatibility.
+
+Member Function Documentation
+QJsonObject::QJsonObject(QJsonObject &&other)
+Move-constructs a QJsonObject from other.
+
+This function was introduced in Qt 5.10.
+
+QJsonObject::QJsonObject(const QJsonObject &other)
+Creates a copy of other.
+
+Since QJsonObject is implicitly shared, the copy is shallow as long as the object does not get modified.
+
+QJsonObject::QJsonObject(std::initializer_list<QPair<QString, QJsonValue> > args)
+Constructs a QJsonObject instance initialized from args initialization list. For example:
+
+QJsonObject object
+{
+    {"property1", 1},
+    {"property2", 2}
+};
+This function was introduced in Qt 5.4.
+
+QJsonObject::QJsonObject()
+Constructs an empty JSON object.
+
+See also isEmpty().
+
+QJsonObject &QJsonObject::operator=(QJsonObject &&other)
+Move-assigns other to this object.
+
+This function was introduced in Qt 5.10.
+
+QJsonObject &QJsonObject::operator=(const QJsonObject &other)
+Assigns other to this object.
+
+QJsonObject::~QJsonObject()
+Destroys the object.
+
+QJsonObject::iterator QJsonObject::begin()
+Returns an STL-style iterator pointing to the first item in the object.
+
+See also constBegin() and end().
+
+QJsonObject::const_iterator QJsonObject::begin() const
+This is an overloaded function.
+
+QJsonObject::const_iterator QJsonObject::constBegin() const
+Returns a const STL-style iterator pointing to the first item in the object.
+
+See also begin() and constEnd().
+
+QJsonObject::const_iterator QJsonObject::constEnd() const
+Returns a const STL-style iterator pointing to the imaginary item after the last item in the object.
+
+See also constBegin() and end().
+
+QJsonObject::const_iterator QJsonObject::constFind(const QString &key) const
+Returns a const iterator pointing to the item with key key in the map.
+
+If the map contains no item with key key, the function returns constEnd().
+
+QJsonObject::const_iterator QJsonObject::constFind(QStringView key) const
+This is an overloaded function.
+
+This function was introduced in Qt 5.14.
+
+QJsonObject::const_iterator QJsonObject::constFind(QLatin1String key) const
+This is an overloaded function.
+
+This function was introduced in Qt 5.7.
+
+bool QJsonObject::contains(const QString &key) const
+Returns true if the object contains key key.
+
+See also insert(), remove(), and take().
+
+bool QJsonObject::contains(QStringView key) const
+This is an overloaded function.
+
+This function was introduced in Qt 5.14.
+
+bool QJsonObject::contains(QLatin1String key) const
+This is an overloaded function.
+
+This function was introduced in Qt 5.7.
+
+int QJsonObject::count() const
+This is an overloaded function.
+
+Same as size().
+
+bool QJsonObject::empty() const
+This function is provided for STL compatibility. It is equivalent to isEmpty(), returning true if the object is empty; otherwise returning false.
+
+QJsonObject::iterator QJsonObject::end()
+Returns an STL-style iterator pointing to the imaginary item after the last item in the object.
+
+See also begin() and constEnd().
+
+QJsonObject::const_iterator QJsonObject::end() const
+This is an overloaded function.
+
+QJsonObject::iterator QJsonObject::erase(QJsonObject::iterator it)
+Removes the (key, value) pair pointed to by the iterator it from the map, and returns an iterator to the next item in the map.
+
+See also remove().
+
+QJsonObject::iterator QJsonObject::find(const QString &key)
+Returns an iterator pointing to the item with key key in the map.
+
+If the map contains no item with key key, the function returns end().
+
+QJsonObject::const_iterator QJsonObject::find(const QString &key) const
+This is an overloaded function.
+
+QJsonObject::iterator QJsonObject::find(QStringView key)
+This is an overloaded function.
+
+This function was introduced in Qt 5.14.
+
+QJsonObject::iterator QJsonObject::find(QLatin1String key)
+This is an overloaded function.
+
+This function was introduced in Qt 5.7.
+
+QJsonObject::const_iterator QJsonObject::find(QStringView key) const
+This is an overloaded function.
+
+This function was introduced in Qt 5.14.
+
+QJsonObject::const_iterator QJsonObject::find(QLatin1String key) const
+This is an overloaded function.
+
+This function was introduced in Qt 5.7.
+
+[static]QJsonObject QJsonObject::fromVariantHash(const QVariantHash &hash)
+Converts the variant hash hash to a QJsonObject.
+
+The keys in hash will be used as the keys in the JSON object, and the QVariant values will be converted to JSON values.
+
+Note: Conversion from QVariant is not completely lossless. Please see the documentation in QJsonValue::fromVariant() for more information.
+
+This function was introduced in Qt 5.5.
+
+See also fromVariantMap(), toVariantHash(), and QJsonValue::fromVariant().
+
+[static]QJsonObject QJsonObject::fromVariantMap(const QVariantMap &map)
+Converts the variant map map to a QJsonObject.
+
+The keys in map will be used as the keys in the JSON object, and the QVariant values will be converted to JSON values.
+
+Note: Conversion from QVariant is not completely lossless. Please see the documentation in QJsonValue::fromVariant() for more information.
+
+See also fromVariantHash(), toVariantMap(), and QJsonValue::fromVariant().
+
+QJsonObject::iterator QJsonObject::insert(const QString &key, const QJsonValue &value)
  * //++++++++++++++++++++++++++++++++++++++++++++
  * 11.05.2022
  *

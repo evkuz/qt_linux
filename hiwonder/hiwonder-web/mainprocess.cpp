@@ -497,7 +497,7 @@ int MainProcess::getIndexCommand(QString myCommand, QList<QString> theList)
 
 }// getIndexCommand
 //+++++++++++++++++++++++++++++++++++++++++++++++++++
-void MainProcess::ProcessAction(int indexOfCommand)
+void MainProcess::ProcessAction(int indexOfCommand, QJsonObject theObj)
 {
     int value;
     QString str;
@@ -520,15 +520,15 @@ void MainProcess::ProcessAction(int indexOfCommand)
 
         break;
 
-        case 5: // "start"
-                Robot->SetCurrentStatus ("init"); // Перед запуском распознавания
+//        case 5: // "start"
+//                Robot->SetCurrentStatus ("init"); // Перед запуском распознавания
 
-                on_trainButton_clicked ();
-                str = "Robot current status is ";
-                str += Robot->GetCurrentStatus();
-                Robot->Write_To_Log(value, str);
+//                on_trainButton_clicked ();
+//                str = "Robot current status is ";
+//                str += Robot->GetCurrentStatus();
+//                Robot->Write_To_Log(value, str);
 
-        break;
+//        break;
 
     default :
         str = "There is no command with such the index ";
@@ -538,8 +538,84 @@ void MainProcess::ProcessAction(int indexOfCommand)
 
 
     }
+//++++++++++++++++++++++++++++++++++++++++++++++
+    int returnCode = theObj.value("rc").toInt() ;
+    switch (returnCode) {
+
+    case 0: // (уже запущен)=="Is running" -> Выходим
+
+        //actionName->rc = -3;
+        str = "Action "; str += theObj.value("name").toString();
+        str += " is already running";
+        // Заносим данные в структуру
+        //Robot->getbox_Action = {"get_box", -3, "RC=0, Already In progress"};
+        GUI_Write_To_Log(value, str);
+        theObj.value("rc") = -3;
+        //request_CV();
+
+    break;
+
+    case -2:
+        str = "Serial port is UNAVAILABLE !!! CAN'T move the ARM !!!";
+
+//        theObj.value("rc") = -2;
+        theObj.value("info") = str;
+        GUI_Write_To_Log(value, str);
+
+        break;
+
+    case -3: // (уже запущен) -> Выходим
+        str = "Action "; str += theObj.value("name").toString();
+        str += " is STILL running. Try RESET action";
+        theObj.value("info") = "Already In progress";
+        break;
+
+    case -4:
+
+        // 1. Проверяем, открыт ли SerialPort ? Если нет то
+        //    - Пишем в лог.
+        //    - Ставим actionName->rc == -2: // (не запустился)
+        if (!Robot->SerialIsOpened){
+            str = "Serial port is UNAVAILABLE !!! CAN'T move the ARM !!! Action is FAILED !!!";
+
+            theObj.value("rc") = -2;
+            theObj.value("info") = str;
+            GUI_Write_To_Log(value, str);
+        }
+        else { // Все нормально, запускаем манипулятор
+            theObj.value("rc") = 0; // Now state "inprogress"
+            str = "Action "; str += theObj.value("name").toString();
+            str += " have started";
+            GUI_Write_To_Log(value, str);
+
+            str = "Action "; str += theObj.value("name").toString();
+            str += " have index "; str += QString::number(indexOfCommand);
+            GUI_Write_To_Log(value, str);
+
+            // Теперь запускаем манипулятор
+            // Определяем команду
+            switch (indexOfCommand) {
+            case 0: // clamp
+                if(Servos[0]==0) { Servos[0]=90;}
+                else {Servos[0]=0;}
+                this->send_Data(LASTONE);
+
+                break;
+            case 1: //start
+                 on_trainButton_clicked ();
+                break;
+            case 5: //reset, у всех action делаем rc = -4
+                break;
+            default: // Нет команды с таким индексом. Шапку перепысываем
+                ;
+
+            }
+        } //else
 
 
+
+
+    }
 }// ProcessAction
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++

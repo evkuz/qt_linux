@@ -42,7 +42,8 @@ public:
     #define RC_WRONG_VALUE  -1     // неверные параметры
     #define RC_UNDEFINED    -2       // action с таким именем не найден
     #define RC_FAIL         -3       // Ошибка самого манипулятора, не открыт serial port
-//    #define RC_NO_DETECTION -5      // Нет детекции объекта.
+    #define RC_WAIT   -4
+     //    #define RC_NO_DETECTION -5      // Нет детекции объекта.
 
     #define DEV_STATE_RUN  "Running"
     #define DEV_STATE_WAIT "Waiting"
@@ -64,39 +65,47 @@ public:
     QJsonObject returnJsnStatus();
     QString     returnJsnData();
     QJsonObject returnJsonObject2();
+    QJsonObject returnJsnActionStart();
 
     void setJsnStatus();
 
     void setCurrentAction(QString theAction);
 
     // Структура хранит данные для json-ответа.
-    struct StatusAnswer {
+    struct Action {
         std::string name;
         int     rc;    // "int - request result code",
         std::string  info;  // text interpretation of return code
         std::string  state; // "str - global device status: init | run | fail",
 //        QString action_list; // Список активных на данных моментэкшенов. И вот тут вопрос :
                              // Или как jsnDocument или как nlohmann::ordered_json;
+}; //Action
 
-
-
-    //        - 0 - action запущен -  "Is running"
+    struct LaunchActionState {
+        std::string name;
+        int     rc;    // "int - request result code",
+        std::string  info;  // text interpretation of return code
+    //        -0 - action запущен -  "Is running"
     //        -1 - action с таким именем не найден
     //        -2 - action с таким именем не запустился, т.е. ошибка ?
     //        -3 - action с таким именем уже запущен
     //        -4 - action с таким именем не запущен (ожидание)
 
 
-    };//struct StatusAnswer
+    };//struct LaunchActionState
 
-    StatusAnswer currentStatus;
+
+
+    Action currentStatus;
+    LaunchActionState currentActionState;
     QString action_command; // команда, которая сейчас исполняется
     //                                             1                     3                         5                7
     const QList<QString> action_lst = {"clamp", "start", "put_box", "getactions", "getservices","reset", "lock", "unlock", "info"};
     //                                             1                    3
      QList<QString> statuslst = { "wait", "init", "inprogress", "done", "NoDetection" };
 
-    void struc_2_json(ordered_json& jsn, const StatusAnswer& header);   // конвертируем структуру в nlohmann::json object
+
+    void struc_2_json(ordered_json& jsn, const Action& header);   // конвертируем структуру в nlohmann::json object
     void struc_2_jsnObj();  // QJsonObject& jsn, const StatusAnswer& header конвертируем структуру в QJsonObject::jsn
 public slots:
 
@@ -112,13 +121,21 @@ private:
     ordered_json jsnList; // JSON-объект Хранит JSON-список
 
     ordered_json jsnInfo;
-    ordered_json jsnActionTST; // Оъект для тестов
+    // List of actions
+    ordered_json jsnActionTST;   // Оъект для тестов
+//    ordered_json jsnActionLock;
 
     ordered_json jsnOB1;  // Объект для шапки, "заголовок"
     ordered_json jsnOB2;  // Объект для списка
     ordered_json jsnOB3;  // Объект результирующий.
 
+    QJsonObject jsnActionClamp;
+    QJsonObject jsnActionStart;
 
+    // Порядок элементов должен совпадать с action_lst
+    //QList<QJsonObject> actionList = {&jsnActionClamp, &jsnActionStart};
+    Action clampAction, lockAction;
+    QList<Action> structActionList = {clampAction, lockAction};
 
     QJsonObject qjsnAnswer;
 

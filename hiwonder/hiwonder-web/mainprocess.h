@@ -73,7 +73,7 @@ public:
     void put_box();  //Положить кубик на пол
     void traversJson(QJsonObject json_obj); // Рекурсивный Парсинг JSON
     int getIndexCommand(QString myCommand, QList<QString> theList);  // Определяем индекс команды в списке MainProcess::tcpcommand
-    void ProcessAction(int indexOfCommand); // Отрабатывает команду по заданному индексу из списка QList<QString> theList
+    void ProcessAction(int indexOfCommand, QJsonObject theObj); // Отрабатывает команду по заданному индексу из списка QList<QString> theList
 private:
     SocketClient readSocket;
 
