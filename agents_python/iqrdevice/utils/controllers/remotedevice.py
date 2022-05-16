@@ -1,6 +1,4 @@
-from os import stat
 import requests
-import json
 from time import sleep
 from typing import Optional, List
 from .basecontroller import BaseController
@@ -10,6 +8,10 @@ class RemoteDevice(BaseController):
     def __init__(self, addr:str, name:str="remote"):
         BaseController.__init__(self, name)
         self.addr = addr
+        self.defaultTimeout = 0.1
+
+    def set_timeout(self, value:float):
+        self.defaultTimeout = value
 
     @property
     def channels(self) -> List[str]:
@@ -20,7 +22,7 @@ class RemoteDevice(BaseController):
         if len(actionNames) != 0:
             params['action'] = ",".join(actionNames)
         url = self.addr + "/status"
-        res = self.__send_get_request(url, params)
+        res = self.__send_get_request(url, params, self.defaultTimeout)
         self.fire_event("status", res)
         return res
 
@@ -28,26 +30,26 @@ class RemoteDevice(BaseController):
         params = kwargs
         params["name"] = name
         url = self.addr + "/action"
-        return self.__send_get_request(url, params)
+        return self.__send_get_request(url, params, self.defaultTimeout)
 
     def get_service_info(self, name:str, **kwargs)->dict:
         params = kwargs
         params["name"] = name
         url = self.addr + "/service"
-        return self.__send_get_request(url, params)
+        return self.__send_get_request(url, params, self.defaultTimeout)
 
     def reset_actions(self, actionNames:List[str])->dict:
         params = dict()
         if len(actionNames) != 0:
             params['action'] = ",".join(actionNames)
         url = self.addr + "/reset"
-        return self.__send_get_request(url, params)
+        return self.__send_get_request(url, params, self.defaultTimeout)
 
     def manual_request(self, addr_addition:str)->dict:
         if len(addr_addition) > 0 and addr_addition[0] != '/':
             addr_addition = '/' + addr_addition
         url = self.addr + addr_addition
-        return self.__send_get_request(url, None)
+        return self.__send_get_request(url, None, self.defaultTimeout)
     
     def wait_for_action_finished(self, actionName:Optional[str]=None)->None:
         while True:
@@ -66,7 +68,7 @@ class RemoteDevice(BaseController):
                     break
             sleep(0.1)
 
-    def __send_get_request(self, url, params)->dict:
+    def __send_get_request(self, url:str, params:Optional[dict], timeout:float)->dict:
         try:
             resp = requests.get(url=url, params=params, timeout=30)
         except Exception as e:

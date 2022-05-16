@@ -1,5 +1,4 @@
 import requests
-import json
 from time import sleep
 from typing import List, Optional
 
@@ -66,7 +65,7 @@ class RemoteDevice:
                     break
             sleep(0.1)
 
-    def __send_get_request(self, url:str, params:Optional[dict], timeout:float):
+    def __send_get_request(self, url:str, params:Optional[dict], timeout:float)->dict:
         try:
             resp = requests.get(url=url, params=params, timeout=timeout)
         except Exception as e:
@@ -74,7 +73,7 @@ class RemoteDevice:
         try:
             data = resp.json()
         except Exception as e:
-            return resp.text
+            return {"value": resp.text}
         return data
 
 
