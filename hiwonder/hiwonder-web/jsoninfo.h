@@ -58,6 +58,8 @@ public:
     const int RC_NO_DETECTION = -5;      // Нет детекции объекта.
     const short INDEX_NODETECTION = 4;
     void init_json();
+    void init_actions();
+    void resetAllActions();
     QString merge_json(QJsonObject &src, QJsonObject &dst);
 
     QJsonObject returnJsonObject();
@@ -66,6 +68,7 @@ public:
     QString     returnJsnData();
     QJsonObject returnJsonObject2();
     QJsonObject returnJsnActionStart();
+
 
     void setJsnStatus();
 
@@ -129,11 +132,12 @@ private:
     ordered_json jsnOB2;  // Объект для списка
     ordered_json jsnOB3;  // Объект результирующий.
 
-    QJsonObject jsnActionClamp;
-    QJsonObject jsnActionStart;
+    QJsonObject jsnActionClamp; // Объект экшена "clamp"
+    QJsonObject jsnActionStart; // Объект экшена "strart"
 
     // Порядок элементов должен совпадать с action_lst
     //QList<QJsonObject> actionList = {&jsnActionClamp, &jsnActionStart};
+    QList<QJsonObject*> actionListp;
     Action clampAction, lockAction;
     QList<Action> structActionList = {clampAction, lockAction};
 

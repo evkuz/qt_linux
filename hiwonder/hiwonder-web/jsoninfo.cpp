@@ -323,23 +323,39 @@ void JsonInfo::init_json()
 
 
 //    }
-//+++++++++++++++++++++++++++++++++++++++++++++++++
-    jsnActionClamp = {
-        {"name", "clamp"},
-        {"state", "waiting"},
-        {"info", "Open/Close clamper"},
-        {"rc", RC_WAIT} // "int - action return code"
-     };
-
-    jsnActionStart = {
-        {"name", "start"},
-        {"state", "waiting"},
-        {"info", "Get the box by clamper, asking CV about distance in advance"},
-        {"result", RC_WAIT}
-      };
 //++++++++++++++++++++++++++++++++
 // Инициализируем this->action_command крайним значением из списка
-//    setCurrentAction(action_lst.at(action_lst.size()-1));
+    //    setCurrentAction(action_lst.at(action_lst.size()-1));
+}
+//++++++++++++++++++++++++++++++++
+
+void JsonInfo::init_actions()
+{
+    //+++++++++++++++++++++++++++++++++++++++++++++++++
+        jsnActionClamp = {
+            {"name", "clamp"},
+            {"state", "waiting"},
+            {"info", "Open/Close clamper"},
+            {"rc", RC_WAIT} // "int - action return code"
+         };
+
+        jsnActionStart = {
+            {"name", "start"},
+            {"state", "waiting"},
+            {"info", "Get the box by clamper, asking CV about distance in advance"},
+            {"rc", RC_WAIT}
+          };
+        actionListp = {&jsnActionClamp, &jsnActionStart};
+}
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+void JsonInfo::resetAllActions()
+{
+    for (int i=0; i < action_lst.size(); i++)
+    {
+       actionListp.at(i)->value("rc") = -4;
+       actionListp.at(i)->value("state") = "done";
+    }
 }///init_json
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // merge src and dst QJsonObjrcts and return QString representation of the result
@@ -349,6 +365,7 @@ QString JsonInfo::merge_json(QJsonObject &src, QJsonObject &dst)
     map.insert(dst.toVariantMap());
     dst = QJsonObject::fromVariantMap(map);
     jsnDoc = QJsonDocument(dst);
+//    jsnObj = jsnDoc.object(); // Так можно получить доступ извне через returnJsonObject()
 
     QString str = jsnDoc.toJson(QJsonDocument::Indented);
 

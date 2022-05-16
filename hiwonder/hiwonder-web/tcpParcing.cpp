@@ -44,16 +44,21 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
     //jsnStore->action_command = tcpCommand.at(comIndex); // сигнал updateAction_List_Signal
     jsnStore->setCurrentAction(tcpCommand.at(comIndex));
     // 0 - status, 5 - start
-    if (comIndex==0 or comIndex==5 or comIndex==7) {
-        ProcessAction(comIndex);
-    }
+//    if (comIndex==0 or comIndex==5 or comIndex==7) {
+//        ProcessAction(comIndex);
+//    }
 
     switch (comIndex) {
     case 0: // status
-
+        ;
         break;
-    case 2: // clamp
 
+    case 1:
+        jsnStore->resetAllActions();
+        break;
+
+    case 2: // clamp
+        ;
         break;
 
     case 5: // "start"
