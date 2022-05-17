@@ -48,19 +48,23 @@ public:
     #define DEV_STATE_RUN  "Running"
     #define DEV_STATE_WAIT "Waiting"
     #define DEV_STATE_FAIL "Fail"
+    #define DEV_STATE_DONE "Done"
+
+    #define AC_STATE_DONE  "DONE"
 
 
     #define AC_RUNNING 0        // action запущен
     #define AC_WRONG_VALUE -1   // action с таким именем не найден
     #define AC_FAILURE -2       // action с таким именем не запустился
     #define AC_ALREADY_HAVE -3  // action с таким именем уже запущен
+    #define AC_DONE -4
 
     const int RC_NO_DETECTION = -5;      // Нет детекции объекта.
     const short INDEX_NODETECTION = 4;
     void init_json();
     void init_actions();
     void resetAllActions();
-    QString merge_json(QJsonObject &src, QJsonObject &dst);
+    QString merge_json(QJsonObject src, QJsonObject dst);
 
     QJsonObject returnJsonObject();
     QJsonObject returnJsnInfo();
@@ -68,6 +72,10 @@ public:
     QString     returnJsnData();
     QJsonObject returnJsonObject2();
     QJsonObject returnJsnActionStart();
+    QJsonObject returnJsnActionReset();
+    QJsonObject returnJsnActionClamp();
+
+    void setActionDone(QJsonObject theObj);  //Меняем rc of action upon device moving
 
 
     void setJsnStatus();
@@ -103,7 +111,7 @@ public:
     LaunchActionState currentActionState;
     QString action_command; // команда, которая сейчас исполняется
     //                                             1                     3                         5                7
-    const QList<QString> action_lst = {"clamp", "start", "put_box", "getactions", "getservices","reset", "lock", "unlock", "info"};
+    const QList<QString> action_lst = {"clamp", "start"}; //, "put_box", "getactions", "getservices","reset", "lock", "unlock", "info"};
     //                                             1                    3
      QList<QString> statuslst = { "wait", "init", "inprogress", "done", "NoDetection" };
 
@@ -132,12 +140,17 @@ private:
     ordered_json jsnOB2;  // Объект для списка
     ordered_json jsnOB3;  // Объект результирующий.
 
-    QJsonObject jsnActionClamp; // Объект экшена "clamp"
-    QJsonObject jsnActionStart; // Объект экшена "strart"
+    QJsonObject jsnActionClamp;     // Объект экшена "clamp"
+    QJsonObject jsnActionStart;     // Объект экшена "strart"
+    QJsonObject jsnActionPutbox;    // for "put_box"
+    QJsonObject jsnActionReset;     // for "reset"
+
+    QJsonObject jsnActionList;  // list for "action_list" key
+    QJsonArray  jsnArray;       // list for action_list
 
     // Порядок элементов должен совпадать с action_lst
     //QList<QJsonObject> actionList = {&jsnActionClamp, &jsnActionStart};
-    QList<QJsonObject*> actionListp;
+    QList<QJsonObject> actionListp;
     Action clampAction, lockAction;
     QList<Action> structActionList = {clampAction, lockAction};
 
@@ -158,6 +171,7 @@ private:
 
     QString jsnData;
     QJsonArray actions_list;
+    QJsonObject jsnHeadStatus;  // Шапка в ответе
 
 
 

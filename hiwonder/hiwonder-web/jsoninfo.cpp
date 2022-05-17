@@ -5,7 +5,8 @@ JsonInfo::JsonInfo()
     currentStatus = {DEV_NAME, RC_SUCCESS,  "OK", DEV_STATE_WAIT}; // Инициализируем структуру
     action_command = "nothing";
     struc_2_json(jsnOB1, currentStatus); // Инициализируем  jsnOB1 данными из структуры выше
-
+    init_json();
+    init_actions();
 }
 //+++++++++++++++++++++
 
@@ -120,7 +121,7 @@ void JsonInfo::init_json()
         {"name", DEV_NAME},
         {"rc", RC_UNDEFINED}, //RC_SUCCESS
         {"state", "Wait"},
-        {"info", "Request Accepted"},
+        {"info", "Request Accepted"}
 /*        {"action_list", {
              {
               {"name", "start"},
@@ -332,40 +333,70 @@ void JsonInfo::init_json()
 void JsonInfo::init_actions()
 {
     //+++++++++++++++++++++++++++++++++++++++++++++++++
-        jsnActionClamp = {
-            {"name", "clamp"},
-            {"state", "waiting"},
-            {"info", "Open/Close clamper"},
-            {"rc", RC_WAIT} // "int - action return code"
-         };
+    jsnActionClamp = {
+        {"name", "clamp"},
+        {"state", "waiting"},
+        {"info", "Open/Close clamper"},
+        {"rc", RC_WAIT} // "int - action return code"
+     };
 
-        jsnActionStart = {
-            {"name", "start"},
-            {"state", "waiting"},
-            {"info", "Get the box by clamper, asking CV about distance in advance"},
-            {"rc", RC_WAIT}
-          };
-        actionListp = {&jsnActionClamp, &jsnActionStart};
+    jsnActionStart = {
+        {"name", "start"},
+        {"state", "waiting"},
+        {"info", "Get the box by clamper, asking CV about distance in advance"},
+        {"rc", RC_WAIT}
+      };
+
+    jsnActionPutbox = {
+        {"name", "put_box"},
+        {"state", "done"},
+        {"info", "put down the object for next actions"},
+        {"rc", RC_WAIT}
+       };
+
+    jsnActionReset = {
+        {"name", "reset"},
+        {"state", "succsess | fail"},
+        {"info", "Set device status as <Wait>"},
+        {"rc", "int - action return code"}
+    };
+
+    actionListp = {jsnActionClamp, jsnActionStart, jsnActionPutbox, jsnActionReset};
+
+    jsnHeadStatus = {
+        {"name", DEV_NAME},
+        {"rc", RC_UNDEFINED}, //RC_SUCCESS
+        {"state", "Wait"},
+        {"info", "Request Accepted"}
+    };
+
+    jsnArray = {};
+    jsnActionList = {
+        {"action_list", jsnArray}
+    };
+
+
+
 }
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
+// Тут разные списки - action_lst и actionListp. Следует учитывать.
 void JsonInfo::resetAllActions()
 {
-    for (int i=0; i < action_lst.size(); i++)
+    for (int i=0; i < actionListp.size() ; i++) //action_lst.size()
     {
-       actionListp.at(i)->value("rc") = -4;
-       actionListp.at(i)->value("state") = "done";
+       actionListp.at(i)["rc"] = -4;
+       actionListp.at(i)["state"] = "done";
     }
 }///init_json
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // merge src and dst QJsonObjrcts and return QString representation of the result
-QString JsonInfo::merge_json(QJsonObject &src, QJsonObject &dst)
+QString JsonInfo::merge_json(QJsonObject src, QJsonObject dst)
 {
     map = src.toVariantMap();
     map.insert(dst.toVariantMap());
     dst = QJsonObject::fromVariantMap(map);
     jsnDoc = QJsonDocument(dst);
-//    jsnObj = jsnDoc.object(); // Так можно получить доступ извне через returnJsonObject()
+    jsnObj = jsnDoc.object(); // Так можно получить доступ извне через returnJsonObject()
 
     QString str = jsnDoc.toJson(QJsonDocument::Indented);
 
@@ -405,7 +436,10 @@ void JsonInfo::struc_2_jsnObj()
 // ГОтовим json-ответ - статус экшена
 void JsonInfo::makeJson_Answer_Slot(QString theAction)
 {
-    this->jsnData = merge_json(jsnObj2, jsnObj);
+    // По имени экшена идем по списку, и мерджим с соответствующим объектом.
+    //this->jsnData = merge_json(jsnObj2, jsnObj);
+    this->jsnData = merge_json(jsnActionList, jsnObj);
+
     // Теперь результат объединения находится в jsnObj2
 }// makeJson_Answer_Slot
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -460,6 +494,36 @@ QJsonObject JsonInfo::returnJsonObject2()
 QJsonObject JsonInfo::returnJsnActionStart()
 {
     return this->jsnActionStart;
+}
+//+++++++++++++++++++++++++++++++++++++++++++
+QJsonObject JsonInfo::returnJsnActionReset()
+{
+    return this->jsnActionReset;
+}
+//+++++++++++++++++++++++++++++++++++++++++++
+
+QJsonObject JsonInfo::returnJsnActionClamp()
+{
+    return this->jsnActionClamp;
+}
+//+++++++++++++++++++++++++++++++++++++++++++
+
+void JsonInfo::setActionDone(QJsonObject theObj)
+{
+    theObj["rc"] = -4;
+    theObj["state"] = "done";
+
+    QJsonValue myValue = theObj;
+
+    jsnArray.append(myValue);
+
+    jsnActionList["action_list"] = jsnArray;
+    this->jsnData = merge_json(jsnActionList, jsnHeadStatus);
+
+//    jsnDoc = QJsonDocument(theObj);
+//    this->jsnData = jsnDoc.toJson(QJsonDocument::Indented);
+
+
 }
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 

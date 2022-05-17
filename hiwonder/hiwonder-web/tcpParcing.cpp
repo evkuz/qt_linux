@@ -48,23 +48,49 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 //        ProcessAction(comIndex);
 //    }
 
+   QString S3;
     switch (comIndex) {
     case 0: // status
-        ;
+
+        str = jsnStore->returnJsnData();
+        S3 = "JSON MERGED object : \n";
+        S3 += str;
+        Robot->Write_To_Log(value, S3);
+        emit Write_2_TcpClient_Signal (str);
+
         break;
 
-    case 1:
+    case 1:  // reset
+
         jsnStore->resetAllActions();
+        str = "I'm in reset";
+        GUI_Write_To_Log(value, str);
+        mainjsnObj = jsnStore->returnJsnActionReset();
+        str = QJsonDocument(mainjsnObj).toJson(QJsonDocument::Indented);
+        GUI_Write_To_Log(value, str);
+
+        emit Write_2_TcpClient_Signal (str);
         break;
 
     case 2: // clamp
-        ;
+        mainjsnObj = jsnStore->returnJsnActionClamp();
+        ProcessAction(comIndex, mainjsnObj);
         break;
 
     case 5: // "start"
-        ProcessAction(comIndex, jsnStore->returnJsnActionStart());
+        mainjsnObj = jsnStore->returnJsnActionStart();
+        ProcessAction(comIndex, mainjsnObj);
         break;
+
+    default:
+        str = "Command with index ";
+        str += QString::number(comIndex);
+        str += " is not found";
+
     }
+
+
+
 
     // ++++++++++++++++++++++++++++++++ Теперь всё остальное
 
@@ -75,20 +101,22 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 
     }
 
-    if (substr == "reset") {
-        if (Robot->GetCurrentStatus () != "wait"){
-            Robot->SetCurrentStatus ("wait");
-            str = "Robot changed status, now it is : ";
-            str += Robot->GetCurrentStatus();
+//    if (substr == "reset") {
 
-            GUI_Write_To_Log (value, str);
-            //str = "status_from_robot";
-            str  = "{\n\t\"status\":\"";
-            str += Robot->GetCurrentStatus();
-            str += "\"\n}";
-            emit Write_2_TcpClient_Signal (str);
-        }
-     }
+//            Robot->SetCurrentStatus ("wait");
+//            str = "Robot changed status, now it is : ";
+//            str += Robot->GetCurrentStatus();
+
+//            GUI_Write_To_Log (value, str);
+//            //str = "status_from_robot";
+//            str  = "{\n\t\"status\":\"";
+//            str += Robot->GetCurrentStatus();
+//            str += "\"\n}";
+//            emit Write_2_TcpClient_Signal (str);
+
+
+
+//     }
 
     if (substr == "sit") {
         // Go to "sit" position
@@ -109,16 +137,16 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 
     }
 
-    if (substr =="clamp") {
+//    if (substr =="clamp") {
 
-        str = "######## Try to lock/unlock the gripper #########";
-        str += "\n";
-        str += "Current clamper value is ";
-        str += QString::number(Servos[0]);
-        if(Servos[0]==0) { Servos[0]=90;}
-        else {Servos[0]=0;}
-        this->send_Data(LASTONE);
-    }//"clamp"
+//        str = "######## Try to lock/unlock the gripper #########";
+//        str += "\n";
+//        str += "Current clamper value is ";
+//        str += QString::number(Servos[0]);
+//        if(Servos[0]==0) { Servos[0]=90;}
+//        else {Servos[0]=0;}
+//        this->send_Data(LASTONE);
+//    }//"clamp"
 
     if (substr =="lock") {
 
