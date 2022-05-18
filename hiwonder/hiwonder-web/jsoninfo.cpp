@@ -515,10 +515,18 @@ void JsonInfo::setActionDone(QJsonObject theObj)
 
     QJsonValue myValue = theObj;
 
-    jsnArray.append(myValue);
+    jsnHeadStatus["rc"] = 0;
+
+     bool OK = this->eraseArray();
+     if (!OK){
+         jsnArray.append(myValue);
+     }
+
 
     jsnActionList["action_list"] = jsnArray;
     this->jsnData = merge_json(jsnActionList, jsnHeadStatus);
+    OK = this->eraseArray();
+    //jsnActionList.empty();
 
 //    jsnDoc = QJsonDocument(theObj);
 //    this->jsnData = jsnDoc.toJson(QJsonDocument::Indented);
@@ -546,4 +554,20 @@ void JsonInfo::setCurrentAction(QString theAction)
     this->action_command = theAction;
     // И дальше, по имени экшена меняем остальные параметры JSON, если необходимо.
 
-}// setCurrentAction
+} // setCurrentAction
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Make empty the action_list
+bool JsonInfo::eraseArray()
+{
+    int sz = jsnArray.size();
+    bool OK = false;
+    for (int i =0; i < sz; i++){
+        if (!this->jsnActionList.isEmpty() ){
+            this->jsnArray.removeLast();
+            OK = true;
+        }
+        else {return true;}
+
+    }
+    return OK;
+} // eraseArray()

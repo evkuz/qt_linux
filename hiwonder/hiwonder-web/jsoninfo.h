@@ -76,11 +76,9 @@ public:
     QJsonObject returnJsnActionClamp();
 
     void setActionDone(QJsonObject theObj);  //Меняем rc of action upon device moving
-
-
     void setJsnStatus();
-
     void setCurrentAction(QString theAction);
+    bool eraseArray();
 
     // Структура хранит данные для json-ответа.
     struct Action {
