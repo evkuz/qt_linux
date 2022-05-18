@@ -32,12 +32,12 @@ class PutCubeAction (BaseAction):
 
     def reset_action(self) -> int:
         self.__manip.stop_moving()
-        self.__manip.move_home(80, True)
+        self.__manip.move_home(85, True)
         self._set_state_info(f"Stopped and returned home")
         return -126
 
     def move_manip(self, pos:list):
-        self.__manip.move(pos, 80, True)
+        self.__manip.move(pos, 85, True)
         pos, dist = self.__manip.get_position()
         self._set_state_info(f"Current position: ({pos})")
         return pos, dist

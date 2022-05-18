@@ -55,6 +55,8 @@ class XRRobot(AgentsPythonDevice):
             self._hiwonderHasCube = hwHasCube
             if not hwHasCube:
                 hwTookCube = True
+        
+        hwFree = len(environment['hiwonder']['actions_list']) == 0
 
 
         if pmGiveCube and xrInA:
@@ -63,5 +65,5 @@ class XRRobot(AgentsPythonDevice):
             self.run_action("movetob")
         elif xrInB and hwTookCube:
             self.get_info("sethascube", set=False)
-        elif xrInB and not xrHasCube:
+        elif xrInB and not xrHasCube and hwFree:
             self.run_action("movetoa")

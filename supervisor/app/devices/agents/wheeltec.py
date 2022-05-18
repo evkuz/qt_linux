@@ -5,7 +5,7 @@ class Wheeltec(AgentsPythonDevice):
     def __init__(self, addr:str, updateStateInterval:float):
         AgentsPythonDevice.__init__(self, addr, "wheeltec", updateStateInterval)
         self._pinkmanHasCube = False
-        self._hiwonderHasCube = False
+        self._bluemanHasCube = False
         self.start()
 
     def _do_action(self, environment:dict)->None:
@@ -18,7 +18,7 @@ class Wheeltec(AgentsPythonDevice):
             return
         
         #-- PINKMAN --
-        pmGiveCube = False
+        pmTookCube = False
         pmHasCube = False
         for n in environment['pinkman']['nodes']:
             if n['name'] == 'hascube':
@@ -27,43 +27,44 @@ class Wheeltec(AgentsPythonDevice):
         if self._pinkmanHasCube != pmHasCube:
             self._pinkmanHasCube = pmHasCube
             if not pmHasCube:
-                pmGiveCube = True
+                pmTookCube = True
         pmFree = len(environment['pinkman']['actions_list']) == 0
         
-        #-- XRROBOT --
-        xrInA = False
-        xrInB = False
-        xrHasCube = False
-        for n in environment['xrrobot']['nodes']:
+        #-- BLUEMAN --
+        bmGiveCube = False
+        bmHasCube = False
+        for n in environment['blueman']['nodes']:
+            if n['name'] == 'hascube':
+                bmHasCube = bool(n['has_cube'])
+        
+        if self._bluemanHasCube != bmHasCube:
+            self._bluemanHasCube = bmHasCube
+            if not bmHasCube:
+                bmGiveCube = True
+
+        bmFree = len(environment['blueman']['actions_list']) == 0
+
+        #-- WHEELTEC --
+        wtInA = False
+        wtInB = False
+        wtHasCube = False
+        for n in environment['wheeltec']['nodes']:
             if n['name'] == 'position':
                 if n['point'] == 'A':
-                    xrInA = True
+                    wtInA = True
                 elif n['point'] == 'B':
-                    xrInB = True
+                    wtInB = True
             elif n['name'] == 'hascube':
-                xrHasCube = bool(n['has_cube'])
-        #xrFree = len(environment['xrrobot']['actions_list']) == 0
+                wtHasCube = bool(n['has_cube'])
+                
 
-        #-- HIWONDER --
-        hwTookCube = False
-        hwHasCube = False
-        for n in environment['hiwonder']['nodes']:
-            if n['name'] == 'hascube':
-                hwHasCube = bool(n['has_cube'])
-        
-        if self._hiwonderHasCube != hwHasCube:
-            self._hiwonderHasCube = hwHasCube
-            if not hwHasCube:
-                hwTookCube = True
-
-
-        if pmGiveCube and xrInA:
+        if bmGiveCube and wtInA:
             self.get_info("sethascube", set=True)
-        elif xrInA and xrHasCube and pmFree:
+        elif wtInA and wtHasCube and bmFree:
             self.run_action("movetob")
-        elif xrInB and hwTookCube:
+        elif wtInB and pmTookCube:
             self.get_info("sethascube", set=False)
-        elif xrInB and not xrHasCube:
+        elif wtInB and not wtHasCube and pmFree:
             self.run_action("movetoa")
 
         return

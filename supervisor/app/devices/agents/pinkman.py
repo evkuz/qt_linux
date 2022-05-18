@@ -47,9 +47,9 @@ class Pinkman(AgentsPythonDevice):
         
         if wtOnPlace and wtHasCube and pmFree and pmPosition == 'home':
             self.run_action("catchcube")
-        elif pmPosition == "hold_cube" and pmHasCube and xrOnPlace and not xrHasCube:
+        elif pmPosition == "hold_cube" and pmFree and pmHasCube and xrOnPlace and not xrHasCube:
             self.run_action("putcube")
-        elif pmPosition == "after_put" and not xrFree:
+        elif pmFree and pmPosition == "after_put" and not xrFree:
             self.run_action("movehome")
 
         return

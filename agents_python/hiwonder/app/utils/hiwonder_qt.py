@@ -67,7 +67,7 @@ class HiwonderQt(BaseController):
     def __update_state(self):
         try:
             self.__lastUpdateTime = time.time()
-            status = self._update_state()
+            status = self.get_state()
             self.set_connected(True)
             if type(status) is not dict:
                 return
@@ -143,7 +143,7 @@ class HiwonderQt(BaseController):
     def __del__(self):
         self.stop()
 
-    def _update_state(self)->dict:
+    def get_state(self)->dict:
         return self.remote_device.manual_request("/run?cmd=status&")
 
     def _run_action(self, actionName:str, **kwargs)->dict:

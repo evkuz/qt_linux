@@ -47,21 +47,22 @@ device.set_name("Hiwonder")
 
 
 # Configuring nodes
-hascube_node = nodes.MyHasCubeNode()
-position_node = nodes.ManipPositionNode()
+hascube_node = nodes.HwHasCubeNode()
+position_node = nodes.HwPositionNode()
+connected_node = nodes.HwConnectedNode(qt_device.IsConnected)
 
 # this is needed for connecting events with subscripers
 mainbus = device.main_bus
 qt_device.set_event_bus(mainbus) # all events will be written to this bus
 
-mainbus.add_subscriber(qt_device.name + '/connected', grip_node)
+mainbus.add_subscriber(qt_device.name + '/connected', connected_node)
 mainbus.add_subscriber("actions", position_node)
 mainbus.add_subscriber("actions", hascube_node)
 
 #this is needed to show nodes in device state
 device.register_node(hascube_node)
 device.register_node(position_node)
-device.register_node(grip_node)
+device.register_node(connected_node)
 
 
 # Configuring Services
@@ -73,9 +74,5 @@ device.register_service(services.StopRMCommunicationService(qt_device))
 
 
 # Configuring Actions
-device.register_action(iqractions.MoveManipulatorAction(arduino_device))
-device.register_action(iqractions.MoveHomeAction(arduino_device))
-device.register_action(actions.CatchCubeAction(arduino_device, cam, detector, grip_opened_val, grip_closed_val, min_catch_dist))
-device.register_action(actions.PutCubeAction(arduino_device, grip_opened_val, grip_closed_val))
-device.register_action(iqractions.OpenGripAction(arduino_device, grip_opened_val))
-device.register_action(iqractions.CloseGripAction(arduino_device, grip_closed_val))
+device.register_action(actions.CatchCubeAction(qt_device, cam, detector))
+device.register_action(actions.PutCubeAction(qt_device))
