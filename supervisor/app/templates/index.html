@@ -162,7 +162,6 @@
           </div>
           <div class="divide20"></div>
           <div id="xrrobot_status" style="text-align:left;" class="alert alert-info">No information</div>
-          <div id="" style="text-align:left;" class="alert alert-info">No information</div>
           <div style="text-align:left;" class="alert alert-info">
             <p>
               <strong>Has cube:</strong><span id="xrrobot_hascube" style="text-align:left; margin:3px;">No information</span>
@@ -191,11 +190,17 @@
           <div class="col-wrapper"  style="text-align:left;">
             <a class="btn btn-green" id="hiwonder_btn_getpos" onclick="getInfo('hiwonder', 'getposition');">Get position</a>
             <a class="btn btn-green" id="hiwonder_btn_restarts" onclick="getInfo('hiwonder', 'restartsocket');">Restart socket</a>
+            <a class="btn btn-green" id="hiwonder_btn_catchcube" onclick="runAction('hiwonder', 'catchcube');">Catch cube</a>
+            <a class="btn btn-green" id="hiwonder_btn_putcube" onclick="runAction('hiwonder', 'putcube');">Put cube</a>
             <a class="btn btn-red" id="hiwonder_reset" onclick="sendReset('hiwonder');">Reset</a>
           </div>
           <div class="divide20"></div>
           <div id="hiwonder_status" style="text-align:left;" class="alert alert-info">No information</div>
-          <div id="hiwonder_hascube" style="text-align:left;" class="alert alert-info">No information</div>
+          <div style="text-align:left;" class="alert alert-info">
+            <p>
+              <strong>Has cube:</strong><span id="hiwonder_hascube" style="text-align:left; margin:3px;">No information</span>
+            </p>
+          </div>
         </div>
       </div>
       <div class="col-sm-6 dark-wrapper">
@@ -252,26 +257,6 @@
           <div id="mobman_qt_status" style="text-align:left;" class="alert alert-info">No information</div>
           <div id="mobman_qt_hascube" style="text-align:left;" class="alert alert-info">No information</div>
         </div>
-      </div>
-    </div><!-- /.services -->
-
-    <div class="divide30"></div>
-
-    <div class="row text-center services-2">
-      <div class="col-sm-6 dark-wrapper">
-        <div class="col-wrapper">
-          <div class="divide10"></div>
-          <h3>Hiwonder QT</h3>
-          <div class="col-wrapper"  style="text-align:left;">
-            <a class="btn btn-green" id="hiwonder_qt_btn_start" onclick="runAction('hiwonder_qt', 'start');">Transfer cube</a>
-            <a class="btn btn-red" id="hiwonder_qt_reset" onclick="sendReset('hiwonder_qt');">Reset</a>
-          </div>
-          <div class="divide20"></div>
-          <div id="hiwonder_qt_status" style="text-align:left;" class="alert alert-info">No information</div>
-        </div>
-      </div>
-      <div class="col-sm-6 dark-wrapper">
-        <!-- Empty space -->
       </div>
     </div><!-- /.services -->
 

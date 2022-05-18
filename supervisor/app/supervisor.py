@@ -73,7 +73,6 @@ class Supervisor(object):
         self._devices['pinkman'] = agents.Pinkman("http://192.168.1.177:5001", self._updateInterval)
         self._devices['xrrobot'] = agents.XRRobot("http://192.168.1.98:5001", self._updateInterval)
         self._devices['hiwonder'] = agents.Hiwonder("http://192.168.1.175:5001", self._updateInterval)
-        self._devices['hiwonder_qt'] = agents.HiwonderQt("http://192.168.1.175:8383", self._updateInterval)
         self._devices['mobman_move'] = agents.MobmanMove("http://192.168.1.205:5001", self._updateInterval)
         self._devices['mobman_camera'] = agents.MobmanCamera("http://192.168.1.201:5001", self._updateInterval)
         self._devices['mobman_qt'] = agents.MobmanQt("http://192.168.1.201:8383", self._updateInterval)

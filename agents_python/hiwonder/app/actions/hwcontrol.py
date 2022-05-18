@@ -16,6 +16,7 @@ class CatchCubeAction (BaseAction):
         )
 
     def run_action(self, **kwargs) -> int:
+        self.qt_device.reset_actions()
         self.__cam.wait_for_new_frame()
         frame = self.__cam.get_last_frame()
         det_res = self.__detector.detect(frame)
@@ -60,7 +61,7 @@ class CatchCubeAction (BaseAction):
 
 class PutCubeAction (BaseAction):
     def __init__(self, qt_device:HiwonderQt):
-        BaseAction.__init__(self, "putcube")
+        BaseAction.__init__(self, "start")
         self.qt_device = qt_device
         
     def get_info(self) -> dict:
@@ -73,7 +74,7 @@ class PutCubeAction (BaseAction):
             self._set_state_info(f"Device isn't connected!")
             return -2
         
-        self.qt_device.run_action("putcube")
+        self.qt_device.run_action("put_box")
         while self._workingFlag:
             st = self.qt_device.get_state()
             if not isinstance(st, dict):
