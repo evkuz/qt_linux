@@ -2,7 +2,7 @@
 
 JsonInfo::JsonInfo()
 {
-    currentStatus = {DEV_NAME, RC_SUCCESS,  "OK", DEV_STATE_WAIT}; // Инициализируем структуру
+    currentStatus = {DEV_NAME, RC_SUCCESS,  "OK", DEV_HEAD_STATE_WAIT}; // Инициализируем структуру
     action_command = "nothing";
     struc_2_json(jsnOB1, currentStatus); // Инициализируем  jsnOB1 данными из структуры выше
     init_json();
@@ -468,21 +468,22 @@ QJsonObject JsonInfo::returnJsnInfo()
 QJsonObject JsonInfo::returnJsnStatus()
 {
     // Берем данные из ordered_json jsnStatus и передаем через QJsonObject
-        int indent = 3;
-        std::string s2 = jsnStatus.dump(indent);
-        jsnData = QString::fromStdString(s2);
-        jsnDoc = QJsonDocument::fromJson(jsnData.toUtf8(), &jsonError);
+//        int indent = 3;
+//        std::string s2 = jsnStatus.dump(indent);
+//        jsnData = QString::fromStdString(s2);
+//        jsnDoc = QJsonDocument::fromJson(jsnData.toUtf8(), &jsonError);
 
-        //Get the main JSON object and get the data in it
-        jsnObj = jsnDoc.object();
+//        //Get the main JSON object and get the data in it
+//        jsnObj = jsnDoc.object();
 
-        return jsnObj;
+        return jsnHeadStatus;
 
 }// returnJsnStatus()
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 QString JsonInfo::returnJsnData()
 {
+    // Делаем поиск активных экшенов и если их нет, то меняем jsndata
     return this->jsnData;
 }
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -515,7 +516,7 @@ void JsonInfo::setActionDone(QJsonObject theObj)
 
     QJsonValue myValue = theObj;
 
-    jsnHeadStatus["rc"] = 0;
+//    jsnHeadStatus["rc"] = 0; // его не меняем, т.к. данный rc не связан с action
 
      bool OK = this->eraseArray();
      if (!OK){
@@ -571,3 +572,45 @@ bool JsonInfo::eraseArray()
     }
     return OK;
 } // eraseArray()
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+void JsonInfo::setHeadStatusFail()
+{
+    jsnHeadStatus["state"] = "Fail";
+    jsnHeadStatus["info"]  = "Serial port malfunction";
+    jsnHeadStatus["rc"] = RC_FAIL;
+
+} //setHeadStatusFail()
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+void JsonInfo::setActionStart2NoDetection()
+{
+    jsnActionStart["state"] = DEV_HEAD_STATE_FAIL;
+    jsnActionStart["info"] = DEV_HEAD_INFO_NO_DET;
+    jsnActionStart["rc"] = RC_FAIL;
+
+    jsnHeadStatus["state"] = "Fail";
+    jsnHeadStatus["info"]  = "No Detection";
+    jsnHeadStatus["rc"] = RC_FAIL;
+
+    QJsonValue myValue = jsnActionStart;
+
+    bool OK = this->eraseArray();
+    if (!OK){
+        jsnArray.append(myValue);
+    }
+
+
+    jsnActionList["action_list"] = jsnArray;
+    this->jsnData = merge_json(jsnActionList, jsnHeadStatus);
+    OK = this->eraseArray();
+
+
+
+} // setActionStart2NoDetection
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+void JsonInfo::getActionList()
+{
+    // Перебираем список  actionListp, определяем у кого state == "inprogress"
+    // формируем новый список
+    // добавляем его в jsnData
+}

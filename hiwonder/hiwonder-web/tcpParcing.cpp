@@ -52,16 +52,19 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
     switch (comIndex) {
     case 0: // status
 
+        // Нужно добавлять активный экшен, либо пустой список
         str = jsnStore->returnJsnData();
-        S3 = "JSON MERGED object : \n";
+        S3 = "JSON status object from jsnData : \n";
         S3 += str;
         Robot->Write_To_Log(value, S3);
         emit Write_2_TcpClient_Signal (str);
 
+        Robot->active_command = "status";
+
         break;
 
     case 1:  // reset
-
+        Robot->active_command = "reset";
         jsnStore->resetAllActions();
         str = "I'm in reset";
         GUI_Write_To_Log(value, str);
@@ -73,19 +76,22 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
         break;
 
     case 2: // clamp
+        Robot->active_command = "clamp";
         mainjsnObj = jsnStore->returnJsnActionClamp();
         ProcessAction(comIndex, mainjsnObj);
         break;
 
     case 5: // "start"
+        Robot->active_command = "start";
         mainjsnObj = jsnStore->returnJsnActionStart();
         ProcessAction(comIndex, mainjsnObj);
         break;
 
     default:
-        str = "Command with index ";
+        str = "The Command with index ";
         str += QString::number(comIndex);
         str += " is not found";
+        GUI_Write_To_Log(value, str);
 
     }
 

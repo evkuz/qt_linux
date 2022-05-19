@@ -49,7 +49,8 @@ public:
     QString     rAnswer; // Ответ робота - статус, return_code, etc
     JsonInfo    *jsnStore;
     QJsonObject mainjsnObj;
-
+    QJsonObject launchActionAnswer;  // Ответ на запуск экшена
+    QJsonDocument myjsnDoc;
 
 #define parcel_size 8           // размер посылки в байтах от ПК к роботу
 #define NOT_LAST    0xC8 //200  // Не последняя команда

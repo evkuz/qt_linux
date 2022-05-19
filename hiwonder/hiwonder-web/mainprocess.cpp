@@ -148,7 +148,11 @@ MainProcess::MainProcess(QObject *parent)
 
     if (!OKay){
                 GUI_Write_To_Log(value, "SerialPort  PROBLEM !!!");
-                // ТОгда таймер пускаем ???
+                // state = "fail"
+                jsnStore->setHeadStatusFail();
+                Robot->SetCurrentStatus("Fail");
+
+                // ТОгда таймер на переоткрытие порта пускаем ???
     };
     //+++++++++ Проверяем, что работает QSerialPort, открываем/закрываем хват
 //    QThread::sleep(2);
@@ -206,7 +210,7 @@ void MainProcess::on_clampButton_clicked()
 // Выполняем целый набор действий - взять кубик и положить на транспортировщик
 void MainProcess::on_trainButton_clicked()
 {
-
+    int value = 0xf014;
     DetectorState state;
     QString str, fstr;
     str = "";
@@ -253,11 +257,17 @@ void MainProcess::on_trainButton_clicked()
 
             jsnStore->returnJsnStatus(); // Берем данные из ordered_json jsnStatus и передаем в QJsonObject::jsnObj
 
+            jsnStore->setActionStart2NoDetection();
+            str = jsnStore->returnJsnData();
+            Write_2_TcpClient_Signal(str);
 
+//            QString s3 = "NO DETECTION";
+            str.insert(0, "NO DETECTION \n");
+            GUI_Write_To_Log(value, str);
         }
 
        std::cout <<  str.toStdString() << std::endl;
-       Robot->Write_To_Log(0xf014, str);
+       Robot->Write_To_Log(value, str);
        GUI_Write_To_Log(0xf014, str);
     }
 
@@ -501,6 +511,8 @@ int MainProcess::getIndexCommand(QString myCommand, QList<QString> theList)
 
 }// getIndexCommand
 //+++++++++++++++++++++++++++++++++++++++++++++++++++
+// - обрабатываем текущий статус экшена
+// - запускаем экшен, если надо
 void MainProcess::ProcessAction(int indexOfCommand, QJsonObject theObj)
 {
     int value;
@@ -515,14 +527,20 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject theObj)
                 str = "Current JSON data of action_command (STATUS) are as follows ";
                 //str += Robot->GetCurrentStatus();
                 Robot->Write_To_Log(value, str);
-                jsnStore->setCurrentAction(Robot->GetCurrentStatus());
+                jsnStore->setCurrentAction(Robot->active_command);
+
+                // Если нет активных экшенов, то надо обнулять action_list
 
                 // Выдаем значение ordered_json jsnStatus в виде QJsonObject, дальше нарастим информативность.
                 str = QJsonDocument(jsnStore->returnJsnStatus()).toJson(QJsonDocument::Indented);
                 emit Write_2_TcpClient_Signal(str);
                 GUI_Write_To_Log(value, str);
 
+// Вот теперь отбираем экшены со статусом "inprogress" из списка QList<QString> statuslst
         break;
+//        case 2: //clamp
+
+//        break;
 
 //        case 5: // "start"
 //                Robot->SetCurrentStatus ("init"); // Перед запуском распознавания
@@ -541,40 +559,42 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject theObj)
         break;
 
 
-    }
+    } // switch (indexOfCommand)
 //++++++++++++++++++++++++++++++++++++++++++++++
     int returnCode = theObj.value("rc").toInt() ;
     switch (returnCode) {
 
-    case 0: // (уже запущен)=="Is running" -> Выходим
+    case 0: // (уже запущен)=="Is running" -> Выходим, ничего не меняем
 
         //actionName->rc = -3;
         str = "Action "; str += theObj.value("name").toString();
-        str += " is already running";
+        str += " is already running. Should wait it to finish";
         // Заносим данные в структуру
         //Robot->getbox_Action = {"get_box", -3, "RC=0, Already In progress"};
         GUI_Write_To_Log(value, str);
-        theObj.value("rc") = -3;
-        //request_CV();
+        theObj["rc"] = RC_FAIL;
+        theObj["state"] = DEV_ACTION_STATE_RUN;
+        theObj["info"] = DEV_ACTION_INFO;
+        //
 
     break;
 
-    case -2:
+    case -2: // меняем только info
         str = "Serial port is UNAVAILABLE !!! CAN'T move the ARM !!!";
 
 //        theObj.value("rc") = -2;
-        theObj.value("info") = str;
+        theObj["info"] = str;
         GUI_Write_To_Log(value, str);
 
         break;
 
-    case -3: // (уже запущен) -> Выходим
+    case -3: // (уже запущен) -> Выходим, ничего не меняем
         str = "Action "; str += theObj.value("name").toString();
-        str += " is STILL running. Try RESET action";
-        theObj.value("info") = "Already In progress";
+        str += " is STILL running. Try RESET action or wait for finsih.";
+        theObj["info"] = "Already In progress";
         break;
 
-    case -4: // Выполнен ? "waiting"
+    case -4: // Выполнен ? "waiting" ? тогда запускаем
 
         // 1. Проверяем, открыт ли SerialPort ? Если нет то
         //    - Пишем в лог.
@@ -582,13 +602,21 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject theObj)
         if (!Robot->SerialIsOpened){
             str = "Serial port is UNAVAILABLE !!! CAN'T move the ARM !!! Action is FAILED !!!";
 
-            theObj["rc"] = -2;
+            theObj["rc"] = RC_FAIL;
             theObj["info"] = str;
+            theObj["state"] = DEV_ACTION_STATE_FAIL;
             GUI_Write_To_Log(value, str);
         }
         else { // Все нормально, запускаем манипулятор
-            theObj["rc"] = 0; // Now state "inprogress"
-            theObj["state"] = "Inprogress";
+            theObj["rc"] = RC_SUCCESS; // Now state "inprogress"
+            theObj["state"] = DEV_ACTION_STATE_RUN;
+
+            launchActionAnswer["name"] = theObj.value("name");
+            launchActionAnswer["rc"] = RC_SUCCESS;
+            launchActionAnswer["info"] = DEV_HEAD_INFO_REQUEST;
+            str = QJsonDocument(launchActionAnswer).toJson(QJsonDocument::Indented);
+            emit Write_2_TcpClient_Signal(str);
+
 //            str = "Action "; str += theObj.value("name").toString();
 //            str += " have rc value equals to ";
 //            str += QString::number(theObj.value("rc").toInt());
@@ -600,29 +628,40 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject theObj)
 //            GUI_Write_To_Log(value, str);
 
             // Теперь запускаем манипулятор
-            // Определяем команду
+            // Определяем команду из списка
             switch (indexOfCommand) {
+            case 1: //reset, у текущего (всех) action делаем rc = -4
+                jsnStore->setActionDone(theObj);
+                break;
+
             case 2: // clamp
                 if(Servos[0]==0) { Servos[0]=90;}
                 else {Servos[0]=0;}
                 this->send_Data(LASTONE);
 
+
                 break;
-            case 1: //start
+            case 5: //start
                  on_trainButton_clicked ();
                 break;
-            case 5: //reset, у всех action делаем rc = -4
-                break;
-            default: // Нет команды с таким индексом. Шапку перепысываем
-                ;
+            default: // Нет команды с таким индексом. Дубль из Data_From_TcpClient_Slot, там уже была проверка
+                str = "The Command with index ";
+                str += QString::number(indexOfCommand);
+                str += " is not found";
+                GUI_Write_To_Log(value, str);
+
 
             }
         } //else
+    default:
+        str = "The return Code with index ";
+        str += QString::number(returnCode);
+        str += " is not found";
+        GUI_Write_To_Log(value, str);
 
 
 
-
-    }
+    } // switch (returnCode)
 }// ProcessAction
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -831,8 +870,9 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject theObj)
 // А также это индикатор, что команда выполнена и можно, например, отправить эти данные вебсерверу.
 void MainProcess::Moving_Done_Slot()
 {
-    QString str;
+    QString str, myname;
     int value = 0xFAAA;
+    int result;
 
     GUI_Write_To_Log(value, "Demo cycle finished !!!");
     // Меняем статус, теперь "done"
@@ -840,8 +880,16 @@ void MainProcess::Moving_Done_Slot()
     Robot->SetCurrentStatus ("done");
 
     str = "Current json object name is ";
-    str += mainjsnObj.value("name").toString();
+    myname = mainjsnObj.value("name").toString();
+    result = QString::compare(myname, Robot->active_command); // 0 -> equals
+    str += myname;
     GUI_Write_To_Log(value, str);
+    if (result){
+        str = "Значения Robot->active_command и action_list['name'] неравны. \n";
+        str += Robot->active_command; str += " and "; str += myname;
+        GUI_Write_To_Log(value, str);
+    }
+    else {
     // Вот как бэ не совсем правильно... надо передавать QJsonObject в свой класс и там все менять...
     jsnStore->setActionDone(mainjsnObj);
 
@@ -849,31 +897,7 @@ void MainProcess::Moving_Done_Slot()
     str = jsnStore->returnJsnData();
     GUI_Write_To_Log(value, str);
     emit Write_2_TcpClient_Signal(str);
-
-
-//    mainjsnObj.value("rc") = -4;
-//    mainjsnObj.value("state") = "waiting";
-//    int comIndex = getIndexCommand(Robot->active_command, tcpCommand);
-
-//    switch (comIndex) {
-
-//    case 2: // clamp
-//        // set "clamp" action state as "Done" and rc as ""
-
-
-//        ProcessAction(comIndex,jsnStore->returnJsnActionClamp());
-//        break;
-
-
-
-//    }
-
-    //Меняем статус экшена.
-//    if (new_get_request) // Тогда даем сигнал серверу на отправку данных клиенту. Данные уже в буфере TheWeb->status_buffer
-//    {
-//     // emit Write_2_Client_Signal(Robot->GetCurrentStatus());
-//      new_get_request = false;
-//    }
+    }
 
 }
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++

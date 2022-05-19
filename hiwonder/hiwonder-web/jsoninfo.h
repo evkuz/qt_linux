@@ -44,11 +44,25 @@ public:
     #define RC_FAIL         -3       // Ошибка самого манипулятора, не открыт serial port
     #define RC_WAIT   -4
      //    #define RC_NO_DETECTION -5      // Нет детекции объекта.
+    #define DEV_RC_ERROR -5 // "Device Error" - какой-то из девайсов не работает.
 
-    #define DEV_STATE_RUN  "Running"
-    #define DEV_STATE_WAIT "Waiting"
-    #define DEV_STATE_FAIL "Fail"
-    #define DEV_STATE_DONE "Done"
+    #define DEV_HEAD_STATE_RUN  "Running"
+    #define DEV_HEAD_STATE_WAIT "Waiting"
+    #define DEV_HEAD_STATE_FAIL "Fail"
+    #define DEV_HEAD_STATE_DONE "Done"
+
+    #define DEV_HEAD_INFO_NO_DET    "No detection"
+    #define DEV_HEAD_INFO_REQUEST   "Request Accepted"
+
+    #define DEV_ACTION_INFO   "Action is already running"
+
+    #define DEV_ACTION_STATE_RUN  "inprogress"
+    #define DEV_ACTION_STATE_WAIT "waiting"
+    #define DEV_ACTION_STATE_FAIL "fail"
+    #define DEV_ACTION_STATE_DONE "done"
+
+
+
 
     #define AC_STATE_DONE  "DONE"
 
@@ -58,6 +72,8 @@ public:
     #define AC_FAILURE -2       // action с таким именем не запустился
     #define AC_ALREADY_HAVE -3  // action с таким именем уже запущен
     #define AC_DONE -4
+
+
 
     const int RC_NO_DETECTION = -5;      // Нет детекции объекта.
     const short INDEX_NODETECTION = 4;
@@ -79,6 +95,9 @@ public:
     void setJsnStatus();
     void setCurrentAction(QString theAction);
     bool eraseArray();
+    void setHeadStatusFail(); // serial port problem
+    void setActionStart2NoDetection();
+    void getActionList(); // Подготовить список активных (выполняемых в данный момент) экшенов
 
     // Структура хранит данные для json-ответа.
     struct Action {
