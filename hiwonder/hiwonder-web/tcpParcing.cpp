@@ -42,7 +42,7 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
     GUI_Write_To_Log(value, str);
 
     //jsnStore->action_command = tcpCommand.at(comIndex); // сигнал updateAction_List_Signal
-    jsnStore->setCurrentAction(tcpCommand.at(comIndex));
+   // jsnStore->setCurrentAction(tcpCommand.at(comIndex));
     // 0 - status, 5 - start
 //    if (comIndex==0 or comIndex==5 or comIndex==7) {
 //        ProcessAction(comIndex);
@@ -53,13 +53,44 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
     case 0: // status
 
         // Нужно добавлять активный экшен, либо пустой список
+        str = "Going to create action_list";
+        // Надо данные из mainjsnObj переписать в соответствующую jsnAction...
+        // В общем надо с указателями работать.
+        jsnStore->createActionList(); // формируем список, записываем данные в jsnData
+
+        str += QJsonDocument(jsnStore->jsnActionList).toJson(QJsonDocument::Indented);
+        GUI_Write_To_Log(value, str);
+//        S3 = "JSON status object from jsnData : \n";
+//        S3 += str;
         str = jsnStore->returnJsnData();
-        S3 = "JSON status object from jsnData : \n";
-        S3 += str;
-        Robot->Write_To_Log(value, S3);
         emit Write_2_TcpClient_Signal (str);
+        Robot->Write_To_Log(value, str);
+
 
         Robot->active_command = "status";
+
+//        str = "Current QJsonDocument is ";
+//        str += QJsonDocument(mainjsnObj).toJson(QJsonDocument::Indented);
+//        //emit Write_2_TcpClient_Signal (str);
+//        GUI_Write_To_Log(value, str);
+
+//        str = "Data from jsnData : \n";
+//        str += jsnStore->returnJsnData();
+//        GUI_Write_To_Log(value, str);
+
+//        str = "Data from jsnObj AS GLOBAL : \n";
+//        str += QJsonDocument(jsnStore->returnAllActions()).toJson(QJsonDocument::Indented);
+//        GUI_Write_To_Log(value, str);
+
+//        str = QJsonDocument(jsnStore->jsnActionClamp).toJson(QJsonDocument::Indented);
+//        GUI_Write_To_Log(value, str);
+
+//        emit Write_2_TcpClient_Signal (str);
+
+//        aaa = jsnStore->actionListp.at(0);
+//        str = QJsonDocument(aaa).toJson(QJsonDocument::Indented);
+//        GUI_Write_To_Log(value, str);
+
 
         break;
 
@@ -73,17 +104,55 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
         GUI_Write_To_Log(value, str);
 
         emit Write_2_TcpClient_Signal (str);
+
+        str = "Current ActionList is :";
+        mainjsnObj = jsnStore->returnAllActions();
+        // Берем значение  jsnActionList, весь ответ не нужен
+        str += QJsonDocument(jsnStore->jsnActionList).toJson(QJsonDocument::Indented);
+        GUI_Write_To_Log(value, str);
+//        emit Write_2_TcpClient_Signal (str);
         break;
 
     case 2: // clamp
         Robot->active_command = "clamp";
-        mainjsnObj = jsnStore->returnJsnActionClamp();
-        ProcessAction(comIndex, mainjsnObj);
+//        myjsnObj = jsnStore->returnJsnActionClamp();
+        jsnStore->actionListp.at(0)["state"] = "UPDATED";
+        jsnStore->actionListp.at(0)["rc"] = 0;
+        jsnStore->jsnObjArray[0].toObject()["state"]= "MANYMANY";
+
+       // aaa["state"] = "MANYMANY";
+        str = QJsonDocument(jsnStore->jsnObjArray[0].toObject()).toJson(QJsonDocument::Indented);
+        GUI_Write_To_Log(value, str);
+
+        emit Write_2_TcpClient_Signal (str);
+       // ProcessAction(comIndex, mainjsnObj);
         break;
 
+    case 4: // "standup"
+        Robot->active_command = "standup";
+        //mainjsnObj = jsnStore->returnAllActions();
+        //mainjsnObj = jsnStore->jsnActionStandUP;
+        mainjsnObj = jsnStore->returnJsnActionStandUP();
+        ProcessAction(comIndex, mainjsnObj);
+
+        break;
     case 5: // "start"
         Robot->active_command = "start";
         mainjsnObj = jsnStore->returnJsnActionStart();
+        ProcessAction(comIndex, mainjsnObj);
+        break;
+
+    case 7: //getactions
+        str = QJsonDocument(jsnStore->returnAllActions()).toJson(QJsonDocument::Indented);
+        emit Write_2_TcpClient_Signal(str);
+        str += str.insert(0, "Total action_list : \n");
+
+        GUI_Write_To_Log(value, str);
+
+        break;
+    case 13: //collapse
+        Robot->active_command = "collapse";
+        mainjsnObj = jsnStore->returnJsnActionCollapse();
         ProcessAction(comIndex, mainjsnObj);
         break;
 
@@ -92,7 +161,7 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
         str += QString::number(comIndex);
         str += " is not found";
         GUI_Write_To_Log(value, str);
-
+        break;
     }
 
 

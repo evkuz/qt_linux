@@ -73,7 +73,19 @@ public:
     #define AC_ALREADY_HAVE -3  // action с таким именем уже запущен
     #define AC_DONE -4
 
+     QJsonObject jsnActionClamp;     // Объект экшена "clamp"
+     QJsonObject jsnActionStart;     // Объект экшена "strart"
+     QJsonObject jsnActionStandUP;   // "standup"
+     QJsonObject jsnActionPutbox;    // for "put_box"
+     QJsonObject jsnActionReset;     // for "reset"
+     QJsonObject jsnActionCollapse;  // for "collaps"
 
+     QJsonObject jsnActionList;  // list for "action_list" key
+     QJsonArray  jsnArray;       // list for action_list
+     QJsonArray  jsnObjArray;    // array of objects
+
+
+     QList<QJsonObject> actionListp;
 
     const int RC_NO_DETECTION = -5;      // Нет детекции объекта.
     const short INDEX_NODETECTION = 4;
@@ -90,14 +102,22 @@ public:
     QJsonObject returnJsnActionStart();
     QJsonObject returnJsnActionReset();
     QJsonObject returnJsnActionClamp();
+    QJsonObject& returnJsnActionCollapse();
+    QJsonObject& returnJsnActionStandUP();
 
-    void setActionDone(QJsonObject theObj);  //Меняем rc of action upon device moving
+    QJsonObject returnAllActions();
+
+    void setActionDone(QJsonObject &theObj);  //Меняем rc of action upon device moving
     void setJsnStatus();
     void setCurrentAction(QString theAction);
-    bool eraseArray();
+    bool eraseArray(QJsonArray &theArray); // Очистка массива
     void setHeadStatusFail(); // serial port problem
     void setActionStart2NoDetection();
-    void getActionList(); // Подготовить список активных (выполняемых в данный момент) экшенов
+    void createActionList(); // Подготовить список активных (выполняемых в данный момент) экшенов
+    void SetJsnActionCollapse(QJsonObject &theObj);
+    void SetJsnActionStandUP(QJsonObject &theObj);
+    void setActionData(QJsonObject &theObj); // Меняем данные экшенов
+
 
     // Структура хранит данные для json-ответа.
     struct Action {
@@ -157,17 +177,9 @@ private:
     ordered_json jsnOB2;  // Объект для списка
     ordered_json jsnOB3;  // Объект результирующий.
 
-    QJsonObject jsnActionClamp;     // Объект экшена "clamp"
-    QJsonObject jsnActionStart;     // Объект экшена "strart"
-    QJsonObject jsnActionPutbox;    // for "put_box"
-    QJsonObject jsnActionReset;     // for "reset"
-
-    QJsonObject jsnActionList;  // list for "action_list" key
-    QJsonArray  jsnArray;       // list for action_list
-
     // Порядок элементов должен совпадать с action_lst
     //QList<QJsonObject> actionList = {&jsnActionClamp, &jsnActionStart};
-    QList<QJsonObject> actionListp;
+//    QList<QJsonObject> actionListp;
     Action clampAction, lockAction;
     QList<Action> structActionList = {clampAction, lockAction};
 

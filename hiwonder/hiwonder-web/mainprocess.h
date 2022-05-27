@@ -42,7 +42,7 @@ public:
     bool new_get_request; // Флаг сигнализирует, что есть неотвеченный GET-запрос от webserver.
 
     QSimpleServer server;
-
+QJsonObject aaa;
     //+++++++++++++++++++++++++++++ Threads +++++++++++++++
     int thread_counter ; // Было нужно при отладке старт/останов потоков
 
@@ -51,6 +51,8 @@ public:
     QJsonObject mainjsnObj;
     QJsonObject launchActionAnswer;  // Ответ на запуск экшена
     QJsonDocument myjsnDoc;
+
+    //QJsonValueRef &myjsnObj;
 
 #define parcel_size 8           // размер посылки в байтах от ПК к роботу
 #define NOT_LAST    0xC8 //200  // Не последняя команда
@@ -74,7 +76,8 @@ public:
     void put_box();  //Положить кубик на пол
     void traversJson(QJsonObject json_obj); // Рекурсивный Парсинг JSON
     int getIndexCommand(QString myCommand, QList<QString> theList);  // Определяем индекс команды в списке MainProcess::tcpcommand
-    void ProcessAction(int indexOfCommand, QJsonObject theObj); // Отрабатывает команду по заданному индексу из списка QList<QString> theList
+    void ProcessAction(int indexOfCommand, QJsonObject &theObj); // Отрабатывает команду по заданному индексу из списка QList<QString> theList
+    void changeActionData(QJsonObject &theObj);
 private:
     SocketClient readSocket;
 

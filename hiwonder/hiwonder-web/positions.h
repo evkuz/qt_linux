@@ -21,6 +21,8 @@ const unsigned char after_put_position [6] = {0, 93, 90, 45, 135, 30};
 const unsigned char put_2_mobman [6] = {90, 90, 45, 60, 155, 163};
 const unsigned char after_put_2_mobman [6] = {60, 93, 90, 140, 140, 140};
 
+const unsigned char collaps[6] = {93, 93, 10, 10, 25, 93};
+
 //93, 93, 100, 50, 120, 30
 // 60, 93,90, 40, 145, 30
 

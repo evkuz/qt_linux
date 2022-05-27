@@ -1,4 +1,4 @@
-#include "mainprocess.h"
+﻿#include "mainprocess.h"
 //#include "ui_MainProcess.h"
 #include "positions.h"
 //#include "hiwonder.h"
@@ -17,7 +17,7 @@ MainProcess::MainProcess(QObject *parent)
 
 {
     int value = 0x0000;
-    QString str;
+    QString str, S3;
 
     DETECTED = false;
     new_get_request = false;
@@ -35,9 +35,10 @@ MainProcess::MainProcess(QObject *parent)
 // Сейчас объект jsnObj хранит данные из jsnOB1.
 // Получаем объект jsnObj через returnJsonObject()
 
-    str = QJsonDocument(jsnStore->returnJsonObject()).toJson(QJsonDocument::Indented);
-    QString S3 = "JSON object 1 : \n";
-    S3 += str;
+//    str = QJsonDocument(jsnStore->returnJsonObject()).toJson(QJsonDocument::Indented);
+//    str = QJsonDocument(jsnStore->jsnActionList).toJson(QJsonDocument::Indented);
+//    QString S3 = "JSON object 1 : \n";
+//    S3 += str;
 
    // traversJson(jsnStore->jsnObj);
 
@@ -58,35 +59,42 @@ MainProcess::MainProcess(QObject *parent)
         GUI_Write_To_Log(0000, str);
     }
 
-    Robot->Write_To_Log(value, S3);
+//    Robot->Write_To_Log(value, S3);
 
 //  s1 хранит данные данные об одном экшене : nlohmann::jsnActionTST, преобразуем его в QJsonObject jsnObj2
 //    str = QString::fromStdString(jsnStore->s1); // json-овтет остальное
-    str = QJsonDocument(jsnStore->returnJsonObject2()).toJson(QJsonDocument::Indented);
-    S3 = "JSON ACTION object : \n";
-    S3 += str;
-    Robot->Write_To_Log(value, S3);
+//    str = QJsonDocument(jsnStore->returnJsonObject2()).toJson(QJsonDocument::Indented);
+//    S3 = "JSON ACTION object : \n";
+//    S3 += str;
+//    Robot->Write_To_Log(value, S3);
 
     // Inititalize actions, each as QJsonObject.
     // Initialize actions_list as empty QJsonArray
     jsnStore->init_actions();
 
+    str = QJsonDocument(jsnStore->jsnActionList).toJson(QJsonDocument::Indented);
+    S3 = "JSON ACTIONLIST : \n";
+    S3 += str;
+    Robot->Write_To_Log(value, S3);
+
     // Вызываем объединение json-объектов по имени экшена. Т.е. к шапке добавляем данные
     // конкретного экшена. В данном случае эти данные заранее в переменной s1
-     jsnStore->makeJson_Answer_Slot("clamp"); // Получаем строку из 2 объектов в переменной jsnData
+//     jsnStore->makeJson_Answer_Slot("clamp"); // Получаем строку из 2 объектов в переменной jsnData
 //     str = jsnStore->jsnData;
-     str = jsnStore->returnJsnData();
-     S3 = "JSON MERGED object : \n";
-     S3 += str;
-     Robot->Write_To_Log(value, S3);
+//     str = jsnStore->returnJsnData();
+//     S3 = "JSON MERGED object : \n";
+//     S3 += str;
+//     Robot->Write_To_Log(value, S3);
 
-
-
+    str = "ActionList size is ";
+    str += QString::number(jsnStore->jsnActionList.size());
+    str += " elements";
+    Robot->Write_To_Log(value, str);
 
 
 //    traversJson(jsnStore->jsnObj);
 // Тут мы знаем имя переменной. Или достаточно имя метода...
-     traversJson(jsnStore->returnJsonObject());
+//     traversJson(jsnStore->returnJsonObject());
     //+++++++++++++++++++++++++++++++++  signal/slot of Get Request to webserver
     // Отправка данных от сервера клиенту (в  ЦУП)
     connect(this, &MainProcess::Write_2_TcpClient_Signal, &server, &QSimpleServer::Write_2_TcpClient_SLot); // works ?
@@ -95,18 +103,12 @@ MainProcess::MainProcess(QObject *parent)
     //connect(&server, SIGNAL(Info_2_Log_Signal(QString)), this, SLOT(Info_2_Log_Slot(QString))); // Not working
     connect(&server, &QSimpleServer::Data_From_TcpClient_Signal, this, &MainProcess::Data_From_TcpClient_Slot);
 
-
-
-    //connect(Robot, SIGNAL(StatusChangedSignal(QString)), &server, SLOT(SetCurrentState(QString)));
-    //connect(this, SIGNAL(StartTakeAndPutSignal()), this, SLOT(TakeAndPutSlot()));
-
-   // connect(&server, &QTcpServer::newConnection, this, &MainProcess::newConnection_Slot);
     //################### SERIAL SIGNAL/SLOTS ############################
-    connect( this, SIGNAL (Open_Port_Signal(QString)), Robot, SLOT(Open_Port_Slot(QString)));
-    connect( &Robot->serial, SIGNAL (readyRead()), Robot, SLOT(ReadFromSerial_Slot()));  //&QSerialPort::
+    connect( this, &MainProcess::Open_Port_Signal, Robot, &HiWonder::Open_Port_Slot);
+    connect( &Robot->serial, &QSerialPort::readyRead, Robot, &HiWonder::ReadFromSerial_Slot);  //&QSerialPort::
 
     //#################### Signal to web-server
-    connect( Robot, SIGNAL (Moving_Done_Signal()), this, SLOT (Moving_Done_Slot()));;;
+    connect( Robot, &HiWonder::Moving_Done_Signal, this, &MainProcess::Moving_Done_Slot);
 
 
     // ============================================== Создаем поток 1 - web-server
@@ -513,7 +515,7 @@ int MainProcess::getIndexCommand(QString myCommand, QList<QString> theList)
 //+++++++++++++++++++++++++++++++++++++++++++++++++++
 // - обрабатываем текущий статус экшена
 // - запускаем экшен, если надо
-void MainProcess::ProcessAction(int indexOfCommand, QJsonObject theObj)
+void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
 {
     int value;
     QString str;
@@ -527,13 +529,13 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject theObj)
                 str = "Current JSON data of action_command (STATUS) are as follows ";
                 //str += Robot->GetCurrentStatus();
                 Robot->Write_To_Log(value, str);
-                jsnStore->setCurrentAction(Robot->active_command);
+//                jsnStore->setCurrentAction(Robot->active_command);
 
                 // Если нет активных экшенов, то надо обнулять action_list
 
                 // Выдаем значение ordered_json jsnStatus в виде QJsonObject, дальше нарастим информативность.
-                str = QJsonDocument(jsnStore->returnJsnStatus()).toJson(QJsonDocument::Indented);
-                emit Write_2_TcpClient_Signal(str);
+
+//                emit Write_2_TcpClient_Signal(str);
                 GUI_Write_To_Log(value, str);
 
 // Вот теперь отбираем экшены со статусом "inprogress" из списка QList<QString> statuslst
@@ -608,27 +610,23 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject theObj)
             GUI_Write_To_Log(value, str);
         }
         else { // Все нормально, запускаем манипулятор
-            theObj["rc"] = RC_SUCCESS; // Now state "inprogress"
+            theObj["rc"] = RC_SUCCESS; // Now state "inprogress" //theObj
             theObj["state"] = DEV_ACTION_STATE_RUN;
+            jsnStore->setActionData(theObj);
 
-            launchActionAnswer["name"] = theObj.value("name");
+
+            launchActionAnswer["name"] = theObj.value("name").toString();
             launchActionAnswer["rc"] = RC_SUCCESS;
             launchActionAnswer["info"] = DEV_HEAD_INFO_REQUEST;
             str = QJsonDocument(launchActionAnswer).toJson(QJsonDocument::Indented);
-            emit Write_2_TcpClient_Signal(str);
-
-//            str = "Action "; str += theObj.value("name").toString();
-//            str += " have rc value equals to ";
-//            str += QString::number(theObj.value("rc").toInt());
-//            str += " and have started";
-//            GUI_Write_To_Log(value, str);
-
-//            str = "Action "; str += theObj.value("name").toString();
-//            str += " have index "; str += QString::number(indexOfCommand);
-//            GUI_Write_To_Log(value, str);
+            // Вот это нужно
+            //emit Write_2_TcpClient_Signal(str);
+            str.insert(0, "Data supposed to be sent to tcp, but only to log : \n");
+            GUI_Write_To_Log(value, str);
 
             // Теперь запускаем манипулятор
             // Определяем команду из списка
+            QJsonValue myjsnValue;
             switch (indexOfCommand) {
             case 1: //reset, у текущего (всех) action делаем rc = -4
                 jsnStore->setActionDone(theObj);
@@ -638,30 +636,126 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject theObj)
                 if(Servos[0]==0) { Servos[0]=90;}
                 else {Servos[0]=0;}
                 this->send_Data(LASTONE);
+                break;
+            case 4: // stand up
+                memcpy(Servos, hwr_Start_position, DOF);
+                this->send_Data(LASTONE);
+
+                // Уже поменяли значение черех setActionData
+//                jsnStore->SetJsnActionStandUP(theObj); // меняем значение
+
+//                myjsnValue =  jsnStore->jsnObjArray.at(2); // Вот тут надо продумать, чтоб не думать об индексах
+//                mainjsnObj = myjsnValue.toObject();
+
+
+
+                str = "STANDUP ACTION, current theObj value :\n";
+
+                str += QJsonDocument(theObj).toJson(QJsonDocument::Indented);
+                GUI_Write_To_Log(value,str);
+
+//                if (theObj.contains("state")) {
+//                    theObj["state"] = DEV_ACTION_STATE_RUN;
+//                    theObj["rc"] = RC_SUCCESS;
+//                    myjsnValue = QJsonValue(theObj);
+//                    jsnStore->jsnObjArray.replace(2, myjsnValue);
+//                    jsnStore->jsnActionList = {
+//                        {"action_list", jsnStore->jsnObjArray} //jsnArray
+//                    };
+
+//                    str = "AFTER STANDUP UPDATING!!!, current theObj vslue :\n";
+
+//                    str += QJsonDocument(jsnStore->jsnActionList).toJson(QJsonDocument::Indented);
+//                    GUI_Write_To_Log(value,str);
+
+//                }
 
 
                 break;
             case 5: //start
                  on_trainButton_clicked ();
                 break;
+            case 13: //collapse
+                memcpy(Servos, collaps, DOF);
+                this->send_Data(LASTONE);
+                // Меняем данные jsnActionCollapse, state = inprogress; rc = 0;
+ //               jsnStore->SetJsnActionCollapse(theObj);
+                jsnStore->setActionData(theObj);
+
+                str = "Collapse data as mainjsnObj after UPDATING !\n";
+                str += QJsonDocument(theObj).toJson(QJsonDocument::Indented);
+                GUI_Write_To_Log(value,str);
+
+//                checkObj = jsnStore->returnJsnActionCollapse();
+//                str = "Current checkObj after RELOADING the action is ";
+//                str += QJsonDocument(checkObj).toJson(QJsonDocument::Indented);
+//                GUI_Write_To_Log(value,str);
+
+//                myjsnValue =  jsnStore->jsnObjArray.at(5); // Вот тут надо продумать, чтоб не думать об индексах
+//                mainjsnObj = myjsnValue.toObject();
+
+                str = "COLLAPSE jsnACTION() object AFTER theObj RETURN !!!\n";
+
+                str += QJsonDocument(jsnStore->returnJsnActionCollapse()).toJson(QJsonDocument::Indented);
+                GUI_Write_To_Log(value,str);
+
+//                if (theObj.contains("state")) {
+//                    theObj["state"] = DEV_ACTION_STATE_RUN;
+//                    theObj["rc"] = RC_SUCCESS;
+//                    myjsnValue = QJsonValue(theObj);
+//                    jsnStore->jsnObjArray.replace(5, myjsnValue);
+//                    jsnStore->jsnActionList = {
+//                        {"action_list", jsnStore->jsnObjArray} //jsnArray
+//                    };
+
+//                    str = "AFTER theObj RETURN!!!\n";
+
+//                    str += QJsonDocument(jsnStore->jsnActionList).toJson(QJsonDocument::Indented);
+//                    GUI_Write_To_Log(value,str);
+
+//                    str = "And NOW MODIFIED mainjsnObj !!! \n";
+//                    str += QJsonDocument(mainjsnObj).toJson(QJsonDocument::Indented);
+//                    GUI_Write_To_Log(value,str);
+
+//                }
+
+
+
+                break;
             default: // Нет команды с таким индексом. Дубль из Data_From_TcpClient_Slot, там уже была проверка
                 str = "The Command with index ";
                 str += QString::number(indexOfCommand);
                 str += " is not found";
                 GUI_Write_To_Log(value, str);
+            break;
 
 
-            }
+            } // switch (indexOfCommand)
         } //else
     default:
         str = "The return Code with index ";
         str += QString::number(returnCode);
         str += " is not found";
         GUI_Write_To_Log(value, str);
-
+    break;
 
 
     } // switch (returnCode)
+
+    str = "PROCESSING ACTION IS FINISHED";
+    GUI_Write_To_Log(value,str);
+}
+//+++++++++++++++++++++++++++++++++++++++++++++++++++
+
+void MainProcess::changeActionData(QJsonObject &theObj)
+{
+    //myjsnValue = QJsonValue(theObj);
+
+    jsnStore->jsnObjArray.replace(5, theObj);
+    jsnStore->jsnActionList = {
+        {"action_list", jsnStore->jsnObjArray} //jsnArray
+    };
+
 }// ProcessAction
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -884,20 +978,55 @@ void MainProcess::Moving_Done_Slot()
     result = QString::compare(myname, Robot->active_command); // 0 -> equals
     str += myname;
     GUI_Write_To_Log(value, str);
-    if (result){
-        str = "Значения Robot->active_command и action_list['name'] неравны. \n";
-        str += Robot->active_command; str += " and "; str += myname;
-        GUI_Write_To_Log(value, str);
-    }
-    else {
     // Вот как бэ не совсем правильно... надо передавать QJsonObject в свой класс и там все менять...
     jsnStore->setActionDone(mainjsnObj);
 
-//    str = "After moving the status is :\n";
-    str = jsnStore->returnJsnData();
+//    str = jsnStore->returnJsnData();
+//    GUI_Write_To_Log(value, str);
+
+    // Меняем RC экшена на -4 == "Ожидание"
+    //...
+
+    // Определяем индекс команды в списке MainProcess::tcpCommand
+//    int comIndex = getIndexCommand(myname, tcpCommand);
+    // Тут не будет status, reset не должна сюда попасть. Это слот связан с serial port
+//    switch (comIndex) {
+//    case 2: // clamp
+//        jsnStore->setActionDone(jsnStore->jsnActionClamp);
+//        break;
+//    case 4: // standup
+//        jsnStore->setActionDone(jsnStore->returnJsnActionStandUP());
+//        break;
+//    case 13: // collapse
+//        //QJsonObject theObj = jsnStore->jsnActionCollapse;
+//        jsnStore->setActionDone(jsnStore->returnJsnActionCollapse()); //returnJsnActionCollapse() - не работает, объект не возвращает
+
+////        str = "Now jsnData are as follows : \n";
+
+////        str += jsnStore->returnJsnData();
+
+////        GUI_Write_To_Log(value, str);
+
+//        str = "Now current jsnActionCollape value : \n";
+//        str += QJsonDocument(jsnStore->jsnActionCollapse).toJson(QJsonDocument::Indented);
+//        GUI_Write_To_Log(value, str);
+//        break;
+
+
+//    } // switch (comIndex)
+
+    str = "Action "; str += myname; str += " finished !!!";
     GUI_Write_To_Log(value, str);
-    emit Write_2_TcpClient_Signal(str);
-    }
+    //Создаем список активных экшенов, и там не должно быть текущего, т.к. он DONE
+//    str = "Now full list of ACTIVE actions : \n";
+//    jsnStore->createActionList();
+//    str += QJsonDocument(jsnStore->jsnActionList).toJson(QJsonDocument::Indented);
+//    GUI_Write_To_Log(value, str);
+
+//    str = "Upon exit from switch jsnActionCollape value : \n";
+//    str += QJsonDocument(jsnStore->jsnActionCollapse).toJson(QJsonDocument::Indented);
+//    GUI_Write_To_Log(value, str);
+
 
 }
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++

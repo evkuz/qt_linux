@@ -43,8 +43,8 @@
  * Т.е. цель - создать один файл - парсер/обработчик приходящих команд и использовать его в разных проектах с минимальными доработками, в идеале только список меняем.
 */
 
-//                                                  1                3                  5                     7                           9                 11
-    const QList<QString> tcpCommand = {"status", "reset", "clamp", "sit", "standup", "start", "put_box", "getactions", "getservices", "getservos", "lock", "unlock", "info"};
+//                                                  1                3                  5                     7                           9                 11                  13
+    const QList<QString> tcpCommand = {"status", "reset", "clamp", "sit", "standup", "start", "put_box", "getactions", "getservices", "getservos", "lock", "unlock", "info", "collapse"};
  //from QSocketThread QList<QString>  strcommand = { "/run?cmd=", "/service?name=", "/status", "/status?action="};
 //
 
