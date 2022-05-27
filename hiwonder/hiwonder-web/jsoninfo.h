@@ -99,9 +99,9 @@ public:
     QJsonObject returnJsnStatus();
     QString     returnJsnData();
     QJsonObject returnJsonObject2();
-    QJsonObject returnJsnActionStart();
+    QJsonObject& returnJsnActionStart();
     QJsonObject returnJsnActionReset();
-    QJsonObject returnJsnActionClamp();
+    QJsonObject& returnJsnActionClamp();
     QJsonObject& returnJsnActionCollapse();
     QJsonObject& returnJsnActionStandUP();
 

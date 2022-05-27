@@ -22,15 +22,26 @@
  * 27.05.2022
  * СОздаем отдельное консольное приложение, где проверяем предачу данных о QJsonObject объекте
  * между классами. Далее принимаем решение о дальнейшем направлении кодинга в данном проекте.
+ * Сделано. Приложение "transferjson". Показало, что все основные ф-ции обработки QJsonObject-ов работают
+ * правильно.
+ * Далее выяснилось, что в слоте Moving_Done_Slot() запускается ф-ция
+ * JsonInfo::setActionDone(QJsonObject &theObj), которая меняет статусы theObj,
+ * а потом опустошает массив JsonInfo::QJsonArray  jsnObjArray. А вот это и есть
+ * ошибка, т.к. внутри MainProcess::ProcessAction при следующем экшене происходит
+ * JsonInfo::jsnObjArray.replace(int index, QJsonObject object), а вот index-то уже и не
+ * совпадает !
  *
- * Заменим ф-цию setActionDone на две :
- * - setActionData
- * - replaseDataOfjsnObjArray
+ * Поэтому была переделана вся схема работы кода.
+ * Теперь  в  MainProcess::ProcessAction вызывается ф-ция JsonInfo::setActionData(theObj),
+ * которая по theObj определяет какой это экшен, находит его в массиве JsonInfo::jsnObjArray и
+ * меняет его (экшена) значение на значение theObj внутри массива JsonInfo::jsnObjArray.
  *
  * И далее работаем только с JsonInfo::jsnObjArray, сам экшен нет нужды трогать.
  * Так убираем каждую из ф-ций SetJsnActionCollapse и т.д.
  * Так в дальнейшем будет удобнее менять все остальные статусы и RC json-объектов(экшенов)
- * Так сокращаем код в Moving_Done_Slot()
+ * Так сокращаем код в Moving_Done_Slot(), при этом сохраняем ф-цию
+ * JsonInfo::setActionDone(QJsonObject &theObj), вот тут она как раз и нужна.
+ * В общем, стало веселее.
  *
  * //++++++++++++++++++++++++++++++++++++++++++++++++
  * 26.05.2022

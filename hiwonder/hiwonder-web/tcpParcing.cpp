@@ -60,8 +60,6 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 
         str += QJsonDocument(jsnStore->jsnActionList).toJson(QJsonDocument::Indented);
         GUI_Write_To_Log(value, str);
-//        S3 = "JSON status object from jsnData : \n";
-//        S3 += str;
         str = jsnStore->returnJsnData();
         emit Write_2_TcpClient_Signal (str);
         Robot->Write_To_Log(value, str);
@@ -115,23 +113,17 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 
     case 2: // clamp
         Robot->active_command = "clamp";
-//        myjsnObj = jsnStore->returnJsnActionClamp();
-        jsnStore->actionListp.at(0)["state"] = "UPDATED";
-        jsnStore->actionListp.at(0)["rc"] = 0;
-        jsnStore->jsnObjArray[0].toObject()["state"]= "MANYMANY";
+        mainjsnObj = jsnStore->returnJsnActionClamp();
+//        jsnStore->jsnObjArray[0].toObject()["state"]= "MANYMANY";
+//        str = QJsonDocument(jsnStore->jsnObjArray[0].toObject()).toJson(QJsonDocument::Indented);
+//        GUI_Write_To_Log(value, str);
 
-       // aaa["state"] = "MANYMANY";
-        str = QJsonDocument(jsnStore->jsnObjArray[0].toObject()).toJson(QJsonDocument::Indented);
-        GUI_Write_To_Log(value, str);
-
-        emit Write_2_TcpClient_Signal (str);
+//        emit Write_2_TcpClient_Signal (str);
        // ProcessAction(comIndex, mainjsnObj);
         break;
 
     case 4: // "standup"
         Robot->active_command = "standup";
-        //mainjsnObj = jsnStore->returnAllActions();
-        //mainjsnObj = jsnStore->jsnActionStandUP;
         mainjsnObj = jsnStore->returnJsnActionStandUP();
         ProcessAction(comIndex, mainjsnObj);
 
