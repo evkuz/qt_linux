@@ -4,8 +4,8 @@ JsonInfo::JsonInfo()
 {
     currentStatus = {DEV_NAME, RC_SUCCESS,  "OK", DEV_HEAD_STATE_WAIT}; // Инициализируем структуру
     action_command = "nothing";
-    struc_2_json(jsnOB1, currentStatus); // Инициализируем  jsnOB1 данными из структуры выше
-    init_json();
+//    struc_2_json(jsnOB1, currentStatus); // Инициализируем  jsnOB1 данными из структуры выше
+//    init_json();
     init_actions();
 }
 //+++++++++++++++++++++
@@ -378,7 +378,7 @@ void JsonInfo::init_actions()
 
 
 
-    actionListp = {jsnActionClamp, jsnActionStart, jsnActionPutbox, jsnActionReset, jsnActionCollapse};
+//    actionListp = {jsnActionClamp, jsnActionStart, jsnActionPutbox, jsnActionReset, jsnActionCollapse};
     jsnObjArray = {jsnActionClamp, jsnActionStart, jsnActionStandUP, jsnActionReset, jsnActionCollapse};
     jsnHeadStatus = {
         {"name", DEV_NAME},
@@ -665,17 +665,19 @@ void JsonInfo::createActionList()
     QJsonObject myobj;
     QJsonArray myArray;
 
+
+
    myArray = jsnObjArray;
    QString str;
-    for (int i=0; i < myArray.size();){
+    for (int i=0; i < myArray.size(); i++){
        str = myArray.at(i).toObject().value("state").toString();
-       // если не равно - вынимаем объект из массива
+//        если не равно - вынимаем объект из массива, т.е. оставляем только running
        if (QString::compare(str, DEV_ACTION_STATE_RUN)){
            myArray.removeAt(i);
        }
     }
 
-    jsnActionList["action_list"] = myArray;
+    jsnActionList["action_list"] = myArray; // "testing"; myArray;
     this->jsnData = merge_json(jsnActionList, jsnHeadStatus);
 
 } //createActionList

@@ -47,6 +47,8 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 //    if (comIndex==0 or comIndex==5 or comIndex==7) {
 //        ProcessAction(comIndex);
 //    }
+//    int indent = 3;
+//     std::string s2;
 
    QString S3;
     switch (comIndex) {
@@ -54,15 +56,21 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 
         // Нужно добавлять активный экшен, либо пустой список
         str = "Going to create action_list";
+        GUI_Write_To_Log(value, str);
         // Надо данные из mainjsnObj переписать в соответствующую jsnAction...
         // В общем надо с указателями работать.
         jsnStore->createActionList(); // формируем список, записываем данные в jsnData
 
-        str += QJsonDocument(jsnStore->jsnActionList).toJson(QJsonDocument::Indented);
+        //str += QJsonDocument(jsnStore->jsnActionList).toJson(QJsonDocument::Indented);
+        str += jsnStore->returnJsnData();
         GUI_Write_To_Log(value, str);
-        str = jsnStore->returnJsnData();
+//        str = jsnStore->returnJsnData();
+//        str = "{\n\t\"status\": \"testing\"\t\n}";
+//        s2 = jsnStore->jsnInfo.dump(indent);
+//        str = QString::fromStdString(s2);
+
         emit Write_2_TcpClient_Signal (str);
-        Robot->Write_To_Log(value, str);
+        //Robot->Write_To_Log(value, str);
 
 
         Robot->active_command = "status";
@@ -93,7 +101,7 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
         break;
 
     case 1:  // reset
-        Robot->active_command = "reset";
+        // Robot->active_command = "reset";
         jsnStore->resetAllActions();
         str = "I'm in reset";
         GUI_Write_To_Log(value, str);
@@ -112,7 +120,7 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
         break;
 
     case 2: // clamp
-        Robot->active_command = "clamp";
+        // Robot->active_command = "clamp";
         mainjsnObj = jsnStore->returnJsnActionClamp();
 //        jsnStore->jsnObjArray[0].toObject()["state"]= "MANYMANY";
 //        str = QJsonDocument(jsnStore->jsnObjArray[0].toObject()).toJson(QJsonDocument::Indented);
@@ -123,13 +131,13 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
         break;
 
     case 4: // "standup"
-        Robot->active_command = "standup";
+        // Robot->active_command = "standup";
         mainjsnObj = jsnStore->returnJsnActionStandUP();
         ProcessAction(comIndex, mainjsnObj);
 
         break;
     case 5: // "start"
-        Robot->active_command = "start";
+        // Robot->active_command = "start";
         mainjsnObj = jsnStore->returnJsnActionStart();
         ProcessAction(comIndex, mainjsnObj);
         break;
@@ -143,7 +151,7 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 
         break;
     case 13: //collapse
-        Robot->active_command = "collapse";
+        // Robot->active_command = "collapse";
         mainjsnObj = jsnStore->returnJsnActionCollapse();
         ProcessAction(comIndex, mainjsnObj);
         break;

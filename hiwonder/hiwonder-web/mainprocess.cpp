@@ -97,11 +97,11 @@ MainProcess::MainProcess(QObject *parent)
 //     traversJson(jsnStore->returnJsonObject());
     //+++++++++++++++++++++++++++++++++  signal/slot of Get Request to webserver
     // Отправка данных от сервера клиенту (в  ЦУП)
-    connect(this, &MainProcess::Write_2_TcpClient_Signal, &server, &QSimpleServer::Write_2_TcpClient_SLot); // works ?
+    connect(this, &MainProcess::Write_2_TcpClient_Signal, &server, &QSimpleServer::Write_2_TcpClient_SLot, Qt::QueuedConnection); // works ?
 
     // Чтение данных от клиента серверу (из ЦУП)
     //connect(&server, SIGNAL(Info_2_Log_Signal(QString)), this, SLOT(Info_2_Log_Slot(QString))); // Not working
-    connect(&server, &QSimpleServer::Data_From_TcpClient_Signal, this, &MainProcess::Data_From_TcpClient_Slot);
+    connect(&server, &QSimpleServer::Data_From_TcpClient_Signal, this, &MainProcess::Data_From_TcpClient_Slot, Qt::QueuedConnection);
 
     //################### SERIAL SIGNAL/SLOTS ############################
     connect( this, &MainProcess::Open_Port_Signal, Robot, &HiWonder::Open_Port_Slot);
@@ -624,10 +624,9 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
                 str += " is not found";
                 GUI_Write_To_Log(value, str);
             break;
-
-
             } // switch (indexOfCommand)
         } //else
+        break; // case -4:
     default:
         str = "The return Code with index ";
         str += QString::number(returnCode);

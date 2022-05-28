@@ -73,6 +73,10 @@ public:
     #define AC_ALREADY_HAVE -3  // action с таким именем уже запущен
     #define AC_DONE -4
 
+    ordered_json jsnInfo;
+    QString jsnData;
+    QJsonObject jsnHeadStatus;  // Шапка в ответе
+
      QJsonObject jsnActionClamp;     // Объект экшена "clamp"
      QJsonObject jsnActionStart;     // Объект экшена "strart"
      QJsonObject jsnActionStandUP;   // "standup"
@@ -168,7 +172,7 @@ private:
     ordered_json jsnGetActionsAnswer; // Ответ на команду "/service?name=getactions"
     ordered_json jsnList; // JSON-объект Хранит JSON-список
 
-    ordered_json jsnInfo;
+//    ordered_json jsnInfo;
     // List of actions
     ordered_json jsnActionTST;   // Оъект для тестов
 //    ordered_json jsnActionLock;
@@ -198,9 +202,9 @@ private:
 
     QJsonParseError jsonError; // ОШибка, если полученные данные - не JSON-объект
 
-    QString jsnData;
+//    QString jsnData;
     QJsonArray actions_list;
-    QJsonObject jsnHeadStatus;  // Шапка в ответе
+//    QJsonObject jsnHeadStatus;  // Шапка в ответе
 
 
 
