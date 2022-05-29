@@ -39,8 +39,11 @@ MainProcess::MainProcess(QObject *parent)
 //    str = QJsonDocument(jsnStore->jsnActionList).toJson(QJsonDocument::Indented);
 //    QString S3 = "JSON object 1 : \n";
 //    S3 += str;
+    jsnStore->createActionList();
+//    str = jsnStore->returnJsnData();
+//    GUI_Write_To_Log(value, str);
 
-   // traversJson(jsnStore->jsnObj);
+//   traversJson(jsnStore->jsnHeadStatus);
 
     Robot = new HiWonder(); // Без этого будет "The program has unexpectedly finished", хотя в начале говорила, что это ambiguous
 
@@ -70,7 +73,7 @@ MainProcess::MainProcess(QObject *parent)
 
     // Inititalize actions, each as QJsonObject.
     // Initialize actions_list as empty QJsonArray
-    jsnStore->init_actions();
+    //jsnStore->init_actions(); // already in jsnStore
 
     str = QJsonDocument(jsnStore->jsnActionList).toJson(QJsonDocument::Indented);
     S3 = "JSON ACTIONLIST : \n";
@@ -86,10 +89,10 @@ MainProcess::MainProcess(QObject *parent)
 //     S3 += str;
 //     Robot->Write_To_Log(value, S3);
 
-    str = "ActionList size is ";
-    str += QString::number(jsnStore->jsnActionList.size());
-    str += " elements";
-    Robot->Write_To_Log(value, str);
+//    str = "ActionList size is ";
+//    str += QString::number(jsnStore->jsnActionList.size());
+//    str += " elements";
+//    Robot->Write_To_Log(value, str);
 
 
 //    traversJson(jsnStore->jsnObj);
@@ -523,7 +526,6 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
     value = 0x1122;
     str = "I'm in  ProcessAction"; GUI_Write_To_Log(value, str);
 
-//++++++++++++++++++++++++++++++++++++++++++++++
 // Меняем содержмое theObj в зависимости от rc
     int returnCode = theObj.value("rc").toInt() ;
     switch (returnCode) {
@@ -567,6 +569,13 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
             theObj["state"] = DEV_ACTION_STATE_RUN;
             jsnStore->setActionData(theObj);
 
+            QJsonObject headStatus = {
+                {"rc", RC_SUCCESS}, //RC_SUCCESS
+                {"state", "Running"},
+                {"info", "Action performing"}
+            };
+
+            jsnStore->setJsnHeadStatus(headStatus);
 
             launchActionAnswer["name"] = theObj.value("name").toString();
             launchActionAnswer["rc"] = RC_SUCCESS;
@@ -652,7 +661,7 @@ void MainProcess::Moving_Done_Slot()
 {
     QString str, myname;
     int value = 0xFAAA;
-    int result;
+    //int result;
 
     GUI_Write_To_Log(value, "Demo cycle finished !!!");
     // Меняем статус, теперь "done"
@@ -661,11 +670,18 @@ void MainProcess::Moving_Done_Slot()
 
     str = "Current json object name is ";
     myname = mainjsnObj.value("name").toString();
-    result = QString::compare(myname, Robot->active_command); // 0 -> equals
+    //result = QString::compare(myname, Robot->active_command); // 0 -> equals
     str += myname;
     GUI_Write_To_Log(value, str);
     // Вот как бэ не совсем правильно... надо передавать QJsonObject в свой класс и там все менять...
     jsnStore->setActionDone(mainjsnObj);
+    QJsonObject headStatus = {
+        {"rc", RC_WAIT}, //RC_SUCCESS
+        {"state", "Wait"},
+        {"info", "Waiting for command"}
+    };
+
+    jsnStore->setJsnHeadStatus(headStatus);
 
     str = "Action "; str += myname; str += " finished !!!";
     GUI_Write_To_Log(value, str);

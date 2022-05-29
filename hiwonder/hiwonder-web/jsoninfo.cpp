@@ -357,7 +357,7 @@ void JsonInfo::init_actions()
     jsnActionReset = {
         {"name", "reset"},
         {"state", DEV_ACTION_STATE_DONE},
-        {"info", "Set device status as <Wait>"},
+        {"info", "Set device status as <Wait> in main Header"},
         {"rc",  RC_WAIT}
     };
 
@@ -379,7 +379,7 @@ void JsonInfo::init_actions()
 
 
 //    actionListp = {jsnActionClamp, jsnActionStart, jsnActionPutbox, jsnActionReset, jsnActionCollapse};
-    jsnObjArray = {jsnActionClamp, jsnActionStart, jsnActionStandUP, jsnActionReset, jsnActionCollapse};
+    jsnObjArray = {jsnActionClamp, jsnActionCollapse, jsnActionStandUP, jsnActionReset, jsnActionStart}; //
     jsnHeadStatus = {
         {"name", DEV_NAME},
         {"rc", RC_UNDEFINED}, //RC_SUCCESS
@@ -453,7 +453,7 @@ void JsonInfo::struc_2_jsnObj()
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // Слот сигнала MainProcess::makeJson_Answer_Signal(QString theAction)
 // ГОтовим json-ответ - статус экшена
-void JsonInfo::makeJson_Answer_Slot(QString theAction)
+void JsonInfo::makeJson_Answer_Slot()
 {
     // По имени экшена идем по списку, и мерджим с соответствующим объектом.
     //this->jsnData = merge_json(jsnObj2, jsnObj);
@@ -593,7 +593,21 @@ void JsonInfo::setJsnStatus()
 
         //Get the main JSON object and get the data in it
         jsnObj = jsnDoc.object();
-}// returnJsnData()
+}
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+void JsonInfo::setJsnHeadStatus(QJsonObject &theObj)
+{
+    jsnHeadStatus["state"] = theObj.value("state").toString();// "Running";
+    jsnHeadStatus["info"]  = theObj.value("info").toString();// "Action performing";
+    jsnHeadStatus["rc"] = theObj.value("rc").toInt();   // RC_SUCCESS;
+
+//    jsnHeadStatus["state"] = "Running";
+//    jsnHeadStatus["info"]  = "Action performing";
+//    jsnHeadStatus["rc"] = RC_SUCCESS;
+
+
+} // setJsnHeadStatus
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // Передаем строковое значение theAction, а возможно лучше индекс...
 void JsonInfo::setCurrentAction(QString theAction)
@@ -668,18 +682,23 @@ void JsonInfo::createActionList()
 
 
    myArray = jsnObjArray;
+   //myArray.swap(jsnObjArray);
+   //jsnObjArray.swap(myArray);
    QString str;
     for (int i=0; i < myArray.size(); i++){
-       str = myArray.at(i).toObject().value("state").toString();
+        myobj = myArray.at(i).toObject();
+        str = myobj.value("state").toString();
 //        если не равно - вынимаем объект из массива, т.е. оставляем только running
-       if (QString::compare(str, DEV_ACTION_STATE_RUN)){
-           myArray.removeAt(i);
+//       if (QString::compare(str, DEV_ACTION_STATE_RUN)){
+         if (str != DEV_ACTION_STATE_RUN){
+             myArray.removeAt(i);
+             i--;
+
        }
     }
 
-    jsnActionList["action_list"] = myArray; // "testing"; myArray;
+    jsnActionList["action_list"] =  myArray; // "testing"; myArray;
     this->jsnData = merge_json(jsnActionList, jsnHeadStatus);
-
 } //createActionList
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 void JsonInfo::SetJsnActionCollapse(QJsonObject &theObj)

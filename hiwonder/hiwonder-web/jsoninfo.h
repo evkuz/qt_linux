@@ -76,6 +76,7 @@ public:
     ordered_json jsnInfo;
     QString jsnData;
     QJsonObject jsnHeadStatus;  // Шапка в ответе
+    QJsonObject   jsnObj;
 
      QJsonObject jsnActionClamp;     // Объект экшена "clamp"
      QJsonObject jsnActionStart;     // Объект экшена "strart"
@@ -113,6 +114,7 @@ public:
 
     void setActionDone(QJsonObject &theObj);  //Меняем rc of action upon device moving
     void setJsnStatus();
+    void setJsnHeadStatus(QJsonObject &theObj); // Меняем значения jsnHeadStatus на theObj
     void setCurrentAction(QString theAction);
     bool eraseArray(QJsonArray &theArray); // Очистка массива
     void setHeadStatusFail(); // serial port problem
@@ -120,7 +122,7 @@ public:
     void createActionList(); // Подготовить список активных (выполняемых в данный момент) экшенов
     void SetJsnActionCollapse(QJsonObject &theObj);
     void SetJsnActionStandUP(QJsonObject &theObj);
-    void setActionData(QJsonObject &theObj); // Меняем данные экшенов
+    void setActionData(QJsonObject &theObj); // Меняем данные экшенов, целевой экшен определяем по name
 
 
     // Структура хранит данные для json-ответа.
@@ -161,7 +163,7 @@ public:
     void struc_2_jsnObj();  // QJsonObject& jsn, const StatusAnswer& header конвертируем структуру в QJsonObject::jsn
 public slots:
 
-void makeJson_Answer_Slot(QString theAction);
+void makeJson_Answer_Slot();
 protected:
 
 private:
@@ -190,7 +192,7 @@ private:
     QJsonObject qjsnAnswer;
 
     QJsonDocument jsnDoc;    // json-данные, полученные по tcp
-    QJsonObject   jsnObj;    // ОБъект, хранящий весь JSON ответ от девайса
+//    QJsonObject   jsnObj;    // ОБъект, хранящий весь JSON ответ от девайса
                              // В него подставляем разные QJsonDocument из разных ordered_json объектов
                              // Это общая переменная для хранения json-объекта с разными данныими, из разных переменных.
     QJsonObject   jsndataObj;// ОБъект, хранящий вложенный JSON-объект (вложенный внутри ответа jsnObj)
