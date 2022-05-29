@@ -38,9 +38,32 @@
 
 
 
-/* */
+/*
+ * Идея списка команд в том, что у каждого робота/девайса он будет разный. А вот унифицировать обработку - это возможно.
+ * Т.е. цель - создать один файл - парсер/обработчик приходящих команд и использовать его в разных проектах с минимальными доработками, в идеале только список меняем.
+*/
 
-//                                              1                 3                    5                           7
- const QList<QString> tcpCommand = {"clamp", "status", "sit", "standup", "start", "getactions", "getservices", "setservos=", "reset"};
+//                                                  1                3                  5                     7                           9                 11                  13
+    const QList<QString> tcpCommand = {"status", "reset", "clamp", "sit", "standup", "start", "put_box", "getactions", "getservices", "getservos", "lock", "unlock", "info", "collapse"};
+ //from QSocketThread QList<QString>  strcommand = { "/run?cmd=", "/service?name=", "/status", "/status?action="};
 //
+
+//  1.  Use QJsonObject::toVariantMap to convert all JSON objects to QVariantMap
+
+//  2.  Use QMap::insert to insert all maps into one
+
+//  3.  Use QJsonObject::fromVariantMap to convert the resulting map back to JSON object
+
+
+
+//    QJsonObject json1{{"foo_key", "foo_value"}};
+//    QJsonObject json2{{"moo_key", "moo_value"}, {"boo_key", "boo_value"}};
+//    QVariantMap map = json1.toVariantMap();
+
+//    map.insert(json2.toVariantMap());
+
+//    qDebug() << QJsonObject::fromVariantMap(map);
+
+
+
 #endif // PROTOCOL_H
