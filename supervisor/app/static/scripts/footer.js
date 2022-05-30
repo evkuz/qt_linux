@@ -19,49 +19,108 @@ if(sv_config.devices.hasOwnProperty('blueman')) {
 let statusTimeoutIsRuning = false;
 let statusTimeoutId = null;
 let devices_prev_state = {};
+let tpInProgress = false;
 
 function updateState(){
     getState().then(st => {
         if (typeof st == "undefined") {
             return;
         }
-
-        const devices = Object.keys(st);
-        devices.forEach((key, index) => {
-            let device = st[key];
-            let needToUpdate = false;
-            
-            if (devices_prev_state.hasOwnProperty(key)){
-                if (devices_prev_state[key] != device.connected){
-                    devices_prev_state[key] = device.connected;
-                    needToUpdate = true;
+        for (let key of Object.keys(st)) {
+            try {
+                let device = st[key];
+                let needToUpdate = false;
+                
+                if (key == "supervisor") {
+                    updateSupervisorState(device);
+                    continue;
                 }
-            } else {
-                devices_prev_state[key] = device.connected;
-                needToUpdate = true;
+                updateAgentState(key, device);
+            } catch (err) {
+                console.error(err);
             }
-            if (needToUpdate){
-                var buttons = document.querySelectorAll('*[id^="' +  key + '_btn"]');
-                if(device.connected){
-                    buttons.forEach(function(btnElem) {
-                        btnElem.classList.remove('btn-gray');
-                        btnElem.classList.add('btn-green');
-                    });
-                } else {
-                    buttons.forEach(function(btnElem) {
-                        btnElem.classList.remove('btn-green');
-                        btnElem.classList.add('btn-gray');
-                    });
-                } 
-            }
-           
-            let st_elem = document.getElementById(key+"_status");
-            st_elem.innerHTML = device.state;
-        });
+        };
     }).catch(err => {
         // got error
+        console.error(err);
     });
 }
+
+
+function updateSupervisorState(device){
+    if (tpInProgress != device.techprocess) {
+        tpInProgress = device.techprocess
+        tpBtn = document.getElementById("start_tp")
+        if (tpInProgress) {
+            tpBtn.onclick = function(){ sendTechProcess('false'); }
+            tpBtn.classList.remove('btn-green');
+            tpBtn.classList.add('btn-red');
+            tpBtn.innerHTML = "Stop tech process";
+        } else {
+            tpBtn.onclick = function(){ sendTechProcess('true'); }
+            tpBtn.classList.remove('btn-red');
+            tpBtn.classList.add('btn-green');
+            tpBtn.innerHTML = "Start tech process";
+        }
+    }
+}
+
+
+function updateAgentState(name, status){
+    if (devices_prev_state.hasOwnProperty(name)){
+        if (devices_prev_state[name] != status.connected){
+            devices_prev_state[name] = status.connected;
+            needToUpdate = true;
+        }
+    } else {
+        devices_prev_state[name] = status.connected;
+        needToUpdate = true;
+    }
+    if (needToUpdate){
+        updateAgentButtons(name, status);
+    }
+
+    let st_elem = document.getElementById(name+"_status");
+    st_elem.innerHTML = status.state;
+
+    updateAgentHasCube(name, status.nodes);
+}
+
+
+function updateAgentButtons(name, status){
+    var buttons = document.querySelectorAll('*[id^="' +  name + '_btn"]');
+    if(status.connected){
+        buttons.forEach(function(btnElem) {
+            btnElem.classList.remove('btn-gray');
+            btnElem.classList.add('btn-green');
+        });
+    } else {
+        buttons.forEach(function(btnElem) {
+            btnElem.classList.remove('btn-green');
+            btnElem.classList.add('btn-gray');
+        });
+    }
+}
+
+
+function updateAgentHasCube(name, nodes){
+    let has_cube = false;
+    for (let i = 0; i < nodes.length; i++) {
+        if (nodes[i].name == 'hascube') {
+            has_cube = nodes[i].has_cube;   
+        }
+    }
+
+    let hc_elem = document.getElementById(name+"_hascube");
+    if (hc_elem != null) {
+        if(has_cube) {
+            hc_elem.innerHTML = "<div class='has_cube'>&nbsp;</div>";
+        } else {
+            hc_elem.innerHTML = "<div class='has_no_cube'>&nbsp;</div>";
+        }
+    }
+}
+
 
 function statusTimeoutFunction(interval){
     try {
@@ -111,3 +170,8 @@ if (updateBtn != null) {
         else { StartStatusUpdate(sv_config.updateStateInterval); }
     };
 }
+
+tpBtn = document.getElementById("start_tp");
+tpBtn.onclick = function(){ sendTechProcess('true'); };
+
+StartStatusUpdate(sv_config.updateStateInterval);

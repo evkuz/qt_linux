@@ -55,9 +55,7 @@
 //18.03.2022
 //#include "model/KB2_SUG_OPT.h"
 //#include "model/KB2_SUG.h"
-//#include "model/KB2_SUG_BP.h"
-
-#include "model/1_kb_sug_min.h"
+#include "model/KB2_SUG_BP.h"
 
 //+++++++++++++++++ Вспомогательные переменные
 

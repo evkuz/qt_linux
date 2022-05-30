@@ -17,7 +17,7 @@
 <script>
   sv_config = {
     devices: {
-      {% for key, value in devices.items() %}
+      {% for key, value in video_devices.items() %}
       {{ key }} : '{{ value }}',
       {% endfor %}
     },
@@ -39,8 +39,8 @@
     <div class="container inner">
       <h1> Robot Control Center </h1>
       <p>Cycle presentation.</p>
-      <div style="float:right;margin-top:-49px;display:none;">
-        <a class="btn btn-red" id="start_tp">Start tech process</a>
+      <div style="float:right;margin-top:-49px;display:block;">
+        <a class="btn btn-green" id="start_tp">Start tech process</a>
       </div>
     </div>
     <!--/.container -->
@@ -48,7 +48,7 @@
   <!--/.intro -->
   <div class="offset"></div>
   <!-- <div class="dark-wrapper"> -->
-    <div class="container inner">
+    <div class="container inner" style="display:none;">
       <h2>Tech process control</h2>
       
       <div class="divide30"></div>
@@ -92,6 +92,7 @@
           </div>
           <div class="divide20"></div>
           <div id="blueman_status" style="text-align:left;" class="alert alert-info">No information</div>
+          <div id="blueman_hascube" style="text-align:left;" class="alert alert-info">No information</div>
         </div>
       </div>
       <div class="col-sm-6 dark-wrapper">
@@ -114,6 +115,7 @@
           </div>
           <div class="divide20"></div>
           <div id="pinkman_status" style="text-align:left;" class="alert alert-info">No information</div>
+          <div id="pinkman_hascube" style="text-align:left;" class="alert alert-info">No information</div>
         </div>
       </div>
     </div>
@@ -130,10 +132,21 @@
             <a class="btn btn-green" id="wheeltec_btn_movetoa" onclick="runAction('wheeltec', 'movetob');">Move to 'B'</a>
             <a class="btn btn-green" id="wheeltec_btn_startros" onclick="getInfo('wheeltec', 'startrosrun');">Start ROS</a>
             <a class="btn btn-green" id="wheeltec_btn_stopros" onclick="getInfo('wheeltec', 'stoprosrun');">Stop ROS</a>
+            <a class="btn btn-green" id="wheeltec_btn_sethascube" onclick="setHasCube('wheeltec', true);">Put CUBE</a>
+            <a class="btn btn-green" id="wheeltec_btn_setnocube" onclick="setHasCube('wheeltec', false);">Remove CUBE</a>
             <a class="btn btn-red" id="wheeltec_reset" onclick="sendReset('wheeltec');">Reset</a>
           </div>
           <div class="divide20"></div>
           <div id="wheeltec_status" style="text-align:left;" class="alert alert-info">No information</div>
+          <div style="text-align:left;" class="alert alert-info">
+            <p>
+              <strong>Has cube:</strong><span id="wheeltec_hascube" style="text-align:left; margin:3px;">No information</span><br/>
+            </p>
+            <p>
+              <a class="btn btn-green" id="wheeltec_btn_sethascube" onclick="setHasCube('wheeltec', true);">Put CUBE</a>
+              <a class="btn btn-green" id="wheeltec_btn_setnocube" onclick="setHasCube('wheeltec', false);">Remove CUBE</a>
+            </p>
+          </div>
         </div>
       </div>
       <div class="col-sm-6 dark-wrapper">
@@ -149,6 +162,15 @@
           </div>
           <div class="divide20"></div>
           <div id="xrrobot_status" style="text-align:left;" class="alert alert-info">No information</div>
+          <div style="text-align:left;" class="alert alert-info">
+            <p>
+              <strong>Has cube:</strong><span id="xrrobot_hascube" style="text-align:left; margin:3px;">No information</span>
+            </p>
+            <p>
+              <a class="btn btn-green" id="xrrobotc_btn_sethascube" onclick="setHasCube('xrrobot', true);">Put CUBE</a>
+              <a class="btn btn-green" id="xrrobot_btn_setnocube" onclick="setHasCube('xrrobot', false);">Remove CUBE</a>
+            </p>
+          </div>
         </div>
       </div>
     </div><!-- /.services -->
@@ -168,10 +190,19 @@
           <div class="col-wrapper"  style="text-align:left;">
             <a class="btn btn-green" id="hiwonder_btn_getpos" onclick="getInfo('hiwonder', 'getposition');">Get position</a>
             <a class="btn btn-green" id="hiwonder_btn_restarts" onclick="getInfo('hiwonder', 'restartsocket');">Restart socket</a>
+            <a class="btn btn-green" id="hiwonder_btn_catchcube" onclick="runAction('hiwonder', 'catchcube');">Catch cube</a>
+            <a class="btn btn-green" id="hiwonder_btn_putcube" onclick="runAction('hiwonder', 'putcube');">Put cube</a>
+            <a class="btn btn-green" id="hiwonder_btn_catchcube" onclick="getInfo('hiwonder', 'startrdcommunication');">Start RD</a>
+            <a class="btn btn-green" id="hiwonder_btn_putcube" onclick="getInfo('hiwonder', 'stoprdcommunication');">Stop RD</a>
             <a class="btn btn-red" id="hiwonder_reset" onclick="sendReset('hiwonder');">Reset</a>
           </div>
           <div class="divide20"></div>
           <div id="hiwonder_status" style="text-align:left;" class="alert alert-info">No information</div>
+          <div style="text-align:left;" class="alert alert-info">
+            <p>
+              <strong>Has cube:</strong><span id="hiwonder_hascube" style="text-align:left; margin:3px;">No information</span>
+            </p>
+          </div>
         </div>
       </div>
       <div class="col-sm-6 dark-wrapper">
@@ -226,27 +257,8 @@
           </div>
           <div class="divide20"></div>
           <div id="mobman_qt_status" style="text-align:left;" class="alert alert-info">No information</div>
+          <div id="mobman_qt_hascube" style="text-align:left;" class="alert alert-info">No information</div>
         </div>
-      </div>
-    </div><!-- /.services -->
-
-    <div class="divide30"></div>
-
-    <div class="row text-center services-2">
-      <div class="col-sm-6 dark-wrapper">
-        <div class="col-wrapper">
-          <div class="divide10"></div>
-          <h3>Hiwonder QT</h3>
-          <div class="col-wrapper"  style="text-align:left;">
-            <a class="btn btn-green" id="hiwonder_qt_btn_start" onclick="runAction('hiwonder_qt', 'start');">Transfer cube</a>
-            <a class="btn btn-red" id="hiwonder_qt_reset" onclick="sendReset('hiwonder_qt');">Reset</a>
-          </div>
-          <div class="divide20"></div>
-          <div id="hiwonder_qt_status" style="text-align:left;" class="alert alert-info">No information</div>
-        </div>
-      </div>
-      <div class="col-sm-6 dark-wrapper">
-        <!-- Empty space -->
       </div>
     </div><!-- /.services -->
 
@@ -272,11 +284,7 @@
 <script src="style/js/scripts.js"></script> -->
 <script src="scripts/footer.js"></script>
 <script>/*<![CDATA[*/
-  startBtn = document.getElementById("start_tp")
-  startBtn.onclick = function(){
-    if (!tpInProgress) { StartTP();}
-    else { StopTP(); }
-  };
+  
   // END -- Region  TECH PROCESS
 
   /*]]>*/

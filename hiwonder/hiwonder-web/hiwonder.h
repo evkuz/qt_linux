@@ -23,13 +23,12 @@ public:
     HiWonder();
     ~HiWonder();
 
-    #define serial_speed Baud115200
-    #define robot_buffer_SIZE 512
-    #define Log_File_Name        "./hiwonder.log"
-    #define Serial_Output_File   "./serialData.log"
-    #define SOURCE_POINTS_FILE  "../source_points.xls"
-    #define DOF 6
-    #define szData 8 //Размер посылки в байтах
+#define serial_speed Baud115200
+#define robot_buffer_SIZE 32
+#define Log_File_Name        "./hiwonder.log"
+#define SOURCE_POINTS_FILE  "../source_points.xls"
+#define DOF 6
+#define szData 8 //Размер посылки в байтах
     unsigned char outputData [szData];
     QSerialPort serial;
     QByteArray byInputBuffer[robot_buffer_SIZE];
@@ -39,45 +38,43 @@ public:
     QByteArray qbuf;
     bool MOVEMENT_DONE;  // Флаг показывает, что получено сообщение от робота о заврешении цикла движения
 
-    bool SerialIsOpened; //Флаг показывает, открыт ли Serial port
 
-    QList<QString> statuslst = { "wait", "init", "inprogress", "done", "NoDetection" };
+
+    QList<QString> statuslst = { "wait", "init", "inprogress", "done" };
     // Ответ робота состоит из 4 полей
-//    QString current_status; // Текущий статус
-    int current_st_index;   // Индекс текущего статуса в списке statuslst
+    QString current_status; // Текущий статус
     QString return_code;    // результат обработки запроса - понял/не понял
     QString active_command; // команда, которая сейчас исполняется
     QString comment;        // любые дополнительные данные
 
-//    int writeTo(char *OutBuffer, int numbytes); // Запись данных из ПК в порт (роботу)
-//    int readFrom(char *buf_data, int buf_size); // Считывает данные из порта в ПК (от робота)
+    int writeTo(char *OutBuffer, int numbytes); // Запись данных из ПК в порт (роботу)
+    int readFrom(char *buf_data, int buf_size); // Считывает данные из порта в ПК (от робота)
 
-    void Log_File_Open(QString lname);            // Открыть лог-файл
-    void Source_Points_File_Open (QString fname); // Открыть файл для записи точек - это точно можно перенести в основной класс.
+    void Log_File_Open(QString lname);
+    void Source_Points_File_Open (QString fname);
 
     void Write_To_Log (int value, QString log_message);
-    void Write_To_Source(QString points_data); // Запись в файл координат кубика и 6 приводов в виде строки. Используется при создании ОС.
+    void Write_To_Source(int value, QString points_data); // Запись в файл координат кубика и 6 приводов в виде строки.
 
-    void GoToPosition(QByteArray &position); //, const char *servo Оправляет данные для новой позиции приводов в порт (Роботу), уже чисто для робота ф-ция
+    void GoToPosition(QByteArray &position); //, const char *servo Оправляет данные для новой позиции приводов в порт (Роботу)
 
-    void Write_Status(QByteArray &status);  // Тоже надстройка над QSerialPort
+    void Write_Status(QByteArray &status);
 
 private:
-    QString current_status; // Текущий статус
+    //QString current_status;
 
 public:
-    QString GetCurrentStatus();
+    QString GetCurrentStatus() { return this->current_status; }
     void SetCurrentStatus(QString);
 
 signals:
-    void Moving_Done_Signal(); // Тоже надстройка над QSerialPort
-
+    void Moving_Done_Signal();
 //    void StatusChangedSignal(QString);
 
 
 public slots:
-    int Open_Port_Slot(QString portname); // https://doc.qt.io/qt-5/qserialport.html#SerialPortError-enum - список ошибок при открытии порта.
-    void ReadFromSerial_Slot(); // Слот обработки сигнала readyRead()
+    void Open_Port_Slot(QString portname);
+    void ReadFromSerial_Slot();
 };
 
 #endif // HIWONDER_H
