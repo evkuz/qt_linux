@@ -4,7 +4,7 @@ import time
 
 class StartRMCommunicationService(BaseService):
     def __init__(self, remote_device:HiwonderQt):
-        BaseService.__init__(self, "startrmcommunication")
+        BaseService.__init__(self, "startrdcommunication")
         self.__remote_device = remote_device
     
     def get_info(self) -> dict:
@@ -24,7 +24,7 @@ class StartRMCommunicationService(BaseService):
 
 class StopRMCommunicationService(BaseService):
     def __init__(self, remote_device:HiwonderQt):
-        BaseService.__init__(self, "stoprmcommunication")
+        BaseService.__init__(self, "stoprdcommunication")
         self.__remote_device = remote_device
     
     def get_info(self) -> dict:

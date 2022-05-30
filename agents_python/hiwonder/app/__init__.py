@@ -27,7 +27,7 @@ streamer = vision.VideoStreamer(cam, detector)
 socket_server = utils.SocketServer(app.config["SOCKET_PATH"], cam, detector, result_smoothing)
 socket_server.start()
 
-qt_device = utils.HiwonderQt(app.config["QT_DEVICE_ADDR"], "hiwonder_qt", 0.3)
+qt_device = utils.HiwonderQt(app.config["QT_DEVICE_ADDR"], "hiwonder_qt", 0.4)
 qt_device.start()
 
 # import views
@@ -49,20 +49,21 @@ device.set_name("Hiwonder")
 # Configuring nodes
 hascube_node = nodes.HwHasCubeNode()
 position_node = nodes.HwPositionNode()
-connected_node = nodes.HwConnectedNode(qt_device.IsConnected)
+rd_node = nodes.HwConnectedNode(qt_device.IsConnected, qt_device.IsWorking)
 
 # this is needed for connecting events with subscripers
 mainbus = device.main_bus
 qt_device.set_event_bus(mainbus) # all events will be written to this bus
 
-mainbus.add_subscriber(qt_device.name + '/connected', connected_node)
+mainbus.add_subscriber(qt_device.name + '/connected', rd_node)
+mainbus.add_subscriber(qt_device.name + '/start', rd_node)
 mainbus.add_subscriber("actions", position_node)
 mainbus.add_subscriber("actions", hascube_node)
 
 #this is needed to show nodes in device state
 device.register_node(hascube_node)
 device.register_node(position_node)
-device.register_node(connected_node)
+device.register_node(rd_node)
 
 
 # Configuring Services
@@ -76,3 +77,4 @@ device.register_service(services.StopRMCommunicationService(qt_device))
 # Configuring Actions
 device.register_action(actions.CatchCubeAction(qt_device, cam, detector))
 device.register_action(actions.PutCubeAction(qt_device))
+device.register_action(actions.MoveHomeAction(qt_device))

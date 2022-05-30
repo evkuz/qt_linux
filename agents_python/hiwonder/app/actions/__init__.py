@@ -1,7 +1,8 @@
-from .hwcontrol import CatchCubeAction, PutCubeAction
+from .hwcontrol import CatchCubeAction, PutCubeAction, MoveHomeAction
 
 
 __all__ = [
     'CatchCubeAction',
-    'PutCubeAction'
+    'PutCubeAction',
+    'MoveHomeAction'
  ]

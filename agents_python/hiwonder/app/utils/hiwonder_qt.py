@@ -30,7 +30,7 @@ class HiwonderQt(BaseController):
 
     @property
     def channels(self) -> List[str]:
-        return ['connected']
+        return ['connected', 'start']
 
     @property
     def IsConnected(self):
@@ -52,17 +52,18 @@ class HiwonderQt(BaseController):
         if self.__thread is None:
             self.__thread = threading.Thread(target=self.__thread_work)
             self._isWorking = True
+            self.fire_event("start", True)
             self.__thread.start()
 
     def __thread_work(self):
         while self._isWorking:
             if time.time() - self.__lastUpdateTime > self.__updateStateInterval:
                 self.__update_state()
-            time.sleep(MINIMAL_TIMEOUT)
 
         self.set_connected(False)
         self.__thread = None
         self._isWorking = False
+        self.fire_event("start", False)
     
     def __update_state(self):
         try:

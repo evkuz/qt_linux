@@ -55,6 +55,17 @@ class CatchCubeAction (BaseAction):
 
     def reset_action(self) -> int:
         self.qt_device.reset_actions()
+        self.qt_device.run_action("standup")
+        while True:
+            st = self.qt_device.get_state()
+            if not isinstance(st, dict):
+                self._set_state_info(f"Device answer isn't dict type!")
+                return -3
+            if not 'actions_list' in st.keys():
+                self._set_state_info(f"Device answer hasn't actions_list!")
+                return -4
+            if len(st['actions_list']) == 0:
+                break
         self._set_state_info(f"Stopped and returned home")
         return -126
 
@@ -91,5 +102,52 @@ class PutCubeAction (BaseAction):
 
     def reset_action(self) -> int:
         self.qt_device.reset_actions()
+        self.qt_device.run_action("standup")
+        while True:
+            st = self.qt_device.get_state()
+            if not isinstance(st, dict):
+                self._set_state_info(f"Device answer isn't dict type!")
+                return -3
+            if not 'actions_list' in st.keys():
+                self._set_state_info(f"Device answer hasn't actions_list!")
+                return -4
+            if len(st['actions_list']) == 0:
+                break
         self._set_state_info(f"Stopped and returned home")
+        return -126
+
+
+class MoveHomeAction (BaseAction):
+    def __init__(self, qt_device:HiwonderQt):
+        BaseAction.__init__(self, "movehome")
+        self.qt_device = qt_device
+        
+    def get_info(self) -> dict:
+        return self.make_info(
+            "Will move robot to home position"
+        )
+
+    def run_action(self, **kwargs) -> int:
+        if self.qt_device.IsConnected:
+            self._set_state_info(f"Device isn't connected!")
+            return -2
+        
+        self.qt_device.run_action("standup")
+        while self._workingFlag:
+            st = self.qt_device.get_state()
+            if not isinstance(st, dict):
+                self._set_state_info(f"Device answer isn't dict type!")
+                return -3
+            if not 'actions_list' in st.keys():
+                self._set_state_info(f"Device answer hasn't actions_list!")
+                return -4
+            if len(st['actions_list']) == 0:
+                break
+
+        self._set_state_info(f"Cube was put.")
+        return 0
+
+    def reset_action(self) -> int:
+        self.qt_device.reset_actions()
+        self._set_state_info(f"Stopped")
         return -126
