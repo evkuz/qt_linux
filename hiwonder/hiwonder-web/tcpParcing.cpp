@@ -55,14 +55,18 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
     case 0: // status
 
         // Нужно добавлять активный экшен, либо пустой список
-        str = "Going to create action_list";
-        GUI_Write_To_Log(value, str);
+//        str = "Going to create action_list";
+//        GUI_Write_To_Log(value, str);
         // Надо данные из mainjsnObj переписать в соответствующую jsnAction...
         // В общем надо с указателями работать.
+        mainjsnObj["rc"] = 0;
+        mainjsnObj["state"] = "Running";
+        mainjsnObj["info"] = "Request Accepted";
+        jsnStore->setJsnHeadStatus(mainjsnObj);
         jsnStore->createActionList(); // формируем список, записываем данные в jsnData
 
         //str += QJsonDocument(jsnStore->jsnActionList).toJson(QJsonDocument::Indented);
-        str += jsnStore->returnJsnData();
+        str = jsnStore->returnJsnData();
         GUI_Write_To_Log(value, str);
 //        str = jsnStore->returnJsnData();
 //        str = "{\n\t\"status\": \"testing\"\t\n}";
