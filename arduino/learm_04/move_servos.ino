@@ -7,36 +7,32 @@ void move_servo_together (byte *pos, byte start_servo, byte end_servo) // addres
   get_all_servos("before"); // Получаем массив current_s[] - текущие значения углов сервоприводов
   get_curr_delta(pos);      // Получаем массив delta и направление (массив - DF)
   maxdt = get_max_delta(delta, start_servo, end_servo); // индекс в массиве delta, а не абсолютное значение/
-  
-  
-//  message = "Servo index with max delta is ";
-//  message += String(maxdt);
-//  Serial.println(message);
-//  Serial.flush();
-  
-  if (maxdt==100) {return;}
-  
-//  message = "Max delta value is ";
-//  message += String(delta[maxdt]);
-//
-//  Serial.println(message);
-//  Serial.flush();
-//  message = "DF values are : ";
-//  for (byte i=0; i<= serv_number -1; i++){ message += String(DF[i]); message += ", ";}
-//  Serial.println(message);
-//  Serial.flush();
-//
-//
-//
-//     message = "Current Max delta value is ";
-//message += String(delta[maxdt]);
-//Serial.println(message);
-//Serial.flush();
- 
+/*  message = "Servo index with max delta is ";
+  message += String(maxdt);
+  Serial.println(message);
+  Serial.flush();
+
+  message = "Max delta value is ";
+  message += String(delta[maxdt]);
+
+  Serial.println(message);
+  Serial.flush();
+  message = "Delta values are : ";
+  for (byte i=0; i<= serv_number -1; i++){ message += String(DF[i]); message += ", ";}
+  Serial.println(message);
+  Serial.flush();
+*/
+
+
+  /*   message = "Current Max delta value is ";
+message += String(delta[maxdt]);
+Serial.println(message);
+Serial.flush();
+ */
 
 
   byte cycle_num =0;
-  //int increment = 0;
+  int increment = 0;
 
 //  if (start_servo < end_servo) {increment = 1;} // В сторону увеличения
 //  if (start_servo >= end_servo) {increment = -1;} // В сторону уменьшения
@@ -71,7 +67,7 @@ get_all_servos("after");
 */
 // Сравниваем массивы
 // message += "Main Cycle worked "; message += String(cycle_num); message += " times";
-//
+
 //for (byte i=0; i<=serv_number -1; i++){ // ОБходим все приводы, проверяем совпадение позиции с заданной
 //  if (current_s[i] != pos[i]){
 //      message = "Позиция не совпадает с заданной, привод ";
@@ -79,8 +75,9 @@ get_all_servos("after");
 //      message += "Задано      "; message += String(pos[i]);
 //      message += "Фактическая "; message += String(current_s[i]);
 //      Serial.println(message);
+
 //  }
-//
+
 //}
 
 
@@ -97,7 +94,7 @@ get_all_servos("after");
 }//move_servo_together
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++
-/*Возвращает индекс макисмального элемента в массиве delta, т.е. определяет максимальное отклонение и возвращает индекс такого элемента*/
+/*Возвращает индекс макисмального элемента в массиве delta*/
 byte get_max_delta (byte *arr, byte start_servo, byte end_servo)
 {
   int maxdelta, index;

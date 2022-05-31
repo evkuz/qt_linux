@@ -30,29 +30,25 @@
 /// //../include/hiwonder_byte.h
 #include <stdlib.h>
 
-// /home/ubuntu/arduino-1.8.16/hardware/arduino/avr/cores/arduino/HardwareSerial.h
-//#define SERIAL_TX_BUFFER_SIZE 1024
-//#define SERIAL_RX_BUFFER_SIZE 1024
 
 #define serv_number 6 // Количество приводов под управлением
-#define sBufSize 255   // Размер буфера компорта в плате NANO - 64 байта.
+#define sBufSize 32   // Размер буфера компорта в плате NANO - 64 байта.
 #define szParcel 8
-// servo1 - захват
 Servo servo1, servo2, servo3,servo4,servo5,servo6;
-Servo servos [serv_number] = {servo1, servo2, servo3,servo4,servo5,servo6}; // Текущие значения углов
+Servo servos [6] = {servo1, servo2, servo3,servo4,servo5,servo6}; // Текущие значения углов
 
 
 int *s1, *s2, *s3, *s4, *s5, *s6;
-byte current_s [serv_number]; // Текущее значение угла для соответстующего привода 0-180
-byte readed_pos[serv_number];
-byte delta [serv_number];     // Разница (между текущим и целевым положением) в угле для соответствующего привода 0 - 180
-                              // индекс элемента соответствует номеру привода, с поправкой, что индексы начинаются с 0
+byte current_s [6]; // Текущее значение угла для соответстующего привода 0-180
+byte readed_pos[6];
+byte delta [6];     // Разница (между текущим и целевым положением) в угле для соответствующего привода 0 - 180
+                    // индекс элемента соответствует номеру привода, с поправкой, что индексы начинаются с 0
 //String message, number;//, s_pos;
 char *s_pos;
 char buf[sBufSize];
 
-byte ints[szParcel]; // Данные, полученные по serial, заданные позиции сервоприводов
-short DF [serv_number] ={1, 1, 1, 1, 1, 1}; // Значения приращений угла в градусах для приводов, т.е. 1 - увеличиваем на 1 градус,
+byte ints[sBufSize]; // Данные, полученные по serial, заданные позиции сервоприводов
+short DF [6] ={1, 1, 1, 1, 1, 1}; // Значения приращений угла в градусах для приводов, т.е. 1 - увеличиваем на 1 градус,
                                   // а (-1) - уменьшаем на 1 градус.
                                   // При значении 1 - движение робота максимально плавное
                                   // Направление изменений - увеличение/уменьшение
@@ -69,20 +65,17 @@ void setup() {
 
     }
 // attach servos to correspondent pin
-  for (int i=0; i< serv_number; i++)  { servos[i].attach(i+2); } //, 500, 2500;
-  //smoothStart();
+  for (int i=0; i<= serv_number -1; i++)  { servos[i].attach(i+2); } //, 500, 2500;
+  smoothStart();
 
 //  move_servo_together(hwr_Start_position, 1, 6);
   delay(1000);
 
 
-  for (byte i=0; i< sBufSize; i++){ buf[i] = 255; }
-
-  for (byte i=0; i< szParcel; i++){ ints[i] = 93;}
-
-  for (byte i=0; i< serv_number; i++){ delta[i] = 0;}
-
-  
+  for (byte i=0; i< sBufSize; i++){
+      ints[i] = 93;
+      buf[i] = 255;
+  }
 
 } //setup()
 //++++++++++++++++++++++++ loop 
@@ -127,20 +120,18 @@ void to_fix_position(byte *pos) { for (int i=0; i<= serv_number -1; i++) { servo
 void get_all_servos(String when)
 {
     String message;
-    message = "### "; message += when; message += " get_all_servo  :  ";
-    for (int i=0; i<serv_number; i++)
+    message = "From robot "; message += when; message += " get_all_servo  :  ";
+    for (int i=0; i<=serv_number - 1; i++)
     {
 
       current_s[i] = servos[i].read(); //Current servo
       //readed_pos[i] = current_s[i];
-      message += String(i); message += " position ";
+        //  message += String(i); message += " position ";
       message += String(current_s[i]);  message += ", ";
     //
     }
-    message.remove(message.length()-1);
-    message += "\n";
-//    Serial.println(message);
-//    Serial.flush();
+  //  Serial.println(message);
+  //  Serial.flush();
 }//get_all_servos()
 
 //+++++++++++++++++++++++++++++++++++
@@ -173,7 +164,6 @@ void get_curr_delta (byte *pos)
 void parse_command ()
 {
     String message;
-    int sumOfData;
 
 
     if (Serial.available()) {
@@ -182,37 +172,16 @@ void parse_command ()
       
       numReaded=Serial.readBytes(ints, szParcel);
       message = "";
-      sumOfData =0;
       for (int i=0; i<numReaded; i++)
       {
-          message += String(ints[i]); message += " "; // 17 байт - это 7мь 2-значных цифр + 1 3х-значное число + 7 пробелов между всем числами, 
-                                                       // итого - 24 байта, только дублирование пришедших цифр.
-          sumOfData += ints[i];
-      }                                              
-      message.remove(message.length()-1); //Убираем крайний пробел, добавленный в цикле
-      message += "\n";
+          message += String(ints[i]); message += " ";
+      }
+
+      message.remove(message.length()-1);
       strcpy(buf, message.c_str());
       Serial.print(buf);
 
-
-      if (sumOfData == 1700){ // значит пришла команда "getservos", т.е. данные == {200, 200, 200, 200, 200, 200, 250, 250}
-        // Получаем значения приводов в массиве current_s[i]
-        get_all_servos("now");
-          message = "Current servo values are as follows : ";
-          for (int i=0; i<serv_number; i++)
-            {
-                message += String(current_s[i]); message += " ";
-              
-            }
-          message.remove(message.length()-1); //Убираем крайний пробел, добавленный в цикле
-          message += "\n";
-          strcpy(buf, message.c_str());
-          Serial.print(buf);
-      }
-      else {
-        Go_To_Position(ints);
-      }
-      
+      Go_To_Position(ints);
 
       /*Now send current servo data to PC*/
      // get_all_servos();
@@ -257,7 +226,7 @@ void Go_To_Position(byte *pos)
            delay(1000);
         }
 
-      break;  //case 0x30:
+      break;
 
           
     case 0x30: // Движение "Обратно"
@@ -274,12 +243,12 @@ void Go_To_Position(byte *pos)
           delay(1000);
           }
 
-         if (pos[7]==0xF4){ // Кубик на тележку положили, теперь грамотно убираем манипулятор (не задевая транспортир).
-             move_servo_together (ints, 3, 5);
-             delay(500);
-             move_servo_together (ints, 1, 6);
-             delay(500);
-         }
+           if (pos[7]==0xF4){ // Кубик на тележку положили, теперь грамотно убираем манипулятор (не задевая транспортир).
+               move_servo_together (ints, 3, 5);
+               delay(500);
+               move_servo_together (ints, 1, 6);
+               delay(500);
+           }
 
 
           if (pos[7]==0xDE) // Последняя команда роботу при комплексном движении
@@ -287,14 +256,13 @@ void Go_To_Position(byte *pos)
 
           move_servo_together (ints, 3, 5);
           delay(1000);
-//          move_servo_together (ints, 1, 6);
-//          delay(200);
-          move_servo_together (ints, 1, 1);
-          delay(200);
-          move_servo_together (ints,6, 6);
+//          move_servo_together (ints, 3, 4);
+//          delay(1000);
 
+          move_servo_together (ints, 1, 6);
+//          delay(300);
+//          move_servo_together (ints, 6, 6);
 
-          
           }   
      break; //case 0x30:
 
@@ -313,10 +281,10 @@ void Go_To_Position(byte *pos)
 
 // Проверяем, последняя ли команда
 if (pos[7]==0xDE) {
-   message = "Robot movement FINISHED! LAST !!"; // А всего их 32
+   message = "Robot movement DONE! LAST !!"; 
   }
   else {
-   message = "Robot current movement DONE! !!!"; //28 bytes  //message += String(numBytes);}
+   message = "Robot current movement DONE!"; //28 bytes  //message += String(numBytes);}
   }
     
 

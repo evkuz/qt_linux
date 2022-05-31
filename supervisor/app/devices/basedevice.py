@@ -31,7 +31,7 @@ class BaseDevice:
 
     @property
     def State(self):
-        return self._state.__copy__()
+        return dict(self._state.__dict__)
 
     @property
     def Address(self):
@@ -73,18 +73,20 @@ class BaseDevice:
                 action_list = status['action_list']
                 self._state.set_actions_list(action_list)
                 if len(action_list) == 0:
-                    status = "waiting"
+                    status_str = "waiting"
                 else:
-                    status = "busy with actions:"
-                    status += ",".join([act['name'] for act in action_list])
-                self._state.set_state(status)
+                    status_str = "busy with actions:"
+                    status_str += ",".join([act['name'] for act in action_list])
+                self._state.set_state(status_str)
+            if 'nodes' in status:
+                self._state.nodes = status['nodes']
         except Exception as e:
             self._state.set_disconnected(str(e))
 
     def run_action(self, actionName:str, **kwargs)->bool:
         #url = self.addr + f"/run?cmd={cmdName}&"
         try:
-            data = self._run_action(name=actionName, **kwargs)
+            data = self._run_action(actionName, **kwargs)
             if type(data) is not dict:
                 rc = 1
             else:
@@ -148,38 +150,28 @@ class BaseDevice:
     def _send_reset(self)->dict:
         raise NotImplementedError()
 
-    def do_action(self, environment:dict, cubes:dict)->dict:
+    def do_action(self, environment:dict)->None:
         """This method will be prformed by supervisor
 
         Args:
             environment (dict): dict with all devices states
-            cubes (dict): dict of cubes states
-
-        Returns:
-            dict: dict with cube names that states was changed
         """
         if not self._state.connected:
-            return {}
+            return
         try:
-            return self._do_action(environment, cubes)
+            self._do_action(environment)
         except Exception as e:
             logging.error(str(e))
-            return {}
 
 
-
-    def _do_action(self, environment:dict, cubes:dict)->dict:
-        """This method will be prformed by supervisor
+    def _do_action(self, environment:dict)->None:
+        """This method must be reimplemented in derived.
 
         Args:
             environment (dict): dict with all devices states
-            cubes (dict): dict of cubes states
-
+            
         Raises:
             NotImplementedError: _description_
-
-        Returns:
-            dict: dict with cube names that states was changed
         """
         raise NotImplementedError
 

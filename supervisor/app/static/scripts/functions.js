@@ -49,3 +49,44 @@ async function getInfo(device, service){
   }
   return false;
 }
+
+async function setHasCube(device, has_cube){
+  let url = "/get_info?device=" + device + "&service=sethascube&set=" + has_cube;
+  let response = await fetch(url);
+  if (response.ok) { // если HTTP-статус в диапазоне 200-299
+    // получаем тело ответа (см. про этот метод ниже)
+    let json = await response.json();
+    if (json.rc == 0) {
+      return true;
+    }
+  }
+  return false;
+}
+
+async function sendResetAll(){
+  let url = "/reset";
+  let response = await fetch(url);
+  if (response.ok) { // если HTTP-статус в диапазоне 200-299
+    // получаем тело ответа (см. про этот метод ниже)
+    //let json = await response.json();
+    let json = await response.json();
+    if (json.rc == 0) {
+        return true;
+    }
+  }
+  return false;
+}
+
+async function sendTechProcess(value){
+  let url = "/techproc?set=" + value;
+  let response = await fetch(url);
+  if (response.ok) { // если HTTP-статус в диапазоне 200-299
+    // получаем тело ответа (см. про этот метод ниже)
+    //let json = await response.json();
+    let json = await response.json();
+    if (json.rc == 0) {
+        return true;
+    }
+  }
+  return false;
+}
