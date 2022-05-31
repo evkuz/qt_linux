@@ -29,7 +29,7 @@ public:
 //unsigned int  DOF;
 //unsigned int  szData; //Размер посылки в байтах
 
-static const int robot_buffer_SIZE = 32;
+static const int robot_buffer_SIZE = 255;
 static const int DOF = 6;
 static const int szData = 8;
     unsigned char outputData [szData];

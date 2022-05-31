@@ -512,6 +512,9 @@ If no full packet is received, this code restores the stream to the initial posi
  * и "Сверху вниз", MainWindow--->QTcpServer--->QTcpSocket
  * и "Снизу вверх", QTcpSocket--->QTcpServer--->MainWindow
  *
+ * Теперь так :
+ * MainProcess::Write_2_TcpClient_Signal--->QSimpleServer::Write_2_TcpClient_SLot--->
+ *
  * //+++++++++++++++++++++++
  * 19.10.2021
  * Тестировал работу консольного варианта управления роботом.

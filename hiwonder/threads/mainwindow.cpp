@@ -76,7 +76,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(RMath, SIGNAL (Pass_String_Signal(QString)), this, SLOT(Pass_String_Slot(QString)));
     //#################### Signal to web-server
-    connect( Robot, SIGNAL (Moving_Done_Signal()), this, SLOT (Moving_Done_Slot()));;;
+    connect( Robot, SIGNAL (Moving_Done_Signal()), this, SLOT (Moving_Done_Slot()));
 
 
     // ============================================== Создаем поток 1 - web-server
@@ -203,12 +203,13 @@ void MainWindow::on_sitButton_clicked()
     this->update_LineDits_from_position(sit_down_position);
     this->repaint();
 
-    //QByteArray dd = QByteArray::fromRawData(sit_down_position, 6);
-    //dd.append(0x31); // Движение "Туда"
-    //Robot->GoToPosition(dd);//, sit_down_position
+    QByteArray dd = QByteArray::fromRawData(sit_down_position, 6);
+    dd.append(0x31); // Движение "Туда"
+    dd.append(LASTONE); // Всегда последнее ?
+    Robot->GoToPosition(dd);//, sit_down_position
 
-    unsigned char test1[] = {23, 23, 23, 20, 23, 160};
-    unsigned char test2[] = {123, 123, 123, 120, 123, 23};
+//    unsigned char test1[] = {23, 23, 23, 20, 23, 160};
+//    unsigned char test2[] = {123, 123, 123, 120, 123, 23};
 //    unsigned char test3[] = {93, 93, 93, 20, 93, 160};
 //    unsigned char test4[] = {93, 93, 93, 20, 93, 23};
 //    unsigned char test5[] = {93, 93, 93, 20, 93, 160};
@@ -225,16 +226,16 @@ void MainWindow::on_sitButton_clicked()
 //    unsigned char pos4[] = {63, 93, 65, 45, 93, 165};
     //unsigned char pos5[] = {63, 93, 65, 45, 135, 40};
 
-    QByteArray dd ;
-    dd.resize(HiWonder::szData);
-    dd.insert(HiWonder::szData-2, 0x31);
-    dd.insert(HiWonder::szData-1, LASTONE);
+//    QByteArray dd ;
+//    dd.resize(HiWonder::szData);
+//    dd.insert(HiWonder::szData-2, 0x31);
+//    dd.insert(HiWonder::szData-1, LASTONE);
 
-    memcpy(dd.data(), test1, 6);
-    Robot->GoToPosition(dd);
+//    memcpy(dd.data(), test1, 6);
+//    Robot->GoToPosition(dd);
 
-    memcpy(dd.data(), test2, 6);
-    Robot->GoToPosition(dd);
+//    memcpy(dd.data(), test2, 6);
+//    Robot->GoToPosition(dd);
 
 //    memcpy(dd.data(), test3, 6);
 //    Robot->GoToPosition(dd);
@@ -347,16 +348,17 @@ void MainWindow::on_socketButton_clicked()
     Servos[0]=0;
     update_LineDits_from_servos();
 
+    int kf = 100000;
     if (readSocket.GetState(&state) == 0)
       {
         if (state.isDetected){
-            try_mcinfer(state.objectX, state.objectY);
+            try_mcinfer(state.objectX*kf, state.objectY*kf);
             X = state.objectX;
             Y = state.objectY;
             str+="DETECTED: ";
-            str += QString::number(state.objectX);
+            str += QString::number(state.objectX*kf);
             str += ", ";
-            str += QString::number(state.objectY);
+            str += QString::number(state.objectY*kf);
 
 
         } else {
@@ -568,16 +570,17 @@ void MainWindow::on_trainButton_clicked()
     Servos[0]=0;
   //  update_LineDits_from_servos();
 
+    int kf = 100000;
     if (readSocket.GetState(&state) == 0)
       {
         if (state.isDetected){
-            try_mcinfer(state.objectX, state.objectY); // Тут меняем current_status = "inprogress". Команда 0 - Переместить открытый хват к кубику.
+            try_mcinfer(state.objectX*kf, state.objectY*kf); // Тут меняем current_status = "inprogress". Команда 0 - Переместить открытый хват к кубику.
             X = state.objectX;                        //  Хват открывается в процессе движения робота, а не отдельной командой.
             Y = state.objectY;
             str+="DETECTED: ";
-            str += QString::number(state.objectX);
+            str += QString::number(state.objectX*kf);
             str += ", ";
-            str += QString::number(state.objectY);
+            str += QString::number(state.objectY*kf);
             DETECTED = true;
 
         } else {

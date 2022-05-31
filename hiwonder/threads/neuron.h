@@ -39,7 +39,7 @@
 //#include "model/model3.h"
 //#include "model/new_05_10.h"
 
-#include "model/new2_05_10.h" // WORKS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// #include "model/new2_05_10.h" // WORKS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 //#include"model/kb2_sug_pr_bp.h" // 3+
 //#include "model/kb2_sug_min2_bp.h" //also WORKS
@@ -48,7 +48,17 @@
 
 //#include "model/18_02_ga_BP.h" // Это для розовой полочки
 
-//+++++++++++++++++ Вспомогательные переменные
+
+//+++++++++++++++++ 05.04.2022
+
+#include "model/1_kb_sug_min.h"
+//#include "model/2_kb_sug_prod.h"
+//#include "model/3_kb_sug_min_bp.h"
+//#include "model/4_kb_sug_prod_bp.h"
+
+
+
+///+++++++++++++++++ Вспомогательные переменные
 
 float in[3] = {0,0,0}; //массив для ввода
 float outKB[4]= {0,0,0,0}; // массив для вывода
