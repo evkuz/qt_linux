@@ -283,10 +283,10 @@ void Go_To_Position(byte *pos)
     }//switch (pos[6])
     
 if (pos[szParcel-1]==0xDE) {
-   message = "Robot movement FINISHED! LAST !!"; // А всего их 32
+   message = "Robot movement DONE! LAST !!"; 
   }
   else {
-   message = "Robot current movement DONE! !!!"; //28 bytes  //message += String(numBytes);} 
+   message = "Robot current movement DONE!"; //28 bytes  //message += String(numBytes);}
   }
     
 

@@ -11,6 +11,7 @@ class BaseStatus:
         self.state = "No information"
         self.connected = False
         self.actions_list = []
+        self.nodes = {}
    
     def __str__(self) -> str:
         return json.dumps(self.__dict__,  default = obj_to_dict)
@@ -38,5 +39,6 @@ class BaseStatus:
         res.state = self.state
         res.connected = self.connected
         res.actions_list = self.actions_list
+        res.nodes = dict(self.nodes)
         return res
 

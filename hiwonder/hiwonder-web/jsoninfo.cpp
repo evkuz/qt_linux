@@ -5,7 +5,7 @@ JsonInfo::JsonInfo()
     currentStatus = {DEV_NAME, RC_SUCCESS,  "OK", DEV_HEAD_STATE_WAIT}; // Инициализируем структуру
     action_command = "nothing";
 //    struc_2_json(jsnOB1, currentStatus); // Инициализируем  jsnOB1 данными из структуры выше
-//    init_json();
+    init_json();
     init_actions();
 }
 //+++++++++++++++++++++

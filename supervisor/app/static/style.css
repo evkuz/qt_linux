@@ -3102,3 +3102,18 @@ textarea {
 	    overflow-y: scroll;
 	}
 }
+
+div.has_cube {
+    display: inline-block;
+    height: 25px;
+    width: 25px;
+    background-color: orangered;
+}
+
+
+div.has_no_cube {
+    display: inline-block;
+    height: 25px;
+    width: 25px;
+    background-color: transparent;
+}
