@@ -1,0 +1,20 @@
+[Unit]
+Description=Mobman move http server daemon
+After=network.target
+#After=robot.rosrun.service
+
+
+[Service]
+User=xrrobot
+Group=xrrobot
+WorkingDirectory=/home/xrrobot/agents_python/mobman_move
+ExecStart=/home/xrrobot/agents_python/mobman_move/start.sh
+Type=simple
+ExecReload=/bin/kill -s HUP $MAINPID
+KillMode=mixed
+TimeoutStopSec=5
+PrivateTmp=true
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

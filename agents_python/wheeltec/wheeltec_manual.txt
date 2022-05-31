@@ -1,0 +1,35 @@
+wifi dongguan
+root iqrlit2021
+wheeltec iqrlit2021
+
+ssh wheeltec@192.168.0.100
+1. Дистанционное управление роботом.
+
+ОТкрываем новое окно терминала
+roslaunch turn_on_wheeltec_robot turn_on_wheeltec_robot.launch
+
+Открываем новое окно терминала
+roslaunch wheeltec_robot_rc keyboard_teleop.launch
+
+Обращаем внимание на строки
+
+Control Your Turtlebot!
+---------------------------
+Moving around:
+   u    i    o
+   j    k    l
+   m    ,    .
+
+
+i - вперед
+, - назад
+
+u - вперед влево
+o - вперед вправо
+
+m - назад влево
+. - назад вправо
+
+k - остановка
+
+

@@ -1,0 +1,7 @@
+opencv-python==4.5.1.48
+numpy
+Flask==2.0.1
+flask-script==2.0.6
+rosinstall
+pyserial
+requests
