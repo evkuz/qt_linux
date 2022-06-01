@@ -81,6 +81,7 @@ void clientSocket::SendToTcp_Slot()
     connect (this->socketDEV, &QTcpSocket::connected, this, &clientSocket::onDEVSocketConnected_Slot); // Send "status" command
     //connect (this->socketDEV, &QTcpSocket::stateChanged, this, &MainWindow::onSocketDevState_Changed);
 
+    connect(socketDEV, &QAbstractSocket::errorOccurred, this, &clientSocket::displayError);
 
     socketDEV->connectToHost(myip, myport);
 

@@ -42,7 +42,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     // catch socket error if any
-    connect(mysocketDev->socketDEV, &QAbstractSocket::errorOccurred, mysocketDev, &clientSocket::displayError);
+    //connect(mysocketDev->socketDEV, &QAbstractSocket::errorOccurred, mysocketDev, &clientSocket::displayError);
 
     //socketError to log
     connect(mysocketDev, &clientSocket::socketErrorToLog_Signal, this, &MainWindow::socketErrorToLog_Slot);
