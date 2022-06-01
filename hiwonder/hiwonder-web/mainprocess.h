@@ -82,6 +82,8 @@ private:
 
 public slots:
 void Data_From_TcpClient_Slot(QString);
+// slot for QSocketThread::socketErrorToLog_Signal
+//void socketErrorToLog_Slot(QString); // write to log socketError message
 
 
 private slots:

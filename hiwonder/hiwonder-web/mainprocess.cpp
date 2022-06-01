@@ -112,8 +112,7 @@ MainProcess::MainProcess(QObject *parent)
 
     //#################### Signal to web-server
     connect( Robot, &HiWonder::Moving_Done_Signal, this, &MainProcess::Moving_Done_Slot);
-
-
+//    connect()
     // ============================================== Создаем поток 1 - web-server
     // connect(chan_A, SIGNAL(Process_A()), TheWeb, SLOT(Output_Data_From_Client_Slot()), Qt::QueuedConnection); //Считываем из железки в ПК по каналу А
                                                                                        // Qt::DirectConnection

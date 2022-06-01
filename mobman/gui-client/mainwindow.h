@@ -94,6 +94,8 @@ public slots:
     void Write_2_TcpClient_Slot(QString);
 
     void Read_From_TcpClient_Slot(QString); // Пишем в лог данные, полученные по TCP
+    void socketErrorToLog_Slot(QString); // write to log socketError message
+
 
 private slots:
     void on_GetDistanceButton_clicked();

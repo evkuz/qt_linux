@@ -75,7 +75,7 @@ void clientSocket::SendToTcp_Slot()
     socketDEV->setSocketOption(QAbstractSocket::KeepAliveOption, true);
 
     //Соединение сигналов со слотами
-    connect(socketDEV, &QIODevice::readyRead, this, &clientSocket::onReadyRead);//, Qt::QueuedConnection);
+    connect(socketDEV, &QIODevice::readyRead, this, &clientSocket::onReadyRead, Qt::QueuedConnection);//, Qt::QueuedConnection);
     connect(socketDEV, &QAbstractSocket::disconnected, this, &clientSocket::socketDEV_onDisconnected_Slot,Qt::AutoConnection);
 
     connect (this->socketDEV, &QTcpSocket::connected, this, &clientSocket::onDEVSocketConnected_Slot); // Send "status" command
@@ -83,5 +83,30 @@ void clientSocket::SendToTcp_Slot()
 
 
     socketDEV->connectToHost(myip, myport);
+
+}
+//+++++++++++++++++++++++++++++++++++++++++++++++++++
+// Слот сигнала &QAbstractSocket::errorOccurred()
+void clientSocket::displayError(QAbstractSocket::SocketError socketError)
+{
+    QString str;
+    switch (socketError) {
+    case QAbstractSocket::RemoteHostClosedError:
+        break;
+    case QAbstractSocket::HostNotFoundError:
+             str = "The host was not found. Please check the ";
+             str += "host name and port settings.";
+        break;
+    case QAbstractSocket::ConnectionRefusedError: // 0
+        str = "The connection was refused by the peer. ";
+        str += "Make sure the fortune server is running,\n";
+        str += "and check that the host name and port settings are correct.";
+        break;
+    default:
+        str = "The following error occurred: \n";
+        str += socketDEV->errorString();
+    }
+
+    emit socketErrorToLog_Signal(str);
 
 }

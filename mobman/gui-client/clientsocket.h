@@ -22,6 +22,8 @@ public:
 signals:
     void Write_2_TcpClient_Signal(QString);      // Дублирование в лог данных, ОТПРАВЛЕННЫХ в сокет
     void Read_From_TcpClient_Signal(QString);    // Дублирование в лог данных, ПОЛУЧЕННЫХ из сокета
+    void socketErrorToLog_Signal(QString); // write to log socketError message
+
 public slots:
 
     //Слот обмена данными с сокетом
@@ -35,6 +37,9 @@ public slots:
 
     // Слот сигнала myThread::SendToTcp_Signal()
     void SendToTcp_Slot();
+    // slot for QAbstractSocket::errorOccurred() signal
+    void displayError(QAbstractSocket::SocketError); //
+
 
 };
 

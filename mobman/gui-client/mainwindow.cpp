@@ -41,6 +41,12 @@ MainWindow::MainWindow(QWidget *parent)
     connect(mysocketDev, &clientSocket::Read_From_TcpClient_Signal, this, &MainWindow::Read_From_TcpClient_Slot);
 
 
+    // catch socket error if any
+    connect(mysocketDev->socketDEV, &QAbstractSocket::errorOccurred, mysocketDev, &clientSocket::displayError);
+
+    //socketError to log
+    connect(mysocketDev, &clientSocket::socketErrorToLog_Signal, this, &MainWindow::socketErrorToLog_Slot);
+
     thread_Timer->moveToThread(thread_A);
 
 //    statusTimer = new QTimer(this);
@@ -405,7 +411,9 @@ void MainWindow::onDEVSocketReadyRead_Slot()
    // socketDEV->disconnectFromHost();
 
     // Запускаю JSON-парсинг
-    parseJSON(nextTcpdata);
+    // Нужно, когда выцепляем данные из посылки, чтобы обработать.
+    // Пока закроем, не нужно, нужна скорость примема данных.
+    //parseJSON(nextTcpdata);
 
 }
 //+++++++++++++++++++++++++++++++++++++++
@@ -455,8 +463,16 @@ void MainWindow::Write_2_TcpClient_Slot(QString message)
 // write data to log, Received by TCP
 void MainWindow::Read_From_TcpClient_Slot(QString message)
 {
- int value = 0x1111;
- GUI_Write_To_Log(value, message);
+     int value = 0x1111;
+     GUI_Write_To_Log(value, message);
+}
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Слот сигнала clientSocket::socketErrorToLog_Signal(QString)
+void MainWindow::socketErrorToLog_Slot(QString message)
+{
+    int value = 0x2222;
+    GUI_Write_To_Log(value, message);
+
 }
 //++++++++++++++++++++++++++++++++++++++++++++++++++
 
