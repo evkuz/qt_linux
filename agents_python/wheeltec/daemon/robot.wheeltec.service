@@ -1,0 +1,20 @@
+[Unit]
+Description=Wheeltec http server daemon
+After=network.target
+#After=robot.rosrun.service
+
+
+[Service]
+User=wheeltec
+Group=waithome
+WorkingDirectory=/home/wheeltec/agents_python/wheeltec
+ExecStart=/home/wheeltec/agents_python/wheeltec/start.sh
+Type=simple
+ExecReload=/bin/kill -s HUP $MAINPID
+KillMode=mixed
+TimeoutStopSec=5
+PrivateTmp=true
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

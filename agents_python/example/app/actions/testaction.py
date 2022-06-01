@@ -1,6 +1,6 @@
 from time import sleep
 
-from iqrdevice.action import BaseAction
+from iqrdevice.actions import BaseAction
 from .. import device
 
 
@@ -10,15 +10,15 @@ class TestRobotAction (BaseAction):
         self.default_duration = default_duration
 
     def get_info(self) -> dict:
-        """Returns description of service if form of dict
-        Returns:
-            dict: "name": self.Name, ["parameter":"description", ...]
+        """Returns description of service if form of dict,
+        you can use method self.make_info(description, parameters, statuses)
         """ 
-        res = {
-            "name":self.Name,
-            "duration": "(float) - if it was specified the action will be long for this number of seconds"
-        }
-        return res
+        return self.make_info(
+            "Perform sleep action for specified number of seconds",
+            {
+                "duration": "(float) - if it was specified the action will be long for this number of seconds"
+            }
+        )
 
     def run_action(self, **kwargs) -> int:
         """You need to implement your action here

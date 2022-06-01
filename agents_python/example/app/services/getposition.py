@@ -1,4 +1,4 @@
-from iqrdevice.service import BaseService
+from iqrdevice.services import BaseService
 from .. import device
 from ..utils import camera
 from math import atan2, pi
@@ -9,6 +9,14 @@ class CamDetectorService(BaseService):
         BaseService.__init__(self, "getposition")
         self.__cam = cam
     
+    def get_info(self) -> dict:
+        """Returns description of service if form of dict,
+        you can use method self.make_info(description, parameters, statuses)
+        """ 
+        return self.make_info(
+            "Returns detection state and position of cube"
+        )
+
     def get_data(self, **kwargs):
         pos = self.__cam.get_position()
         distance = self.fit_h_func(pos[4])
@@ -23,9 +31,6 @@ class CamDetectorService(BaseService):
             "distance": distance
         }
         return res
-
-    def get_info(self) -> dict:
-        return {"name": self.Name}
 
     def fit_h_func(self, x):
         coeffs = [-5.27230123e-05, 3.18824287e-02, -6.93440162e+00, 6.52666043e+02]

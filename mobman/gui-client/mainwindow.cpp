@@ -1,5 +1,6 @@
 ﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "clientsocket.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -15,12 +16,49 @@ MainWindow::MainWindow(QWidget *parent)
 
     currentTcpdata = "";
 
+    request = "GET ";
+    request += "/run?cmd=status&";
+    request += " HTTP/1.1";
+    request += "\r\nHost: ";
+    request += HIWONDER_IP; request+=":"; request+=strARM_Port; request+="\r\n";
+    request += "Accept: */*\r\n";
+    request += "Access-Control-Allow-Origin: *\r\n";
+    request += "\r\n";
+
+    mysocketDev = new clientSocket(HIWONDER_IP, ARM_Port, request);
+
+    // Создание объекта потока QObject
+    thread_A = new QThread;
+    thread_Timer = new myThread();
+
+    connect(thread_A, &QThread::started, thread_Timer, &myThread::A_SLOT); //, Qt::QueuedConnection
+    connect(thread_Timer, &myThread::SendToTcp_Signal, mysocketDev, &clientSocket::SendToTcp_Slot, Qt::QueuedConnection);
+
+    // Вспомагательный, запись в лог передаваемых по TCP данных
+    connect(mysocketDev, &clientSocket::Write_2_TcpClient_Signal, this, &MainWindow::Write_2_TcpClient_Slot);
+
+    // Вспомагательный, запись в лог полученных по TCP данных
+    connect(mysocketDev, &clientSocket::Read_From_TcpClient_Signal, this, &MainWindow::Read_From_TcpClient_Slot);
+
+
+    thread_Timer->moveToThread(thread_A);
+
+//    statusTimer = new QTimer(this);
+
+//    connect(statusTimer, &QTimer::timeout, this, &MainWindow::timerProcessing_Slot);
+
+
 }
 
 MainWindow::~MainWindow()
 {
+    int value = 0xffff;
     delete ui;
     LogFile.close();
+
+    delete thread_A;
+    delete thread_Timer;
+    GUI_Write_To_Log(value, "The program is going to be closed");
 }
 
 void MainWindow::Log_File_Open(QString lname)
@@ -46,18 +84,22 @@ void MainWindow::GUI_Write_To_Log(int value, QString log_message)
 }
 //++++++++++++++++++++++++++++++++++++++++
 // Create socket, than connect to host
-void MainWindow::makeSocket(QString ipaddress, quint16 port)
+void MainWindow:: makeSocket(QString ipaddress, quint16 port)
 {
     socketDEV = new QTcpSocket(this);
     socketDEV->setSocketOption(QAbstractSocket::KeepAliveOption, true);
 
     //Соединение сигналов со слотами
     connect(socketDEV, &QIODevice::readyRead, this, &MainWindow::onDEVSocketReadyRead_Slot);//, Qt::QueuedConnection);
-    connect(socketDEV, SIGNAL(disconnected()), this, SLOT(socketDEV_onDisconnected_Slot()),Qt::AutoConnection);
+    connect(socketDEV, &QAbstractSocket::disconnected, this, &MainWindow::socketDEV_onDisconnected_Slot,Qt::AutoConnection);
 
     connect (this->socketDEV, &QTcpSocket::connected, this, &MainWindow::onDEVSocketConnected_Slot); // Send "status" command
+    connect (this->socketDEV, &QTcpSocket::stateChanged, this, &MainWindow::onSocketDevState_Changed);
 
     socketDEV->connectToHost(ipaddress, port);
+
+//    QString str;
+//    str = "Im in makesocket";
 
 
 }
@@ -309,7 +351,16 @@ void MainWindow::onSocketReadyRead_Slot()
             //ВСе данные получили Отсоединение от удаленнного сокета
             socketCV->disconnectFromHost();
 
-}
+}// onSocketReadyRead_Slot()
+//++++++++++++++++++++++++++++++++++++++++++++++++
+
+void MainWindow::onSocketDevState_Changed()
+{
+    int value = 0x9999;
+    QString str = "SocketDev state changed \n";
+    str += "Current socketDev state is "; str += QString::number(socketDEV->state());
+    GUI_Write_To_Log(value,str);
+} // onSocketDevState_Changed()
 //++++++++++++++++++++++++++++
 // Пока оставим как есть, для сохранения работоспособности кода.
 void MainWindow::onARMSocketConnected_Slot()
@@ -364,6 +415,50 @@ void MainWindow::socketDEV_onDisconnected_Slot()
   int value = 0xf1f1;
   GUI_Write_To_Log(value, "!!!!!!!!!!!!!!!!! Connection closed to SOCKET device !!!!!!!!!!!!!!!!!!!!");
 }
+//+++++++++++++++++++++++++++++++++++++++
+// Slot for timer timeout signal
+// send "status" request to robot
+void MainWindow::timerProcessing_Slot()
+{
+    QString str;
+    int value = 0xf2f2;
+    str = "I'm in timerProcessing_Slot";
+    GUI_Write_To_Log(value, str);
+
+    request = "GET ";
+    request += "/run?cmd=status&";
+    request += " HTTP/1.1";
+    request += "\r\nHost: ";
+    //request += "192.168.1.201:8383\r\n";
+    request += HIWONDER_IP; request+=":"; request+=strARM_Port; request+="\r\n";
+    request += "Accept: */*\r\n";
+    request += "Access-Control-Allow-Origin: *\r\n";
+    request += "\r\n";
+
+    QString myipaddress = HIWONDER_IP;
+    quint16 myport = ARM_Port;
+    makeSocket(myipaddress, myport);
+
+}
+// Слот сигнала clientSocket::Write_2_TcpClient_Signal(request)
+// Пишем в лог данные, ОТПРАВЛЕННЫЕ по tcp
+void MainWindow::Write_2_TcpClient_Slot(QString message)
+{
+    QString str;
+
+    str = "New TCP command has been sent : "; str += message;
+    GUI_Write_To_Log(0xf00f, str);
+
+}
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Слот сигнала clientSocket::Read_From_TcpClient_Signal(QString)
+// write data to log, Received by TCP
+void MainWindow::Read_From_TcpClient_Slot(QString message)
+{
+ int value = 0x1111;
+ GUI_Write_To_Log(value, message);
+}
+//++++++++++++++++++++++++++++++++++++++++++++++++++
 
 //++++++++++++++++++++++++++++++++++
 // - create qtcpsocket with signal/slot configuration
@@ -416,7 +511,7 @@ void MainWindow::on_GetStatusButton_clicked()
      request += "/run?cmd=status&";
      request += " HTTP/1.1";
      request += "\r\nHost: ";
-     request += "192.168.1.201:8383\r\n";
+//     request += "192.168.1.201:8383\r\n";
      request += "Accept: */*\r\n";
      request += "Access-Control-Allow-Origin: *\r\n";
      request += "\r\n";
@@ -574,15 +669,16 @@ void MainWindow::on_GetServicesButton_clicked()
 void MainWindow::on_GetActionsButton_clicked()
 {
     request = "GET ";
-    request += "/service?name=getactions&";
+    request += "/&";
     request += " HTTP/1.1";
     request += "\r\nHost: ";
-    request += "192.168.1.201:8383\r\n";
+    //request += "192.168.1.201:8383\r\n";
+    request += HIWONDER_IP; request+=":"; request+=strARM_Port; request+="\r\n";
     request += "Accept: */*\r\n";
     request += "Access-Control-Allow-Origin: *\r\n";
     request += "\r\n";
 
-    makeSocket(CVDev_IP, ARM_Port);
+    makeSocket(HIWONDER_IP, ARM_Port);
 
 }
 
@@ -715,6 +811,70 @@ void MainWindow::on_ResetButton_clicked()
      QString myipaddress = CVDev_IP;
      quint16 myport = ARM_Port;
     makeSocket(myipaddress, myport);
+
+}
+//++++++++++++++++++++++++++++++++++++++++++++++++++
+// - Жмем кнопку, отправляем запрос на выполнение команды
+// - Запускаем таймер и по нему опрашиваем статус. Опрос уже в слоте таймера.
+
+void MainWindow::on_CollapsButton_clicked()
+{
+    // Формируем запрос, "кнопка Collaps"
+    // А вот теперь готовим команду "/run?cmd=collapse&"
+     request = "GET ";
+     request += "/run?cmd=collapse&";
+     request += " HTTP/1.1";
+     request += "\r\nHost: ";
+     //request += "192.168.1.201:8383\r\n";
+     request += HIWONDER_IP; request+=":"; request += strARM_Port; request+="\r\n";
+     request += "Accept: */*\r\n";
+     request += "Access-Control-Allow-Origin: *\r\n";
+     request += "\r\n";
+
+     QString myipaddress = HIWONDER_IP;
+     quint16 myport = ARM_Port;
+     makeSocket(myipaddress, myport);
+
+
+}
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+void MainWindow::on_getStatusButton_clicked()
+{
+//    request = "GET ";
+//    request += "/run?cmd=status&";
+//    request += " HTTP/1.1";
+//    request += "\r\nHost: ";
+//    request += HIWONDER_IP; request+=":"; request+=strARM_Port; request+="\r\n";
+//    request += "Accept: */*\r\n";
+//    request += "Access-Control-Allow-Origin: *\r\n";
+//    request += "\r\n";
+
+     //Запускаем опрос статуса
+     //statusTimer->start(500);
+
+    thread_A->start();
+}
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+void MainWindow::on_StandUpButton_clicked()
+{
+    // Формируем запрос, "кнопка standup"
+    // А вот теперь готовим команду "/run?cmd=standup&"
+     request = "GET ";
+     request += "/run?cmd=standup&";
+     request += " HTTP/1.1";
+     request += "\r\nHost: ";
+     //request += "192.168.1.201:8383\r\n";
+     request += HIWONDER_IP; request+=":"; request+=strARM_Port; request+="\r\n";
+     request += "Accept: */*\r\n";
+     request += "Access-Control-Allow-Origin: *\r\n";
+     request += "\r\n";
+
+     QString myipaddress = HIWONDER_IP;
+     quint16 myport = ARM_Port;
+     makeSocket(myipaddress, myport);
 
 }
 
