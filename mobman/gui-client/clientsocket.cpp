@@ -71,6 +71,7 @@ void clientSocket::socketDEV_onDisconnected_Slot()
 // Создаем сокет, задаем сигналы/слоты, подключаемся к хосту.
 void clientSocket::SendToTcp_Slot()
 {
+
     socketDEV = new QTcpSocket(this);
     socketDEV->setSocketOption(QAbstractSocket::KeepAliveOption, true);
 
@@ -80,6 +81,8 @@ void clientSocket::SendToTcp_Slot()
 
     connect (this->socketDEV, &QTcpSocket::connected, this, &clientSocket::onDEVSocketConnected_Slot); // Send "status" command
     //connect (this->socketDEV, &QTcpSocket::stateChanged, this, &MainWindow::onSocketDevState_Changed);
+
+    qRegisterMetaType<QAbstractSocket::SocketError>("QAbstractSocket::SocketError") ;
 
     connect(socketDEV, &QAbstractSocket::errorOccurred, this, &clientSocket::displayError);
 
@@ -91,6 +94,7 @@ void clientSocket::SendToTcp_Slot()
 void clientSocket::displayError(QAbstractSocket::SocketError socketError)
 {
     QString str;
+    str = "Just Initialize";
     switch (socketError) {
     case QAbstractSocket::RemoteHostClosedError:
         break;

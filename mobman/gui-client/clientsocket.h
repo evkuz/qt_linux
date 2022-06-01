@@ -5,6 +5,7 @@
 #include <QThread>
 #include <QTcpSocket>
 
+
 class clientSocket : public QObject
 {
     Q_OBJECT
@@ -42,5 +43,6 @@ public slots:
 
 
 };
+
 
 #endif // CLIENTSOCKET_H
