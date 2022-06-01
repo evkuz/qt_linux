@@ -1,5 +1,6 @@
 ﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "clientsocket.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -15,16 +16,49 @@ MainWindow::MainWindow(QWidget *parent)
 
     currentTcpdata = "";
 
+    request = "GET ";
+    request += "/run?cmd=status&";
+    request += " HTTP/1.1";
+    request += "\r\nHost: ";
+    request += HIWONDER_IP; request+=":"; request+=strARM_Port; request+="\r\n";
+    request += "Accept: */*\r\n";
+    request += "Access-Control-Allow-Origin: *\r\n";
+    request += "\r\n";
+
+    mysocketDev = new clientSocket(HIWONDER_IP, ARM_Port, request);
+
+    // Создание объекта потока QObject
+    thread_A = new QThread;
+    thread_Timer = new myThread();
+
+    connect(thread_A, &QThread::started, thread_Timer, &myThread::A_SLOT); //, Qt::QueuedConnection
+    connect(thread_Timer, &myThread::SendToTcp_Signal, mysocketDev, &clientSocket::SendToTcp_Slot, Qt::QueuedConnection);
+
+    // Вспомагательный, запись в лог передаваемых по TCP данных
+    connect(mysocketDev, &clientSocket::Write_2_TcpClient_Signal, this, &MainWindow::Write_2_TcpClient_Slot);
+
+    // Вспомагательный, запись в лог полученных по TCP данных
+    connect(mysocketDev, &clientSocket::Read_From_TcpClient_Signal, this, &MainWindow::Read_From_TcpClient_Slot);
+
+
+    thread_Timer->moveToThread(thread_A);
+
 //    statusTimer = new QTimer(this);
 
 //    connect(statusTimer, &QTimer::timeout, this, &MainWindow::timerProcessing_Slot);
+
 
 }
 
 MainWindow::~MainWindow()
 {
+    int value = 0xffff;
     delete ui;
     LogFile.close();
+
+    delete thread_A;
+    delete thread_Timer;
+    GUI_Write_To_Log(value, "The program is going to be closed");
 }
 
 void MainWindow::Log_File_Open(QString lname)
@@ -406,6 +440,25 @@ void MainWindow::timerProcessing_Slot()
     makeSocket(myipaddress, myport);
 
 }
+// Слот сигнала clientSocket::Write_2_TcpClient_Signal(request)
+// Пишем в лог данные, ОТПРАВЛЕННЫЕ по tcp
+void MainWindow::Write_2_TcpClient_Slot(QString message)
+{
+    QString str;
+
+    str = "New TCP command has been sent : "; str += message;
+    GUI_Write_To_Log(0xf00f, str);
+
+}
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Слот сигнала clientSocket::Read_From_TcpClient_Signal(QString)
+// write data to log, Received by TCP
+void MainWindow::Read_From_TcpClient_Slot(QString message)
+{
+ int value = 0x1111;
+ GUI_Write_To_Log(value, message);
+}
+//++++++++++++++++++++++++++++++++++++++++++++++++++
 
 //++++++++++++++++++++++++++++++++++
 // - create qtcpsocket with signal/slot configuration
@@ -782,15 +835,30 @@ void MainWindow::on_CollapsButton_clicked()
      quint16 myport = ARM_Port;
      makeSocket(myipaddress, myport);
 
-     // Создание объекта потока QObject
-//     thread_Timer = new QThread;
-//     //Запускаем опрос статуса
-//     statusTimer->start(500);
 
 }
 
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-void MainWindow::on_pushButton_2_clicked()
+void MainWindow::on_getStatusButton_clicked()
+{
+//    request = "GET ";
+//    request += "/run?cmd=status&";
+//    request += " HTTP/1.1";
+//    request += "\r\nHost: ";
+//    request += HIWONDER_IP; request+=":"; request+=strARM_Port; request+="\r\n";
+//    request += "Accept: */*\r\n";
+//    request += "Access-Control-Allow-Origin: *\r\n";
+//    request += "\r\n";
+
+     //Запускаем опрос статуса
+     //statusTimer->start(500);
+
+    thread_A->start();
+}
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+void MainWindow::on_StandUpButton_clicked()
 {
     // Формируем запрос, "кнопка standup"
     // А вот теперь готовим команду "/run?cmd=standup&"

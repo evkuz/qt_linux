@@ -270,17 +270,30 @@
       <string>Collapse</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="pushButton_2">
+    <widget class="QPushButton" name="StandUpButton">
      <property name="geometry">
       <rect>
-       <x>40</x>
+       <x>30</x>
        <y>170</y>
-       <width>161</width>
+       <width>171</width>
        <height>61</height>
       </rect>
      </property>
      <property name="text">
       <string>StandUp</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="getStatusButton">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>260</y>
+       <width>171</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>STATUS 2t./SEC</string>
      </property>
     </widget>
    </widget>

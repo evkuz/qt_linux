@@ -20,7 +20,8 @@
 #include <QJsonArray>
 
 #include "nlohmann/json.hpp"
-
+#include "mythread.h"
+#include "clientsocket.h"
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -48,6 +49,7 @@ public:
     QTcpSocket *socketARM = nullptr;
     QTcpSocket *socketDEV = nullptr;
 
+    clientSocket *mysocketDev;
 
     QFile       LogFile;
 
@@ -64,7 +66,9 @@ public:
 
     ordered_json jsnAnswer;  // Ответ от девайса
     QTimer *statusTimer;
-    QThread   *thread_Timer;
+    QThread *thread_A;
+
+    myThread *thread_Timer;
 
     void Log_File_Open(QString lname);
     void GUI_Write_To_Log (int value, QString log_message);
@@ -84,7 +88,12 @@ public slots:
 
     void socketDEV_onDisconnected_Slot();
 
-    void timerProcessing_Slot();
+    void timerProcessing_Slot(); //slot for signal SendToTcp_Signal()
+
+    // slot for signal clientSocket::Write_2_TcpClient_Signal
+    void Write_2_TcpClient_Slot(QString);
+
+    void Read_From_TcpClient_Slot(QString); // Пишем в лог данные, полученные по TCP
 
 private slots:
     void on_GetDistanceButton_clicked();
@@ -115,7 +124,9 @@ private slots:
 
     void on_CollapsButton_clicked();
 
-    void on_pushButton_2_clicked();
+    void on_getStatusButton_clicked();
+
+    void on_StandUpButton_clicked();
 
 private:
     Ui::MainWindow *ui;
