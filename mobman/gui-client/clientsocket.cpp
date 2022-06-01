@@ -75,7 +75,7 @@ void clientSocket::SendToTcp_Slot()
     socketDEV->setSocketOption(QAbstractSocket::KeepAliveOption, true);
 
     //Соединение сигналов со слотами
-    connect(socketDEV, &QIODevice::readyRead, this, &clientSocket::onReadyRead);//, Qt::QueuedConnection);
+    connect(socketDEV, &QIODevice::readyRead, this, &clientSocket::onReadyRead, Qt::QueuedConnection);//, Qt::QueuedConnection);
     connect(socketDEV, &QAbstractSocket::disconnected, this, &clientSocket::socketDEV_onDisconnected_Slot,Qt::AutoConnection);
 
     connect (this->socketDEV, &QTcpSocket::connected, this, &clientSocket::onDEVSocketConnected_Slot); // Send "status" command
