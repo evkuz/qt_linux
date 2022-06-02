@@ -539,9 +539,12 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
     break;
 
     case -2: // меняем только info
-        str = "Serial port is UNAVAILABLE !!! CAN'T move the ARM !!!";
+        //str = "Serial port is UNAVAILABLE !!! CAN'T move the ARM !!!";
+        str = "There is another action running at the moment";
         theObj["info"] = str;
         GUI_Write_To_Log(value, str);
+        // change gor next request to be successfull
+        theObj["rc"] = RC_WAIT;
 
         break;
 
@@ -645,12 +648,21 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
 
     } // switch (returnCode)
 
-    str = "PROCESSING ACTION IS FINISHED";
-    GUI_Write_To_Log(value,str);
+//    str = "PROCESSING ACTION IS FINISHED";
+//    GUI_Write_To_Log(value,str);
+}
+//+++++++++++++++++++++++++++++++++++++++++++++++++++
+// Определяем, Есть ли в данный момент работающий экшен
+//
+bool MainProcess::isThereActiveAction()
+{
+    // Перебираем список  actionListp, определяем у кого state == "inprogress"
+    // формируем новый список
+    // добавляем его в jsnData
+    ;
 } // ProcessAction
 //+++++++++++++++++++++++++++++++++++++++++++++++++++
 
-//+++++++++++++++++++++++++++++++++++++++++++++++++++
 
 //++++++++++++++++++++++++++
 // Слот сигнала HiWonder::Moving_Done_Signal
@@ -674,6 +686,10 @@ void MainProcess::Moving_Done_Slot()
     GUI_Write_To_Log(value, str);
     // Вот как бэ не совсем правильно... надо передавать QJsonObject в свой класс и там все менять...
     jsnStore->setActionDone(mainjsnObj);
+
+    // Меняем значение.
+    jsnStore->isAnyActionRunning = false;
+
     QJsonObject headStatus = {
         {"rc", RC_WAIT}, //RC_SUCCESS
         {"state", "Wait"},

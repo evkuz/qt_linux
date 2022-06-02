@@ -11,13 +11,14 @@ class clientSocket : public QObject
     Q_OBJECT
 public:
 //    explicit clientSocket(QObject *parent = nullptr);
-    clientSocket(QString ipaddress, quint16 port, QString tcprequest);
+    clientSocket(QString ipaddress, quint16 port, QString tcprequest, QString serverName);
     ~clientSocket();
 
     QTcpSocket *socketDEV;
     QString request; // GET request via socket. GLOBAL.
     QString myip;
     quint16 myport;
+    QString myServer;
 
 
 signals:

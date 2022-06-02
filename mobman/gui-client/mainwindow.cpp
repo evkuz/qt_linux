@@ -25,7 +25,7 @@ MainWindow::MainWindow(QWidget *parent)
     request += "Access-Control-Allow-Origin: *\r\n";
     request += "\r\n";
 
-    mysocketDev = new clientSocket(HIWONDER_IP, ARM_Port, request);
+    mysocketDev = new clientSocket(HIWONDER_IP, ARM_Port, request, SERVER_NAME);
 
     // Создание объекта потока QObject
     thread_A = new QThread;

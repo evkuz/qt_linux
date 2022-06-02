@@ -3,11 +3,12 @@
 
 // ОБъект Создается в потоке.
 // создаем сокет, соединяемся с хостом.
-clientSocket::clientSocket(QString ipaddress, quint16 port, QString tcprequest)
+clientSocket::clientSocket(QString ipaddress, quint16 port, QString tcprequest, QString serverName)
 {
     myip = ipaddress;
     myport = port;
     request = tcprequest;
+    myServer = serverName;
 //    socketDEV = new QTcpSocket(this);
 //    socketDEV->setSocketOption(QAbstractSocket::KeepAliveOption, true);
 
@@ -74,6 +75,7 @@ void clientSocket::SendToTcp_Slot()
 
     socketDEV = new QTcpSocket(this);
     socketDEV->setSocketOption(QAbstractSocket::KeepAliveOption, true);
+    socketDEV->setSocketOption(QAbstractSocket::LowDelayOption,1);
 
     //Соединение сигналов со слотами
     connect(socketDEV, &QIODevice::readyRead, this, &clientSocket::onReadyRead, Qt::QueuedConnection);//, Qt::QueuedConnection);
@@ -95,7 +97,8 @@ void clientSocket::displayError(QAbstractSocket::SocketError socketError)
 {
     QString str;
     str = "Just Initialize";
-    switch (socketError) {
+    int myerror = socketError;
+    switch (myerror) {
     case QAbstractSocket::RemoteHostClosedError:
         break;
     case QAbstractSocket::HostNotFoundError:
@@ -104,7 +107,8 @@ void clientSocket::displayError(QAbstractSocket::SocketError socketError)
         break;
     case QAbstractSocket::ConnectionRefusedError: // 0
         str = "The connection was refused by the peer. ";
-        str += "Make sure the fortune server is running,\n";
+        str += "Make sure the server "; str += myServer;
+        str += " is running,\n";
         str += "and check that the host name and port settings are correct.";
         break;
     default:

@@ -43,6 +43,7 @@ public:
 #define ARM_Port         8383
 #define strARM_Port      "8383"
 #define HIWONDER_IP      "192.168.1.175"
+#define SERVER_NAME      "HIWONDER"
 
 
     QString     target_name;

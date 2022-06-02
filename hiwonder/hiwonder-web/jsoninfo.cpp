@@ -7,6 +7,7 @@ JsonInfo::JsonInfo()
 //    struc_2_json(jsnOB1, currentStatus); // Инициализируем  jsnOB1 данными из структуры выше
     init_json();
     init_actions();
+    isAnyActionRunning = false;
 }
 //+++++++++++++++++++++
 
@@ -697,6 +698,7 @@ void JsonInfo::createActionList()
        }
     }
 
+    if (!myArray.isEmpty()) {isAnyActionRunning = true;}
     jsnActionList["action_list"] =  myArray; // "testing"; myArray;
     this->jsnData = merge_json(jsnActionList, jsnHeadStatus);
 } //createActionList
