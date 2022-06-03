@@ -1,3 +1,5 @@
+import logging
+from time import sleep
 from iqrdevice.actions import BaseAction
 from ..utils import HiwonderQt
 from iqrdevice.utils.vision import BaseCamera, BaseDetector
@@ -24,24 +26,27 @@ class CatchCubeAction (BaseAction):
             self._set_state_info(f"Cube wasn't detected!")
             return -1
 
-        if self.qt_device.IsConnected:
+        if not self.qt_device.IsConnected:
             self._set_state_info(f"Device isn't connected!")
             return -2
         
         if not self._workingFlag:
             return -126
 
-        self.qt_device.run_action("catchcube")
+        self.qt_device.run_action("start")
         while self._workingFlag:
             st = self.qt_device.get_state()
             if not isinstance(st, dict):
                 self._set_state_info(f"Device answer isn't dict type!")
                 return -3
-            if not 'actions_list' in st.keys():
-                self._set_state_info(f"Device answer hasn't actions_list!")
-                return -4
-            if len(st['actions_list']) == 0:
+            if not 'action_list' in st.keys():
+                self._set_state_info(f"Device answer hasn't action_list!")
+                logging.error(str(st))
+                sleep(0.2)
+                continue
+            if len(st['action_list']) == 0:
                 break
+            sleep(0.5)
 
         self.__cam.wait_for_new_frame()
         frame = self.__cam.get_last_frame()
@@ -61,18 +66,20 @@ class CatchCubeAction (BaseAction):
             if not isinstance(st, dict):
                 self._set_state_info(f"Device answer isn't dict type!")
                 return -3
-            if not 'actions_list' in st.keys():
-                self._set_state_info(f"Device answer hasn't actions_list!")
+            if not 'action_list' in st.keys():
+                self._set_state_info(f"Device answer hasn't action_list!")
                 return -4
-            if len(st['actions_list']) == 0:
+            if len(st['action_list']) == 0:
                 break
+            sleep(0.5)
+
         self._set_state_info(f"Stopped and returned home")
         return -126
 
 
 class PutCubeAction (BaseAction):
     def __init__(self, qt_device:HiwonderQt):
-        BaseAction.__init__(self, "start")
+        BaseAction.__init__(self, "putcube")
         self.qt_device = qt_device
         
     def get_info(self) -> dict:
@@ -81,7 +88,7 @@ class PutCubeAction (BaseAction):
         )
 
     def run_action(self, **kwargs) -> int:
-        if self.qt_device.IsConnected:
+        if not self.qt_device.IsConnected:
             self._set_state_info(f"Device isn't connected!")
             return -2
         
@@ -91,11 +98,13 @@ class PutCubeAction (BaseAction):
             if not isinstance(st, dict):
                 self._set_state_info(f"Device answer isn't dict type!")
                 return -3
-            if not 'actions_list' in st.keys():
-                self._set_state_info(f"Device answer hasn't actions_list!")
-                return -4
-            if len(st['actions_list']) == 0:
+            if not 'action_list' in st.keys():
+                self._set_state_info(f"Device answer hasn't action_list!")
+                sleep(0.2)
+                continue
+            if len(st['action_list']) == 0:
                 break
+            sleep(0.5)
 
         self._set_state_info(f"Cube was put.")
         return 0
@@ -108,11 +117,12 @@ class PutCubeAction (BaseAction):
             if not isinstance(st, dict):
                 self._set_state_info(f"Device answer isn't dict type!")
                 return -3
-            if not 'actions_list' in st.keys():
-                self._set_state_info(f"Device answer hasn't actions_list!")
+            if not 'action_list' in st.keys():
+                self._set_state_info(f"Device answer hasn't action_list!")
                 return -4
-            if len(st['actions_list']) == 0:
+            if len(st['action_list']) == 0:
                 break
+            sleep(0.5)
         self._set_state_info(f"Stopped and returned home")
         return -126
 
@@ -128,7 +138,7 @@ class MoveHomeAction (BaseAction):
         )
 
     def run_action(self, **kwargs) -> int:
-        if self.qt_device.IsConnected:
+        if not self.qt_device.IsConnected:
             self._set_state_info(f"Device isn't connected!")
             return -2
         
@@ -138,11 +148,13 @@ class MoveHomeAction (BaseAction):
             if not isinstance(st, dict):
                 self._set_state_info(f"Device answer isn't dict type!")
                 return -3
-            if not 'actions_list' in st.keys():
-                self._set_state_info(f"Device answer hasn't actions_list!")
-                return -4
-            if len(st['actions_list']) == 0:
+            if not 'action_list' in st.keys():
+                self._set_state_info(f"Device answer hasn't action_list!")
+                sleep(0.2)
+                continue
+            if len(st['action_list']) == 0:
                 break
+            sleep(0.5)
 
         self._set_state_info(f"Cube was put.")
         return 0
