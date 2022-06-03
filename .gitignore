@@ -87,3 +87,5 @@ Thumbs.db
 !threads*
 !threads/*.*
 agents_python/**/cam_color_range.txt
+
+**/__pycache__/

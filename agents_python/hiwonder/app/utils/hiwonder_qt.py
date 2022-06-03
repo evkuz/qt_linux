@@ -92,6 +92,7 @@ class HiwonderQt(BaseController):
     def run_action(self, actionName:str, **kwargs)->bool:
         #url = self.addr + f"/run?cmd={cmdName}&"
         try:
+            self.__lastUpdateTime = time.time()
             data = self._run_action(actionName, **kwargs)
             if type(data) is not dict:
                 rc = 1
@@ -105,6 +106,7 @@ class HiwonderQt(BaseController):
     def get_info(self, serviceName:str, **kwargs)->dict:
         #url = self.addr + f"/run?cmd={cmdName}&"
         try:
+            self.__lastUpdateTime = time.time()
             data = self._get_service_info(serviceName, **kwargs)
             if type(data) is not dict:
                 logging.warning(f"service {serviceName} result is not dict")
@@ -127,6 +129,7 @@ class HiwonderQt(BaseController):
     def reset_actions(self)->bool:
         #url = self.addr + f"/run?cmd={cmdName}&"
         try:
+            self.__lastUpdateTime = time.time()
             data = self._send_reset()
             if type(data) is not dict:
                 rc = 1

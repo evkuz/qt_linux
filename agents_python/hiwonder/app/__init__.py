@@ -27,7 +27,7 @@ streamer = vision.VideoStreamer(cam, detector)
 socket_server = utils.SocketServer(app.config["SOCKET_PATH"], cam, detector, result_smoothing)
 socket_server.start()
 
-qt_device = utils.HiwonderQt(app.config["QT_DEVICE_ADDR"], "hiwonder_qt", 0.4)
+qt_device = utils.HiwonderQt(app.config["QT_DEVICE_ADDR"], "hiwonder_qt", 0.8)
 qt_device.start()
 
 # import views
