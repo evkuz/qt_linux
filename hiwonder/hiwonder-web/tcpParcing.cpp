@@ -29,17 +29,60 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
     substr = message;
     // Определяем индекс команды в списке MainProcess::tcpCommand
     int comIndex = getIndexCommand(substr, tcpCommand);
-    if (comIndex < 0) {str = "WRONG DATA !!!"; GUI_Write_To_Log(value, str);return;}
-    str = "Index value is "; str += QString::number(comIndex); str += ",\n";
-    str += "List value on that index is \""; str += tcpCommand.at(comIndex); str += "\"";
-    GUI_Write_To_Log(value, str);
+//    if (comIndex < 0) {str = "WRONG DATA !!!"; GUI_Write_To_Log(value, str);return;}
+//    str = "Index value is "; str += QString::number(comIndex); str += ",\n";
+//    str += "List value on that index is \""; str += tcpCommand.at(comIndex); str += "\"";
+//    GUI_Write_To_Log(value, str);
 
     // So here we've got the index of elemnt representing the command received by TCP
     // set value of Robot->active_command
-    Robot->active_command = tcpCommand.at(comIndex);
-    str = "Current active command is ";
-    str += Robot->active_command;
-    GUI_Write_To_Log(value, str);
+    // Формируем значение jsnStore->isAnyActionRunning
+    jsnStore->createActionList();
+
+//    jsnStore->isAnyActionRunning = false;
+//    str = "Current isAnyActionRunning value is ";
+//    str += QString::number(jsnStore->isAnyActionRunning);
+//    GUI_Write_To_Log(value, str);
+
+//    jsnStore->isAnyActionRunning = true;
+
+//    str = "Current TURE isAnyActionRunning value AS NUMBER is ";
+//    str += QString::number(jsnStore->isAnyActionRunning);
+//    GUI_Write_To_Log(value, str);
+
+
+
+
+    // And now make decision
+    // Если не запрос статуса и нет активных экшенов, меняем active_command, идем дальше
+    if (comIndex != 0 && !(jsnStore->isAnyActionRunning)){
+        Robot->active_command = tcpCommand.at(comIndex);
+        str = "Current active command is ";
+        str += Robot->active_command;
+        GUI_Write_To_Log(value, str);
+
+
+    }
+    // Если не запрос статуса, но есть активный экшен
+    // Меняем у запрошенного экшена статус
+    if (comIndex != 0 && jsnStore->isAnyActionRunning){
+        // ставим экшену статус -2
+        QJsonObject tempObj = {
+            {"name", substr},
+            {"state", "Not applied"},
+            {"info", "Another action id already running"},
+            {"rc", RC_UNDEFINED}
+        };
+        // set aimed action values to tempObj
+        jsnStore->setActionData(tempObj);
+        launchActionAnswer = tempObj;
+        str = QJsonDocument(launchActionAnswer).toJson(QJsonDocument::Indented);
+        // отправляем ответ на запуск экшена
+        emit Write_2_TcpClient_Signal(str);
+
+        return;
+    }
+
 
     //jsnStore->action_command = tcpCommand.at(comIndex); // сигнал updateAction_List_Signal
    // jsnStore->setCurrentAction(tcpCommand.at(comIndex));
@@ -49,6 +92,11 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 //    }
 //    int indent = 3;
 //     std::string s2;
+
+// Если в данный момент есть работающий экшен, то уже нельзя менять значение mainjsnObj...
+
+
+
 
    QString S3;
     switch (comIndex) {

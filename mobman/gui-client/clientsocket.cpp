@@ -3,11 +3,12 @@
 
 // ОБъект Создается в потоке.
 // создаем сокет, соединяемся с хостом.
-clientSocket::clientSocket(QString ipaddress, quint16 port, QString tcprequest)
+clientSocket::clientSocket(QString ipaddress, quint16 port, QString tcprequest, QString serverName)
 {
     myip = ipaddress;
     myport = port;
     request = tcprequest;
+    myServer = serverName;
 //    socketDEV = new QTcpSocket(this);
 //    socketDEV->setSocketOption(QAbstractSocket::KeepAliveOption, true);
 
@@ -71,8 +72,10 @@ void clientSocket::socketDEV_onDisconnected_Slot()
 // Создаем сокет, задаем сигналы/слоты, подключаемся к хосту.
 void clientSocket::SendToTcp_Slot()
 {
+
     socketDEV = new QTcpSocket(this);
     socketDEV->setSocketOption(QAbstractSocket::KeepAliveOption, true);
+    socketDEV->setSocketOption(QAbstractSocket::LowDelayOption,1);
 
     //Соединение сигналов со слотами
     connect(socketDEV, &QIODevice::readyRead, this, &clientSocket::onReadyRead, Qt::QueuedConnection);//, Qt::QueuedConnection);
@@ -81,7 +84,38 @@ void clientSocket::SendToTcp_Slot()
     connect (this->socketDEV, &QTcpSocket::connected, this, &clientSocket::onDEVSocketConnected_Slot); // Send "status" command
     //connect (this->socketDEV, &QTcpSocket::stateChanged, this, &MainWindow::onSocketDevState_Changed);
 
+    qRegisterMetaType<QAbstractSocket::SocketError>("QAbstractSocket::SocketError") ;
+
+    connect(socketDEV, &QAbstractSocket::errorOccurred, this, &clientSocket::displayError);
 
     socketDEV->connectToHost(myip, myport);
+
+}
+//+++++++++++++++++++++++++++++++++++++++++++++++++++
+// Слот сигнала &QAbstractSocket::errorOccurred()
+void clientSocket::displayError(QAbstractSocket::SocketError socketError)
+{
+    QString str;
+    str = "Just Initialize";
+    int myerror = socketError;
+    switch (myerror) {
+    case QAbstractSocket::RemoteHostClosedError:
+        break;
+    case QAbstractSocket::HostNotFoundError:
+             str = "The host was not found. Please check the ";
+             str += "host name and port settings.";
+        break;
+    case QAbstractSocket::ConnectionRefusedError: // 0
+        str = "The connection was refused by the peer. ";
+        str += "Make sure the server "; str += myServer;
+        str += " is running,\n";
+        str += "and check that the host name and port settings are correct.";
+        break;
+    default:
+        str = "The following error occurred: \n";
+        str += socketDEV->errorString();
+    }
+
+    emit socketErrorToLog_Signal(str);
 
 }

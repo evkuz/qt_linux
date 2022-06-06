@@ -72,6 +72,7 @@ public:
     #define AC_FAILURE -2       // action с таким именем не запустился
     #define AC_ALREADY_HAVE -3  // action с таким именем уже запущен
     #define AC_DONE -4
+    #define AC_POSTPONED -5     // action отложен до завершения текущего
 
     ordered_json jsnInfo;
     QString jsnData;
@@ -112,6 +113,7 @@ public:
 
     QJsonObject returnAllActions();
 
+    bool isAnyActionRunning; // флаг, что выополняется экшен
     void setActionDone(QJsonObject &theObj);  //Меняем rc of action upon device moving
     void setJsnStatus();
     void setJsnHeadStatus(QJsonObject &theObj); // Меняем значения jsnHeadStatus на theObj

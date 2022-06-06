@@ -26,6 +26,7 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
+
 //using json = nlohmann::json;
 using ordered_json = nlohmann::ordered_json;
 
@@ -42,6 +43,7 @@ public:
 #define ARM_Port         8383
 #define strARM_Port      "8383"
 #define HIWONDER_IP      "192.168.1.175"
+#define SERVER_NAME      "HIWONDER"
 
 
     QString     target_name;
@@ -94,6 +96,8 @@ public slots:
     void Write_2_TcpClient_Slot(QString);
 
     void Read_From_TcpClient_Slot(QString); // Пишем в лог данные, полученные по TCP
+    void socketErrorToLog_Slot(QString); // write to log socketError message
+
 
 private slots:
     void on_GetDistanceButton_clicked();
