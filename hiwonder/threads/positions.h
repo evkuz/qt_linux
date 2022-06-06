@@ -35,6 +35,7 @@ unsigned char olaf_05[6]={63, 93, 65, 45, 93, 165};
 unsigned char olaf_06[6]={63, 93, 65, 45, 135, 40};
 
 
+unsigned char collaps[6] = {93, 93, 10, 10, 25, 93};
 
 
 

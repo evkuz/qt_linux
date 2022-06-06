@@ -283,7 +283,7 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 
 
 
-}
+}//Data_From_TcpClient_Slot
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 void MainProcess::Data_from_TcpServer_Slot(QString tcpData)
 {
@@ -291,7 +291,7 @@ void MainProcess::Data_from_TcpServer_Slot(QString tcpData)
   GUI_Write_To_Log(value, "!!!!!! Here is Data From CV device !!!!!!!!!!");
   GUI_Write_To_Log(value,tcpData);
 
-}//Data_From_TcpClient_Slot
+}//Data_from_TcpServer_Slot
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 

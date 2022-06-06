@@ -10,6 +10,8 @@
 #include <QDateTime>
 #include <iostream>
 #include <QDataStream>
+#include <QTimer>
+#include <QThread>
 
 #include <QJsonDocument>
 #include <QJsonParseError>
@@ -18,10 +20,12 @@
 #include <QJsonArray>
 
 #include "nlohmann/json.hpp"
-
+#include "mythread.h"
+#include "clientsocket.h"
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
+
 
 //using json = nlohmann::json;
 using ordered_json = nlohmann::ordered_json;
@@ -38,6 +42,8 @@ public:
 #define CVDev_Port       5001             // 7575 - проброс
 #define ARM_Port         8383
 #define strARM_Port      "8383"
+#define HIWONDER_IP      "192.168.1.175"
+#define SERVER_NAME      "HIWONDER"
 
 
     QString     target_name;
@@ -45,10 +51,11 @@ public:
     QTcpSocket *socketARM = nullptr;
     QTcpSocket *socketDEV = nullptr;
 
+    clientSocket *mysocketDev;
 
     QFile       LogFile;
 
-    QString request; // GET request via socket
+    QString request; // GET request via socket. GLOBAL.
 
     QString currentTcpdata; //Нужно, чтоб была глобальная.
     QDataStream in; // НА считывание данных из сокета CV
@@ -56,10 +63,14 @@ public:
     QJsonDocument jsnDoc;    // json-данные, полученные по tcp
     QJsonObject   jsnObj;    // ОБъект, хранящий весь JSON ответ от девайса
     QJsonObject   jsndataObj;// ОБъект, хранящий вложенный JSON-объект (вложенный в весь ответ) \
-                             // \ Тут как раз данные о distance
+                             // Тут как раз данные о distance
     QJsonParseError jsonError; // ОШибка, если полученные данные - не JSON-объект
 
     ordered_json jsnAnswer;  // Ответ от девайса
+    QTimer *statusTimer;
+    QThread *thread_A;
+
+    myThread *thread_Timer;
 
     void Log_File_Open(QString lname);
     void GUI_Write_To_Log (int value, QString log_message);
@@ -70,6 +81,7 @@ public:
 public slots:
     void onSocketConnected_Slot();
     void onSocketReadyRead_Slot();
+    void onSocketDevState_Changed();
 
     void onARMSocketConnected_Slot();
     void onDEVSocketConnected_Slot();
@@ -77,6 +89,15 @@ public slots:
     void onDEVSocketReadyRead_Slot();
 
     void socketDEV_onDisconnected_Slot();
+
+    void timerProcessing_Slot(); //slot for signal SendToTcp_Signal()
+
+    // slot for signal clientSocket::Write_2_TcpClient_Signal
+    void Write_2_TcpClient_Slot(QString);
+
+    void Read_From_TcpClient_Slot(QString); // Пишем в лог данные, полученные по TCP
+    void socketErrorToLog_Slot(QString); // write to log socketError message
+
 
 private slots:
     void on_GetDistanceButton_clicked();
@@ -104,6 +125,12 @@ private slots:
     void on_SetServosButton_clicked();
 
     void on_ResetButton_clicked();
+
+    void on_CollapsButton_clicked();
+
+    void on_getStatusButton_clicked();
+
+    void on_StandUpButton_clicked();
 
 private:
     Ui::MainWindow *ui;

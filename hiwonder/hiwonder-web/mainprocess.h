@@ -1,4 +1,4 @@
-/*
+﻿/*
  *
  * В GUI-версии это класс MainWindow, или класс основного потока, поэтому в текущей, консольной версии - класс MainProcess
  *
@@ -15,14 +15,18 @@
 #include <QFile>
 #include <QList>
 #include "hiwonder.h"  // hiwonder class
-#include "qsimpleserver.h"
-#include "SocketClient.h"
-
-
+//#include "qsimpleserver.h"
+#include "manipulator/qsimpleserver.h"
+#include "manipulator/SocketClient.h"
+#include "jsoninfo.h"
+#include "protocol.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainProcess; }
 QT_END_NAMESPACE
+
+
+using ordered_json = nlohmann::ordered_json;
 
 class MainProcess : public QObject
 {
@@ -30,110 +34,66 @@ class MainProcess : public QObject
 
 public:
     MainProcess(QObject *parent = nullptr);
-    //MainProcess();
     ~MainProcess();
-    QSerialPort serial;
     QByteArray *buff;
-
-    QString     target_name;
-    //char       *servos;    //unsigned char
-    QByteArray LineEdits[6];
-
-    HiWonder *Robot;
-//    Robo_Math * RMath;
-
+    QString    target_name;
+    HiWonder   *Robot;
 
     bool new_get_request; // Флаг сигнализирует, что есть неотвеченный GET-запрос от webserver.
-    //QTcpServer* m_pTCPServer;
 
     QSimpleServer server;
-
+QJsonObject aaa;
     //+++++++++++++++++++++++++++++ Threads +++++++++++++++
-    int thread_counter ;
+    int thread_counter ; // Было нужно при отладке старт/останов потоков
 
-    QString rAnswer; // Ответ робота - статус, return_code, etc
+    QString     rAnswer; // Ответ робота - статус, return_code, etc
+    JsonInfo    *jsnStore;
+    QJsonObject mainjsnObj;
+    QJsonObject launchActionAnswer;  // Ответ на запуск экшена
+    QJsonDocument myjsnDoc;
 
+    //QJsonValueRef &myjsnObj;
 
-#define parcel_size 8
+#define parcel_size 8           // размер посылки в байтах от ПК к роботу
 #define NOT_LAST    0xC8 //200  // Не последняя команда
 #define LASTONE     0xDE //222  // Последняя команда роботу при комплексном движении
 #define BEFORE_LAST 0xE9 //233  // Предпоследняя команда - положить кубик на тележку.
 #define AFTER_PUT   0xF4 //244  Кубик на тележку положили, теперь грамотно убираем манипулятор.
 
-    //int parcel_size; // размер посылки в байтах от ПК к роботу
-
-    float X, Y;//Координаты x,y
+    float X, Y;//Координаты x,y центра объекта при распознавании
     bool DETECTED; // Флаг, показывающий, сработал ли захват изображения.
 
     unsigned char Servos [6] = {93,93,93,93,93,93};
 
-    //void update_data_from_sliders(int index, int value);
 
-    void GUI_Write_To_Log (int value, QString log_message); //Пишет в лог-файл номер ошибки value и сообщение message
+    void GUI_Write_To_Log (int value, QString log_message); //Пишет в лог-файл (тот же, что и в классе HiWonder) номер ошибки value и сообщение message
     void try_mcinfer(float x, float y);
-//    void update_LineDits_from_servos(void);
-//    void update_LineDits_from_position(const char *pos);
-//    void update_LineDits_from_position(unsigned char *pos);
-//    void update_Servos_from_LineEdits(void);
-    void update_Servos_from_position(unsigned char *pos);
+    void update_Servos_from_position(unsigned char *pos); // Фактически - это копирование { Servos[i] = pos[i]; }, либо memcpy(Servos, hwr_Start_position, DOF);
 
     void send_Data(unsigned char thelast);
     void make_json_answer();   // подготовка json-строки с полями ответа в TCP сокет.
-
-
+    void init_json(); // Подготовка общего ответа на status
+    void put_box();  //Положить кубик на пол
+    void traversJson(QJsonObject json_obj); // Рекурсивный Парсинг JSON
+    int getIndexCommand(QString myCommand, QList<QString> theList);  // Определяем индекс команды в списке MainProcess::tcpcommand
+    void ProcessAction(int indexOfCommand, QJsonObject &theObj); // Отрабатывает команду по заданному индексу из списка QList<QString> theList
+    bool isThereActiveAction(); // Выясняем, есть ли активный экшен.
 private:
     SocketClient readSocket;
 
 public slots:
-void Data_From_Web_SLot(QString message);
 void Data_From_TcpClient_Slot(QString);
+// slot for QSocketThread::socketErrorToLog_Signal
+//void socketErrorToLog_Slot(QString); // write to log socketError message
 
-void newConnection_Slot();
-void server_New_Connect_Slot();
 
 private slots:
-    void on_openButton_clicked();
-
-    void on_sitButton_clicked();
-
-    void on_stand_upButton_clicked();
-
-    void on_closeButton_clicked();
-
-
-    void on_set_posButton_clicked();
-
-
-//    void on_socketButton_clicked();
-
-    void on_clampButton_clicked();
-
-
-
-    void on_getXYButton_clicked();
-    void Return_EL_Slot(float EL);
-    void Return_FW_Kinematic_XYZ_Slot(int X, int Y, int Z, float EL);
-    void Pass_String_Slot(QString str);
-
-//    void on_submitButton_clicked();
-
-    void on_trainButton_clicked();
+    void on_clampButton_clicked(); // Пока используется
+    void on_trainButton_clicked(); // Обработка команды "Start", т.е. взять кубик с одного места, положить в другое.
     void Moving_Done_Slot(); // ОБработка сигнала окончания движения
-
-
-    //void TakeAndPutSlot();
-
-
-//    void on_getBackButton_clicked();
-
-//    void on_fixButton_clicked();
-
-//    void on_PUTButton_clicked();
 
 signals:
     void Open_Port_Signal(QString portname); // Сигнал даем по нажатию кнопки "OPEN"
-    void Pass_XY_Signal(int x_pix, int y_pix); //Сигнал по нажатию кнопки "Get_XY"
-    void FW_Kinemaic_Signal(int S3, int S4, int S5, int l1, int l2, int l3); // Углы приводов, длины соответствующих звеньев.
     void Write_2_TcpClient_Signal(QString); // Сигнал вебсерверу, - пересылка данных в сокет на отправку.
 //    void StartTakeAndPutSignal();
 
