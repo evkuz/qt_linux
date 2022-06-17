@@ -98,7 +98,7 @@ void MainWindow::onConnectDobot()
 
         QTimer *getPoseTimer = findChild<QTimer *>("getPoseTimer");
         getPoseTimer->start(200);
-        qDebug() << "connect success!!!";
+        qDebug() << "Сonnection established !!!";
     } else {
         QTimer *getPoseTimer = findChild<QTimer *>("getPoseTimer");
         getPoseTimer->stop();
@@ -293,8 +293,5 @@ void MainWindow::closeEvent(QCloseEvent *)
 
 
 
-void MainWindow::on_EKAButton_clicked()
-{
-    ;
-}
+
 

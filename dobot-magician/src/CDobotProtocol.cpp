@@ -31,7 +31,7 @@ CDobotProtocol::~CDobotProtocol()
 
 void CDobotProtocol::onInit(void)
 {
-    qDebug() << metaObject()->className() << ":" << QThread::currentThread();
+    qDebug() << metaObject()->className() << ":EK" << QThread::currentThread();
     QTimer *timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(periodicTask()));
     timer->start(1);

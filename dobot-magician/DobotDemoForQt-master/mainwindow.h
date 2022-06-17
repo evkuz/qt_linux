@@ -36,7 +36,6 @@ private slots:
     void onJOGCtrlBtnReleased();
     void onPTPsendBtnClicked();
     void onGetPoseTimer();
-    void on_EKAButton_clicked();
 };
 
 #endif // MAINWINDOW_H

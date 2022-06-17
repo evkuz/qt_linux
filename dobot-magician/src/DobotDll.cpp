@@ -23,9 +23,9 @@ int SearchDobot(char *dobotNameList, uint32_t maxLen)
     QMetaObject::invokeMethod(CDobot::instance()->connector,
                               "searchDobot",
                               Qt::QueuedConnection,
-                              Q_ARG(void *, (void *)&(*isFinished)),
-                              Q_ARG(void *, (void *)&(*result)),
-                              Q_ARG(void *, (void *)dobotNameList),
+                              Q_ARG(void*, (void*)&(*isFinished)),
+                              Q_ARG(void*, (void*)&(*result)),
+                              Q_ARG(void*, (void*)dobotNameList),
                               Q_ARG(unsigned int, maxLen));
 
     while (*isFinished == false) {
@@ -45,12 +45,12 @@ int ConnectDobot(const char *portName, uint32_t baudrate, char *fwType, char *ve
     QMetaObject::invokeMethod(CDobot::instance()->connector,
                               "connectDobot",
                               Qt::QueuedConnection,
-                              Q_ARG(void *, (void *)&(*isFinished)),
-                              Q_ARG(void *, (void *)&(*result)),
-                              Q_ARG(void *, (void *)portName),
+                              Q_ARG(void*, (void*)&(*isFinished)),
+                              Q_ARG(void*, (void*)&(*result)),
+                              Q_ARG(void*, (void*)portName),
                               Q_ARG(unsigned int, baudrate),
-                              Q_ARG(void *, (void *)fwType),
-                              Q_ARG(void *, (void *)version));
+                              Q_ARG(void*, (void*)fwType),
+                              Q_ARG(void*, (void*)version));
 
     while (*isFinished == false) {
         QCoreApplication::processEvents(QEventLoop::AllEvents, 5);
