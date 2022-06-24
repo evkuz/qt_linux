@@ -33,6 +33,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(thread_A, &QThread::started, thread_Timer, &myThread::A_SLOT); //, Qt::QueuedConnection
     connect(thread_Timer, &myThread::SendToTcp_Signal, mysocketDev, &clientSocket::SendToTcp_Slot, Qt::QueuedConnection);
+    connect(thread_Timer, &myThread::finished, thread_A, &QThread::quit);
 
     // Вспомагательный, запись в лог передаваемых по TCP данных
     connect(mysocketDev, &clientSocket::Write_2_TcpClient_Signal, this, &MainWindow::Write_2_TcpClient_Slot);
@@ -855,7 +856,7 @@ void MainWindow::on_CollapsButton_clicked()
 }
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
+// Запускаем в потоке запрос статуса. Поток паузим на 50мс.
 void MainWindow::on_getStatusButton_clicked()
 {
 //    request = "GET ";
@@ -869,7 +870,7 @@ void MainWindow::on_getStatusButton_clicked()
 
      //Запускаем опрос статуса
      //statusTimer->start(500);
-
+    thread_Timer->pause_thread = false;
     thread_A->start();
 }
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -892,5 +893,12 @@ void MainWindow::on_StandUpButton_clicked()
      quint16 myport = ARM_Port;
      makeSocket(myipaddress, myport);
 
+}
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++
+// Останавливаем поток, где запрос статуса.
+void MainWindow::on_StopPollingButton_clicked()
+{
+    thread_Timer->pause_thread = true;
 }
 

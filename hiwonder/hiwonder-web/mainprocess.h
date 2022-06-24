@@ -20,6 +20,9 @@
 #include "manipulator/SocketClient.h"
 #include "jsoninfo.h"
 #include "protocol.h"
+#include <QMutex>
+
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainProcess; }
@@ -64,7 +67,7 @@ QJsonObject aaa;
     bool DETECTED; // Флаг, показывающий, сработал ли захват изображения.
 
     unsigned char Servos [6] = {93,93,93,93,93,93};
-
+    QMutex mutex;
 
     void GUI_Write_To_Log (int value, QString log_message); //Пишет в лог-файл (тот же, что и в классе HiWonder) номер ошибки value и сообщение message
     void try_mcinfer(float x, float y);
