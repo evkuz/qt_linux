@@ -382,10 +382,23 @@ void JsonInfo::init_actions()
         {"info", "There is now action with such a name"},
         {"rc", AC_WRONG_VALUE}
     };
+    jsnActionLock = {
+        {"name", "lock"},
+        {"state", DEV_ACTION_STATE_WAIT},
+        {"info", "lock the gripper of manipulator"},
+        {"rc",  RC_WAIT}
+    };
+    jsnActionUnLock = {
+        {"name", "unlock"},
+        {"state", DEV_ACTION_STATE_WAIT},
+        {"info", "unlock the gripper of manipulator"},
+        {"rc",  RC_WAIT}
+    };
 
 
 //    actionListp = {jsnActionClamp, jsnActionStart, jsnActionPutbox, jsnActionReset, jsnActionCollapse};
-    jsnObjArray = {jsnActionClamp, jsnActionCollapse, jsnActionStandUP, jsnActionReset, jsnActionStart, jsnActionUnKnown}; //
+    jsnObjArray = {jsnActionClamp, jsnActionCollapse, jsnActionStandUP, jsnActionReset, jsnActionStart, jsnActionPutbox, \
+                   jsnActionUnKnown, jsnActionLock, jsnActionUnLock}; //
     jsnHeadStatus = {
         {"name", DEV_NAME},
         {"rc", RC_UNDEFINED}, //RC_SUCCESS
@@ -411,6 +424,7 @@ void JsonInfo::resetAllActions()
        jsnObjArray.at(i).toObject()["rc"] = -4;
        jsnObjArray.at(i).toObject()["state"] = "done";
     }
+    isAnyActionRunning = false; // Нет активных экшенов
 
 }///init_json
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -522,7 +536,7 @@ QJsonObject& JsonInfo::returnJsnActionStart()
     return this->jsnActionStart;
 }
 //+++++++++++++++++++++++++++++++++++++++++++
-QJsonObject JsonInfo::returnJsnActionReset()
+QJsonObject& JsonInfo::returnJsnActionReset()
 {
     return this->jsnActionReset;
 }
@@ -547,6 +561,22 @@ QJsonObject& JsonInfo::returnJsnActionStandUP()
 QJsonObject &JsonInfo::returnJsnActionsUnKnown()
 {
     return this->jsnActionUnKnown;
+}
+//+++++++++++++++++++++++++++++++++++++++++++++
+
+QJsonObject &JsonInfo::returnJsnActionPutbox()
+{
+    return this->jsnActionPutbox;
+}
+//+++++++++++++++++++++++++++++++++++++++++++++
+QJsonObject &JsonInfo::returnJsnActionLock()
+{
+    return this->jsnActionLock;
+}
+//+++++++++++++++++++++++++++++++++++++++++++++
+QJsonObject &JsonInfo::returnJsnActionUnLock()
+{
+    return this->jsnActionUnLock;
 }
 //+++++++++++++++++++++++++++++++++++++++++++
 

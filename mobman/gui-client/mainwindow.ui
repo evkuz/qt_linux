@@ -235,7 +235,7 @@
       <x>420</x>
       <y>310</y>
       <width>471</width>
-      <height>341</height>
+      <height>441</height>
      </rect>
     </property>
     <property name="frameShape">
@@ -287,7 +287,7 @@
      <property name="geometry">
       <rect>
        <x>30</x>
-       <y>260</y>
+       <y>330</y>
        <width>171</width>
        <height>51</height>
       </rect>
@@ -299,14 +299,66 @@
     <widget class="QPushButton" name="StopPollingButton">
      <property name="geometry">
       <rect>
-       <x>220</x>
-       <y>260</y>
+       <x>230</x>
+       <y>330</y>
        <width>151</width>
        <height>51</height>
       </rect>
      </property>
      <property name="text">
       <string>STOP POLLING</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="LockButton">
+     <property name="geometry">
+      <rect>
+       <x>240</x>
+       <y>80</y>
+       <width>89</width>
+       <height>61</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Lock</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="UnLockButton">
+     <property name="geometry">
+      <rect>
+       <x>350</x>
+       <y>80</y>
+       <width>89</width>
+       <height>61</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>UnLock</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="GetBoxButton_2">
+     <property name="geometry">
+      <rect>
+       <x>240</x>
+       <y>180</y>
+       <width>89</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>GetBox</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="PutBoxButton_2">
+     <property name="geometry">
+      <rect>
+       <x>350</x>
+       <y>180</y>
+       <width>89</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>PutBox</string>
      </property>
     </widget>
    </widget>

@@ -1,4 +1,4 @@
-﻿#include "mainprocess.h"
+#include "mainprocess.h"
 #include "positions.h"
 /*
 преобразование строки параметров
@@ -169,6 +169,7 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 
         break;
     case -1: // Unknown Action !!!
+        mutex.lock();
         mainjsnObj = jsnStore->returnJsnActionsUnKnown();
         mainjsnObj["name"] = message;
         str = "There is wrong action command : ";
@@ -176,14 +177,16 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
         GUI_Write_To_Log(value, str);
 
         ProcessAction(comIndex, mainjsnObj);
-
+        mutex.unlock();
         break;
 
     case 1:  // reset
         // Robot->active_command = "reset";
+        mutex.lock();
         jsnStore->resetAllActions();
         str = "I'm in reset";
         GUI_Write_To_Log(value, str);
+        mainjsnObj["rc"] = jsnStore->AC_LaunchDONE;
         mainjsnObj = jsnStore->returnJsnActionReset();
         str = QJsonDocument(mainjsnObj).toJson(QJsonDocument::Indented);
         GUI_Write_To_Log(value, str);
@@ -194,6 +197,7 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
         mainjsnObj = jsnStore->returnAllActions();
         // Берем значение  jsnActionList, весь ответ не нужен
         str += QJsonDocument(jsnStore->jsnActionList).toJson(QJsonDocument::Indented);
+       mutex.unlock();
         GUI_Write_To_Log(value, str);
 //        emit Write_2_TcpClient_Signal (str);
         break;
@@ -211,14 +215,25 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 
     case 4: // "standup"
         // Robot->active_command = "standup";
+        mutex.lock();
         mainjsnObj = jsnStore->returnJsnActionStandUP();
         ProcessAction(comIndex, mainjsnObj);
-
+        mutex.unlock();
         break;
     case 5: // "start"
         // Robot->active_command = "start";
+        mutex.lock();
         mainjsnObj = jsnStore->returnJsnActionStart();
         ProcessAction(comIndex, mainjsnObj);
+        mutex.unlock();
+        break;
+    case 6: // "put_box"
+        mutex.lock();
+        mainjsnObj = jsnStore->returnJsnActionPutbox();
+        ProcessAction(comIndex, mainjsnObj);
+
+        mutex.unlock();
+
         break;
 
     case 7: //getactions
@@ -229,10 +244,27 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
         GUI_Write_To_Log(value, str);
 
         break;
+    case 10: //lock
+        mutex.lock();
+        mainjsnObj = jsnStore->returnJsnActionLock();
+        ProcessAction(comIndex, mainjsnObj);
+        mutex.unlock();
+        break;
+    case 11: //unlock
+        mutex.lock();
+        mainjsnObj = jsnStore->returnJsnActionUnLock();
+        ProcessAction(comIndex, mainjsnObj);
+        mutex.unlock();
+        break;
+
+
+
     case 13: //collapse
         // Robot->active_command = "collapse";
+        mutex.lock();
         mainjsnObj = jsnStore->returnJsnActionCollapse();
         ProcessAction(comIndex, mainjsnObj);
+        mutex.unlock();
         break;
 
     default:
@@ -248,12 +280,12 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 
     // ++++++++++++++++++++++++++++++++ Теперь всё остальное
 
-    if (substr == "put_box"){
-        Robot->SetCurrentStatus ("inprogress"); // Перед запуском распознавания
-        put_box();
+//    if (substr == "put_box"){
+//        Robot->SetCurrentStatus ("inprogress"); // Перед запуском распознавания
+//        put_box();
 
 
-    }
+//    }
 
 //    if (substr == "reset") {
 
@@ -302,23 +334,23 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 //        this->send_Data(LASTONE);
 //    }//"clamp"
 
-    if (substr =="lock") {
+//    if (substr =="lock") {
 
-        str = "######## Try to lock the gripper ######### ";
-        str += "Current clamper value is ";
-        str += QString::number(Servos[0]);
-        Servos[0]=90;
-        this->send_Data(NOT_LAST); //NOT_LAST LASTONE
-    }//"lock"
+//        str = "######## Try to lock the gripper ######### ";
+//        str += "Current clamper value is ";
+//        str += QString::number(Servos[0]);
+//        Servos[0]=90;
+//        this->send_Data(NOT_LAST); //NOT_LAST LASTONE
+//    }//"lock"
 
-    if (substr =="unlock") {
+//    if (substr =="unlock") {
 
-        str = "######## Try to UNlock the gripper ######### ";
-        str += "Current clamper value is ";
-        str += QString::number(Servos[0]);
-        Servos[0]=0;
-        this->send_Data(NOT_LAST); //NOT_LAST LASTONE
-    }//"unlock"
+//        str = "######## Try to UNlock the gripper ######### ";
+//        str += "Current clamper value is ";
+//        str += QString::number(Servos[0]);
+//        Servos[0]=0;
+//        this->send_Data(NOT_LAST); //NOT_LAST LASTONE
+//    }//"unlock"
 
     if (substr == "close") {
         Robot->serial.close();

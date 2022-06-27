@@ -217,13 +217,16 @@ void MainProcess::on_trainButton_clicked()
     int value = 0xf014;
     DetectorState state;
     QString str, fstr;
-    str = "";
+    str = "on_trainButton_Clicked";
+    GUI_Write_To_Log(value, str);
     fstr = "";
 //Сразу открываем захват
 //    if (ui->servo_1_lineEdit->text().toInt() > 0){ ui->servo_1_lineEdit->setText("0"); Servos[0]=0;}
 //    else {ui->servo_1_lineEdit->setText("160"); Servos[0]=160;}
     Servos[0]=0;
 
+
+    // Нужна проверка, запущен ли сервис robot.hiwonder.service
     if (readSocket.GetState(&state) == 0)
       {
         if (state.isDetected){
@@ -234,7 +237,7 @@ void MainProcess::on_trainButton_clicked()
             str += ", ";
             fstr.setNum(state.objectY);
             str += fstr;
-            GUI_Write_To_Log(0xf014, str);
+            GUI_Write_To_Log(value, str);
 
 
             int kf = 100000;
@@ -279,7 +282,7 @@ void MainProcess::on_trainButton_clicked()
 
        std::cout <<  str.toStdString() << std::endl;
        Robot->Write_To_Log(value, str);
-       GUI_Write_To_Log(0xf014, str);
+       GUI_Write_To_Log(value, str);
     }
 
 //В этой точке робот опустился над кубиком, открыл захват.
@@ -290,7 +293,7 @@ if (DETECTED)
         QByteArray dd ;
         dd.resize(parcel_size);
         str = "Next movement to robot";
-        this->GUI_Write_To_Log (0xF055, str);
+        this->GUI_Write_To_Log (value, str);
    //+++++++++++++++++ 1 make clamp, хватаем кубик
    //on_clampButton_clicked();
         Servos[0]=90;
@@ -331,6 +334,12 @@ if (DETECTED)
    Robot->GoToPosition(dd);
 
   }// if (DETECTED)
+
+else {
+    str = "NO Detection !!!";
+    this->GUI_Write_To_Log (value, str);
+
+}
 
    DETECTED = false;
 
@@ -382,6 +391,10 @@ void MainProcess::make_json_answer()
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
 void MainProcess::put_box()
 {
+    int value = 0xEEBB;
+    QString str = "I'm in put_box";
+    GUI_Write_To_Log(value, str);
+
     QByteArray dd ;
     dd.resize(parcel_size);
 
@@ -496,28 +509,21 @@ void MainProcess::traversJson(QJsonObject json_obj)
 
 int MainProcess::getIndexCommand(QString myCommand, QList<QString> theList)
 {
-    bool matched = false;
     int i = 0;
     QString message, str ;
     message = myCommand;
-    int sPosition; // Индекс искомой строки в тексте.
     int value = 0x3355;
+    str = "getIndex";
+    GUI_Write_To_Log(value, str);
 
 
-    while (!matched and i< theList.size()){
-        sPosition = message.indexOf(theList.at(i));
-        if (sPosition != -1) {matched = true; qDebug() << "Inside sPosition is " << sPosition;}
-        i++;
-    }
-    i--;
-    if (!matched) {
+    i = theList.indexOf(message);
+    if (i == -1){
         str = "There is now any Matching in command list !!! Unknown command";
         GUI_Write_To_Log(value, str);
-        i = -1;
     }
 
-    qDebug() << "Index value is" << i;
-    qDebug() << "Matched command sPosition is " << sPosition;
+    qDebug() << "getIndex Index value is" << i;
     if (i>=0) {qDebug() << "Matched string is " << theList.at(i);}
 
     return i;
@@ -548,16 +554,11 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
     break;
 
     case -1:
-
-//        launchActionAnswer["name"] = theObj.value("name").toString();
-//        launchActionAnswer["rc"] = RC_SUCCESS;
-//        launchActionAnswer["info"] = DEV_HEAD_INFO_REQUEST;
         str = QJsonDocument(theObj).toJson(QJsonDocument::Indented);
         // Вот это нужно, отправляем ответ на запуск экшена
         emit Write_2_TcpClient_Signal(str);
         str.insert(0, "There is wrong action command !!! : \n");
         GUI_Write_To_Log(value, str);
-
         break;
 
     case -2: // меняем только info
@@ -589,6 +590,8 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
             jsnStore->setActionData(theObj);
         }
         else { // Все нормально, запускаем манипулятор
+
+            jsnStore->isAnyActionRunning = true;
             theObj["rc"] = RC_SUCCESS; // Now state "inprogress" //theObj
             theObj["state"] = DEV_ACTION_STATE_RUN;
             jsnStore->setActionData(theObj);
@@ -638,6 +641,27 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
                 GUI_Write_To_Log(value,str);
                 on_trainButton_clicked ();
                 break;
+            case 6: // "put_box"
+                str = "Going to put the box down";
+                GUI_Write_To_Log(value,str);
+                put_box();
+                break;
+            case 10:
+                str = "Going to lock the gripper";
+                GUI_Write_To_Log(value,str);
+                Servos[0]=90;
+                this->send_Data(LASTONE); //NOT_LAST LASTONE
+
+                break;
+            case 11:
+                str = "Going to unlock the gripper";
+                GUI_Write_To_Log(value,str);
+                Servos[0]=0;
+                this->send_Data(LASTONE); //NOT_LAST LASTONE
+
+                break;
+
+
             case 13: //collapse
                 memcpy(Servos, collaps, DOF);
                 this->send_Data(LASTONE);

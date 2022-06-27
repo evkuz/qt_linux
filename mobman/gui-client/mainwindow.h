@@ -134,6 +134,14 @@ private slots:
 
     void on_StopPollingButton_clicked();
 
+    void on_LockButton_clicked();
+
+    void on_UnLockButton_clicked();
+
+    void on_GetBoxButton_2_clicked();
+
+    void on_PutBoxButton_2_clicked();
+
 private:
     Ui::MainWindow *ui;
 };

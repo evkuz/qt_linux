@@ -588,7 +588,8 @@ void MainWindow::on_GetBoxButton_clicked()
     request += "/run?cmd=get_box&";
     request += " HTTP/1.1";
     request += "\r\nHost: ";
-    request += "192.168.1.201:8383\r\n";
+    //request += "192.168.1.201:8383\r\n";
+    request += CVDev_IP; request+=":"; request+=strARM_Port; request+="\r\n";
     request += "Accept: */*\r\n";
     request += "Access-Control-Allow-Origin: *\r\n";
     request += "\r\n";
@@ -750,14 +751,15 @@ void MainWindow::on_PutBoxButton_clicked()
      request += "/run?cmd=put_box&";
      request += " HTTP/1.1";
      request += "\r\nHost: ";
-     request += "192.168.1.201:8383\r\n";
+     //request += "192.168.1.201:8383\r\n";
+     request += CVDev_IP; request+=":"; request+=strARM_Port; request+="\r\n";
      request += "Accept: */*\r\n";
      request += "Access-Control-Allow-Origin: *\r\n";
      request += "\r\n";
 
-     QString myipaddress = CVDev_IP;
-     quint16 myport = ARM_Port;
-     makeSocket(myipaddress, myport);
+//     QString myipaddress = CVDev_IP;
+//     quint16 myport = ARM_Port;
+     makeSocket(CVDev_IP, ARM_Port);
 
 }
 
@@ -900,5 +902,84 @@ void MainWindow::on_StandUpButton_clicked()
 void MainWindow::on_StopPollingButton_clicked()
 {
     thread_Timer->pause_thread = true;
+}
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++
+// Закрыть хват
+void MainWindow::on_LockButton_clicked()
+{
+    // А вот теперь готовим команду "/run?cmd=lock&"
+     request = "GET ";
+     request += "/run?cmd=lock&";
+     request += " HTTP/1.1";
+     request += "\r\nHost: ";
+     //request += "192.168.1.201:8383\r\n";
+     request += HIWONDER_IP; request+=":"; request+=strARM_Port; request+="\r\n";
+     request += "Accept: */*\r\n";
+     request += "Access-Control-Allow-Origin: *\r\n";
+     request += "\r\n";
+
+     QString myipaddress = HIWONDER_IP;
+     quint16 myport = ARM_Port;
+     makeSocket(myipaddress, myport);
+
+}
+//+++++++++++++++++++++++++++++++++++++++++++++++++
+// Открыть хват
+void MainWindow::on_UnLockButton_clicked()
+{
+    // А вот теперь готовим команду "/run?cmd=unlock&"
+     request = "GET ";
+     request += "/run?cmd=unlock&";
+     request += " HTTP/1.1";
+     request += "\r\nHost: ";
+     request += HIWONDER_IP; request+=":"; request+=strARM_Port; request+="\r\n";
+     request += "Accept: */*\r\n";
+     request += "Access-Control-Allow-Origin: *\r\n";
+     request += "\r\n";
+
+     QString myipaddress = HIWONDER_IP;
+     quint16 myport = ARM_Port;
+     makeSocket(myipaddress, myport);
+
+}
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++
+// Взять предмет
+void MainWindow::on_GetBoxButton_2_clicked()
+{
+    // А вот теперь готовим команду "/run?cmd=start&"
+     request = "GET ";
+     request += "/run?cmd=start&";
+     request += " HTTP/1.1";
+     request += "\r\nHost: ";
+     request += HIWONDER_IP; request+=":"; request+=strARM_Port; request+="\r\n";
+     request += "Accept: */*\r\n";
+     request += "Access-Control-Allow-Origin: *\r\n";
+     request += "\r\n";
+
+     QString myipaddress = HIWONDER_IP;
+     quint16 myport = ARM_Port;
+     makeSocket(myipaddress, myport);
+
+}
+//+++++++++++++++++++++++++++++++++++++++++++++++++
+// Положить предмет
+void MainWindow::on_PutBoxButton_2_clicked()
+{
+    // А вот теперь готовим команду "/run?cmd=put_box&"
+     request = "GET ";
+     request += "/run?cmd=put_box&";
+     request += " HTTP/1.1";
+     request += "\r\nHost: ";
+     request += HIWONDER_IP; request+=":"; request+=strARM_Port; request+="\r\n";
+     request += "Accept: */*\r\n";
+     request += "Access-Control-Allow-Origin: *\r\n";
+     request += "\r\n";
+
+     QString myipaddress = HIWONDER_IP;
+     quint16 myport = ARM_Port;
+     makeSocket(myipaddress, myport);
+
 }
 
