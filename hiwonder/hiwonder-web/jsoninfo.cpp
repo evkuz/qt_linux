@@ -376,11 +376,16 @@ void JsonInfo::init_actions()
         {"rc", RC_WAIT}
     };
 
-
+    jsnActionUnKnown = {
+        {"name", "UnKnown"},
+        {"state", DEV_ACTION_STATE_FAIL},
+        {"info", "There is now action with such a name"},
+        {"rc", AC_WRONG_VALUE}
+    };
 
 
 //    actionListp = {jsnActionClamp, jsnActionStart, jsnActionPutbox, jsnActionReset, jsnActionCollapse};
-    jsnObjArray = {jsnActionClamp, jsnActionCollapse, jsnActionStandUP, jsnActionReset, jsnActionStart}; //
+    jsnObjArray = {jsnActionClamp, jsnActionCollapse, jsnActionStandUP, jsnActionReset, jsnActionStart, jsnActionUnKnown}; //
     jsnHeadStatus = {
         {"name", DEV_NAME},
         {"rc", RC_UNDEFINED}, //RC_SUCCESS
@@ -537,6 +542,11 @@ QJsonObject& JsonInfo::returnJsnActionCollapse()
 QJsonObject& JsonInfo::returnJsnActionStandUP()
 {
     return this->jsnActionStandUP;
+}
+//+++++++++++++++++++++++++++++++++++++++++++++
+QJsonObject &JsonInfo::returnJsnActionsUnKnown()
+{
+    return this->jsnActionUnKnown;
 }
 //+++++++++++++++++++++++++++++++++++++++++++
 

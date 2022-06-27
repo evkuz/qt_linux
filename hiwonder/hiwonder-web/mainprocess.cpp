@@ -263,6 +263,13 @@ void MainProcess::on_trainButton_clicked()
 
             jsnStore->setActionStart2NoDetection();
             str = jsnStore->returnJsnData();
+
+            mutex.lock();
+            mainjsnObj["rc"] = RC_FAIL;
+            mainjsnObj["info"] = str;
+            mainjsnObj["state"] = DEV_ACTION_STATE_FAIL;
+            mutex.unlock();
+
             Write_2_TcpClient_Signal(str);
 
 //            QString s3 = "NO DETECTION";
@@ -496,18 +503,20 @@ int MainProcess::getIndexCommand(QString myCommand, QList<QString> theList)
     int sPosition; // Индекс искомой строки в тексте.
     int value = 0x3355;
 
+
     while (!matched and i< theList.size()){
         sPosition = message.indexOf(theList.at(i));
         if (sPosition != -1) {matched = true; qDebug() << "Inside sPosition is " << sPosition;}
-        ++i;
+        i++;
     }
-
+    i--;
     if (!matched) {
         str = "There is now any Matching in command list !!! Unknown command";
         GUI_Write_To_Log(value, str);
-        return -1;
+        i = -1;
     }
-    qDebug() << "Index value is" << --i;
+
+    qDebug() << "Index value is" << i;
     qDebug() << "Matched command sPosition is " << sPosition;
     if (i>=0) {qDebug() << "Matched string is " << theList.at(i);}
 
@@ -537,6 +546,19 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
         theObj["state"] = DEV_ACTION_STATE_RUN;
         theObj["info"] = DEV_ACTION_INFO;
     break;
+
+    case -1:
+
+//        launchActionAnswer["name"] = theObj.value("name").toString();
+//        launchActionAnswer["rc"] = RC_SUCCESS;
+//        launchActionAnswer["info"] = DEV_HEAD_INFO_REQUEST;
+        str = QJsonDocument(theObj).toJson(QJsonDocument::Indented);
+        // Вот это нужно, отправляем ответ на запуск экшена
+        emit Write_2_TcpClient_Signal(str);
+        str.insert(0, "There is wrong action command !!! : \n");
+        GUI_Write_To_Log(value, str);
+
+        break;
 
     case -2: // меняем только info
         //str = "Serial port is UNAVAILABLE !!! CAN'T move the ARM !!!";
@@ -585,8 +607,8 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
             str = QJsonDocument(launchActionAnswer).toJson(QJsonDocument::Indented);
             // Вот это нужно, отправляем ответ на запуск экшена
             emit Write_2_TcpClient_Signal(str);
-//            str.insert(0, "Data supposed to be sent to tcp, but only to log : \n");
-//            GUI_Write_To_Log(value, str);
+            str.insert(0, "Data supposed to be sent to tcp, but only to log : \n");
+            GUI_Write_To_Log(value, str);
 
             // Теперь запускаем манипулятор. Определяем команду из списка
             QJsonValue myjsnValue;
@@ -612,7 +634,9 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
             case 5: //start
                 // - хватаем кубик
                 // - встаём в исходную точку
-                 on_trainButton_clicked ();
+                str = "Going to move  the cube";
+                GUI_Write_To_Log(value,str);
+                on_trainButton_clicked ();
                 break;
             case 13: //collapse
                 memcpy(Servos, collaps, DOF);

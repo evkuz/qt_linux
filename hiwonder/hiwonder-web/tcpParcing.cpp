@@ -1,4 +1,4 @@
-#include "mainprocess.h"
+﻿#include "mainprocess.h"
 #include "positions.h"
 /*
 преобразование строки параметров
@@ -27,10 +27,19 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
     GUI_Write_To_Log(0xf00f, str);
 
     substr = message;
+    str = "WRONG DATA from TCP !!!";
     // Определяем индекс команды в списке MainProcess::tcpCommand
+    if (message == str)
+    {
+        GUI_Write_To_Log(value, str);
+        return;
+    }
     mutex.lock();
     int comIndex = getIndexCommand(substr, tcpCommand);
-//    if (comIndex < 0) {str = "WRONG DATA !!!"; GUI_Write_To_Log(value, str);return;}
+//    if (comIndex < 0) {
+//        GUI_Write_To_Log(value, str);
+//        mutex.unlock();
+//        return;}
 //    str = "Index value is "; str += QString::number(comIndex); str += ",\n";
 //    str += "List value on that index is \""; str += tcpCommand.at(comIndex); str += "\"";
 //    GUI_Write_To_Log(value, str);
@@ -57,7 +66,7 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 
     // And now make decision
     // Если не запрос статуса и нет активных экшенов, меняем active_command, идем дальше
-    if (comIndex != 0 && !(jsnStore->isAnyActionRunning)){
+    if (comIndex > 0 && !(jsnStore->isAnyActionRunning)){
         mutex.lock();
         Robot->active_command = tcpCommand.at(comIndex);
         mutex.unlock();
@@ -69,7 +78,7 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
     }
     // Если не запрос статуса, но есть активный экшен
     // Меняем у запрошенного экшена статус
-    if (comIndex != 0 && jsnStore->isAnyActionRunning){
+    if (comIndex > 0 && jsnStore->isAnyActionRunning){
         // ставим экшену статус -2
         mutex.lock();
         QJsonObject tempObj = {
@@ -157,6 +166,16 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 //        str = QJsonDocument(aaa).toJson(QJsonDocument::Indented);
 //        GUI_Write_To_Log(value, str);
 
+
+        break;
+    case -1: // Unknown Action !!!
+        mainjsnObj = jsnStore->returnJsnActionsUnKnown();
+        mainjsnObj["name"] = message;
+        str = "There is wrong action command : ";
+        str += message;
+        GUI_Write_To_Log(value, str);
+
+        ProcessAction(comIndex, mainjsnObj);
 
         break;
 
@@ -329,6 +348,14 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 
 
         emit Write_2_TcpClient_Signal (str);
+
+    }
+    // Запрашиваем список экшенов
+    if (substr == "getactions") {
+        QByteArray dd ;
+        dd.resize(parcel_size);
+        memcpy(dd.data(), get_values_position, parcel_size);
+        Robot->GoToPosition(dd);
 
     }
 

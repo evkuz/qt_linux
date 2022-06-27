@@ -84,7 +84,8 @@ public:
      QJsonObject jsnActionStandUP;   // "standup"
      QJsonObject jsnActionPutbox;    // for "put_box"
      QJsonObject jsnActionReset;     // for "reset"
-     QJsonObject jsnActionCollapse;  // for "collaps"
+     QJsonObject jsnActionCollapse;  // for "collapse"
+     QJsonObject jsnActionUnKnown;   // for unknown action
 
      QJsonObject jsnActionList;  // list for "action_list" key
      QJsonArray  jsnArray;       // list for action_list
@@ -110,6 +111,7 @@ public:
     QJsonObject& returnJsnActionClamp();
     QJsonObject& returnJsnActionCollapse();
     QJsonObject& returnJsnActionStandUP();
+    QJsonObject& returnJsnActionsUnKnown();
 
     QJsonObject returnAllActions();
 
