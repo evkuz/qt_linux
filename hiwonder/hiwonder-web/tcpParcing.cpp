@@ -34,7 +34,7 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
         GUI_Write_To_Log(value, str);
         return;
     }
-    mutex.lock();
+    //mutex.lock();
     int comIndex = getIndexCommand(substr, tcpCommand);
 //    if (comIndex < 0) {
 //        GUI_Write_To_Log(value, str);
@@ -47,8 +47,8 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
     // So here we've got the index of elemnt representing the command received by TCP
     // set value of Robot->active_command
     // Формируем значение jsnStore->isAnyActionRunning
-    jsnStore->createActionList();
-    mutex.unlock();
+    //jsnStore->createActionList();
+    //mutex.unlock();
 
 //    jsnStore->isAnyActionRunning = false;
 //    str = "Current isAnyActionRunning value is ";
@@ -67,9 +67,9 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
     // And now make decision
     // Если не запрос статуса и нет активных экшенов, меняем active_command, идем дальше
     if (comIndex > 0 && !(jsnStore->isAnyActionRunning)){
-        mutex.lock();
+        //mutex.lock();
         Robot->active_command = tcpCommand.at(comIndex);
-        mutex.unlock();
+        //mutex.unlock();
         str = "Current active command is ";
         str += Robot->active_command;
         GUI_Write_To_Log(value, str);
@@ -78,25 +78,25 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
     }
     // Если не запрос статуса, но есть активный экшен
     // Меняем у запрошенного экшена статус
-    if (comIndex > 0 && jsnStore->isAnyActionRunning){
-        // ставим экшену статус -2
-        mutex.lock();
-        QJsonObject tempObj = {
-            {"name", substr},
-            {"state", "Not applied"},
-            {"info", "Another action id already running"},
-            {"rc", RC_UNDEFINED}
-        };
-        // set aimed action values to tempObj
-        jsnStore->setActionData(tempObj);
-        launchActionAnswer = tempObj;
-        mutex.unlock();
-        str = QJsonDocument(launchActionAnswer).toJson(QJsonDocument::Indented);
-        // отправляем ответ на запуск экшена
-        emit Write_2_TcpClient_Signal(str);
+//    if (comIndex > 0 && jsnStore->isAnyActionRunning){
+//        // ставим экшену статус -2
+//        //mutex.lock();
+//        QJsonObject tempObj = {
+//            {"name", substr},
+//            {"state", "Not applied"},
+//            {"info", "Another action id already running"},
+//            {"rc", RC_UNDEFINED}
+//        };
+//        // set aimed action values to tempObj
+//        jsnStore->setActionData(tempObj);
+//        launchActionAnswer = tempObj;
+//        //mutex.unlock();
+//        str = QJsonDocument(launchActionAnswer).toJson(QJsonDocument::Indented);
+//        // отправляем ответ на запуск экшена
+//        emit Write_2_TcpClient_Signal(str);
 
-        return;
-    }
+//        return;
+//    }
 
 
     //jsnStore->action_command = tcpCommand.at(comIndex); // сигнал updateAction_List_Signal
@@ -112,6 +112,8 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 
 
 
+    str = "Before switch";
+    GUI_Write_To_Log(value, str);
 
    QString S3;
     switch (comIndex) {
@@ -137,12 +139,13 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 //        s2 = jsnStore->jsnInfo.dump(indent);
 //        str = QString::fromStdString(s2);
 
-        emit Write_2_TcpClient_Signal (str);
+
         //Robot->Write_To_Log(value, str);
 
 
         Robot->active_command = "status";
         mutex.unlock();
+        emit Write_2_TcpClient_Signal (str);
 
 //        str = "Current QJsonDocument is ";
 //        str += QJsonDocument(mainjsnObj).toJson(QJsonDocument::Indented);
@@ -186,7 +189,7 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
         jsnStore->resetAllActions();
         str = "I'm in reset";
         GUI_Write_To_Log(value, str);
-        mainjsnObj["rc"] = jsnStore->AC_LaunchDONE;
+        mainjsnObj["rc"] = jsnStore->AC_Launch_RC_DONE;
         mainjsnObj = jsnStore->returnJsnActionReset();
         str = QJsonDocument(mainjsnObj).toJson(QJsonDocument::Indented);
         GUI_Write_To_Log(value, str);
@@ -222,10 +225,17 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
         break;
     case 5: // "start"
         // Robot->active_command = "start";
-        mutex.lock();
+        //mutex.lock();
+        str = "TcpParcing start command";
+        GUI_Write_To_Log(value, str);
+
         mainjsnObj = jsnStore->returnJsnActionStart();
+        str = "TcpParcing start before processAction : \n";
+        // Выводим jsnStore->returnJsnActionStart()
+        str += QJsonDocument(mainjsnObj).toJson(QJsonDocument::Indented);
+        GUI_Write_To_Log(value, str);
         ProcessAction(comIndex, mainjsnObj);
-        mutex.unlock();
+        //mutex.unlock();
         break;
     case 6: // "put_box"
         mutex.lock();

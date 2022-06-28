@@ -51,6 +51,7 @@ public:
     #define DEV_HEAD_STATE_FAIL "Fail"
     #define DEV_HEAD_STATE_DONE "Done"
 
+
     #define DEV_HEAD_INFO_NO_DET    "No detection"
     #define DEV_HEAD_INFO_REQUEST   "Request Accepted"
 
@@ -75,12 +76,16 @@ public:
     #define AC_POSTPONED -5     // action отложен до завершения текущего
 
      typedef enum ActionLaunchAnswer{
-         AC_LaunchRUNNING = 0,       // action запущен
-         AC_LaunchWRONGVALUE = -1,   // action с таким именем не найден
-         AC_LaunchFAILURE = -2,      // action с таким именем не запустился
-         AC_LaunchALREADY_HAVE = -3, // action с таким именем уже запущен
-         AC_LaunchDONE = -4          // Ожидание
+         AC_Launch_RC_RUNNING = 0,       // action запущен
+         AC_Launch_RC_WRONGVALUE = -1,   // action с таким именем не найден
+         AC_Launch_RC_FAILURE = -2,      // action с таким именем не запустился
+         AC_Launch_RC_ALREADY_HAVE = -3, // action с таким именем уже запущен
+         AC_Launch_RC_DONE = -4          // Ожидание
+
      }ActionLaunchAnswer;
+
+
+
 
     ordered_json jsnInfo;
     QString jsnData;
@@ -141,7 +146,7 @@ public:
     void createActionList(); // Подготовить список активных (выполняемых в данный момент) экшенов
     void SetJsnActionCollapse(QJsonObject &theObj);
     void SetJsnActionStandUP(QJsonObject &theObj);
-    void setActionData(QJsonObject &theObj); // Меняем данные экшенов, целевой экшен определяем по name
+    void setActionData(QJsonObject &theObj); // Меняем данные экшенов на данные "снаружи", целевой экшен определяем по name
 
 
     // Структура хранит данные для json-ответа.

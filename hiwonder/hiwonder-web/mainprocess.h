@@ -51,9 +51,10 @@ QJsonObject aaa;
 
     QString     rAnswer; // Ответ робота - статус, return_code, etc
     JsonInfo    *jsnStore;
-    QJsonObject mainjsnObj;
+    QJsonObject mainjsnObj; // temporal Текущий экшен
     QJsonObject launchActionAnswer;  // Ответ на запуск экшена
     QJsonDocument myjsnDoc;
+    size_t abc;
 
     //QJsonValueRef &myjsnObj;
 

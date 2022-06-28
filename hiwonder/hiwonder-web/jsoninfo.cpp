@@ -686,27 +686,27 @@ void JsonInfo::setHeadStatusFail()
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 void JsonInfo::setActionStart2NoDetection()
 {
-    jsnActionStart["state"] = DEV_HEAD_STATE_FAIL;
+    jsnActionStart["state"] = DEV_ACTION_STATE_FAIL;
     jsnActionStart["info"] = DEV_HEAD_INFO_NO_DET;
-    jsnActionStart["rc"] = RC_FAIL;
+    jsnActionStart["rc"] = this->AC_Launch_RC_FAILURE;
 
-    jsnHeadStatus["state"] = "Fail";
-    jsnHeadStatus["info"]  = "No Detection";
-    jsnHeadStatus["rc"] = RC_FAIL;
+//    jsnHeadStatus["state"] = DEV_HEAD_STATE_RUN;
+//    jsnHeadStatus["info"]  = "No Detection";
+//    jsnHeadStatus["rc"] = this->AC_Launch_RC_RUNNING;
 
-    QJsonValue myValue = jsnActionStart;
+//    QJsonValue myValue = jsnActionStart;
 
-    bool OK = this->eraseArray(this->jsnObjArray);
-    if (!OK){
-        this->jsnObjArray.append(myValue);
-    }
-
-
-    jsnActionList["action_list"] = this->jsnObjArray;
-    this->jsnData = merge_json(jsnActionList, jsnHeadStatus);
-    OK = this->eraseArray(this->jsnObjArray);
+//    bool OK = this->eraseArray(this->jsnObjArray);
+//    if (!OK){
+//        this->jsnObjArray.append(myValue);
+//    }
 
 
+//    jsnActionList["action_list"] = this->jsnObjArray;
+//    this->jsnData = merge_json(jsnActionList, jsnHeadStatus);
+//    OK = this->eraseArray(this->jsnObjArray);
+
+this->jsnData = QJsonDocument(jsnActionStart).toJson(QJsonDocument::Indented);
 
 } // setActionStart2NoDetection
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -756,7 +756,7 @@ void JsonInfo::SetJsnActionStandUP(QJsonObject &theObj)
 
 void JsonInfo::setActionData(QJsonObject &theObj)
 {
-// Ищем в jsnObjArray по "name" нужный action, меняем его на значеня theobj
+// Ищем в jsnObjArray по "name" нужный action, меняем его на значения theobj
 // Так работаем только с массивом.
     QString theName = theObj.value("name").toString();
     // Проходим jsnObjArray, ищем совпадение по "name", меняем "rc" и "state", делаем replase

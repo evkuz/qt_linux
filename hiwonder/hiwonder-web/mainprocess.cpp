@@ -225,10 +225,15 @@ void MainProcess::on_trainButton_clicked()
 //    else {ui->servo_1_lineEdit->setText("160"); Servos[0]=160;}
     Servos[0]=0;
 
+    str = "Before Read SOCket";
+    GUI_Write_To_Log(value, str);
 
     // Нужна проверка, запущен ли сервис robot.hiwonder.service
     if (readSocket.GetState(&state) == 0)
       {
+        str = "Inside IF !!!!!!!!!!!!!";
+        GUI_Write_To_Log(value, str);
+
         if (state.isDetected){
 
             str = "Just float values of state : ";
@@ -255,8 +260,10 @@ void MainProcess::on_trainButton_clicked()
             DETECTED = true;
 
         } else {
-            str += "NOT DETECTED";
+            str = " NOT DETECTED";
             // change status to "NoDetection"
+           // mutex.lock();
+            GUI_Write_To_Log(value, str);
             jsnStore->currentStatus.rc = -5; // No Detection
             jsnStore->currentStatus.info = "No Detection";
             jsnStore->currentStatus.state = jsnStore->statuslst.at(jsnStore->INDEX_NODETECTION).toStdString();
@@ -267,22 +274,29 @@ void MainProcess::on_trainButton_clicked()
             jsnStore->setActionStart2NoDetection();
             str = jsnStore->returnJsnData();
 
-            mutex.lock();
-            mainjsnObj["rc"] = RC_FAIL;
+
+           // mutex.unlock();
+
+            emit Write_2_TcpClient_Signal(str);
+            // info оотправили, теперь делаем экшен доступным для перезапуска
+            str = "Try Again";
+            mainjsnObj["rc"] = JsonInfo::AC_Launch_RC_DONE;
+            mainjsnObj["name"] = "start";
             mainjsnObj["info"] = str;
             mainjsnObj["state"] = DEV_ACTION_STATE_FAIL;
-            mutex.unlock();
 
-            Write_2_TcpClient_Signal(str);
+           // jsnStore->setActionData(mainjsnObj);
+
+            jsnStore->jsnActionStart["rc"] = JsonInfo::AC_Launch_RC_DONE;
 
 //            QString s3 = "NO DETECTION";
-            str.insert(0, "NO DETECTION \n");
+            str = "NO DETECTION";
             GUI_Write_To_Log(value, str);
         }
 
-       std::cout <<  str.toStdString() << std::endl;
-       Robot->Write_To_Log(value, str);
-       GUI_Write_To_Log(value, str);
+//       std::cout <<  str.toStdString() << std::endl;
+//       Robot->Write_To_Log(value, str);
+//       GUI_Write_To_Log(value, str);
     }
 
 //В этой точке робот опустился над кубиком, открыл захват.
@@ -335,11 +349,11 @@ if (DETECTED)
 
   }// if (DETECTED)
 
-else {
-    str = "NO Detection !!!";
-    this->GUI_Write_To_Log (value, str);
+//else {
+//    str = "The LAST NO Detection !!!";
+//    this->GUI_Write_To_Log (value, str);
 
-}
+//}
 
    DETECTED = false;
 
@@ -541,10 +555,13 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
     str = "I'm in  ProcessAction"; GUI_Write_To_Log(value, str);
 
 // Меняем содержмое theObj в зависимости от rc
+    str = theObj.value("rc").toString();
+    GUI_Write_To_Log(value, str);
     int returnCode = theObj.value("rc").toInt() ;
+
     switch (returnCode) {
 
-    case 0: // (уже запущен)=="Is running" -> Выходим, ничего не меняем
+    case 0: //rc==0 (уже запущен)=="Is running" -> Выходим, ничего не меняем
         str = "Action "; str += theObj.value("name").toString();
         str += " is already running. Should wait it to finish";
         GUI_Write_To_Log(value, str);
@@ -553,7 +570,7 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
         theObj["info"] = DEV_ACTION_INFO;
     break;
 
-    case -1:
+    case -1: // action с таким именем не найден
         str = QJsonDocument(theObj).toJson(QJsonDocument::Indented);
         // Вот это нужно, отправляем ответ на запуск экшена
         emit Write_2_TcpClient_Signal(str);
@@ -561,13 +578,23 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
         GUI_Write_To_Log(value, str);
         break;
 
-    case -2: // меняем только info
+    case -2: // // action с таким именем не запустился меняем только info
         //str = "Serial port is UNAVAILABLE !!! CAN'T move the ARM !!!";
-        str = "There is another action running at the moment";
+        str = "Did not started last time. Send <reset> command, or Try again"; //"There is another action running at the moment"
         theObj["info"] = str;
         GUI_Write_To_Log(value, str);
         // change gor next request to be successfull
         theObj["rc"] = RC_WAIT;
+
+
+//        launchActionAnswer["name"] = theObj.value("name").toString();
+//        launchActionAnswer["rc"] = RC_SUCCESS;
+//        launchActionAnswer["info"] = DEV_HEAD_INFO_REQUEST;
+        str = QJsonDocument(theObj).toJson(QJsonDocument::Indented);
+        // Вот это нужно, отправляем ответ на запуск экшена
+        emit Write_2_TcpClient_Signal(str);
+
+
 
         break;
 
@@ -604,14 +631,14 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
 
             jsnStore->setJsnHeadStatus(headStatus);
 
-            launchActionAnswer["name"] = theObj.value("name").toString();
-            launchActionAnswer["rc"] = RC_SUCCESS;
-            launchActionAnswer["info"] = DEV_HEAD_INFO_REQUEST;
-            str = QJsonDocument(launchActionAnswer).toJson(QJsonDocument::Indented);
-            // Вот это нужно, отправляем ответ на запуск экшена
-            emit Write_2_TcpClient_Signal(str);
-            str.insert(0, "Data supposed to be sent to tcp, but only to log : \n");
-            GUI_Write_To_Log(value, str);
+//            launchActionAnswer["name"] = theObj.value("name").toString();
+//            launchActionAnswer["rc"] = RC_SUCCESS;
+//            launchActionAnswer["info"] = DEV_HEAD_INFO_REQUEST;
+//            str = QJsonDocument(launchActionAnswer).toJson(QJsonDocument::Indented);
+//            // Вот это нужно, отправляем ответ на запуск экшена
+//            emit Write_2_TcpClient_Signal(str);
+//            str.insert(0, "Data supposed to be sent to tcp, but only to log : \n");
+//            GUI_Write_To_Log(value, str);
 
             // Теперь запускаем манипулятор. Определяем команду из списка
             QJsonValue myjsnValue;
