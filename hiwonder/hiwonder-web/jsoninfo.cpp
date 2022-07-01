@@ -386,13 +386,13 @@ void JsonInfo::init_actions()
         {"name", "lock"},
         {"state", DEV_ACTION_STATE_WAIT},
         {"info", "lock the gripper of manipulator"},
-        {"rc",  RC_WAIT}
+        {"rc",  this->AC_Launch_RC_DONE}
     };
     jsnActionUnLock = {
         {"name", "unlock"},
         {"state", DEV_ACTION_STATE_WAIT},
         {"info", "unlock the gripper of manipulator"},
-        {"rc",  RC_WAIT}
+        {"rc",  this->AC_Launch_RC_DONE}
     };
 
 
@@ -421,7 +421,7 @@ void JsonInfo::resetAllActions()
 //    QJsonObject myObject;
     for (int i=0; i < jsnObjArray.size() ; i++) //action_lst.size()
     {
-       jsnObjArray.at(i).toObject()["rc"] = -4;
+       jsnObjArray.at(i).toObject()["rc"] = this->AC_Launch_RC_DONE;
        jsnObjArray.at(i).toObject()["state"] = "done";
     }
     isAnyActionRunning = false; // Нет активных экшенов
@@ -713,7 +713,7 @@ this->jsnData = QJsonDocument(jsnActionStart).toJson(QJsonDocument::Indented);
 // fills Up the jsnActionList["action_list"] with active actions only
 void JsonInfo::createActionList()
 {
-    // Перебираем список  actionListp, определяем у кого state == "inprogress"
+    // Перебираем список  jsnObjArray, определяем у кого state == "inprogress"
     // формируем новый список
     // добавляем его в jsnData
     QJsonValue myValue;
@@ -722,7 +722,7 @@ void JsonInfo::createActionList()
 
 
 
-   myArray = jsnObjArray;
+   myArray = this->jsnObjArray;
    //myArray.swap(jsnObjArray);
    //jsnObjArray.swap(myArray);
    QString str;

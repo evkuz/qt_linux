@@ -277,7 +277,7 @@ void MainProcess::on_trainButton_clicked()
 
            // mutex.unlock();
 
-            emit Write_2_TcpClient_Signal(str);
+            emit Write_2_TcpClient_Signal(str, this->tcpSocketNumber);
             // info оотправили, теперь делаем экшен доступным для перезапуска
             str = "Try Again";
             mainjsnObj["rc"] = JsonInfo::AC_Launch_RC_DONE;
@@ -573,7 +573,7 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
     case -1: // action с таким именем не найден
         str = QJsonDocument(theObj).toJson(QJsonDocument::Indented);
         // Вот это нужно, отправляем ответ на запуск экшена
-        emit Write_2_TcpClient_Signal(str);
+        emit Write_2_TcpClient_Signal(str, this->tcpSocketNumber);
         str.insert(0, "There is wrong action command !!! : \n");
         GUI_Write_To_Log(value, str);
         break;
@@ -592,7 +592,7 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
 //        launchActionAnswer["info"] = DEV_HEAD_INFO_REQUEST;
         str = QJsonDocument(theObj).toJson(QJsonDocument::Indented);
         // Вот это нужно, отправляем ответ на запуск экшена
-        emit Write_2_TcpClient_Signal(str);
+        emit Write_2_TcpClient_Signal(str, this->tcpSocketNumber);
 
 
 
@@ -622,6 +622,10 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
             theObj["rc"] = RC_SUCCESS; // Now state "inprogress" //theObj
             theObj["state"] = DEV_ACTION_STATE_RUN;
             jsnStore->setActionData(theObj);
+
+            str = QJsonDocument(theObj).toJson(QJsonDocument::Indented);
+            // Вот это нужно, отправляем ответ на запуск экшена
+            emit Write_2_TcpClient_Signal(str, this->tcpSocketNumber);
 
             QJsonObject headStatus = {
                 {"rc", RC_SUCCESS}, //RC_SUCCESS
@@ -673,14 +677,14 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
                 GUI_Write_To_Log(value,str);
                 put_box();
                 break;
-            case 10:
+            case 10: // "lock"
                 str = "Going to lock the gripper";
                 GUI_Write_To_Log(value,str);
                 Servos[0]=90;
                 this->send_Data(LASTONE); //NOT_LAST LASTONE
 
                 break;
-            case 11:
+            case 11: // "unlock"
                 str = "Going to unlock the gripper";
                 GUI_Write_To_Log(value,str);
                 Servos[0]=0;
@@ -734,7 +738,7 @@ bool MainProcess::isThereActiveAction()
     // Перебираем список  actionListp, определяем у кого state == "inprogress"
     // формируем новый список
     // добавляем его в jsnData
-    ;
+   return true ;
 } // ProcessAction
 //+++++++++++++++++++++++++++++++++++++++++++++++++++
 

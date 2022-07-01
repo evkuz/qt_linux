@@ -82,11 +82,12 @@ QJsonObject aaa;
     int getIndexCommand(QString myCommand, QList<QString> theList);  // Определяем индекс команды в списке MainProcess::tcpcommand
     void ProcessAction(int indexOfCommand, QJsonObject &theObj); // Отрабатывает команду по заданному индексу из списка QList<QString> theList
     bool isThereActiveAction(); // Выясняем, есть ли активный экшен.
+    int tcpSocketNumber;
 private:
     SocketClient readSocket;
 
 public slots:
-void Data_From_TcpClient_Slot(QString);
+void Data_From_TcpClient_Slot(QString, int socketNumber);
 // slot for QSocketThread::socketErrorToLog_Signal
 //void socketErrorToLog_Slot(QString); // write to log socketError message
 
@@ -98,7 +99,7 @@ private slots:
 
 signals:
     void Open_Port_Signal(QString portname); // Сигнал даем по нажатию кнопки "OPEN"
-    void Write_2_TcpClient_Signal(QString); // Сигнал вебсерверу, - пересылка данных в сокет на отправку.
+    void Write_2_TcpClient_Signal(QString, int socketNumber); // Сигнал вебсерверу, - пересылка данных в сокет на отправку.
 //    void StartTakeAndPutSignal();
 
 };

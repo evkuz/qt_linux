@@ -18,10 +18,11 @@
 // ProcessAction запускаем только для значений индекса команды 0 или 1.
 // Для остальных значений, оставляем как было. Только в новом файле теперь.
 
-void MainProcess::Data_From_TcpClient_Slot(QString message)
+void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
 {
     QString str, substr;
     int value = 0xf00f;
+    this->tcpSocketNumber =  socketNumber;
     new_get_request = true;
     str = "From TCP Get new command : "; str += message;
     GUI_Write_To_Log(0xf00f, str);
@@ -77,26 +78,28 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 
     }
     // Если не запрос статуса, но есть активный экшен
-    // Меняем у запрошенного экшена статус
-//    if (comIndex > 0 && jsnStore->isAnyActionRunning){
-//        // ставим экшену статус -2
-//        //mutex.lock();
-//        QJsonObject tempObj = {
-//            {"name", substr},
-//            {"state", "Not applied"},
-//            {"info", "Another action id already running"},
-//            {"rc", RC_UNDEFINED}
-//        };
-//        // set aimed action values to tempObj
-//        jsnStore->setActionData(tempObj);
-//        launchActionAnswer = tempObj;
-//        //mutex.unlock();
-//        str = QJsonDocument(launchActionAnswer).toJson(QJsonDocument::Indented);
-//        // отправляем ответ на запуск экшена
-//        emit Write_2_TcpClient_Signal(str);
+    // Меняем у запрошенного экшена статус - на "не запустился"
+    // Другими словами - во время выполняения экшена приходит команда выполнить другой экшен...
+    // Манипулятор не может 2 экшена выполнять одновременно.
+    if (comIndex > 0 && jsnStore->isAnyActionRunning){
+        // ставим экшену статус -2
+        //mutex.lock();
+        QJsonObject tempObj = {
+            {"name", substr},
+            {"state", "Not applied"},
+            {"info", "Another action id already running"},
+            {"rc", RC_UNDEFINED}
+        };
+        // set aimed action values to tempObj
+        jsnStore->setActionData(tempObj);
+        launchActionAnswer = tempObj;
+        //mutex.unlock();
+        str = QJsonDocument(launchActionAnswer).toJson(QJsonDocument::Indented);
+        // отправляем ответ на запуск экшена
+        emit Write_2_TcpClient_Signal(str, socketNumber);
 
-//        return;
-//    }
+        return;
+    }
 
 
     //jsnStore->action_command = tcpCommand.at(comIndex); // сигнал updateAction_List_Signal
@@ -145,7 +148,7 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 
         Robot->active_command = "status";
         mutex.unlock();
-        emit Write_2_TcpClient_Signal (str);
+        emit Write_2_TcpClient_Signal (str, this->tcpSocketNumber);
 
 //        str = "Current QJsonDocument is ";
 //        str += QJsonDocument(mainjsnObj).toJson(QJsonDocument::Indented);
@@ -194,7 +197,7 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
         str = QJsonDocument(mainjsnObj).toJson(QJsonDocument::Indented);
         GUI_Write_To_Log(value, str);
 
-        emit Write_2_TcpClient_Signal (str);
+        emit Write_2_TcpClient_Signal (str, this->tcpSocketNumber);
 
         str = "Current ActionList is :";
         mainjsnObj = jsnStore->returnAllActions();
@@ -248,7 +251,7 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
 
     case 7: //getactions
         str = QJsonDocument(jsnStore->returnAllActions()).toJson(QJsonDocument::Indented);
-        emit Write_2_TcpClient_Signal(str);
+        emit Write_2_TcpClient_Signal(str, this->tcpSocketNumber);
         str += str.insert(0, "Total action_list : \n");
 
         GUI_Write_To_Log(value, str);
@@ -389,7 +392,7 @@ void MainProcess::Data_From_TcpClient_Slot(QString message)
         //str = QJsonDocument(jsnStatus).toJson(QJsonDocument::Compact);
 
 
-        emit Write_2_TcpClient_Signal (str);
+        emit Write_2_TcpClient_Signal (str, this->tcpSocketNumber);
 
     }
     // Запрашиваем список экшенов

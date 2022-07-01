@@ -287,7 +287,7 @@
      <property name="geometry">
       <rect>
        <x>30</x>
-       <y>330</y>
+       <y>370</y>
        <width>171</width>
        <height>51</height>
       </rect>
@@ -299,8 +299,8 @@
     <widget class="QPushButton" name="StopPollingButton">
      <property name="geometry">
       <rect>
-       <x>230</x>
-       <y>330</y>
+       <x>240</x>
+       <y>370</y>
        <width>151</width>
        <height>51</height>
       </rect>
@@ -359,6 +359,19 @@
      </property>
      <property name="text">
       <string>PutBox</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="HiWonderGetStatusButton">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>280</y>
+       <width>231</width>
+       <height>61</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Get Status</string>
      </property>
     </widget>
    </widget>

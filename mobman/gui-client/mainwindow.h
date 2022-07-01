@@ -142,6 +142,8 @@ private slots:
 
     void on_PutBoxButton_2_clicked();
 
+    void on_HiWonderGetStatusButton_clicked();
+
 private:
     Ui::MainWindow *ui;
 };
