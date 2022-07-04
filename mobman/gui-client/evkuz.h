@@ -5,7 +5,7 @@
  *
  *
  *  ~/iqr_lit/mobman/gui-client/release/cv-checker.log
- *
+ *  "GET /favicon.ico HTTP/1.1"
  *
  * //+++++++++++++++++++++++++++++++++++++++
  * 24.06.2022
