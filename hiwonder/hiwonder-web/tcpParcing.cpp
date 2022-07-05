@@ -128,11 +128,12 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
         // Надо данные из mainjsnObj переписать в соответствующую jsnAction...
         // В общем надо с указателями работать.
         mutex.lock();
-        mainjsnObj["rc"] = 0;
-        mainjsnObj["state"] = "Running";
-        mainjsnObj["info"] = "Request Accepted";
-        jsnStore->setJsnHeadStatus(mainjsnObj);
-        jsnStore->createActionList(); // формируем список, записываем данные в jsnData
+        // Если serial port не открыт, иначе не узнаем
+//        mainjsnObj["rc"] = 0;
+//        mainjsnObj["state"] = "Running";
+//        mainjsnObj["info"] = "Request Accepted";
+//        jsnStore->setJsnHeadStatus(mainjsnObj);
+        jsnStore->createActionList(); // формируем список, записываем данные в jsnData, делаем merge (jsnActionList, jsnHeadStatus)
 
         //str += QJsonDocument(jsnStore->jsnActionList).toJson(QJsonDocument::Indented);
         str = jsnStore->returnJsnData();

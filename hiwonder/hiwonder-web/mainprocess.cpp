@@ -155,6 +155,7 @@ MainProcess::MainProcess(QObject *parent)
                 // state = "fail"
                 jsnStore->setHeadStatusFail();
                 Robot->SetCurrentStatus("Fail");
+                qDebug() << "SerialPort  PROBLEM !!!";
 
                 // ТОгда таймер на переоткрытие порта пускаем ???
     };

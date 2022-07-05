@@ -22,12 +22,52 @@
  * Запаускаем gui-client /home/ubuntu/iqr_lit/mobman/gui-client/release/gui-client
  *
  * //+++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ * 05.07.2022
+ * Еще одна задача :
+ * - Записывать в файл вывод в консоль из qDebug()
+ *
+ * В ответ на запрос иконки отправляю response += "<link rel=\"icon\" href=\"data:,\">";
+ * в составе html страницы. Так не работает.
+ * Браузер ждет в ответ картинку, а получает html, поэтому снова шлет запрос на иконку.
+ * ....
+ * Заработало при помощи ссылки response += "<link rel=\"icon\" href=\"data:,\">";
+ * Пришлось добавить в conten-type и html, и json, т.е так :
+ * "content-type: text/html application/json\r\n";
+ * При этом запрос на иконку пропал, но json-данные теперь выводятся в 1 строку.
+ * Надо это протестировать в supervisor
+ *
+ * Также отправлял картинку. Ошибок нет, она доходит, но при этом продолжается запрос на иконку.
+ * Пробовал и favicon.ico и favicon.png
+ * Добафил Ф-цию  QSocketThread::returnIconChrome() :
+ * - считывает данные из файла в QByteArray,
+ * - формирует из них строку QString
+ * - Отправляет полученную строку как результат.
+ *
+ * Ф-ция QSocketThread::returnIconChrome() отрабатывает правильно.
+ * Смотрел в hex-editor данные получаемого файла favicon.ico (браузер все полученные данные называет так) - совпадают с тем, что отправляется.
+ *
+ * //+++++++++++++++++++++++++++++++++++++++++++++++++++++++
  * 04.07.2022
  * Сейчас запрос favicon.ico просто игнорируется, а надо добавить ответ.
  * Пока вижу решение - отправлять файл favicon.ico минимального размера.
  * После этого chrome должен перестать запрашивать favicon.ico.
+ * Либо есть еще такой вариант :
+ * You can completely remove the automatic favicon request by adding the following line of code
+ * to the <head> section of your HTML page:
+ * <link rel="icon" href="data:,">
+ * This little code snippet assigns an empty data URL to the favicon’s <link> element which specifies
+ * the location of the external resource. This trick stops the user’s browser from sending an automatic
+ * HTTP request for the favicon.
  *
- * Также нужно добавить программку - парсер заголовков.
+ * You can generate a base64 string of your favicon and then insert it into the head of the html document like this:
+ * <link href="data:image/x-icon;base64,<your_base64_here>" rel="icon" type="image/x-icon" />
+ * <link href="data:image/gif;base64,R0lGODlhIAAgAOf/ADEzMDo0LjY2O9oNHS09P101P1c4NTBCR2A3KHQwO8QaK4otL88aJWw3LL4gJL4gKcAhH5osMT1HO8khKdIeLURGQ9wcJssiJCpOYNUhKVxEQ94gLklLSFNJTENOTnFIGk5ORsAvLWFLPmVLNcwwMzpYZrY3QURWYIBJPT1bUideeoJITU5VZ1pWVVtVXyJjhFxbU0xhSWVaStQ7PVtcZT1oTRlskkNjfAB1psJHOzJxR5tVTWplZLdSQGNndAB+tRqEPXBpUXJnaACBvllxXR6FRppgU1B5V1V5TMdYRGtwZwCGzMxXSySLQ8pYXF51hdZXUrNjWHd2XFmCYGOAZTmGpziQSS+TSn14ceFdWT6PT85kU4J7URePxzaSURqOzESOWrdtXjeWRzqZSb1vbaF/KJZ7elOSZclxXDSfTlGMtk6WXCyVzaKBONxsYchxbTiTxXiJdyaY1mmQZ0GfT0WUwkagSkCiWNl2ZD6nVV2eZEumUWecbWWeZcWAdDqg0kmqTF6iYVuZz0Ohx0esU3WaflWoWU6h3O9+d1CxUnCkdlOwWJudU0y1TpCbis+JhtuHeu2CeFil2pybd32kel6k4NeKgIGjiPODgFi1Y1q5WauhY2ur3G61c2K8Y2a7bbKgn5WskZKujG6y2/KUg7WnfG/AaMykmdyhirCrqXjDcs2vPpa2nc2yJdikkZ63kIjBg4bDe4G65cy1Spm+jtS4Nqa8nuWrnZC+5dS2b43Jhda6RZjEntS7Vcy8Z9u/NN6/NdG8gMLDh+HEMLLFsd/EQcXEldvFZ5vM5uLIUKHUmejKN7POstTIkq3RrOrML9rOeqfZpfDQKKjZq/TDuuvGvO7UK57Z8dzQlvHWIObPi+zUXMfXveHSpu3XU9jXlPbbJvTbR7fiuOLYpOrZg/vfHt/dk+ban/bhLeTZuPzgLvnjIMrixvXmIvziQPnlPObgsfTlV/nmR/XoR/rnUePkufvnYvnoafnocfbqfPHouvPsw//vqP/yt//2mJCRlCH+EUNyZWF0ZWQgd2l0aCBHSU1QACH5BAEKAP8ALAAAAAAgACAAAAj+AP8JHEiwoMGDCBMqXMiwoUOC1W6hQnWr2kOE1Pyg2cIkSZItW9A8snhR4KkeeB48cLByZYgQOd6ULCQCCgkGOC9cYEBhggIFEEw8hDUF1IwMGSZAiRTJTQgKGSxcmPCgIaxolFLNGJAFkpEVKHZYQnTBAgWpThby8jQtWpxHWfwUoPHEhwsDYUhZiLphgCuFnRZ9ikULFJkOL+ocEqRmCIsomDZItsAkITNDhDSp0uXIjIo/h0bJ4iSnSwcECRZEeDCjG0JFezKb0sUMho0uknBdkyVp0A1jpbjI0NCgDUI9dPYk8qSLV4XbuZHJkgPnxCZ86ML5GvEBYaAxdBL+aXYmQcUSOZxGVZJT5cAme+vKZStWxvsVOoCWs4vhwcaSL2x88UMJAYwzzzrgSPNMLcd5MYYdhDSizCUVpPACDj/ggIEAQfTTTjnoPDNMLfAcBMYVVqRBSCKLiBOHBAIQcAABAIAAzz3xWbNgKwiBocUVYtgR2yfiXKJECxVwIMU++cSX4DK1rPLaGk1YIQYdeRCSyStYYFGPPvzg42Q20oyYC0LcrFFEE1dckcYdc/AwiT/53CMPOuWUA441I86STkJ8rAEEm2JQIYQw+NhDz51OKvjLLr4oZMsZWgBRBBFYmHNPPPS8o8468WVjzaO9NLMQK31YUUQF38Qjjzxa74CKIJnAFFNqQ6HooYUOk8zjDjrqlDOriMn0EsxDtvDBRw2MxLqOOjouk0wyx2BTEjGiUHIEI/G4E44322xzDDQlliQQN6xcgoQw5JCjzTnmxivvvPTWW1JAADs=" />
+
+ * Ф-ция QSocketThread::favIconAnswer() срабатывает. Однако под вопросом отправка данных в socket.
+ * Клиент принимает ответ, но на экране браузера не видно.
+ *
+ *
+ * Также нужно добавить программку - парсер заголовков. [сделано в onReadyRead]
  *
  *
  *
