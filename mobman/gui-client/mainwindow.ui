@@ -374,6 +374,19 @@
       <string>Get Status</string>
      </property>
     </widget>
+    <widget class="QPushButton" name="ResetButton_2">
+     <property name="geometry">
+      <rect>
+       <x>280</x>
+       <y>280</y>
+       <width>171</width>
+       <height>61</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>RESET</string>
+     </property>
+    </widget>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">

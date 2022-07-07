@@ -21,6 +21,7 @@
 #include "jsoninfo.h"
 #include "protocol.h"
 #include <QMutex>
+#include <QMutexLocker>
 
 
 

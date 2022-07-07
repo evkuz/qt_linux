@@ -1023,8 +1023,8 @@ void MainWindow::on_PutBoxButton_2_clicked()
     // А вот теперь готовим команду "/run?cmd=put_box&"
      request = "GET ";
      request += "/run?cmd=put_box&";
-     request += " HTTP/1.1";
-     request += "\r\nHost: ";
+     request += " HTTP/1.1\r\n";
+     request += "Host: ";
      request += HIWONDER_IP; request+=":"; request+=strARM_Port; request+="\r\n";
      request += "Accept: */*\r\n";
      request += "Access-Control-Allow-Origin: *\r\n";
@@ -1052,6 +1052,33 @@ void MainWindow::on_HiWonderGetStatusButton_clicked()
      request += "User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36\r\n";
      request += "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9\r\n";
      //request += "Accept: */*\r\n";
+     request += "Accept-Encoding: gzip, deflate\r\n";
+     request += "Accept-Language: en-US,en;q=0.9\r\n";
+     request += "Access-Control-Allow-Origin: *\r\n";
+     request += "\r\n";
+
+
+     QString myipaddress = HIWONDER_IP;
+     quint16 myport = ARM_Port;
+     makeSocket(myipaddress, myport);
+
+} //on_HiWonderGetStatusButton_clicked()
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++
+
+void MainWindow::on_ResetButton_2_clicked()
+{
+    // А вот теперь готовим команду "/run?cmd=status&"
+     request = "GET ";
+     request += "/run?cmd=reset&";
+     request += " HTTP/1.1\r\n";
+     request += "Host: ";
+     request += HIWONDER_IP; request+=":"; request+=strARM_Port; request+="\r\n";
+     request += "Connection: keep-alive\r\n";
+     request += "Cache-Control: max-age=0\r\n";
+     request += "Upgrade-Insecure-Requests: 1\r\n";
+     request += "User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36\r\n";
+     request += "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9\r\n";
      request += "Accept-Encoding: gzip, deflate\r\n";
      request += "Accept-Language: en-US,en;q=0.9\r\n";
      request += "Access-Control-Allow-Origin: *\r\n";

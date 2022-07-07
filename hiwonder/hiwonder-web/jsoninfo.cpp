@@ -350,9 +350,9 @@ void JsonInfo::init_actions()
 
     jsnActionPutbox = {
         {"name", "put_box"},
-        {"state", "done"},
+        {"state", DEV_ACTION_STATE_DONE},
         {"info", "put down the object for next actions"},
-        {"rc", RC_WAIT}
+        {"rc", this->AC_Launch_RC_DONE}
        };
 
     jsnActionReset = {
@@ -419,7 +419,7 @@ void JsonInfo::init_actions()
 void JsonInfo::resetAllActions()
 {
 //    QJsonObject myObject;
-    for (int i=0; i < jsnObjArray.size() ; i++) //action_lst.size()
+    for (int i=0; i < jsnObjArray.size(); i++) //action_lst.size()
     {
        jsnObjArray.at(i).toObject()["rc"] = this->AC_Launch_RC_DONE;
        jsnObjArray.at(i).toObject()["state"] = "done";

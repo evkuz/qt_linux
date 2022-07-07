@@ -35,6 +35,7 @@ public:
     QByteArray tcpdata;
     bool isCreatedSocket; // socket creation flag
     QTcpSocket *createdSocket;
+    int counterConnections; // counter for incoming tcp connections
     //Метод, вызываемый при подключении нового соединения.
     virtual void incomingConnection(qintptr sDescriptor) override; // YES !!! override EXACTLY !
 

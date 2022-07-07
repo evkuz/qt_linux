@@ -53,6 +53,7 @@ MainProcess::MainProcess(QObject *parent)
     str = "The application \"";  str +=target_name; str += "\"";
     Robot->Write_To_Log(0xf000, str.append(" is started successfully!!!\n"));
 
+    // write to the same faile &Robot->LogFile
     GUI_Write_To_Log(0000, "Going to Start QTcpSErver");
     if (server.isListening ()) {
 
@@ -62,6 +63,7 @@ MainProcess::MainProcess(QObject *parent)
         GUI_Write_To_Log(0000, str);
     }
 
+    qDebug() << QThread::idealThreadCount() << " - the ideal number of threads that can be run on the system.";
 //    Robot->Write_To_Log(value, S3);
 
 //  s1 хранит данные данные об одном экшене : nlohmann::jsnActionTST, преобразуем его в QJsonObject jsnObj2
@@ -155,6 +157,7 @@ MainProcess::MainProcess(QObject *parent)
                 // state = "fail"
                 jsnStore->setHeadStatusFail();
                 Robot->SetCurrentStatus("Fail");
+                jsnStore->isAnyActionRunning = false;
                 qDebug() << "SerialPort  PROBLEM !!!";
 
                 // ТОгда таймер на переоткрытие порта пускаем ???
@@ -188,6 +191,7 @@ MainProcess::~MainProcess()
 //+++++++++++++++++++++++++++++++++++++++
 void MainProcess::GUI_Write_To_Log (int value, QString log_message)
 {
+//    QMutexLocker locker(&mutex);
     QDateTime curdate ;
     QTextStream uin(&Robot->LogFile);
 
@@ -265,6 +269,7 @@ void MainProcess::on_trainButton_clicked()
             // change status to "NoDetection"
            // mutex.lock();
             GUI_Write_To_Log(value, str);
+            jsnStore->isAnyActionRunning = false;
             jsnStore->currentStatus.rc = -5; // No Detection
             jsnStore->currentStatus.info = "No Detection";
             jsnStore->currentStatus.state = jsnStore->statuslst.at(jsnStore->INDEX_NODETECTION).toStdString();
@@ -538,8 +543,8 @@ int MainProcess::getIndexCommand(QString myCommand, QList<QString> theList)
         GUI_Write_To_Log(value, str);
     }
 
-    qDebug() << "getIndex Index value is" << i;
-    if (i>=0) {qDebug() << "Matched string is " << theList.at(i);}
+//    qDebug() << "getIndex Index value is" << i;
+//    if (i>=0) {qDebug() << "getIndex Matched string is " << theList.at(i);}
 
     return i;
 
@@ -753,6 +758,7 @@ void MainProcess::Moving_Done_Slot()
     QString str, myname;
     int value = 0xFAAA;
     //int result;
+QMutexLocker locker(&mutex);
 
     GUI_Write_To_Log(value, "Demo cycle finished !!!");
     // Меняем статус, теперь "done"

@@ -13,7 +13,8 @@
 #include <QTcpSocket>
 #include <QDebug>
 #include <QTime>
-
+#include <QFile> // Будем записывать данные иконки из файла в строку, которую потом отправим в сокет
+#include <QDataStream>
 //Пользовательский класс потока
 // Только вместо public QThread делаем public QObject
 class QSocketThread : public QObject
@@ -28,7 +29,11 @@ public:
     bool data_ready; // Данные на отправку сформированы, можно отправлять.
     bool toBeClosed; // Сокет без данных закрываем.
     QString current_status;
+    //QFile iconFile; // file of icon
+#define ICON_FILE_PATH "../favicon.png" // Путь к файлу иконки
 
+    QByteArray* returnIconChrome(); // Данные из файла помещаем в строку, чтобы отправить в сокет.
+    QByteArray* iconBA;
     void favIconAnswer();
     //mySocketError
 signals:

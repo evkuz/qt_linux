@@ -12,6 +12,8 @@
 #include <QDateTime>
 #include <QSerialPort>
 #include <QSerialPortInfo>
+#include <QMutex>
+#include <QMutexLocker>
 
 
 
@@ -48,6 +50,8 @@ public:
     QString return_code;    // результат обработки запроса - понял/не понял
     QString active_command; // команда, которая сейчас исполняется
     QString comment;        // любые дополнительные данные
+
+    QMutex hwMutex;         // mutex for HiWonder class
 
 //    int writeTo(char *OutBuffer, int numbytes); // Запись данных из ПК в порт (роботу)
 //    int readFrom(char *buf_data, int buf_size); // Считывает данные из порта в ПК (от робота)

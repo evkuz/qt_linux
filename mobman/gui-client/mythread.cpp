@@ -19,7 +19,7 @@ void myThread::A_SLOT()
 
     // Не совсем красиво, нужен таймер.
     while ((!this->finthread)) { // !!!event-loop!!!
-        QThread::msleep(100);
+        QThread::msleep(50);
         // Ждем 50мс, отправляем сигнал на передачу данных по tcp
         // Точнее, создаем объект класса clientSocket
         if (!this->pause_thread) emit SendToTcp_Signal();

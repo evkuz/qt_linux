@@ -8,6 +8,7 @@ QSocketThread::QSocketThread(int descriptror) :
     data_ready = false;
     current_status = "wait";
     toBeClosed = false;
+    //ba.resize(icon)
 }
 //+++++++++++++++++++++++
 QSocketThread::~QSocketThread()
@@ -15,29 +16,66 @@ QSocketThread::~QSocketThread()
     //Удаление объекта сокета
     delete socket;
 }
+//+++++++++++++++++++++++++++++++++++++++++++++
+// Данные из файла помещаем в строку, чтобы отправить в сокет.
+QByteArray* QSocketThread::returnIconChrome()
+{
+    QString str = "";
+    QFile iconFile(ICON_FILE_PATH);
+
+    if (!iconFile.open(QIODevice::ReadOnly)) {
+            qDebug() << "Could not open bin file for reading";
+
+            return this->iconBA; //QByteArray("error");
+        }
+
+        QDataStream in(&iconFile);
+        QByteArray ba(iconFile.size(), 0);
+
+        qint32 bytes = in.readRawData(ba.data(), ba.size());
+
+        qInfo() << "bytes read: " << bytes;
+        qInfo() << ba.toHex(); // You read binary data, not a text. Do not try to print it as a text
+
+        this->iconBA = &ba;
+    return this->iconBA;
+
+}
 //+++++++++++++++++++++++++++++++++++++++
 // Answer to "/favicon.ico HTTP/1.1" request
 void QSocketThread::favIconAnswer()
 {
     int value = 0x5544;
     QString response = "HTTP/1.1 200 OK\r\n";
-    response += "content-type: text/html\r\n";
+    response += "content-type: image/png\r\n"; //text/html
     response += "Access-Control-Allow-Origin: *\r\n";
+    response += "Content-Length: ";
+    response += QString::number(228); //228*2 = 456; 318 *2 = 636
     response += "\r\n";
+    response += "Connection: close";
+    response += "\r\n\r\n";
+   // QString img = returnIconChrome().toStdString();
+
+
+    QByteArray ba = response.toUtf8();
+    ba.append(returnIconChrome()->data());
 //    response += "<html>";
 //    response += "<head>";
 
-//    response += "<title>MEGATESTING!!!!</title>";
 //    response += "<link rel=\"icon\" href=\"data:,\">";
 
-//    response += "</head>";
-//    //response += "{\n\t\"status\":\"";
-//    response += "<body>";
-    response += "IT'S FROM FAVICON !";
-//    response += "</body>";
-//    response += "</html>";
-    response += "\r\n";
+    //response += "<link href=\"data:image/x-icon;base64,AAABAAEAEBAQAAAAAAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAEhEQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP7/AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA\" rel=\"icon\" type=\"image/x-icon\" />";
 
+//    response += "</head>";
+//    response += "<body>";
+//    response += "IT'S   FAVICON FAVICON DATA !";
+//    response += "</body>";
+
+//    response += "</html>";
+//    response += "\r\n";
+
+//    response += "<title>MEGATESTING!!!!</title>";
+//    response += "<link rel=\"icon\" href=\"data:,\">";
 
     if (!socket->isValid() || this->socket->state() != QAbstractSocket::ConnectedState){
        qDebug() << "!!!!!!!!!!!!!!!!!!!!! SOCKET IS NOT OPENED";
@@ -49,12 +87,15 @@ void QSocketThread::favIconAnswer()
 
 
 
-    qDebug() << "Current socket " << this->socketDescriptor << " state is " << this->socket->state();
+    qDebug() << value << " Favicon Current socket " << this->socketDescriptor << " state is " << this->socket->state();
     qDebug() << "Going to SEND FAVICON FAVICON FAVICON data to socket with an desctiptor " << QString::number(this->socketDescriptor);
 
-    socket->write(response.toUtf8());
-    qDebug() << "The folowing data has been written to socket : \n" << response.toUtf8();
+    //int bytesWritten = socket->write(response.toUtf8());
+    int bytesWritten = socket->write(ba);
+    socket->disconnectFromHost();
+    qDebug() << "The folowing " << bytesWritten << " bytes of data has been written to socket : \n" << response.toUtf8();
 
+//    qDebug() << "From faviconAnswer" << returnIconChrome();
 }//favIconAnswer()
 //+++++++++++++++++++++++++++
 ////++++++++++++++++++ главный event loop потока
@@ -78,7 +119,8 @@ void QSocketThread::process_TheSocket()
 
     connect(socket, &QAbstractSocket::errorOccurred , this, &QSocketThread::displayError);
 
-    qDebug() << "$$$$$$$$$$$$$$$$$$$ new socket $$$ " << QString::number(this->socketDescriptor);
+
+    qDebug() << "$$$$$$$$$ "<< QThread::currentThread() << " $$$$$$$$$$ new socket $$$ " << QString::number(this->socketDescriptor);
      //Остановка потока на 1 сек (для иммитации долгого выполнения запроса)
     //msleep(200);
     // Вот тут ждем, пока "сверху" из MainProcess придет ответ, и этот ответ будет отправлен в по tcp
@@ -99,7 +141,7 @@ void QSocketThread::onReadyRead()
    // int value = 0xfafa;
     QString nextTcpdata, str;
     nextTcpdata = "";
-    int befbytes = socket->bytesAvailable();
+//    int befbytes = socket->bytesAvailable();
 //    if (befbytes < 400) {
 //        qDebug() << "There are less than 400 bytes of available data !!!";
 //        nextTcpdata = socket->readAll();
@@ -114,43 +156,43 @@ void QSocketThread::onReadyRead()
 //    nextTcpdata += socket->readAll();
     // Output http-headers being received
     QByteArray httpHeaders = socket->readAll();
-    QString theData = QString(httpHeaders);
+//    QString theData = QString(httpHeaders);
+    int realbytes = httpHeaders.size();
 
-    qDebug() << "!!!!!!!!!!!!!!!!!!!!! Get Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!!"<< QString::number(socketNumber);
-    qDebug() << httpHeaders.size() << " bytes of data heas been read";
-    qDebug() << theData.size() << " bytes of data as QString heas been read";
+    qDebug() << "thread ID " <<  QThread::currentThread() << "!!!!!!!!!!!!!!!!!!!!! Have got " << realbytes << " bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!!"<< QString::number(socketNumber);
+//    qDebug() << httpHeaders.size() << " bytes of data heas been read";
+//    qDebug() << theData.size() << " bytes of data as QString heas been read";
 
     qDebug() << httpHeaders;// nextTcpdata;  httpHeaders;
 
 
-    QMap<QByteArray, QByteArray> headers;
+//    QMap<QByteArray, QByteArray> headers;
 
     // Discard the first line ... Why ?
     //httpHeaders = httpHeaders.mid(httpHeaders.indexOf('\n') + 1).trimmed();
-    foreach(QByteArray line, httpHeaders.split('\n')) {
-        int colon = line.indexOf(':');
-        QByteArray headerName = line.left(colon).trimmed();
-        QByteArray headerValue = line.mid(colon + 1).trimmed();
+//    foreach(QByteArray line, httpHeaders.split('\n')) {
+//        int colon = line.indexOf(':');
+//        QByteArray headerName = line.left(colon).trimmed();
+//        QByteArray headerValue = line.mid(colon + 1).trimmed();
 
-        headers.insert(headerName, headerValue);
-    }
+//        headers.insert(headerName, headerValue);
+//    }
 
-    QMap<QByteArray, QByteArray>::const_iterator ii = headers.constBegin();
-    while (ii != headers.constEnd()) {
-        qDebug() << ii.key() << ": " << ii.value() << Qt::endl;
-        ++ii;
-    }
+//    QMap<QByteArray, QByteArray>::const_iterator ii = headers.constBegin();
+//    while (ii != headers.constEnd()) {
+//        qDebug() << ii.key() << ": " << ii.value() << Qt::endl;
+//        ++ii;
+//    }
 
-    int realbytes = httpHeaders.size();
 
 //    int realbytes = nextTcpdata.size();
-    int afterbytes = socket->bytesAvailable();
+//    int afterbytes = socket->bytesAvailable();
 
-    qDebug() << "Bytes before reading from socket " << socketNumber << "available : " << QString::number(befbytes);
-    str = QString::number(realbytes); str += " bytes has been readed";
+//    qDebug() << "Bytes before reading from socket " << socketNumber << "available : " << QString::number(befbytes);
+//    str = QString::number(realbytes); str += " bytes has been readed";
 
-    str = "Bytes after reading  "; str += QString::number(afterbytes);
-    qDebug() << str;
+//    str = "Bytes after reading  "; str += QString::number(afterbytes);
+//    qDebug() << str;
 
 
 //    QByteArray qbmessage;
@@ -167,9 +209,9 @@ void QSocketThread::onReadyRead()
     int sPosition, ePosition; // Индекс строки run в запросе.
     //sPosition = message.indexOf("/run?cmd=");
     //   // Вот тут обходим запрос "GET /favicon.ico HTTP/1.1"
-       QString  wrong_mess = "/favicon.ico HTTP/1.1";
-       if (message.contains(wrong_mess))
-          {
+    QString  wrong_mess = "/favicon.ico HTTP/1.1";
+    if (message.contains(wrong_mess))
+        {
            qDebug() << "Have got favicon request !";
            this->favIconAnswer();
            return;
@@ -179,16 +221,30 @@ void QSocketThread::onReadyRead()
     while (!matched and i< strcommand.size()){
         sPosition = message.indexOf(strcommand.at(i));
         if (sPosition != -1) {
-             matched = true; qDebug() << "Inside sPosition is " << sPosition;
-             qDebug() << "Inside Index is " << i;
+             matched = true;
+//             qDebug() << "Inside sPosition is " << sPosition;
+//             qDebug() << "Inside Index is " << i;
         }
         ++i;
     }
-    qDebug() << "Index value is" << i--;
-    qDebug() << "Now current Index value is" << i;
-    qDebug() << "Matched command sPosition is " << sPosition;
-    if (i>=0) {qDebug() << "Matched string is " << strcommand.at(i);}
-    else return;
+    i--;
+//    qDebug() << "Index value is" << i;
+//    qDebug() << "Now current Index value is" << i;
+//    qDebug() << "Matched command sPosition is " << sPosition;
+    if (i>=0) {
+        qDebug() << "Matched string is " << strcommand.at(i);
+    }
+    else { //Строка не найдена
+        qDebug() << "No MATCHING in onReadyRead";
+        QString myresponse;
+        myresponse = "{\r\n";
+        myresponse += "{\"info\" : \"There is now action with such a name\"}";
+        myresponse += "{\"rc\" : \"-100\"}";
+        myresponse += "}";
+//        socket->write(myresponse.toUtf8());
+//        socket->disconnectFromHost();
+        return;
+    }
 
     searchstr = strcommand.at(i);
 
@@ -203,7 +259,7 @@ void QSocketThread::onReadyRead()
 
         // Получили команду. Передаем её наверх
         qDebug() << "!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET " << QString::number(this->socketDescriptor);
-        qDebug() << substr;
+        qDebug() << "************" << QThread::currentThread() << substr;
 //        qDebug() << "Socket descriptor " << QString::number(this->socketDescriptor);
 
      emit Command_4_Parsing_Signal(substr, socketNumber); // works !
@@ -231,44 +287,53 @@ void QSocketThread::onDisconnected()
 //+++++++++++++++++
 // ПРишли данные от робота на отправку в сокет.
 // Данные отправляем, сокет закрываем
+// Тут важно попасть в свой поток...
 void QSocketThread::Data_2_TcpClient_Slot(QString data, int socketNumber)
 {
     // Готовим ответ.
     //socket->write(response.arg(QTime::currentTime().toString()).toLatin1());
-    int sockNumber = this->socketDescriptor;
-    if (sockNumber != socketNumber) {
-        qDebug() << "sockNumber is " << sockNumber << "But this->socketDescriptor is " << socketNumber;
-        this->socket->readAll();
-        this->socket->abort();
-        return;
-    }
-    data2Client = data.toUtf8();
+//    int sockNumber = this->socketDescriptor;
+//    if (sockNumber != socketNumber) {
+//        qDebug()<< "thread ID" << QThread::currentThread() << "Current this->socketDescriptor is" << sockNumber << "and it's state is " << socket->state();
+//        qDebug()<< "thread ID" << QThread::currentThread() << "Also socket->socketDescriptor() is " << socket->socketDescriptor();
+//        qDebug()<< "thread ID" << QThread::currentThread() << "But socketNumber from MainProcess is " << socketNumber;
+//        this->socket->readAll();
+//        this->socket->abort();
+//        return;
+//    }
+    data2Client = data.toUtf8(); // have got data from MainProcess as QByteArray
     QString response = "HTTP/1.1 200 OK\r\n";
-    response += "content-type: text/html\r\n";
+
+//++++++++++++++++++++++++++ FAVICON ++++++++++++++++++++++++++++++++++++
+    response += "content-type: text/html application/json\r\n"; //text/html
     response += "Access-Control-Allow-Origin: *\r\n";
+//    response += "connection : close\r\n";
     response += "\r\n";
-        response += "<html>";
-        response += "<head>";
+//        response += "<html>";
+//        response += "<head>";
 
-        response += "<title>MEGATESTING!!!!</title>";
+//        response += "<title>MEGATESTING!!!!</title>";
         response += "<link rel=\"icon\" href=\"data:,\">";
-
-        response += "</head>";
-    //    //response += "{\n\t\"status\":\"";
-        response += "<body>";
-        response += "IT'S HTML DATA !";
-        response += "</body>";
-        response += "</html>";
         response += "\r\n";
+
+//        response += "</head>";
+    //    //response += "{\n\t\"status\":\"";
+//        response += "<body>";
+//        response += "IT'S HTML DATA !";
+
+        QByteArray qbData = response.toUtf8();
+        qbData += data2Client;
+//        response += "</body>";
+//        response += "</html>";
+//++++++++++++++++++++++++++ END OF FAVICON ++++++++++++++++++++++++++++++++++++
 
 
 
 //    response += "content-type: application/json\r\n";
 //    response += "Access-Control-Allow-Origin: *\r\n";
 //    response += "\r\n";
-//    //response += "{\n\t\"status\":\"";
+
 //    response += data2Client;
-//    //response += "\"\n}";
 
     if (!socket->isValid() || this->socket->state() != QAbstractSocket::ConnectedState){
        qDebug() << "!!!!!!!!!!!!!!!!!!!!! SOCKET IS NOT OPENED";
@@ -278,16 +343,18 @@ void QSocketThread::Data_2_TcpClient_Slot(QString data, int socketNumber)
 
     }
 
-    qDebug() << "Current socket " << sockNumber << " state is " << this->socket->state();
-    qDebug() << "Going to SEND SEND SEND data to socket with an desctiptor " << QString::number(this->socketDescriptor);
+    qDebug() << QThread::currentThread()  << "Current socket " << this->socketDescriptor << " state is " << this->socket->state();
+    qDebug() << QThread::currentThread()  << "Going to SEND SEND SEND data to socket with an desctiptor " << QString::number(this->socketDescriptor);
 
-      socket->write(response.toUtf8());
+    socket->write(qbData);
+    // socket->write(response.toUtf8());
     // ВОт тут (дождаться отправки) происходит отсоединение сокета
 
     //Отсоединение от удаленнного сокета
     socket->disconnectFromHost();
+    socket->waitForDisconnected();
 
-    qDebug() << "The folowing data has been written to socket : \n" << response.toUtf8();
+    qDebug() << QThread::currentThread()  << "The folowing data has been written to socket : \n" << qbData;
 
 }
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++

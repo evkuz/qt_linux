@@ -17,7 +17,9 @@ QSimpleServer::QSimpleServer(QObject *parent) :
     if(listen(QHostAddress::AnyIPv4, tcpport)){
         qDebug() << "Listening port " << tcpport;
     //current_status = "wait";
-        QTcpServer::setMaxPendingConnections(150);
+    QTcpServer::setMaxPendingConnections(60);
+    counterConnections = 0;
+
 
     }
 }
@@ -28,9 +30,15 @@ QSimpleServer::QSimpleServer(QObject *parent) :
 void QSimpleServer::incomingConnection(qintptr sDescriptor)
 {
 
+    this->counterConnections++;
+    qDebug() << this->counterConnections;
+    // А еще проверяем не превышен ли MaxPendingConnections...
+//    if (this->counterConnections > this->maxPendingConnections()){
+//        qDebug() << "The number of " << this->maxPendingConnections() << "TCP-connections exceeded";
+//    }
     isCreatedSocket = false;
     // Создание объекта потока QObject
-    thread_A = new QThread(this);
+    thread_A = new QThread();
     //Создание объекта потока для сокета
     QSocketThread* tcpthread = new QSocketThread(sDescriptor);
 
@@ -44,7 +52,8 @@ void QSimpleServer::incomingConnection(qintptr sDescriptor)
     connect(tcpthread, &QSocketThread::Command_4_Parsing_Signal, this, &QSimpleServer::Command_4_Parsing_Slot);
     connect(this, &QSimpleServer::Data_2_TcpClient_Signal, tcpthread, &QSocketThread::Data_2_TcpClient_Slot);
 
-    connect(tcpthread, &QSocketThread::isCreatedSocket_Signal, this, &QSimpleServer::isCreatedSocket_Slot); // get QTcpSocket *socket from tcpthread
+ // Используем осторожно ! Потенциальный источник проблем...
+ //   connect(tcpthread, &QSocketThread::isCreatedSocket_Signal, this, &QSimpleServer::isCreatedSocket_Slot); // get QTcpSocket *socket from tcpthread
 
     tcpthread->moveToThread(thread_A);
 

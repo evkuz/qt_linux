@@ -22,19 +22,23 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
 {
     QString str, substr;
     int value = 0xf00f;
+
+    QMutexLocker locker(&mutex);
+
     this->tcpSocketNumber =  socketNumber;
     new_get_request = true;
     str = "From TCP Get new command : "; str += message;
     GUI_Write_To_Log(0xf00f, str);
 
     substr = message;
-    str = "WRONG DATA from TCP !!!";
-    // Определяем индекс команды в списке MainProcess::tcpCommand
-    if (message == str)
-    {
-        GUI_Write_To_Log(value, str);
-        return;
-    }
+
+//    str = "WRONG DATA from TCP !!!";
+//    // Определяем индекс команды в списке MainProcess::tcpCommand
+//    if (message == str)
+//    {
+//        GUI_Write_To_Log(value, str);
+//        return;
+//    }
     //mutex.lock();
     int comIndex = getIndexCommand(substr, tcpCommand);
 //    if (comIndex < 0) {
@@ -77,18 +81,20 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
 
 
     }
-    // Если не запрос статуса, но есть активный экшен
+    // Если не запрос статуса, И не reset, но есть активный экшен
     // Меняем у запрошенного экшена статус - на "не запустился"
     // Другими словами - во время выполняения экшена приходит команда выполнить другой экшен...
     // Манипулятор не может 2 экшена выполнять одновременно.
-    if (comIndex > 0 && jsnStore->isAnyActionRunning){
+    // comIndex > 0 && comIndex != 1
+    if (comIndex > 1 && jsnStore->isAnyActionRunning){
         // ставим экшену статус -2
         //mutex.lock();
         QJsonObject tempObj = {
             {"name", substr},
             {"state", "Not applied"},
-            {"info", "Another action id already running"},
+            {"info", "Another action is already running"},
             {"rc", RC_UNDEFINED}
+
         };
         // set aimed action values to tempObj
         jsnStore->setActionData(tempObj);
@@ -127,7 +133,6 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
 //        GUI_Write_To_Log(value, str);
         // Надо данные из mainjsnObj переписать в соответствующую jsnAction...
         // В общем надо с указателями работать.
-        mutex.lock();
         // Если serial port не открыт, иначе не узнаем
 //        mainjsnObj["rc"] = 0;
 //        mainjsnObj["state"] = "Running";
@@ -148,7 +153,6 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
 
 
         Robot->active_command = "status";
-        mutex.unlock();
         emit Write_2_TcpClient_Signal (str, this->tcpSocketNumber);
 
 //        str = "Current QJsonDocument is ";
@@ -176,7 +180,6 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
 
         break;
     case -1: // Unknown Action !!!
-        mutex.lock();
         mainjsnObj = jsnStore->returnJsnActionsUnKnown();
         mainjsnObj["name"] = message;
         str = "There is wrong action command : ";
@@ -184,29 +187,29 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
         GUI_Write_To_Log(value, str);
 
         ProcessAction(comIndex, mainjsnObj);
-        mutex.unlock();
         break;
 
     case 1:  // reset
         // Robot->active_command = "reset";
-        mutex.lock();
         jsnStore->resetAllActions();
-        str = "I'm in reset";
-        GUI_Write_To_Log(value, str);
-        mainjsnObj["rc"] = jsnStore->AC_Launch_RC_DONE;
-        mainjsnObj = jsnStore->returnJsnActionReset();
-        str = QJsonDocument(mainjsnObj).toJson(QJsonDocument::Indented);
+        jsnStore->isAnyActionRunning = false;
+//        str = "I'm in reset";
+//        GUI_Write_To_Log(value, str);
+//        mainjsnObj = jsnStore->returnJsnActionReset();
+//        str = QJsonDocument(mainjsnObj).toJson(QJsonDocument::Indented);
+//        GUI_Write_To_Log(value, str);
+
+        jsnStore->createActionList(); // формируем список, записываем данные в jsnData, делаем merge (jsnActionList, jsnHeadStatus)
+        str = jsnStore->returnJsnData();
         GUI_Write_To_Log(value, str);
 
         emit Write_2_TcpClient_Signal (str, this->tcpSocketNumber);
 
-        str = "Current ActionList is :";
-        mainjsnObj = jsnStore->returnAllActions();
-        // Берем значение  jsnActionList, весь ответ не нужен
-        str += QJsonDocument(jsnStore->jsnActionList).toJson(QJsonDocument::Indented);
-       mutex.unlock();
-        GUI_Write_To_Log(value, str);
-//        emit Write_2_TcpClient_Signal (str);
+//        str = "Current ActionList is :";
+//        mainjsnObj = jsnStore->returnAllActions();
+//        // Берем значение  jsnActionList, весь ответ не нужен
+//        str += QJsonDocument(jsnStore->jsnActionList).toJson(QJsonDocument::Indented);
+//        GUI_Write_To_Log(value, str);
         break;
 
     case 2: // clamp
@@ -222,15 +225,12 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
 
     case 4: // "standup"
         // Robot->active_command = "standup";
-        mutex.lock();
         mainjsnObj = jsnStore->returnJsnActionStandUP();
         ProcessAction(comIndex, mainjsnObj);
-        mutex.unlock();
         break;
     case 5: // "start"
         // Robot->active_command = "start";
-        //mutex.lock();
-        str = "TcpParcing start command";
+         str = "TcpParcing start command";
         GUI_Write_To_Log(value, str);
 
         mainjsnObj = jsnStore->returnJsnActionStart();
@@ -239,14 +239,11 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
         str += QJsonDocument(mainjsnObj).toJson(QJsonDocument::Indented);
         GUI_Write_To_Log(value, str);
         ProcessAction(comIndex, mainjsnObj);
-        //mutex.unlock();
         break;
     case 6: // "put_box"
-        mutex.lock();
         mainjsnObj = jsnStore->returnJsnActionPutbox();
         ProcessAction(comIndex, mainjsnObj);
 
-        mutex.unlock();
 
         break;
 
@@ -259,26 +256,20 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
 
         break;
     case 10: //lock
-        mutex.lock();
         mainjsnObj = jsnStore->returnJsnActionLock();
         ProcessAction(comIndex, mainjsnObj);
-        mutex.unlock();
-        break;
+       break;
     case 11: //unlock
-        mutex.lock();
-        mainjsnObj = jsnStore->returnJsnActionUnLock();
+       mainjsnObj = jsnStore->returnJsnActionUnLock();
         ProcessAction(comIndex, mainjsnObj);
-        mutex.unlock();
-        break;
+       break;
 
 
 
     case 13: //collapse
         // Robot->active_command = "collapse";
-        mutex.lock();
         mainjsnObj = jsnStore->returnJsnActionCollapse();
         ProcessAction(comIndex, mainjsnObj);
-        mutex.unlock();
         break;
 
     default:
@@ -327,15 +318,15 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
         Robot->GoToPosition(dd);//, sit_down_position
     }//"sit"
 
-    if (substr == "standup") {
-        // Go to Initial "Start" position
-        QByteArray dd;
-        dd = QByteArray::fromRawData(reinterpret_cast<const char*>(hwr_Start_position), 6);
-        dd.append(0x30); // Движение "Обратно"
-        dd.append(LASTONE); // Всегда последнее ?
-        Robot->GoToPosition(dd);//, hwr_Start_position
+//    if (substr == "standup") {
+//        // Go to Initial "Start" position
+//        QByteArray dd;
+//        dd = QByteArray::fromRawData(reinterpret_cast<const char*>(hwr_Start_position), 6);
+//        dd.append(0x30); // Движение "Обратно"
+//        dd.append(LASTONE); // Всегда последнее ?
+//        Robot->GoToPosition(dd);//, hwr_Start_position
 
-    }
+//    }
 
 //    if (substr =="clamp") {
 

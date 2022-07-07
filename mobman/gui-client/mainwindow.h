@@ -144,6 +144,8 @@ private slots:
 
     void on_HiWonderGetStatusButton_clicked();
 
+    void on_ResetButton_2_clicked();
+
 private:
     Ui::MainWindow *ui;
 };

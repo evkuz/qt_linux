@@ -21,6 +21,7 @@ HiWonder::HiWonder()
    // this->SetCurrentStatus ("wait");
     this->current_status = "wait";
     active_command = "nothing";
+//    QMutex hwmutex
 }
 //+++++++++++++++++
 HiWonder::~HiWonder()
@@ -45,6 +46,7 @@ void HiWonder::Source_Points_File_Open(QString fname)
 //++++++++++++++++++++++++++++++
 void HiWonder::Write_To_Log (int value, QString log_message)
 {
+ //   QMutexLocker locker(&hwMutex);
     QDateTime curdate ;
     QTextStream uin(&LogFile);
 
@@ -174,6 +176,7 @@ void HiWonder::ReadFromSerial_Slot ()
 {
     QString str;
     qint64 numBytes;
+    QMutexLocker locker(&hwMutex);
         numBytes = serial.bytesAvailable ();
 
         str = "There are "; //
