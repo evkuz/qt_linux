@@ -17,7 +17,7 @@ QSimpleServer::QSimpleServer(QObject *parent) :
     if(listen(QHostAddress::AnyIPv4, tcpport)){
         qDebug() << "Listening port " << tcpport;
     //current_status = "wait";
-    QTcpServer::setMaxPendingConnections(60);
+    QTcpServer::setMaxPendingConnections(150);
     counterConnections = 0;
 
 
@@ -42,9 +42,14 @@ void QSimpleServer::incomingConnection(qintptr sDescriptor)
     //Создание объекта потока для сокета
     QSocketThread* tcpthread = new QSocketThread(sDescriptor);
 
+    // move QObject to the thread
+    tcpthread->moveToThread(thread_A);
+
+
     //Соединение сигнала завершения потока со слотом отложенного удаления
-    connect(tcpthread, &QSocketThread::finished, tcpthread, &QSocketThread::deleteLater);
-    connect(tcpthread, &QSocketThread::finished, thread_A, &QThread::quit);
+//    connect(tcpthread, &QSocketThread::finished, tcpthread, &QSocketThread::deleteLater);
+    connect(tcpthread, &QSocketThread::stopThread_signal, thread_A, &QThread::quit);
+    connect(tcpthread, &QSocketThread::stopThread_signal, tcpthread, &QSocketThread::deleteLater);
     connect(thread_A, &QThread::started, tcpthread, &QSocketThread::process_TheSocket, Qt::QueuedConnection); //, Qt::QueuedConnection)
     connect(thread_A, &QThread::finished, thread_A,  &QThread::deleteLater);
 
@@ -52,18 +57,20 @@ void QSimpleServer::incomingConnection(qintptr sDescriptor)
     connect(tcpthread, &QSocketThread::Command_4_Parsing_Signal, this, &QSimpleServer::Command_4_Parsing_Slot);
     connect(this, &QSimpleServer::Data_2_TcpClient_Signal, tcpthread, &QSocketThread::Data_2_TcpClient_Slot);
 
+    connect(thread_A, &QThread::finished, this, &QSimpleServer::finshQThread_Slot, Qt::QueuedConnection);
  // Используем осторожно ! Потенциальный источник проблем...
  //   connect(tcpthread, &QSocketThread::isCreatedSocket_Signal, this, &QSimpleServer::isCreatedSocket_Slot); // get QTcpSocket *socket from tcpthread
 
-    tcpthread->moveToThread(thread_A);
 
     //Запуск потока
     thread_A->start();
+//    this->dumpObjectTree();
+//    this->dumpObjectInfo();
     // Нужно получить из tcpthread значение QTcpSocket *socket, чтобы вызвать ф-цию addPendingConnection(QTcpSocket *socket);
 //    while (!isCreatedSocket) {
 //    ;
 //    }
-//    this->addPendingConnection(createdSocket);
+//    this->addPendingConnection(sDescriptor);
 }
 //++++++++++++++++
 // Слот отправки данных от робота клиенту в сокет (в ЦУП)
@@ -88,6 +95,12 @@ void QSimpleServer::isCreatedSocket_Slot(QTcpSocket *theSocket)
     this->createdSocket = theSocket;
     this->isCreatedSocket = true;
     this->addPendingConnection(theSocket);
+}
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//
+void QSimpleServer::finshQThread_Slot()
+{
+    qDebug() << QThread::currentThread()  << "Is finished ";
 }
 
 //++++++++++++

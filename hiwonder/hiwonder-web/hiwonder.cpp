@@ -143,6 +143,8 @@ void HiWonder::GoToPosition(QByteArray &position)//, const char *servo)
 {
     QString str;
     this->MOVEMENT_DONE = false;
+    int btAvailable  = serial.bytesAvailable();
+    if (btAvailable >0) {return;} // есть непрочитанные данные, ждем onReadyRead
     position.resize (szData);
     serial.write(position);
     serial.waitForBytesWritten();
@@ -179,10 +181,10 @@ void HiWonder::ReadFromSerial_Slot ()
     QMutexLocker locker(&hwMutex);
         numBytes = serial.bytesAvailable ();
 
-        str = "There are "; //
-        str += QString::number (numBytes);
-        str += " bytes from robot to read";
-        this->Write_To_Log(0xF001, str);
+//        str = "There are "; //
+//        str += QString::number (numBytes);
+//        str += " bytes from robot to read";
+//        this->Write_To_Log(0xF001, str);
 
         qbuf = serial.readAll();
         str = "From Robot : ";
@@ -190,7 +192,7 @@ void HiWonder::ReadFromSerial_Slot ()
         this->Write_To_Log(0xF001, str);
         // И вот теперь надо вводить флаг проверки текста сообщения на предмет наличия "DONE"
 
-        std::cout<<"From Serial:" << str.toStdString ()<< std::endl;
+//        std::cout<<"From Serial:" << str.toStdString ()<< std::endl;
         QStringList list_str = str.split(QLatin1Char(' '), Qt::SkipEmptyParts);
 //        for (int i=0; i< list_str.size (); i++){
 //            this->Write_To_Log(0xF001, list_str.at (i));
@@ -213,6 +215,16 @@ void HiWonder::ReadFromSerial_Slot ()
 
 //   if (this->MOVEMENT_DONE) this->Write_To_Log(0xF001, "Robot finished");
 //
+
+}
+//++++++++++++++++++++++++++++++++++++++++
+// Слот сигнала QSerialPort::errorOccurred
+void HiWonder::SerialError_slot(QSerialPort::SerialPortError error)
+{
+ int value = 0x7070;
+ QString str = "Serial Port ERROR !!!!!!!\n";
+ str += "  "; str += QString::number(error);
+ this->Write_To_Log(value, str);
 
 }
 //++++++++++++++++++++++++

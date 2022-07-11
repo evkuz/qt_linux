@@ -48,8 +48,7 @@ MainProcess::MainProcess(QObject *parent)
     Robot = new HiWonder(); // Без этого будет "The program has unexpectedly finished", хотя в начале говорила, что это ambiguous
 
     Robot->Log_File_Open(Log_File_Name);
-  //  Robot->Source_Points_File_Open (SOURCE_POINTS_FILE);
-
+    this->LogFile_Open(HWR_WEB_LOGFILE);
     str = "The application \"";  str +=target_name; str += "\"";
     Robot->Write_To_Log(0xf000, str.append(" is started successfully!!!\n"));
 
@@ -110,8 +109,8 @@ MainProcess::MainProcess(QObject *parent)
 
     //################### SERIAL SIGNAL/SLOTS ############################
     connect( this, &MainProcess::Open_Port_Signal, Robot, &HiWonder::Open_Port_Slot);
-    connect( &Robot->serial, &QSerialPort::readyRead, Robot, &HiWonder::ReadFromSerial_Slot);  //&QSerialPort::
-
+    connect( &Robot->serial, &QSerialPort::readyRead, Robot, &HiWonder::ReadFromSerial_Slot, Qt::QueuedConnection);  //&QSerialPort::
+    connect(&Robot->serial, &QSerialPort::errorOccurred, Robot, &HiWonder::SerialError_slot, Qt::QueuedConnection);
     //#################### Signal to web-server
     connect( Robot, &HiWonder::Moving_Done_Signal, this, &MainProcess::Moving_Done_Slot);
 //    connect()
@@ -185,6 +184,7 @@ MainProcess::~MainProcess()
 {
     GUI_Write_To_Log(0xffff, "Program is going to be closed");
     delete Robot;
+    delete jsnStore;
 
 
 }
@@ -193,7 +193,7 @@ void MainProcess::GUI_Write_To_Log (int value, QString log_message)
 {
 //    QMutexLocker locker(&mutex);
     QDateTime curdate ;
-    QTextStream uin(&Robot->LogFile);
+    QTextStream uin(&this->hwrWebLogFile); //&Robot->LogFile
 
     QString str, str2;
     curdate = QDateTime::currentDateTime();
@@ -254,7 +254,7 @@ void MainProcess::on_trainButton_clicked()
             try_mcinfer(state.objectX*kf, state.objectY*kf); // Тут меняем current_status = "inprogress". Команда 0 - Переместить открытый хват к кубику.
             X = state.objectX;                        //  Хват открывается в процессе движения робота, а не отдельной командой.
             Y = state.objectY;
-            std::cout << "DETECTED: " << state.objectX << " " << state.objectY << std::endl;
+//            std::cout << "DETECTED: " << state.objectX << " " << state.objectY << std::endl;
             //str += QString::number(state.objectX);
             fstr.setNum(state.objectX);
             str += fstr;
@@ -264,11 +264,20 @@ void MainProcess::on_trainButton_clicked()
             str += fstr;
             DETECTED = true;
 
+            mainjsnObj["rc"] = JsonInfo::AC_Launch_RC_RUNNING; // Чтобы экшен мог запуститься
+            mainjsnObj["name"] = "start";
+            mainjsnObj["info"] = str;
+            mainjsnObj["state"] = DEV_ACTION_STATE_RUN;
+
+            jsnStore->setActionData(mainjsnObj); // Переписали данные экшена в массиве jsnstore->jsnObjArray
+            str = QJsonDocument(mainjsnObj).toJson(QJsonDocument::Indented);
+
         } else {
             str = " NOT DETECTED";
             // change status to "NoDetection"
            // mutex.lock();
             GUI_Write_To_Log(value, str);
+            //qDebug() << str;
             jsnStore->isAnyActionRunning = false;
             jsnStore->currentStatus.rc = -5; // No Detection
             jsnStore->currentStatus.info = "No Detection";
@@ -277,33 +286,37 @@ void MainProcess::on_trainButton_clicked()
 
             jsnStore->returnJsnStatus(); // Берем данные из ordered_json jsnStatus и передаем в QJsonObject::jsnObj
 
-            jsnStore->setActionStart2NoDetection();
-            str = jsnStore->returnJsnData();
-
-
-           // mutex.unlock();
-
-            emit Write_2_TcpClient_Signal(str, this->tcpSocketNumber);
-            // info оотправили, теперь делаем экшен доступным для перезапуска
-            str = "Try Again";
-            mainjsnObj["rc"] = JsonInfo::AC_Launch_RC_DONE;
+            jsnStore->setActionStart2NoDetection(); // jsnstor->jsnData changing also and having these last data
+            //
+//            str = jsnStore->returnJsnData();
+            // теперь делаем экшен доступным для перезапуска
+            mainjsnObj["rc"] = JsonInfo::AC_Launch_RC_DONE; // Чтобы экшен мог запуститься
             mainjsnObj["name"] = "start";
             mainjsnObj["info"] = str;
             mainjsnObj["state"] = DEV_ACTION_STATE_FAIL;
 
-           // jsnStore->setActionData(mainjsnObj);
+           // jsnStore->setActionData(mainjsnObj); cause dangling pointer, so commented
 
             jsnStore->jsnActionStart["rc"] = JsonInfo::AC_Launch_RC_DONE;
 
 //            QString s3 = "NO DETECTION";
             str = "NO DETECTION";
             GUI_Write_To_Log(value, str);
+            str = "Now the value of jsnStore->isAnyActionRunning : ";
+            str += QVariant(jsnStore->isAnyActionRunning).toString();
+            GUI_Write_To_Log(value, str);
+
+            str = jsnStore->returnJsnData();
         }
 
 //       std::cout <<  str.toStdString() << std::endl;
 //       Robot->Write_To_Log(value, str);
 //       GUI_Write_To_Log(value, str);
-    }
+    }//if (state.iqsDetected)
+
+    // Ответ на запуск экшена start отправили
+
+    emit Write_2_TcpClient_Signal(str, this->tcpSocketNumber);
 
 //В этой точке робот опустился над кубиком, открыл захват.
 
@@ -568,6 +581,7 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
     switch (returnCode) {
 
     case 0: //rc==0 (уже запущен)=="Is running" -> Выходим, ничего не меняем
+            // Сюда даже не должны попадать, т.к. это отсеивается в tcpparcing.cpp
         str = "Action "; str += theObj.value("name").toString();
         str += " is already running. Should wait it to finish";
         GUI_Write_To_Log(value, str);
@@ -586,15 +600,19 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
 
     case -2: // // action с таким именем не запустился меняем только info
         //str = "Serial port is UNAVAILABLE !!! CAN'T move the ARM !!!";
-        str = "Did not started last time. Send <reset> command, or Try again"; //"There is another action running at the moment"
+        str = "Did not started last time. Changing rc to ";
+        str += RC_WAIT;
+        str += ", so Try again."; //"There is another action running at the moment"
         theObj["info"] = str;
         GUI_Write_To_Log(value, str);
         // change gor next request to be successfull
         theObj["rc"] = RC_WAIT;
+        // Так надо ж поменять значение самого экшена в классе JsonInfo !!!
+        jsnStore->setActionData(theObj);
 
 
 //        launchActionAnswer["name"] = theObj.value("name").toString();
-//        launchActionAnswer["rc"] = RC_SUCCESS;
+//        launchActionAnswer["rc"]   = RC_SUCCESS;
 //        launchActionAnswer["info"] = DEV_HEAD_INFO_REQUEST;
         str = QJsonDocument(theObj).toJson(QJsonDocument::Indented);
         // Вот это нужно, отправляем ответ на запуск экшена
@@ -627,11 +645,17 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
             jsnStore->isAnyActionRunning = true;
             theObj["rc"] = RC_SUCCESS; // Now state "inprogress" //theObj
             theObj["state"] = DEV_ACTION_STATE_RUN;
-            jsnStore->setActionData(theObj);
 
             str = QJsonDocument(theObj).toJson(QJsonDocument::Indented);
             // Вот это нужно, отправляем ответ на запуск экшена
-            emit Write_2_TcpClient_Signal(str, this->tcpSocketNumber);
+
+            // while detection is not checked don's send that it's ok
+            if (indexOfCommand != 5) {
+                emit Write_2_TcpClient_Signal(str, this->tcpSocketNumber);
+                jsnStore->setActionData(theObj);
+
+
+            }
 
             QJsonObject headStatus = {
                 {"rc", RC_SUCCESS}, //RC_SUCCESS
@@ -735,7 +759,7 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
 
 //    str = "PROCESSING ACTION IS FINISHED";
 //    GUI_Write_To_Log(value,str);
-}
+}// ProcessAction
 //+++++++++++++++++++++++++++++++++++++++++++++++++++
 // Определяем, Есть ли в данный момент работающий экшен
 //
@@ -744,8 +768,16 @@ bool MainProcess::isThereActiveAction()
     // Перебираем список  actionListp, определяем у кого state == "inprogress"
     // формируем новый список
     // добавляем его в jsnData
-   return true ;
-} // ProcessAction
+    return true ;
+}
+//+++++++++++++++++++++++++++++++++++++++++++++++++++
+// Открываем отдельный лог-файл для tcp-данных
+void MainProcess::LogFile_Open(QString fname)
+{
+    hwrWebLogFile.setFileName(fname);
+    hwrWebLogFile.open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text);
+
+}
 //+++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
@@ -758,11 +790,12 @@ void MainProcess::Moving_Done_Slot()
     QString str, myname;
     int value = 0xFAAA;
     //int result;
-QMutexLocker locker(&mutex);
-
+    // Этот слот вызывается сигналом в котором уже QMutexLocker locker(&mutex)
+// Однако вызывается из другого класса, а там другой mutex
+//QMutexLocker locker(&mutex);
     GUI_Write_To_Log(value, "Demo cycle finished !!!");
     // Меняем статус, теперь "done"
-    std::cout<<"Set DONE to Robot!" << std::endl;
+//    std::cout<<"Set DONE to Robot!" << std::endl;
     Robot->SetCurrentStatus ("done");
 
     str = "Current json object name is ";

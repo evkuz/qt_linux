@@ -37,7 +37,7 @@ public:
     QTcpSocket *createdSocket;
     int counterConnections; // counter for incoming tcp connections
     //Метод, вызываемый при подключении нового соединения.
-    virtual void incomingConnection(qintptr sDescriptor) override; // YES !!! override EXACTLY !
+    void incomingConnection(qintptr sDescriptor) override; // virtual YES !!! override EXACTLY !
 
 signals:
     // Сигнал на отправку данных наверх, уже роботу.
@@ -56,7 +56,7 @@ public slots:
 
     //Слот получает указатель на вновь созданный сокет - обект QTcpSocket*
     void isCreatedSocket_Slot(QTcpSocket*); // Слот сигнала QSocketThread::isCreatedSocket_Signal(QTcpSocket);
-
+    void finshQThread_Slot();
 };
 
 #endif // QSIMPLESERVER_H

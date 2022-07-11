@@ -39,14 +39,14 @@ class MainProcess : public QObject
 public:
     MainProcess(QObject *parent = nullptr);
     ~MainProcess();
-    QByteArray *buff;
+//    QByteArray *buff;
     QString    target_name;
     HiWonder   *Robot;
 
     bool new_get_request; // Флаг сигнализирует, что есть неотвеченный GET-запрос от webserver.
 
     QSimpleServer server;
-QJsonObject aaa;
+    //QJsonObject aaa;
     //+++++++++++++++++++++++++++++ Threads +++++++++++++++
     int thread_counter ; // Было нужно при отладке старт/останов потоков
 
@@ -65,11 +65,15 @@ QJsonObject aaa;
 #define BEFORE_LAST 0xE9 //233  // Предпоследняя команда - положить кубик на тележку.
 #define AFTER_PUT   0xF4 //244  Кубик на тележку положили, теперь грамотно убираем манипулятор.
 
+#define HWR_WEB_LOGFILE "./hwr-web.log"
     float X, Y;//Координаты x,y центра объекта при распознавании
     bool DETECTED; // Флаг, показывающий, сработал ли захват изображения.
 
     unsigned char Servos [6] = {93,93,93,93,93,93};
     QMutex mutex;
+    int tcpSocketNumber;
+    QFile hwrWebLogFile;
+
 
     void GUI_Write_To_Log (int value, QString log_message); //Пишет в лог-файл (тот же, что и в классе HiWonder) номер ошибки value и сообщение message
     void try_mcinfer(float x, float y);
@@ -83,7 +87,8 @@ QJsonObject aaa;
     int getIndexCommand(QString myCommand, QList<QString> theList);  // Определяем индекс команды в списке MainProcess::tcpcommand
     void ProcessAction(int indexOfCommand, QJsonObject &theObj); // Отрабатывает команду по заданному индексу из списка QList<QString> theList
     bool isThereActiveAction(); // Выясняем, есть ли активный экшен.
-    int tcpSocketNumber;
+
+    void LogFile_Open (QString fname);
 private:
     SocketClient readSocket;
 

@@ -29,6 +29,7 @@ public:
     bool data_ready; // Данные на отправку сформированы, можно отправлять.
     bool toBeClosed; // Сокет без данных закрываем.
     QString current_status;
+    QThread *threadID;
     //QFile iconFile; // file of icon
 #define ICON_FILE_PATH "../favicon.png" // Путь к файлу иконки
 
@@ -37,7 +38,7 @@ public:
     void favIconAnswer();
     //mySocketError
 signals:
-    void finished();
+    void stopThread_signal();
     void Command_4_Parsing_Signal(QString, int); // Отправляем данные (qstring) и номер сокета (int)
 
     // Сигнал о том, что сокет создан. Передаем указатель на него. для последующего QTcpServer::addPendingConnection()

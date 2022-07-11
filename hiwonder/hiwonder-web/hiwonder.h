@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Класс hiwonder - для объекта робот. Написан под робота LeArm или, в более поздней версии, - Hiwonder.
  *
 */
@@ -66,6 +66,7 @@ public:
 
     void Write_Status(QByteArray &status);  // Тоже надстройка над QSerialPort
 
+
 private:
     QString current_status; // Текущий статус
 
@@ -82,6 +83,25 @@ signals:
 public slots:
     int Open_Port_Slot(QString portname); // https://doc.qt.io/qt-5/qserialport.html#SerialPortError-enum - список ошибок при открытии порта.
     void ReadFromSerial_Slot(); // Слот обработки сигнала readyRead()
+    void SerialError_slot(QSerialPort::SerialPortError error); // Слот обработки сигнала
+/*
+ *     enum SerialPortError {
+        NoError,
+        DeviceNotFoundError,
+        PermissionError,
+        OpenError,
+        ParityError,
+        FramingError,
+        BreakConditionError,
+        WriteError,
+        ReadError,
+        ResourceError,
+        UnsupportedOperationError,
+        UnknownError,
+        TimeoutError,
+        NotOpenError
+    };
+*/
 };
 
 #endif // HIWONDER_H

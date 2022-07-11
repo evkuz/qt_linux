@@ -691,7 +691,7 @@ void JsonInfo::setActionStart2NoDetection()
     jsnActionStart["rc"] = this->AC_Launch_RC_FAILURE;
 
 //    jsnHeadStatus["state"] = DEV_HEAD_STATE_RUN;
-//    jsnHeadStatus["info"]  = "No Detection";
+    jsnHeadStatus["info"]  = "No Detection";
 //    jsnHeadStatus["rc"] = this->AC_Launch_RC_RUNNING;
 
 //    QJsonValue myValue = jsnActionStart;
@@ -707,6 +707,9 @@ void JsonInfo::setActionStart2NoDetection()
 //    OK = this->eraseArray(this->jsnObjArray);
 
 this->jsnData = QJsonDocument(jsnActionStart).toJson(QJsonDocument::Indented);
+// That's ok. But now changed value of jsnActionStart should be copied to jsnObjArray
+    this->setActionData(jsnActionStart);
+    this->setActionData(jsnHeadStatus);
 
 } // setActionStart2NoDetection
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -731,7 +734,7 @@ void JsonInfo::createActionList()
         str = myobj.value("state").toString();
 //        если не равно - вынимаем объект из массива, т.е. оставляем только running
 //       if (QString::compare(str, DEV_ACTION_STATE_RUN)){
-         if (str != DEV_ACTION_STATE_RUN){
+         if (str != DEV_ACTION_STATE_RUN ){
              myArray.removeAt(i);
              i--;
 
@@ -753,7 +756,7 @@ void JsonInfo::SetJsnActionStandUP(QJsonObject &theObj)
     this->jsnActionStandUP = theObj;
 }
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
+// repalce data in array jsnObjArray with the new data from theObj
 void JsonInfo::setActionData(QJsonObject &theObj)
 {
 // Ищем в jsnObjArray по "name" нужный action, меняем его на значения theobj

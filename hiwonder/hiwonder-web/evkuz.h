@@ -23,6 +23,101 @@
  *
  * Запускаем "HIWONDER http server" - http://192.168.1.175:5001
  *
+ * // Synchronizing Threads
+ * https://doc.qt.io/qt-5/threads-synchronizing.html
+ * https://www.toptal.com/qt/qt-multithreading-c-plus-plus
+ *
+ * qabstractsocket taking get request from chrome as 2 different connections
+ *
+ *   The program has unexpectedly finished.
+ *
+ *
+ * //++++++++++++++++++++++++++++++++++++++++++++++++
+ * 11.07.2022
+ * Еще пунктик.
+ * Если не запущен процесс/service с именем robot.hiwonder.service - камера, детектирующая кубик, то
+ * при вызове ф-ции SocketClient::GetState прога просто виснет, не выводит никаких сообщений.
+ * Решение :
+ * - Запустить через QProcess проверку, что запущен нужный процесс.
+ *
+ * Поправил обработку ситуации DETECTED/"NOT DETECTED"
+ * Делаем фикс на гит, включая qtlibs
+ *
+ *
+ *
+ * //++++++++++++++++++++++++
+ * 10.07.2022
+ * Search for dangling pointer.
+ *
+ * robot.hiwonder.service is off
+ * supervisor is off.
+ * Delay between request is 100ms
+ *
+ * Start at 16:45 IN DEBUG MODE ...
+ * Stopped at 17:45, counter is 37135
+ *
+ * Test Number 2
+ * robot.hiwonder.service is ON
+ * supervisor is off.
+ * Delay between request is 100ms
+ * start at 17:53 IN DEBUG MODE ...
+ * Stopped at 18:52, counter is invisible, but everything worked fine.
+ *
+ * start at 19.45 IN DEBUG MODE ...
+ *
+ *
+ * //+++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ * 09.07.2022
+ * Сделаем отдельную запись, ибо важно.
+ * Каждый раз, когда меняем значение конкретного экшена, делаем следующее :
+ * - Меняем значение, записанное в JsonInfo::jsnObjArray, на вновь измененное
+ *   Для этого запускаем ф-цию JsonInfo::setActionData(QJsonObject &theObj)
+ *   ...
+ *   (Ага, и получаем dangling pointer, блин ...)
+ * - (1)Если приходит команда запуска экшена, а в этот момент выполняется другой экшен
+ *   ( т.е. jsnStore->isAnyActionRunning = true;), то :
+ *   - Записываем в QJsonObject tempObj нужные значения для такой ситуации. Тут самое важное -> {"rc", RC_UNDEFINED}
+ *   - Устанавливаем значения вызываемого экшена в значения из tempobj через jsnStore->setActionData(tempObj); (ВАЖНО !)
+ *   - Отправляем в сокет.
+ *   И так будет, пока текущий экшен не завершится и значение jsnStore->isAnyActionRunning не изменится на false.
+ *   - При следующем запросе запуска этого же экшена, у него статус RC_UNDEFINED, значит при попадании в
+ *     ProcessAction у него только сменится RC : RC_UNDEFINED -> RC_WAIT
+ *     И, что, СУКА, самое важное -  значение сменится не у самого экшена, а у QJsonObject &theObj, который передается в
+ *     ProcessAction, а это всего лишь MainProcess::mainjsnObj с какими-то значенияем.
+ *     Сам экшен, как объект класс JsonInfo при этом не меняется ! Вот поэтому и происходит зацикливание в (1)
+ *     ...
+ *     Добавил изменение самого объекта из JsonInfo. Теперь по логике нужно еще раз посылать команду на запуск экшена,
+ *     чтобы он сработал со статусом RC_WAIT. Т.е. лишняя команда.
+ *     А хорошо бы рекурсивно запустить ф-цию MainProcess::ProcessAction, чтобы уже с новым значением экшен запустился без
+ *     доп команды из сокета...
+ *
+ * ...
+ *
+ *
+ *
+ * //+++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ * 08.07.2022
+ * Добавил запись из MainProcess в отдельный файл.
+ * Запустил в 9.22. Ждем. 9.53 - отвалилось.
+ *
+ * - ДОбавил сигнал/слот обработки ошибки Serial Port.
+ * Запустил gui-client в 11.18 (без supervisor) через 20 минут в gui-client :
+ * QIODevice::read (QTcpSocket): device not open - но при этом hiwonder-web продолжает открвать потоки и
+ * в консоли идут сообщения.
+ *
+ * QMetaObject *QObject::metaObject() -  Returns a pointer to the meta-object of this object
+ *
+ *
+ * - Переименовал сигнал QSocketThread::finished() в QSocketThread::stopThread_signal
+ *   Добавил вызов stopThread_signal после отправки данных в сокет и закрытия в слот
+ *   QSocketThread::Data_2_TcpClient_Slot
+ *
+ * - Убрал обработку сигнала  &QAbstractSocket::disconnected
+ * В целом, из firefix можно работать.
+ * Осталась проблема "залипание в статусе inprogress", и reset не помогает.
+ * Да, это проблема чисто ручного управления, но она возникнет, если роботы будут
+ * общаться не через ЦУП, а напрямую. Так что решать надо.
+ *
  *
  * //+++++++++++++++++++++++++++++++++++++++++++++++++++++++
  * 07.07.2022
@@ -50,10 +145,15 @@
  * Это случается и в середине этапа выполнения экшена, не только в конце.
  * Возможно, слот MainProcess::Moving_Done_Slot() вообще не запускается.
  * И даже  команда reset не помогает
+ * Дабавил Qt::QueuedConnection в соединение сигнал/слот для serialport
  * ...
  * При выполнении "put_box" не видно action_list ["inprogress"] action_list идет пустой.
  *
  *
+ * Оставил в 20.02 на ночь программу поработать. Счетчик на 1500.
+ * Проверим удержится ли сокет...
+ *
+ * Программа вылетела в 21:04:50, счетчик на 18772. Т.е. отработала 1 час (!)
  *
  *
  * //+++++++++++++++++++++++++++++++++++++++++++++++++++++++

@@ -9,6 +9,7 @@ QSocketThread::QSocketThread(int descriptror) :
     current_status = "wait";
     toBeClosed = false;
     //ba.resize(icon)
+    threadID = QThread::currentThread(); // get thread pointer
 }
 //+++++++++++++++++++++++
 QSocketThread::~QSocketThread()
@@ -98,7 +99,9 @@ void QSocketThread::favIconAnswer()
 //    qDebug() << "From faviconAnswer" << returnIconChrome();
 }//favIconAnswer()
 //+++++++++++++++++++++++++++
-////++++++++++++++++++ главный event loop потока
+//++++++++++++++++++ главный event loop потока
+// Самого event loop пока не видно, а он нужен.
+// Надо в этом же потоке дождаться ответа и отправить его.
 void QSocketThread::process_TheSocket()
 {
     // eventloop тут не делаем, достаточно 1 сокета.
@@ -108,12 +111,14 @@ void QSocketThread::process_TheSocket()
     socket->setSocketDescriptor(socketDescriptor);
     socket->setSocketOption(QAbstractSocket::LowDelayOption,1);
 
-    emit this->isCreatedSocket_Signal(socket);
+//    emit this->isCreatedSocket_Signal(socket);
+
 
     //socket //keepalive
     //Соединение сигналов со слотами
     connect(socket, &QAbstractSocket::readyRead, this, &QSocketThread::onReadyRead, Qt::DirectConnection); //, Qt::QueuedConnection DirectConnection
-    connect(socket, &QAbstractSocket::disconnected, this, &QSocketThread::onDisconnected, Qt::AutoConnection); //, Qt::AutoConnection
+//    connect(socket, &QAbstractSocket::disconnected, this, &QSocketThread::onDisconnected, Qt::AutoConnection); //, Qt::AutoConnection
+    connect(socket, &QAbstractSocket::disconnected, this, &QSocketThread::deleteLater); //, Qt::AutoConnection
 
     //connect(socket, &QTcpSocket::stateChanged, this, &QSocketThread::onSocketDevState_Changed);
 
@@ -127,6 +132,7 @@ void QSocketThread::process_TheSocket()
   //  while(isNotFinishedTCP){;}
     //Закрываем поток.
    //emit QThread::finished();
+//    while (!toBeClosed){;} //infinite loop, but the object will be deleted by Data_2_TcpClient_Slot
 
 }
 //+++++++++++++++++++++++++++++++++++++
@@ -163,7 +169,7 @@ void QSocketThread::onReadyRead()
 //    qDebug() << httpHeaders.size() << " bytes of data heas been read";
 //    qDebug() << theData.size() << " bytes of data as QString heas been read";
 
-    qDebug() << httpHeaders;// nextTcpdata;  httpHeaders;
+//    qDebug() << httpHeaders;// nextTcpdata;  httpHeaders;
 
 
 //    QMap<QByteArray, QByteArray> headers;
@@ -231,18 +237,20 @@ void QSocketThread::onReadyRead()
 //    qDebug() << "Index value is" << i;
 //    qDebug() << "Now current Index value is" << i;
 //    qDebug() << "Matched command sPosition is " << sPosition;
-    if (i>=0) {
-        qDebug() << "Matched string is " << strcommand.at(i);
-    }
-    else { //Строка не найдена
+//    if (i>=0) {
+//        qDebug() << "Matched string is " << strcommand.at(i);
+//    }
+    if (i<0) { //Строка не найдена
         qDebug() << "No MATCHING in onReadyRead";
         QString myresponse;
         myresponse = "{\r\n";
         myresponse += "{\"info\" : \"There is now action with such a name\"}";
         myresponse += "{\"rc\" : \"-100\"}";
         myresponse += "}";
-//        socket->write(myresponse.toUtf8());
-//        socket->disconnectFromHost();
+        socket->write(myresponse.toUtf8());
+        socket->disconnectFromHost();
+        socket->waitForDisconnected();
+        this->deleteLater();
         return;
     }
 
@@ -278,8 +286,8 @@ void QSocketThread::onDisconnected()
     //Закрытие сокета
   //  socket->deleteLater();
     //Завершение потока
-    emit this->finished();
-
+//    emit this->finished();
+ ;
     //this->deleteLater();
 
    //this->quit();
@@ -339,6 +347,7 @@ void QSocketThread::Data_2_TcpClient_Slot(QString data, int socketNumber)
        qDebug() << "!!!!!!!!!!!!!!!!!!!!! SOCKET IS NOT OPENED";
        int state = socket->state();
        qDebug() << "socket state value is " << state;
+       this->deleteLater();
        return;
 
     }
@@ -354,8 +363,9 @@ void QSocketThread::Data_2_TcpClient_Slot(QString data, int socketNumber)
     socket->disconnectFromHost();
     socket->waitForDisconnected();
 
-    qDebug() << QThread::currentThread()  << "The folowing data has been written to socket : \n" << qbData;
-
+//    qDebug() << QThread::currentThread()  << "The folowing data has been written to socket : \n" << qbData;
+    emit stopThread_signal();
+    toBeClosed = true;
 }
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++
 void QSocketThread::onSocketDevState_Changed()

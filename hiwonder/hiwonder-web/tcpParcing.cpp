@@ -97,6 +97,7 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
 
         };
         // set aimed action values to tempObj
+        // Here we are managedd to not getting dangling pointer.
         jsnStore->setActionData(tempObj);
         launchActionAnswer = tempObj;
         //mutex.unlock();
@@ -193,8 +194,8 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
         // Robot->active_command = "reset";
         jsnStore->resetAllActions();
         jsnStore->isAnyActionRunning = false;
-//        str = "I'm in reset";
-//        GUI_Write_To_Log(value, str);
+        str = "I'm in reset";
+        GUI_Write_To_Log(value, str);
 //        mainjsnObj = jsnStore->returnJsnActionReset();
 //        str = QJsonDocument(mainjsnObj).toJson(QJsonDocument::Indented);
 //        GUI_Write_To_Log(value, str);
@@ -230,7 +231,7 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
         break;
     case 5: // "start"
         // Robot->active_command = "start";
-         str = "TcpParcing start command";
+        str = "TcpParcing start command";
         GUI_Write_To_Log(value, str);
 
         mainjsnObj = jsnStore->returnJsnActionStart();
@@ -392,7 +393,7 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
         QByteArray dd ;
         dd.resize(parcel_size);
         memcpy(dd.data(), get_values_position, parcel_size);
-        Robot->GoToPosition(dd);
+        //Robot->GoToPosition(dd);
 
     }
 
