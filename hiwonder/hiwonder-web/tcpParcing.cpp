@@ -261,7 +261,7 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
         ProcessAction(comIndex, mainjsnObj);
        break;
     case 11: //unlock
-       mainjsnObj = jsnStore->returnJsnActionUnLock();
+        mainjsnObj = jsnStore->returnJsnActionUnLock();
         ProcessAction(comIndex, mainjsnObj);
        break;
 
@@ -286,29 +286,6 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
 
     // ++++++++++++++++++++++++++++++++ Теперь всё остальное
 
-//    if (substr == "put_box"){
-//        Robot->SetCurrentStatus ("inprogress"); // Перед запуском распознавания
-//        put_box();
-
-
-//    }
-
-//    if (substr == "reset") {
-
-//            Robot->SetCurrentStatus ("wait");
-//            str = "Robot changed status, now it is : ";
-//            str += Robot->GetCurrentStatus();
-
-//            GUI_Write_To_Log (value, str);
-//            //str = "status_from_robot";
-//            str  = "{\n\t\"status\":\"";
-//            str += Robot->GetCurrentStatus();
-//            str += "\"\n}";
-//            emit Write_2_TcpClient_Signal (str);
-
-
-
-//     }
 
     if (substr == "sit") {
         // Go to "sit" position
@@ -319,35 +296,6 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
         Robot->GoToPosition(dd);//, sit_down_position
     }//"sit"
 
-//    if (substr == "standup") {
-//        // Go to Initial "Start" position
-//        QByteArray dd;
-//        dd = QByteArray::fromRawData(reinterpret_cast<const char*>(hwr_Start_position), 6);
-//        dd.append(0x30); // Движение "Обратно"
-//        dd.append(LASTONE); // Всегда последнее ?
-//        Robot->GoToPosition(dd);//, hwr_Start_position
-
-//    }
-
-//    if (substr =="clamp") {
-
-//        str = "######## Try to lock/unlock the gripper #########";
-//        str += "\n";
-//        str += "Current clamper value is ";
-//        str += QString::number(Servos[0]);
-//        if(Servos[0]==0) { Servos[0]=90;}
-//        else {Servos[0]=0;}
-//        this->send_Data(LASTONE);
-//    }//"clamp"
-
-//    if (substr =="lock") {
-
-//        str = "######## Try to lock the gripper ######### ";
-//        str += "Current clamper value is ";
-//        str += QString::number(Servos[0]);
-//        Servos[0]=90;
-//        this->send_Data(NOT_LAST); //NOT_LAST LASTONE
-//    }//"lock"
 
 //    if (substr =="unlock") {
 
@@ -393,9 +341,7 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
         QByteArray dd ;
         dd.resize(parcel_size);
         memcpy(dd.data(), get_values_position, parcel_size);
-        //Robot->GoToPosition(dd);
-
-    }
+     }
 
 
 }// Data_From_TcpClient_Slot

@@ -43,6 +43,25 @@
  * Поправил обработку ситуации DETECTED/"NOT DETECTED"
  * Делаем фикс на гит, включая qtlibs
  *
+ * Back to "The program has unexpectedly finished."
+ *
+ * 1. Проверяем без детекции, т.е. процесс robot.hiwonder.service - не запущен и запросы статуса не шлет.
+ *    Start at 11:47 IN RELEASE MODE ...
+ *    Stop at 12:46, counter value 35000
+ *    All is OK.
+ *
+ * 2. Проверяем с запущенным процессом robot.hiwonder.service, но в тестах не запускаем команду
+ *    "start"  - так поймём, что сбой либо из-за взаимодействия процессов
+ *    robot.hiwonder.service <=> hiwonder-web,
+ *    либо из-за сбоя в потоках.
+ *
+ *    Start at 12:50 in Release Mode, polling with 100ms interval
+ *    Stop at 13:45 Counter is 37700.
+ *    All is OK.
+ *
+ * 3. Подозрения в пользу сбоя при детекции.
+ * Старт в 14.00
+ *
  *
  *
  * //++++++++++++++++++++++++

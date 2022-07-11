@@ -90,7 +90,7 @@ public:
 
     void LogFile_Open (QString fname);
 private:
-    SocketClient readSocket;
+    SocketClient readSocket; // Читаем координаты из файла сокета.
 
 public slots:
 void Data_From_TcpClient_Slot(QString, int socketNumber);

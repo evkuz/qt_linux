@@ -219,6 +219,7 @@ void MainProcess::on_clampButton_clicked()
 // Выполняем целый набор действий - взять кубик и положить на транспортировщик
 void MainProcess::on_trainButton_clicked()
 {
+//    QMutexLocker locker(&mutex);
     int value = 0xf014;
     DetectorState state;
     QString str, fstr;
@@ -374,7 +375,8 @@ if (DETECTED)
 
 //}
 
-   DETECTED = false;
+    DETECTED = false;
+  //  readSocket.~SocketClient();
 
 }//on_trainButton_clicked()
 //++++++++++++++++++++++++++++++++++++
@@ -433,33 +435,28 @@ void MainProcess::put_box()
 
     //+++++++++++++++++++++ 3 put the cube, наклоняем захват с кубиком к транспортировщику
     // {60, 93, 100, 35, 145, 35};
-    //this->update_Servos_from_position(put_2_mobman);
-    //memcpy(dd.data(), put_2_mobman, 6);
     memcpy(Servos, put_2_mobman, DOF);
     this->send_Data(NOT_LAST);
-//    dd.insert(parcel_size-2, 0x31); // Движение "Туда"
-//    dd.insert(parcel_size-1, NOT_LAST);
-    //BEFORE_LAST==0xE9, NOT_LAST ==C8
-//    Robot->GoToPosition(dd);
     //+++++++++++++++++++++ 4  Unclamp the gripper, открываем захват, т.е. кладем кубик на пол, чтобы его взял транспортировщик
     //unlock
     Servos[0]=0;
     this->send_Data(NOT_LAST);
     //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     //+++++++++++++++++++++++++++++++++ 5 Приподнять хват, чтобы не задеть тележку.
-//       this->update_Servos_from_position(after_put_2_mobman);
        memcpy(dd.data(), after_put_2_mobman, DOF);
        dd.insert(parcel_size-2, 0x30); // Движение "обратно"
        dd.insert(parcel_size-1, AFTER_PUT);
        Robot->GoToPosition(dd);
 
     //+++++++++++++++++++++ 6 go back to start position
-//    this->update_Servos_from_position(hwr_Start_position);
-    memcpy(dd.data(), hwr_Start_position, 6);
+    //this->update_Servos_from_position(hwr_Start_position);
+    memcpy(Servos, hwr_Start_position, DOF); // Нужно, чтобы в Servo[] были данные последней, т.е. текущей позици.
+                                             // Т.к. до вызова в этой строке там данные для put_2_mobman, см. 1ю команду
+    memcpy(dd.data(), hwr_Start_position, DOF);
     dd.insert(parcel_size-2, 0x30); // Движение "Обратно"
     dd.insert(parcel_size-1, LASTONE);
 
-    // this->ssend_Data(dd); // Нет. т.к. там всегда движения "Туда"
+    // this->send_Data(dd); // Нет. т.к. там всегда движения "Туда"
     Robot->GoToPosition(dd);
 
 }
@@ -724,18 +721,8 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
 
 
             case 13: //collapse
-                memcpy(Servos, collaps, DOF);
+                memcpy(Servos, collapse, DOF);
                 this->send_Data(LASTONE);
-//                jsnStore->setActionData(theObj);
-
-//                str = "Collapse data as mainjsnObj after UPDATING !\n";
-//                str += QJsonDocument(theObj).toJson(QJsonDocument::Indented);
-//                GUI_Write_To_Log(value,str);
-
-
-//                str = "COLLAPSE jsnACTION() object AFTER theObj RETURN !!!\n";
-//                str += QJsonDocument(jsnStore->returnJsnActionCollapse()).toJson(QJsonDocument::Indented);
-//                GUI_Write_To_Log(value,str);
 
                 break;
             default: // Нет команды с таким индексом. Дубль из Data_From_TcpClient_Slot, там уже была проверка
