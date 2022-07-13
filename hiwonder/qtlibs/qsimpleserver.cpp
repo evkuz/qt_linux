@@ -20,7 +20,7 @@ QSimpleServer::QSimpleServer(QObject *parent) :
     QTcpServer::setMaxPendingConnections(150);
     counterConnections = 0;
 
-
+ //   qDebug() << "QSimpleServer thread " << this->QThread::thread();
     }
 }
 

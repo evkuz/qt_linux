@@ -22,6 +22,10 @@
 #include "protocol.h"
 #include <QMutex>
 #include <QMutexLocker>
+#include <QProcess>
+#include <QProcessEnvironment>
+
+
 
 
 

@@ -23,6 +23,8 @@
  *
  * Запускаем "HIWONDER http server" - http://192.168.1.175:5001
  *
+ * Запускаем команды вручную - http://192.168.1.175:8383/run?cmd=getactions&
+ *
  * // Synchronizing Threads
  * https://doc.qt.io/qt-5/threads-synchronizing.html
  * https://www.toptal.com/qt/qt-multithreading-c-plus-plus
@@ -30,6 +32,23 @@
  * qabstractsocket taking get request from chrome as 2 different connections
  *
  *   The program has unexpectedly finished.
+ *   The message "Segmentation fault" means that the program tried to access an area of memory that does not belong here.
+ *
+ *  https://habr.com/ru/post/551532/
+ *  D-Bus в основном используется как локальный IPC поверх сокетов AF_UNIX.
+ *  Служба идентифицируется именем в обратной нотации доменного имени.
+ *
+ *  http://0pointer.de/blog/the-new-sd-bus-api-of-systemd.html
+ *
+ *
+ * //++++++++++++++++++++++++++++++++++++++++++++++++
+ * 12.07.2022
+ *
+ * Start at 1:54 in Realease mode WITH SUPERVICOR (p-mode)
+ * Droppeed at 1st detection command :)
+ *
+ * 14.05 debug
+ *
  *
  *
  * //++++++++++++++++++++++++++++++++++++++++++++++++

@@ -9,7 +9,7 @@ QSocketThread::QSocketThread(int descriptror) :
     current_status = "wait";
     toBeClosed = false;
     //ba.resize(icon)
-    threadID = QThread::currentThread(); // get thread pointer
+   // threadID = QThread::currentThread(); // get thread pointer
 }
 //+++++++++++++++++++++++
 QSocketThread::~QSocketThread()
@@ -132,7 +132,9 @@ void QSocketThread::process_TheSocket()
   //  while(isNotFinishedTCP){;}
     //Закрываем поток.
    //emit QThread::finished();
+//    qDebug() << "The value of toBeClosed " << toBeClosed;
 //    while (!toBeClosed){;} //infinite loop, but the object will be deleted by Data_2_TcpClient_Slot
+//    emit stopThread_signal();
 
 }
 //+++++++++++++++++++++++++++++++++++++
@@ -313,7 +315,7 @@ void QSocketThread::Data_2_TcpClient_Slot(QString data, int socketNumber)
     QString response = "HTTP/1.1 200 OK\r\n";
 
 //++++++++++++++++++++++++++ FAVICON ++++++++++++++++++++++++++++++++++++
-    response += "content-type: text/html application/json\r\n"; //text/html
+    response += "content-type: application/json\r\n"; //text/html
     response += "Access-Control-Allow-Origin: *\r\n";
 //    response += "connection : close\r\n";
     response += "\r\n";
@@ -321,7 +323,7 @@ void QSocketThread::Data_2_TcpClient_Slot(QString data, int socketNumber)
 //        response += "<head>";
 
 //        response += "<title>MEGATESTING!!!!</title>";
-        response += "<link rel=\"icon\" href=\"data:,\">";
+//        response += "<link rel=\"icon\" href=\"data:,\">";
         response += "\r\n";
 
 //        response += "</head>";
@@ -344,9 +346,12 @@ void QSocketThread::Data_2_TcpClient_Slot(QString data, int socketNumber)
 //    response += data2Client;
 
     if (!socket->isValid() || this->socket->state() != QAbstractSocket::ConnectedState){
-       qDebug() << "!!!!!!!!!!!!!!!!!!!!! SOCKET IS NOT OPENED";
+       qDebug() << "!!!!!!!!!!!!!!!!!!!!! SOCKET IS NOT VALID";
        int state = socket->state();
        qDebug() << "socket state value is " << state;
+
+       emit stopThread_signal();
+       toBeClosed = true;
        this->deleteLater();
        return;
 
@@ -390,7 +395,7 @@ void QSocketThread::displayError(QAbstractSocket::SocketError socketError)
         break;
 
     case QAbstractSocket::RemoteHostClosedError: // 1
-        str = "The remote host closed the connection.";
+        str = "socketError : The remote host closed the connection.";
         break;
     case QAbstractSocket::HostNotFoundError: // 2
              str = "The host was not found. Please check the ";
@@ -417,7 +422,8 @@ void QSocketThread::displayError(QAbstractSocket::SocketError socketError)
         str = "The following error occurred: \n";
         str += socket->errorString();
     }
-
+// от
+    qDebug() << str ;
     emit Command_4_Parsing_Signal(str, socketDescriptor);
 
 

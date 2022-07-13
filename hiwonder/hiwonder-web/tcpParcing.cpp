@@ -77,6 +77,9 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
         //mutex.unlock();
         str = "Current active command is ";
         str += Robot->active_command;
+        str += " and isAnyActionRunning is ";
+        str += QVariant(jsnStore->isAnyActionRunning).toString();
+
         GUI_Write_To_Log(value, str);
 
 
@@ -180,7 +183,11 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
 
 
         break;
-    case -1: // Unknown Action !!!
+    case -1: // Unknown Action !!! or Error message
+        if (substr.startsWith("socketError")) {
+            GUI_Write_To_Log(value, substr);
+            return;
+        }
         mainjsnObj = jsnStore->returnJsnActionsUnKnown();
         mainjsnObj["name"] = message;
         str = "There is wrong action command : ";
@@ -194,17 +201,21 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
         // Robot->active_command = "reset";
         jsnStore->resetAllActions();
         jsnStore->isAnyActionRunning = false;
-        str = "I'm in reset";
+        //str = "I'm in reset";
+        mainjsnObj = jsnStore->returnAllActions();
+        str = jsnStore->jsnData;
+        emit Write_2_TcpClient_Signal(str, this->tcpSocketNumber);
+
         GUI_Write_To_Log(value, str);
 //        mainjsnObj = jsnStore->returnJsnActionReset();
 //        str = QJsonDocument(mainjsnObj).toJson(QJsonDocument::Indented);
 //        GUI_Write_To_Log(value, str);
 
-        jsnStore->createActionList(); // формируем список, записываем данные в jsnData, делаем merge (jsnActionList, jsnHeadStatus)
-        str = jsnStore->returnJsnData();
-        GUI_Write_To_Log(value, str);
+//        jsnStore->createActionList(); // формируем список, записываем данные в jsnData, делаем merge (jsnActionList, jsnHeadStatus)
+//        str = jsnStore->returnJsnData();
+//        GUI_Write_To_Log(value, str);
 
-        emit Write_2_TcpClient_Signal (str, this->tcpSocketNumber);
+//        emit Write_2_TcpClient_Signal (str, this->tcpSocketNumber);
 
 //        str = "Current ActionList is :";
 //        mainjsnObj = jsnStore->returnAllActions();
@@ -231,14 +242,14 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
         break;
     case 5: // "start"
         // Robot->active_command = "start";
-        str = "TcpParcing start command";
-        GUI_Write_To_Log(value, str);
+//        str = "TcpParcing start command";
+//        GUI_Write_To_Log(value, str);
 
         mainjsnObj = jsnStore->returnJsnActionStart();
-        str = "TcpParcing start before processAction : \n";
+//        str = "TcpParcing start before processAction : \n";
         // Выводим jsnStore->returnJsnActionStart()
-        str += QJsonDocument(mainjsnObj).toJson(QJsonDocument::Indented);
-        GUI_Write_To_Log(value, str);
+//        str += QJsonDocument(mainjsnObj).toJson(QJsonDocument::Indented);
+//        GUI_Write_To_Log(value, str);
         ProcessAction(comIndex, mainjsnObj);
         break;
     case 6: // "put_box"
@@ -249,7 +260,9 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
         break;
 
     case 7: //getactions
-        str = QJsonDocument(jsnStore->returnAllActions()).toJson(QJsonDocument::Indented);
+      //  str = QJsonDocument(jsnStore->returnAllActions()).toJson(QJsonDocument::Indented);
+        mainjsnObj = jsnStore->returnAllActions();
+        str = jsnStore->jsnData;
         emit Write_2_TcpClient_Signal(str, this->tcpSocketNumber);
         str += str.insert(0, "Total action_list : \n");
 

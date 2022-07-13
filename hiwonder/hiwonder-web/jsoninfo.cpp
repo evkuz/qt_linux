@@ -418,11 +418,17 @@ void JsonInfo::init_actions()
 // Тут разные списки - action_lst и actionListp. Следует учитывать.
 void JsonInfo::resetAllActions()
 {
-//    QJsonObject myObject;
+    QJsonObject myObject;
     for (int i=0; i < jsnObjArray.size(); i++) //action_lst.size()
     {
-       jsnObjArray.at(i).toObject()["rc"] = this->AC_Launch_RC_DONE;
-       jsnObjArray.at(i).toObject()["state"] = "done";
+       myObject = jsnObjArray.at(i).toObject();
+       myObject["rc"] = this->AC_Launch_RC_DONE;
+       myObject["state"] = "done";
+       jsnObjArray.replace(i, myObject);
+
+//       jsnObjArray.at(i).toObject()["rc"] = this->AC_Launch_RC_DONE;
+//       jsnObjArray.at(i).toObject()["state"] = "done";
+
     }
     isAnyActionRunning = false; // Нет активных экшенов
 

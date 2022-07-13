@@ -66,9 +66,12 @@ MainWindow::MainWindow(QWidget *parent)
 
     thread_Timer->moveToThread(thread_A);
 
-//    statusTimer = new QTimer(this);
+    statusTimer = new QTimer(this);
 
-//    connect(statusTimer, &QTimer::timeout, this, &MainWindow::timerProcessing_Slot);
+    connect(statusTimer, &QTimer::timeout, this, &MainWindow::timerProcessing_Slot);
+
+//    timerFlag = true;
+//    statusTimer->start(25000);
 
 
 }
@@ -451,7 +454,14 @@ void MainWindow::timerProcessing_Slot()
     GUI_Write_To_Log(value, str);
 
     request = "GET ";
-    request += "/run?cmd=status&";
+    if (timerFlag) {
+        request += "/run?cmd=collapse&";
+        timerFlag = false;
+    }
+    else {
+        request += "/run?cmd=standup&";
+        timerFlag = true;
+    }
     request += " HTTP/1.1";
     request += "\r\nHost: ";
     //request += "192.168.1.201:8383\r\n";
@@ -1089,5 +1099,12 @@ void MainWindow::on_ResetButton_2_clicked()
      quint16 myport = ARM_Port;
      makeSocket(myipaddress, myport);
 
+}
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++
+
+void MainWindow::on_StopTimerButton_clicked()
+{
+    statusTimer->stop();
 }
 

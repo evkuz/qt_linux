@@ -70,7 +70,7 @@ int SocketClient::GetState(DetectorState *state) {
   float x(0), y(0);
   try {
     int r = sscanf(buffer, "%i %f %f", &isDetected, &x, &y);
-    std::cout<<"sscanf result: " << r << std::endl;
+//    std::cout<<"sscanf result: " << r << std::endl;
   } catch (...) {
     cerr << "Error reading values" << endl;
     return -3;

@@ -71,6 +71,7 @@ public:
     QThread *thread_A;
 
     myThread *thread_Timer; // Поток ставится на паузу каждый n-милисекунд.
+    bool timerFlag;
 
     void Log_File_Open(QString lname);
     void GUI_Write_To_Log (int value, QString log_message);
@@ -145,6 +146,8 @@ private slots:
     void on_HiWonderGetStatusButton_clicked();
 
     void on_ResetButton_2_clicked();
+
+    void on_StopTimerButton_clicked();
 
 private:
     Ui::MainWindow *ui;

@@ -242,6 +242,8 @@ void MainProcess::on_trainButton_clicked()
 
         if (state.isDetected){
 
+            jsnStore->isAnyActionRunning = true;
+
             str = "Just float values of state : ";
             fstr.setNum(state.objectX);
             str += fstr;
@@ -272,6 +274,7 @@ void MainProcess::on_trainButton_clicked()
 
             jsnStore->setActionData(mainjsnObj); // Переписали данные экшена в массиве jsnstore->jsnObjArray
             str = QJsonDocument(mainjsnObj).toJson(QJsonDocument::Indented);
+
 
         } else {
             str = " NOT DETECTED";
@@ -318,6 +321,10 @@ void MainProcess::on_trainButton_clicked()
     // Ответ на запуск экшена start отправили
 
     emit Write_2_TcpClient_Signal(str, this->tcpSocketNumber);
+    str = "Start processed,  jsnStore->isAnyActionRunning : ";
+    str += QVariant(jsnStore->isAnyActionRunning).toString();
+    GUI_Write_To_Log(value, str);
+
 
 //В этой точке робот опустился над кубиком, открыл захват.
 
@@ -326,7 +333,7 @@ if (DETECTED)
 
         QByteArray dd ;
         dd.resize(parcel_size);
-        str = "Next movement to robot";
+        str = "Now start robot to make movement";
         this->GUI_Write_To_Log (value, str);
    //+++++++++++++++++ 1 make clamp, хватаем кубик
    //on_clampButton_clicked();
@@ -543,8 +550,8 @@ int MainProcess::getIndexCommand(QString myCommand, QList<QString> theList)
     QString message, str ;
     message = myCommand;
     int value = 0x3355;
-    str = "getIndex";
-    GUI_Write_To_Log(value, str);
+//    str = "getIndex";
+//    GUI_Write_To_Log(value, str);
 
 
     i = theList.indexOf(message);
@@ -568,11 +575,11 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
     QString str;
 
     value = 0x1122;
-    str = "I'm in  ProcessAction"; GUI_Write_To_Log(value, str);
+//    str = "I'm in  ProcessAction"; GUI_Write_To_Log(value, str);
 
 // Меняем содержмое theObj в зависимости от rc
-    str = theObj.value("rc").toString();
-    GUI_Write_To_Log(value, str);
+//    str = theObj.value("rc").toString();
+//    GUI_Write_To_Log(value, str);
     int returnCode = theObj.value("rc").toInt() ;
 
     switch (returnCode) {
@@ -695,12 +702,12 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
             case 5: //start
                 // - хватаем кубик
                 // - встаём в исходную точку
-                str = "Going to move  the cube";
+                str = "ProcessAction: Going to move  the cube";
                 GUI_Write_To_Log(value,str);
                 on_trainButton_clicked ();
                 break;
             case 6: // "put_box"
-                str = "Going to put the box down";
+                str = "ProcessAction: Going to put the box down";
                 GUI_Write_To_Log(value,str);
                 put_box();
                 break;
@@ -726,7 +733,7 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
 
                 break;
             default: // Нет команды с таким индексом. Дубль из Data_From_TcpClient_Slot, там уже была проверка
-                str = "The Command with index ";
+                str = "ProcessAction:  The Command with index ";
                 str += QString::number(indexOfCommand);
                 str += " is not found";
                 GUI_Write_To_Log(value, str);
@@ -735,7 +742,7 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
         } //else
         break; // case -4:
     default:
-        str = "The return Code with index ";
+        str = "ProcessAction:  The return Code with index ";
         str += QString::number(returnCode);
         str += " is not found";
         GUI_Write_To_Log(value, str);
@@ -780,7 +787,7 @@ void MainProcess::Moving_Done_Slot()
     // Этот слот вызывается сигналом в котором уже QMutexLocker locker(&mutex)
 // Однако вызывается из другого класса, а там другой mutex
 //QMutexLocker locker(&mutex);
-    GUI_Write_To_Log(value, "Demo cycle finished !!!");
+    GUI_Write_To_Log(value, "SERVO cycle finished !!!");
     // Меняем статус, теперь "done"
 //    std::cout<<"Set DONE to Robot!" << std::endl;
     Robot->SetCurrentStatus ("done");
@@ -789,8 +796,9 @@ void MainProcess::Moving_Done_Slot()
     myname = mainjsnObj.value("name").toString();
     //result = QString::compare(myname, Robot->active_command); // 0 -> equals
     str += myname;
+    str += "\nAction "; str += myname; str += " is finished !!!";
     GUI_Write_To_Log(value, str);
-    // Вот как бэ не совсем правильно... надо передавать QJsonObject в свой класс и там все менять...
+    // Передаем QJsonObject в свой класс и там все меняем через replace...
     jsnStore->setActionDone(mainjsnObj);
 
     // Меняем значение.
@@ -804,8 +812,8 @@ void MainProcess::Moving_Done_Slot()
 
     jsnStore->setJsnHeadStatus(headStatus);
 
-    str = "Action "; str += myname; str += " finished !!!";
-    GUI_Write_To_Log(value, str);
+//    str = "Action "; str += myname; str += " finished !!!";
+//    GUI_Write_To_Log(value, str);
     //Создаем список активных экшенов, и там не должно быть текущего, т.к. он DONE
 //    str = "Now full list of ACTIVE actions : \n";
 //    jsnStore->createActionList();
