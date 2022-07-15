@@ -21,7 +21,8 @@ MainProcess::MainProcess(QObject *parent)
 
     DETECTED = false;
     new_get_request = false;
-    thread_counter = 0;
+    //thread_counter = 0;
+    currentCommandIndex = -1; // Пока нет текущей команды/экшена
 
     target_name = QFileInfo(QCoreApplication::applicationFilePath()).fileName();
     //QByteArray ba = target_name.toLocal8Bit();
@@ -243,6 +244,7 @@ void MainProcess::on_trainButton_clicked()
         if (state.isDetected){
 
             jsnStore->isAnyActionRunning = true;
+            currentCommandIndex = 5; //"start"
 
             str = "Just float values of state : ";
             fstr.setNum(state.objectX);
@@ -277,12 +279,15 @@ void MainProcess::on_trainButton_clicked()
 
 
         } else {
+            jsnStore->isAnyActionRunning = false;
+            currentCommandIndex = -1; // Нет текущих команд манипулятора
+
             str = " NOT DETECTED";
             // change status to "NoDetection"
            // mutex.lock();
             GUI_Write_To_Log(value, str);
             //qDebug() << str;
-            jsnStore->isAnyActionRunning = false;
+
             jsnStore->currentStatus.rc = -5; // No Detection
             jsnStore->currentStatus.info = "No Detection";
             jsnStore->currentStatus.state = jsnStore->statuslst.at(jsnStore->INDEX_NODETECTION).toStdString();
@@ -680,6 +685,7 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
 
             // Теперь запускаем манипулятор. Определяем команду из списка
             QJsonValue myjsnValue;
+            currentCommandIndex = indexOfCommand;
             switch (indexOfCommand) {
 //            case 1: //reset, у текущего (всех) action делаем rc = -4
 //                jsnStore->setActionDone(theObj);
@@ -733,10 +739,12 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
 
                 break;
             default: // Нет команды с таким индексом. Дубль из Data_From_TcpClient_Slot, там уже была проверка
+                currentCommandIndex = -1;
                 str = "ProcessAction:  The Command with index ";
                 str += QString::number(indexOfCommand);
                 str += " is not found";
                 GUI_Write_To_Log(value, str);
+
             break;
             } // switch (indexOfCommand)
         } //else
@@ -774,6 +782,8 @@ void MainProcess::LogFile_Open(QString fname)
 }
 //+++++++++++++++++++++++++++++++++++++++++++++++++++
 
+//+++++++++++++++++++++++++++++++++++++++++++++++++++
+
 
 //++++++++++++++++++++++++++
 // Слот сигнала HiWonder::Moving_Done_Signal
@@ -787,6 +797,7 @@ void MainProcess::Moving_Done_Slot()
     // Этот слот вызывается сигналом в котором уже QMutexLocker locker(&mutex)
 // Однако вызывается из другого класса, а там другой mutex
 //QMutexLocker locker(&mutex);
+    currentCommandIndex = -1; // Нет текущих команд манипулятора
     GUI_Write_To_Log(value, "SERVO cycle finished !!!");
     // Меняем статус, теперь "done"
 //    std::cout<<"Set DONE to Robot!" << std::endl;
@@ -796,7 +807,7 @@ void MainProcess::Moving_Done_Slot()
     myname = mainjsnObj.value("name").toString();
     //result = QString::compare(myname, Robot->active_command); // 0 -> equals
     str += myname;
-    str += "\nAction "; str += myname; str += " is finished !!!";
+    str += "\n\nAction "; str += myname; str += " is finished !!!\n";
     GUI_Write_To_Log(value, str);
     // Передаем QJsonObject в свой класс и там все меняем через replace...
     jsnStore->setActionDone(mainjsnObj);

@@ -69,6 +69,8 @@ public:
 
 private:
     QString current_status; // Текущий статус
+    Q_INVOKABLE void showError(void *errorMessage);
+
 
 public:
     QString GetCurrentStatus();

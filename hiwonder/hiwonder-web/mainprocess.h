@@ -52,7 +52,7 @@ public:
     QSimpleServer server;
     //QJsonObject aaa;
     //+++++++++++++++++++++++++++++ Threads +++++++++++++++
-    int thread_counter ; // Было нужно при отладке старт/останов потоков
+//    int thread_counter ; // Было нужно при отладке старт/останов потоков
 
     QString     rAnswer; // Ответ робота - статус, return_code, etc
     JsonInfo    *jsnStore;
@@ -75,7 +75,9 @@ public:
 
     unsigned char Servos [6] = {93,93,93,93,93,93};
     QMutex mutex;
-    int tcpSocketNumber;
+    int tcpSocketNumber; //Номер сокета, от которого пришёл запрос, и которому потом отправим ответ
+    int currentCommandIndex; // Индекс выполняемой в данный момент команды в списке tcpCommand
+                             // Только для команд, выполняемых манипулятором, т.к. они длительны.
     QFile hwrWebLogFile;
 
 
@@ -111,6 +113,7 @@ signals:
     void Open_Port_Signal(QString portname); // Сигнал даем по нажатию кнопки "OPEN"
     void Write_2_TcpClient_Signal(QString, int socketNumber); // Сигнал вебсерверу, - пересылка данных в сокет на отправку.
 //    void StartTakeAndPutSignal();
+
 
 };
 

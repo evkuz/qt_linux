@@ -67,6 +67,7 @@ private:
     int socketDescriptor;
     //Объект сокета
     QTcpSocket* socket;
+
 };
 
 #endif // QSOCKETTHREAD_H

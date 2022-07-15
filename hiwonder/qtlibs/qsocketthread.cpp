@@ -135,6 +135,7 @@ void QSocketThread::process_TheSocket()
 //    qDebug() << "The value of toBeClosed " << toBeClosed;
 //    while (!toBeClosed){;} //infinite loop, but the object will be deleted by Data_2_TcpClient_Slot
 //    emit stopThread_signal();
+//    emit isCreatedSocket_Signal(socket);
 
 }
 //+++++++++++++++++++++++++++++++++++++
@@ -426,6 +427,7 @@ void QSocketThread::displayError(QAbstractSocket::SocketError socketError)
     qDebug() << str ;
     emit Command_4_Parsing_Signal(str, socketDescriptor);
 
+    //QMetaObject::invokeMethod()
 
 
 } //nSocketDevState_Changed()

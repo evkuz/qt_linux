@@ -165,6 +165,15 @@ void HiWonder::GoToPosition(QByteArray &position)//, const char *servo)
     }
     this->Write_To_Log(0xF001, str);
 
+} //GoToPosition
+//+++++++++++++++++++++++++++++++++++++++++++++++
+// Invocable
+void HiWonder::showError(void *errorMessage)
+{
+    int value = 0x1717;
+    QString *str = (QString *) errorMessage;
+    Write_To_Log(value, *str);
+
 }
 //+++++++++++++++++++++++++++++++
 

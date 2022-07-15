@@ -32,6 +32,7 @@ void QSimpleServer::incomingConnection(qintptr sDescriptor)
 
     this->counterConnections++;
     qDebug() << this->counterConnections;
+//    this->addPendingConnection()
     // А еще проверяем не превышен ли MaxPendingConnections...
 //    if (this->counterConnections > this->maxPendingConnections()){
 //        qDebug() << "The number of " << this->maxPendingConnections() << "TCP-connections exceeded";
@@ -59,6 +60,7 @@ void QSimpleServer::incomingConnection(qintptr sDescriptor)
 
     connect(thread_A, &QThread::finished, this, &QSimpleServer::finshQThread_Slot, Qt::QueuedConnection);
  // Используем осторожно ! Потенциальный источник проблем...
+ // Виснет без объяснений.
  //   connect(tcpthread, &QSocketThread::isCreatedSocket_Signal, this, &QSimpleServer::isCreatedSocket_Slot); // get QTcpSocket *socket from tcpthread
 
 
@@ -92,7 +94,7 @@ void QSimpleServer::Command_4_Parsing_Slot(QString message, int socketNumber)
 //
 void QSimpleServer::isCreatedSocket_Slot(QTcpSocket *theSocket)
 {
-    this->createdSocket = theSocket;
+//    this->createdSocket = theSocket;
     this->isCreatedSocket = true;
     this->addPendingConnection(theSocket);
 }

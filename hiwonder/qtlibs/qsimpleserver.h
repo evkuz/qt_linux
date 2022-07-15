@@ -34,7 +34,7 @@ public:
     quint16 tcpport = 8383;  // Порт, который слушает QTcpServer
     QByteArray tcpdata;
     bool isCreatedSocket; // socket creation flag
-    QTcpSocket *createdSocket;
+    //QTcpSocket *createdSocket;
     int counterConnections; // counter for incoming tcp connections
     //Метод, вызываемый при подключении нового соединения.
     void incomingConnection(qintptr sDescriptor) override; // virtual YES !!! override EXACTLY !

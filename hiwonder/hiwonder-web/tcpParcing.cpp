@@ -41,6 +41,7 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
 //    }
     //mutex.lock();
     int comIndex = getIndexCommand(substr, tcpCommand);
+
 //    if (comIndex < 0) {
 //        GUI_Write_To_Log(value, str);
 //        mutex.unlock();
@@ -55,22 +56,9 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
     //jsnStore->createActionList();
     //mutex.unlock();
 
-//    jsnStore->isAnyActionRunning = false;
-//    str = "Current isAnyActionRunning value is ";
-//    str += QString::number(jsnStore->isAnyActionRunning);
-//    GUI_Write_To_Log(value, str);
-
-//    jsnStore->isAnyActionRunning = true;
-
-//    str = "Current TURE isAnyActionRunning value AS NUMBER is ";
-//    str += QString::number(jsnStore->isAnyActionRunning);
-//    GUI_Write_To_Log(value, str);
-
-
-
-
     // And now make decision
     // Если не запрос статуса и нет активных экшенов, меняем active_command, идем дальше
+    // active_command != экшен
     if (comIndex > 0 && !(jsnStore->isAnyActionRunning)){
         //mutex.lock();
         Robot->active_command = tcpCommand.at(comIndex);
@@ -84,32 +72,58 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
 
 
     }
-    // Если не запрос статуса, И не reset, но есть активный экшен
-    // Меняем у запрошенного экшена статус - на "не запустился"
+    // Если не запрос статуса, И не reset, но есть активный экшен (еще вопрос - тот же самый или другой ?)
+    // Меняем у запрошенного, - если не текущий, - экшена статус - на "не запустился"
     // Другими словами - во время выполняения экшена приходит команда выполнить другой экшен...
     // Манипулятор не может 2 экшена выполнять одновременно.
     // comIndex > 0 && comIndex != 1
-    if (comIndex > 1 && jsnStore->isAnyActionRunning){
-        // ставим экшену статус -2
-        //mutex.lock();
-        QJsonObject tempObj = {
-            {"name", substr},
-            {"state", "Not applied"},
-            {"info", "Another action is already running"},
-            {"rc", RC_UNDEFINED}
+    // #################### ВНИМАНИЕ !!! ТУТ НЕТ ЗАПИСИ В ЛОГ, ЧТОБ БЫСТРЕЕ БЫЛО #########
+    if (comIndex > 1 && jsnStore->isAnyActionRunning ){
+         QJsonObject tempObj;
+                     tempObj = {
+                         {"name", substr},
+                         {"state", "Not applied"},
+                         {"info", "Another action is already running"},
+                         {"rc", RC_UNDEFINED}
 
-        };
+                     };
+
+        // ставим экшену статус -2... Если это отличный от текущего
+//        if (comIndex != currentCommandIndex)
+//        {
+//            tempObj = {
+//                {"name", substr},
+//                {"state", "Not applied"},
+//                {"info", "Another action is already running"},
+//                {"rc", RC_UNDEFINED}
+
+//            };
+//         }
+//        if (comIndex == currentCommandIndex)
+//        {
+//            tempObj = {
+//                {"name", substr},
+//                {"state", "Not applied"},
+//                {"info", "This action is already running"},
+//                {"rc", RC_SUCCESS}
+//             };
+
+//        }
         // set aimed action values to tempObj
         // Here we are managedd to not getting dangling pointer.
-        jsnStore->setActionData(tempObj);
+        // Ничего не меняем в состояниях экшена, так проще
+//        jsnStore->setActionData(tempObj);
         launchActionAnswer = tempObj;
-        //mutex.unlock();
         str = QJsonDocument(launchActionAnswer).toJson(QJsonDocument::Indented);
         // отправляем ответ на запуск экшена
         emit Write_2_TcpClient_Signal(str, socketNumber);
 
         return;
     }
+
+
+
+
 
 
     //jsnStore->action_command = tcpCommand.at(comIndex); // сигнал updateAction_List_Signal
@@ -126,9 +140,12 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
 
 
     str = "Before switch";
+    str += " and isAnyActionRunning is ";
+    str += QVariant(jsnStore->isAnyActionRunning).toString();
+
     GUI_Write_To_Log(value, str);
 
-   QString S3;
+   //QString S3;
     switch (comIndex) {
     case 0: // status
 
@@ -329,7 +346,7 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
         QByteArray dd ;
         dd.resize(parcel_size);
         memcpy(dd.data(), get_values_position, parcel_size);
-        Robot->GoToPosition(dd);
+//        Robot->GoToPosition(dd);
 
     }
 
