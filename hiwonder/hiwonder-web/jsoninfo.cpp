@@ -86,7 +86,7 @@ void JsonInfo::init_json()
          {
             {"name", "standup"},
             {"state", "inprogress | done | fail"},
-            {"info", "Go to start (initital) position"},
+            {"info", "Go to ZERO (home, initital) position"},
             {"rc", "int - action return code"}
          },
          {
@@ -776,6 +776,5 @@ void JsonInfo::setActionData(QJsonObject &theObj)
         }
     }
 
-
-
-}
+} // setActionData
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

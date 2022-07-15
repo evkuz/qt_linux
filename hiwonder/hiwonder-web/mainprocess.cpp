@@ -347,8 +347,8 @@ if (DETECTED)
    //++++++++++++++++++++ 2 make stand up, встаем в исходную точку
    //on_stand_upButton_clicked();
   // this->update_Servos_from_position(hwr_Start_position);
-        memcpy(Servos, hwr_Start_position, DOF);
-        this->send_Data(LASTONE);
+//        memcpy(Servos, hwr_Start_position, DOF);
+//        this->send_Data(LASTONE); //
 
    //+++++++++++++++++++++ 3 put the cube, наклоняем захват с кубиком к транспортировщику
    // {60, 93, 100, 35, 145, 35};
@@ -457,7 +457,7 @@ void MainProcess::put_box()
     //+++++++++++++++++++++++++++++++++ 5 Приподнять хват, чтобы не задеть тележку.
        memcpy(dd.data(), after_put_2_mobman, DOF);
        dd.insert(parcel_size-2, 0x30); // Движение "обратно"
-       dd.insert(parcel_size-1, AFTER_PUT);
+       dd.insert(parcel_size-1, NOT_LAST); // AFTER_PUT
        Robot->GoToPosition(dd);
 
     //+++++++++++++++++++++ 6 go back to start position
