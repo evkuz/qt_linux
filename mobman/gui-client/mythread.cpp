@@ -4,6 +4,8 @@
 myThread::myThread()
 {
     // Вот тут можно сигналы/слоты прописать для обмена данными, ну, пока оставим.
+    finthread = false;
+    pause_thread = false;
 }
 //+++++++++++++++++++++++++++++++
 myThread::~myThread()
@@ -14,18 +16,15 @@ myThread::~myThread()
 // ОБработчик для thread_A::start()
 void myThread::A_SLOT()
 {
-    while (true) {
-        QThread::msleep(50);
-        // Ждем 500мс, отправляем сигнал на передачу данных по tcp
+
+    // Не совсем красиво, нужен таймер.
+    while ((!this->finthread)) { // !!!event-loop!!!
+        QThread::msleep(100);
+        // Ждем 50мс, отправляем сигнал на передачу данных по tcp
         // Точнее, создаем объект класса clientSocket
-        emit SendToTcp_Signal();
+        if (!this->pause_thread) emit SendToTcp_Signal();
 
 
     }
-
-//    QThread::msleep(500);
-     // Ждем 500мс, отправляем сигнал на передачу данных по tcp
-     // Точнее, создаем объект класса clientSocket
-//     emit SendToTcp_Signal();
-
-}
+ emit finished();
+} // myThread::A_SLOT()

@@ -17,8 +17,364 @@
  * Проект для более сложной презентации, где участвуют 5-6 роботов
  * Берем кубик с розовой полочки Хрёбота и кладём на пол, где "Ручник" подберет кубик и увезет куда надо.
  *
- * Запускаем supervisor  по адресу http://localhost:5050/
+ * Запускаем supervisor  ~/IQR/supervisor/start.sh и наблюдаем  по адресу http://localhost:5050/
  *
+ * Запаускаем gui-client /home/ubuntu/iqr_lit/mobman/gui-client/release/gui-client
+ *
+ * Запускаем "HIWONDER http server" - http://192.168.1.175:5001
+ *
+ * Запускаем команды вручную - http://192.168.1.175:8383/run?cmd=getactions&
+ *
+ * // Synchronizing Threads
+ * https://doc.qt.io/qt-5/threads-synchronizing.html
+ * https://www.toptal.com/qt/qt-multithreading-c-plus-plus
+ *
+ * qabstractsocket taking get request from chrome as 2 different connections
+ *
+ *   The program has unexpectedly finished.
+ *   The message "Segmentation fault" means that the program tried to access an area of memory that does not belong here.
+ *
+ *  https://habr.com/ru/post/551532/
+ *  D-Bus в основном используется как локальный IPC поверх сокетов AF_UNIX.
+ *  Служба идентифицируется именем в обратной нотации доменного имени.
+ *
+ *  http://0pointer.de/blog/the-new-sd-bus-api-of-systemd.html
+ *
+ *   Ensuring programs are race-free is one of the central difficulties of threaded programming.
+ *
+ * //18.072022
+ * Убрать отладочные сообщения для команд start/put_box
+ * Так они быстрее отрабатывают.
+ *
+ *
+ * //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ * //15.07.2022
+ * Долго прововзился с логикой ситуции :
+ * "Если не запрос статуса, И не reset, но есть активный экшен (еще вопрос - тот же самый или другой ?)"
+ * Забыл, что отключил запись в лог для этого случая, при этом отправка в tcp-socket осталась - gui-client в очередной
+ * раз выручил, там эту запись видно.
+ * В общем в ответе код RC-меняю, а в jsoninfo нет, ибо логика существенно усложняется.
+ * В общем сервер, отправивший команду, получает ответ, что экшен не запустился, т.к. в это время уже выполняется какой-то,
+ * возможно тот же самый экшен.
+ * А hiwonder ничего не меняет в состояниях запрошенного и выполняемого экшенов.
+ * При выполнение команд start и put_box были ошибки с флагом LASTONE - не было его, там где надо.
+ * В одном месте был AFTER_PUT, убрал его. Так вот если придется возвращать, то понадобится перепрошивать arduino, похоже.
+ *
+ * Теперь следующий шаг - сформировать ответ на запрос "/status?action=[name]"
+ *
+ * //++++++++++++++++++++++++++++++++++++++++++++++++
+ * 12.07.2022
+ *
+ * Start at 1:54 in Realease mode WITH SUPERVICOR (p-mode)
+ * Droppeed at 1st detection command :)
+ *
+ * 14.05 debug
+ *
+ *
+ *
+ * //++++++++++++++++++++++++++++++++++++++++++++++++
+ * 11.07.2022
+ * Еще пунктик.
+ * Если не запущен процесс/service с именем robot.hiwonder.service - камера, детектирующая кубик, то
+ * при вызове ф-ции SocketClient::GetState прога просто виснет, не выводит никаких сообщений.
+ * Решение :
+ * - Запустить через QProcess проверку, что запущен нужный процесс.
+ *
+ * Поправил обработку ситуации DETECTED/"NOT DETECTED"
+ * Делаем фикс на гит, включая qtlibs
+ *
+ * Back to "The program has unexpectedly finished."
+ *
+ * 1. Проверяем без детекции, т.е. процесс robot.hiwonder.service - не запущен и запросы статуса не шлет.
+ *    Start at 11:47 IN RELEASE MODE ...
+ *    Stop at 12:46, counter value 35000
+ *    All is OK.
+ *
+ * 2. Проверяем с запущенным процессом robot.hiwonder.service, но в тестах не запускаем команду
+ *    "start"  - так поймём, что сбой либо из-за взаимодействия процессов
+ *    robot.hiwonder.service <=> hiwonder-web,
+ *    либо из-за сбоя в потоках.
+ *
+ *    Start at 12:50 in Release Mode, polling with 100ms interval
+ *    Stop at 13:45 Counter is 37700.
+ *    All is OK.
+ *
+ * 3. Подозрения в пользу сбоя при детекции.
+ * Старт в 14.00
+ *
+ *
+ *
+ * //++++++++++++++++++++++++
+ * 10.07.2022
+ * Search for dangling pointer.
+ *
+ * robot.hiwonder.service is off
+ * supervisor is off.
+ * Delay between request is 100ms
+ *
+ * Start at 16:45 IN DEBUG MODE ...
+ * Stopped at 17:45, counter is 37135
+ *
+ * Test Number 2
+ * robot.hiwonder.service is ON
+ * supervisor is off.
+ * Delay between request is 100ms
+ * start at 17:53 IN DEBUG MODE ...
+ * Stopped at 18:52, counter is invisible, but everything worked fine.
+ *
+ * start at 19.45 IN DEBUG MODE ...
+ *
+ *
+ * //+++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ * 09.07.2022
+ * Сделаем отдельную запись, ибо важно.
+ * Каждый раз, когда меняем значение конкретного экшена, делаем следующее :
+ * - Меняем значение, записанное в JsonInfo::jsnObjArray, на вновь измененное
+ *   Для этого запускаем ф-цию JsonInfo::setActionData(QJsonObject &theObj)
+ *   ...
+ *   (Ага, и получаем dangling pointer, блин ...)
+ * - (1)Если приходит команда запуска экшена, а в этот момент выполняется другой экшен
+ *   ( т.е. jsnStore->isAnyActionRunning = true;), то :
+ *   - Записываем в QJsonObject tempObj нужные значения для такой ситуации. Тут самое важное -> {"rc", RC_UNDEFINED}
+ *   - Устанавливаем значения вызываемого экшена в значения из tempobj через jsnStore->setActionData(tempObj); (ВАЖНО !)
+ *   - Отправляем в сокет.
+ *   И так будет, пока текущий экшен не завершится и значение jsnStore->isAnyActionRunning не изменится на false.
+ *   - При следующем запросе запуска этого же экшена, у него статус RC_UNDEFINED, значит при попадании в
+ *     ProcessAction у него только сменится RC : RC_UNDEFINED -> RC_WAIT
+ *     И, что, СУКА, самое важное -  значение сменится не у самого экшена, а у QJsonObject &theObj, который передается в
+ *     ProcessAction, а это всего лишь MainProcess::mainjsnObj с какими-то значенияем.
+ *     Сам экшен, как объект класс JsonInfo при этом не меняется ! Вот поэтому и происходит зацикливание в (1)
+ *     ...
+ *     Добавил изменение самого объекта из JsonInfo. Теперь по логике нужно еще раз посылать команду на запуск экшена,
+ *     чтобы он сработал со статусом RC_WAIT. Т.е. лишняя команда.
+ *     А хорошо бы рекурсивно запустить ф-цию MainProcess::ProcessAction, чтобы уже с новым значением экшен запустился без
+ *     доп команды из сокета...
+ *
+ * ...
+ *
+ *
+ *
+ * //+++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ * 08.07.2022
+ * Добавил запись из MainProcess в отдельный файл.
+ * Запустил в 9.22. Ждем. 9.53 - отвалилось.
+ *
+ * - ДОбавил сигнал/слот обработки ошибки Serial Port.
+ * Запустил gui-client в 11.18 (без supervisor) через 20 минут в gui-client :
+ * QIODevice::read (QTcpSocket): device not open - но при этом hiwonder-web продолжает открвать потоки и
+ * в консоли идут сообщения.
+ *
+ * QMetaObject *QObject::metaObject() -  Returns a pointer to the meta-object of this object
+ *
+ *
+ * - Переименовал сигнал QSocketThread::finished() в QSocketThread::stopThread_signal
+ *   Добавил вызов stopThread_signal после отправки данных в сокет и закрытия в слот
+ *   QSocketThread::Data_2_TcpClient_Slot
+ *
+ * - Убрал обработку сигнала  &QAbstractSocket::disconnected
+ * В целом, из firefix можно работать.
+ * Осталась проблема "залипание в статусе inprogress", и reset не помогает.
+ * Да, это проблема чисто ручного управления, но она возникнет, если роботы будут
+ * общаться не через ЦУП, а напрямую. Так что решать надо.
+ *
+ *
+ * //+++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ * 07.07.2022
+ * Нужно провести тесты из supervisor.
+ * В ручном режиме + gui-client Пока все работает.
+ * При тестах через "HIWONDER http server" - http://192.168.1.175:5001/
+ * Спонтанно вылетает.
+ * Предположительно при записи в лог - что важно ДАННЫХ ИЗ SERIAL PORT - или в консоль этих же данных.
+ * Надо попробовать за mute-ить это.
+ * Тут может быть конфликт записи в файл/консоль, т.к. 2 желающих - Serial Port и TcpSocket
+ * QMutexLocker ... MainProcess::Moving_Done_Slot()
+ * ...
+ * И еще. Если приходит неизвестная команда, сейчас просто закрываем сокет.
+ * Надо попробовать отправлять минимальный ответ типа "UnKnown command".
+ * ...
+ * Оставил на 1.5 часа. Только опрос статуса от supervisor  - прога вылетела...
+ * Утечки памяти ?
+ * ...
+ * Поймал момент возникновения ошибки.
+ * Если экшен почти завршился и в этот момент послать запрос на другой экшен, то
+ * тот, который завершился, - остается в статусе "inprogress" !!!
+ * Точнее, при команде "start" в самом статус остается "inprogress" !!!
+ * Потому что в этот момент приходт запрос статуса из процесса robot.hiwonder.service (!),
+ * даже кнопок нажимать не надо...
+ * Это случается и в середине этапа выполнения экшена, не только в конце.
+ * Возможно, слот MainProcess::Moving_Done_Slot() вообще не запускается.
+ * И даже  команда reset не помогает
+ * Дабавил Qt::QueuedConnection в соединение сигнал/слот для serialport
+ * ...
+ * При выполнении "put_box" не видно action_list ["inprogress"] action_list идет пустой.
+ *
+ *
+ * Оставил в 20.02 на ночь программу поработать. Счетчик на 1500.
+ * Проверим удержится ли сокет...
+ *
+ * Программа вылетела в 21:04:50, счетчик на 18772. Т.е. отработала 1 час (!)
+ *
+ *
+ * //+++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ * 06.07.2022
+ * Проблема с maxPendingConnections().
+ * По умолчанию их не более 30.
+ * Почему-то программа не считает, что сокеты закрываются, и продолжает увеличивать счетчик.
+ * При достижении 30 соединений - т.е. просто 30 раз отправлена команда - перестает принимать новые запросы...
+ * ...
+ * А всё из-за строчки :
+ * connect(tcpthread, &QSocketThread::isCreatedSocket_Signal, this, &QSimpleServer::isCreatedSocket_Slot); // get QTcpSocket *socket from tcpthread
+ * там происходит addPendingConnection - вот он и накручивал счетчик, несмотря на то, что соединения закрыты...
+ *
+ * https://doc.qt.io/qt-6/qtcpserver.html#addPendingConnection
+ *
+ * //+++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ * 05.07.2022
+ * Еще одна задача :
+ * - Записывать в файл вывод в консоль из qDebug()
+ *
+ * В ответ на запрос иконки отправляю response += "<link rel=\"icon\" href=\"data:,\">";
+ * в составе html страницы. Так не работает.
+ * Браузер ждет в ответ картинку, а получает html, поэтому снова шлет запрос на иконку.
+ * ....
+ * Заработало при помощи ссылки response += "<link rel=\"icon\" href=\"data:,\">";
+ * Пришлось добавить в conten-type и html, и json, т.е так :
+ * "content-type: text/html application/json\r\n";
+ * При этом запрос на иконку пропал, но json-данные теперь выводятся в 1 строку.
+ * Надо это протестировать в supervisor
+ *
+ * Также отправлял картинку. Ошибок нет, она доходит, но при этом продолжается запрос на иконку. Кэш браузера чистил.
+ * Пробовал и favicon.ico и favicon.png
+ * Проблема, скорее всего в том, что данные должны быть в двоичном виде...
+ * Добафил Ф-цию  QSocketThread::returnIconChrome() :
+ * - считывает данные из файла в QByteArray,
+ * - формирует из них строку QString
+ * - Отправляет полученную строку как результат.
+ * - Исправил на отправку QByteArray, получаю free(): invalid pointer - понятно.
+ *
+ *
+ * Ф-ция QSocketThread::returnIconChrome() отрабатывает правильно.
+ * Смотрел в hex-editor данные получаемого файла favicon.ico (браузер все полученные данные называет так) - совпадают с тем, что отправляется.
+ *
+ * //+++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ * 04.07.2022
+ * Сейчас запрос favicon.ico просто игнорируется, а надо добавить ответ.
+ * Пока вижу решение - отправлять файл favicon.ico минимального размера.
+ * После этого chrome должен перестать запрашивать favicon.ico.
+ * Либо есть еще такой вариант :
+ * You can completely remove the automatic favicon request by adding the following line of code
+ * to the <head> section of your HTML page:
+ * <link rel="icon" href="data:,">
+ * This little code snippet assigns an empty data URL to the favicon’s <link> element which specifies
+ * the location of the external resource. This trick stops the user’s browser from sending an automatic
+ * HTTP request for the favicon.
+ *
+ * You can generate a base64 string of your favicon and then insert it into the head of the html document like this:
+ * <link href="data:image/x-icon;base64,<your_base64_here>" rel="icon" type="image/x-icon" />
+ * <link href="data:image/gif;base64,R0lGODlhIAAgAOf/ADEzMDo0LjY2O9oNHS09P101P1c4NTBCR2A3KHQwO8QaK4otL88aJWw3LL4gJL4gKcAhH5osMT1HO8khKdIeLURGQ9wcJssiJCpOYNUhKVxEQ94gLklLSFNJTENOTnFIGk5ORsAvLWFLPmVLNcwwMzpYZrY3QURWYIBJPT1bUideeoJITU5VZ1pWVVtVXyJjhFxbU0xhSWVaStQ7PVtcZT1oTRlskkNjfAB1psJHOzJxR5tVTWplZLdSQGNndAB+tRqEPXBpUXJnaACBvllxXR6FRppgU1B5V1V5TMdYRGtwZwCGzMxXSySLQ8pYXF51hdZXUrNjWHd2XFmCYGOAZTmGpziQSS+TSn14ceFdWT6PT85kU4J7URePxzaSURqOzESOWrdtXjeWRzqZSb1vbaF/KJZ7elOSZclxXDSfTlGMtk6WXCyVzaKBONxsYchxbTiTxXiJdyaY1mmQZ0GfT0WUwkagSkCiWNl2ZD6nVV2eZEumUWecbWWeZcWAdDqg0kmqTF6iYVuZz0Ohx0esU3WaflWoWU6h3O9+d1CxUnCkdlOwWJudU0y1TpCbis+JhtuHeu2CeFil2pybd32kel6k4NeKgIGjiPODgFi1Y1q5WauhY2ur3G61c2K8Y2a7bbKgn5WskZKujG6y2/KUg7WnfG/AaMykmdyhirCrqXjDcs2vPpa2nc2yJdikkZ63kIjBg4bDe4G65cy1Spm+jtS4Nqa8nuWrnZC+5dS2b43Jhda6RZjEntS7Vcy8Z9u/NN6/NdG8gMLDh+HEMLLFsd/EQcXEldvFZ5vM5uLIUKHUmejKN7POstTIkq3RrOrML9rOeqfZpfDQKKjZq/TDuuvGvO7UK57Z8dzQlvHWIObPi+zUXMfXveHSpu3XU9jXlPbbJvTbR7fiuOLYpOrZg/vfHt/dk+ban/bhLeTZuPzgLvnjIMrixvXmIvziQPnlPObgsfTlV/nmR/XoR/rnUePkufvnYvnoafnocfbqfPHouvPsw//vqP/yt//2mJCRlCH+EUNyZWF0ZWQgd2l0aCBHSU1QACH5BAEKAP8ALAAAAAAgACAAAAj+AP8JHEiwoMGDCBMqXMiwoUOC1W6hQnWr2kOE1Pyg2cIkSZItW9A8snhR4KkeeB48cLByZYgQOd6ULCQCCgkGOC9cYEBhggIFEEw8hDUF1IwMGSZAiRTJTQgKGSxcmPCgIaxolFLNGJAFkpEVKHZYQnTBAgWpThby8jQtWpxHWfwUoPHEhwsDYUhZiLphgCuFnRZ9ikULFJkOL+ocEqRmCIsomDZItsAkITNDhDSp0uXIjIo/h0bJ4iSnSwcECRZEeDCjG0JFezKb0sUMho0uknBdkyVp0A1jpbjI0NCgDUI9dPYk8qSLV4XbuZHJkgPnxCZ86ML5GvEBYaAxdBL+aXYmQcUSOZxGVZJT5cAme+vKZStWxvsVOoCWs4vhwcaSL2x88UMJAYwzzzrgSPNMLcd5MYYdhDSizCUVpPACDj/ggIEAQfTTTjnoPDNMLfAcBMYVVqRBSCKLiBOHBAIQcAABAIAAzz3xWbNgKwiBocUVYtgR2yfiXKJECxVwIMU++cSX4DK1rPLaGk1YIQYdeRCSyStYYFGPPvzg42Q20oyYC0LcrFFEE1dckcYdc/AwiT/53CMPOuWUA441I86STkJ8rAEEm2JQIYQw+NhDz51OKvjLLr4oZMsZWgBRBBFYmHNPPPS8o8468WVjzaO9NLMQK31YUUQF38Qjjzxa74CKIJnAFFNqQ6HooYUOk8zjDjrqlDOriMn0EsxDtvDBRw2MxLqOOjouk0wyx2BTEjGiUHIEI/G4E44322xzDDQlliQQN6xcgoQw5JCjzTnmxivvvPTWW1JAADs=" />
+
+ * Ф-ция QSocketThread::favIconAnswer() срабатывает. Однако под вопросом отправка данных в socket.
+ * Клиент принимает ответ, но на экране браузера не видно.
+ *
+ *
+ * Также нужно добавить программку - парсер заголовков. [сделано в onReadyRead]
+ *
+ *
+ *
+ *
+ * //+++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ * 30.06.2022
+ * Посмотрим, как удаляются потоки.
+ *
+ * Выяснилось, что команда "run?cmd=status&", посылаемая из браузера приходит как 2 ,
+ * тогда как эта же команда, посылаемая из gui-client приходит как 1 "QSimpleServer::incomingConnection".
+ *
+ * Задача :
+ * - Разобраться с разделением команды из браузера на 2 посылки.
+ * ...
+ * Разобрался. Это потому, что Chrome посылает запрос на файл "favicon.ico".
+ *
+ * Особенность браузеров, построенных на платформе Crome в том, что они ищут файл favicon.ico для каждого сайта.
+ * И если его нет, то они все равно будут упорно его искать. При каждом обновлении страницы, отдельным запросом к
+ * серверу.
+ *
+ *
+ *   - Нужен качественный парсер http-запросов
+ *   https://developer.mozilla.org/en-US/docs/Web/HTTP/Overview
+ *   - Нужно менять механизм считывания данных из TCP-socket
+ *   Сейчас на каждую новую порцию данных срабатывает incomming connection, а браузер посылает запрос в 2 посылки.
+ *
+ * https://habr.com/ru/post/309436/
+ * Mozilla - дает 1 сокет, запрос размером 365 байт.
+ * "There are less than 400 bytes of available data !!!"
+ *
+ * Проверить, есть ли в мозиле заголовок Content-length ?
+ *
+ *
+ * //+++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ * 28.06.2022
+ * Проверил нагрузку - 10 запросов в секунду + вручную из браузера - норм.
+ *
+ * ПО логике работы.
+ * Если запустить экшен, то получаем НЕпустой action_list.
+ * Если во время выполнения экшена запустить его повторно (имитируем ошибку) то action_list
+ * становится пустой, хотя экшен еще выполняется.
+ *
+ * Разобраться, почему в ф-ции MainProcess::on_trainButton_clicked()
+ *
+ * Значения JsonInfo::jsnActionStart НЕ меняются через jsnStore->setActionData(mainjsnObj);
+ *
+ * Но меняются напрямую через доступ к public методу :
+ * jsnStore->jsnActionStart["rc"] = JsonInfo::AC_Launch_RC_DONE;
+ *
+ * - Делать запуск, даже если rc = -2 //  "- action с таким именем не запустился"
+ * И в ответве на запуск экшена должно быть 3 поля.
+ *
+ * 6. Hiwonder на QT подвисает при запросе start если нет детекции - проблему выяснил, почти исправлено
+
+7. Исправить ошибку двойной отправки ответа от hiwonder QT (http://192.168.1.175:8383/run?cmd=start&) Принести ноут. ИЗ gui-client все нормально приходит.
+
+8. hiwonder QT отправляет повторно тот же json что и на предыдущий запрос: - Разобраться с reset
+после перезапуска:
+ * http://192.168.1.175:8383/run?cmd=reset& - ответил rc: -4 и name: "reset" ???
+ * http://192.168.1.175:8383/run?cmd=start& - ответил rc: -4 и name: "reset" ???
+ *
+ * //+++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ * 27.06.2022
+ * При выполнении команды "start" нет детекции, но это никак не отражается на статусе.
+ * Надо исправить.
+ * Договорились, что на глобальном статусе это и не должно отражаться.
+ * А должно быть видно при запросе action. Т.е. ответ должен быть [-2] - - action с таким именем не запустился
+ *
+ * Добавил ответ на случай "action с таким именем не найден".
+ *  ОТвет реализован по стандартной схеме.
+ *  - Если ф-ция getIndexCommand(substr, tcpCommand) не находит такую команду, то возвращает -1
+ *  - switch (comIndex)
+ *  case -1: -> ProcessAction(comIndex, mainjsnObj);
+ *  - ProcessAction выдает ответ по TCP в соответствии с протоколом.
+ *
+ *  Сегодня mutex.lock()/unlock() не помогает, hiwonder-web падает периодически.
+ *  Фиксим на гит, потом разбираемся.
+ *
+ * Экшен reset должен переписывать все статусы...
+ * Если нет детекции, то в консоли вижу
+ * sscanf result: 3
+ *
+ * И прога на этом зависает. Раньше так не было. Было понятно, detected или not detected
+ *
+ * //+++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ * 24.06.2022
+ * Подправивл gui-client, теперь можно останавливать поток с запросом статуса и снова его запускать
+ * по кнопке. Пока "завалить" hiwonder не получается.
+ *
+ * Возможно надо будет залочить всю ф-цию MainProcess::Data_From_TcpClient_Slot(QString message)
+ *
+ *
+ * //+++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ * 21.06.2022
+ * Ставим mutex.lock()/unlock() везде, где есть подозрение на конфликт доступа.
+ *
+
  *
  * //+++++++++++++++++++++++++++++++++++++++++++++++++++++++
  * 03.06.2022

@@ -20,6 +20,14 @@
 #include "manipulator/SocketClient.h"
 #include "jsoninfo.h"
 #include "protocol.h"
+#include <QMutex>
+#include <QMutexLocker>
+#include <QProcess>
+#include <QProcessEnvironment>
+
+
+
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainProcess; }
@@ -35,22 +43,23 @@ class MainProcess : public QObject
 public:
     MainProcess(QObject *parent = nullptr);
     ~MainProcess();
-    QByteArray *buff;
+//    QByteArray *buff;
     QString    target_name;
     HiWonder   *Robot;
 
     bool new_get_request; // Флаг сигнализирует, что есть неотвеченный GET-запрос от webserver.
 
     QSimpleServer server;
-QJsonObject aaa;
+    //QJsonObject aaa;
     //+++++++++++++++++++++++++++++ Threads +++++++++++++++
-    int thread_counter ; // Было нужно при отладке старт/останов потоков
+//    int thread_counter ; // Было нужно при отладке старт/останов потоков
 
     QString     rAnswer; // Ответ робота - статус, return_code, etc
     JsonInfo    *jsnStore;
-    QJsonObject mainjsnObj;
+    QJsonObject mainjsnObj; // temporal Текущий экшен
     QJsonObject launchActionAnswer;  // Ответ на запуск экшена
     QJsonDocument myjsnDoc;
+    size_t abc;
 
     //QJsonValueRef &myjsnObj;
 
@@ -60,10 +69,16 @@ QJsonObject aaa;
 #define BEFORE_LAST 0xE9 //233  // Предпоследняя команда - положить кубик на тележку.
 #define AFTER_PUT   0xF4 //244  Кубик на тележку положили, теперь грамотно убираем манипулятор.
 
+#define HWR_WEB_LOGFILE "./hwr-web.log"
     float X, Y;//Координаты x,y центра объекта при распознавании
     bool DETECTED; // Флаг, показывающий, сработал ли захват изображения.
 
     unsigned char Servos [6] = {93,93,93,93,93,93};
+    QMutex mutex;
+    int tcpSocketNumber; //Номер сокета, от которого пришёл запрос, и которому потом отправим ответ
+    int currentCommandIndex; // Индекс выполняемой в данный момент команды в списке tcpCommand
+                             // Только для команд, выполняемых манипулятором, т.к. они длительны.
+    QFile hwrWebLogFile;
 
 
     void GUI_Write_To_Log (int value, QString log_message); //Пишет в лог-файл (тот же, что и в классе HiWonder) номер ошибки value и сообщение message
@@ -78,11 +93,13 @@ QJsonObject aaa;
     int getIndexCommand(QString myCommand, QList<QString> theList);  // Определяем индекс команды в списке MainProcess::tcpcommand
     void ProcessAction(int indexOfCommand, QJsonObject &theObj); // Отрабатывает команду по заданному индексу из списка QList<QString> theList
     bool isThereActiveAction(); // Выясняем, есть ли активный экшен.
+
+    void LogFile_Open (QString fname);
 private:
-    SocketClient readSocket;
+    SocketClient readSocket; // Читаем координаты из файла сокета.
 
 public slots:
-void Data_From_TcpClient_Slot(QString);
+void Data_From_TcpClient_Slot(QString, int socketNumber);
 // slot for QSocketThread::socketErrorToLog_Signal
 //void socketErrorToLog_Slot(QString); // write to log socketError message
 
@@ -94,8 +111,9 @@ private slots:
 
 signals:
     void Open_Port_Signal(QString portname); // Сигнал даем по нажатию кнопки "OPEN"
-    void Write_2_TcpClient_Signal(QString); // Сигнал вебсерверу, - пересылка данных в сокет на отправку.
+    void Write_2_TcpClient_Signal(QString, int socketNumber); // Сигнал вебсерверу, - пересылка данных в сокет на отправку.
 //    void StartTakeAndPutSignal();
+
 
 };
 
