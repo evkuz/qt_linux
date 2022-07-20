@@ -87,3 +87,12 @@ Thumbs.db
 !threads*
 !threads/*.*
 agents_python/**/cam_color_range.txt
+
+SimpleServer/*
+mytcpserver/*
+webserver/*
+
+#hiwonder/**-Release/*
+#hiwonder/**-Debug/*
+hiwonder/build*
+mobman/build*
