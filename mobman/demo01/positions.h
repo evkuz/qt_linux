@@ -6,7 +6,7 @@
 #ifndef POSITIONS_H
 #define POSITIONS_H
 
-#include <QtCore>
+//#include <QtCore>
 
 //+++++++++++++++ ЗАХВАТ РУЧНИКА ИМЕЕТ НОМЕР ПРИВОДА 0 - ИДЕТ 1-Й В СПИСКЕ.
 
@@ -97,3 +97,4 @@ put_box_2 = [45, 93, 0, 7, 113, 180]
 catch_box_3 = [80, 93, 0, 7, 113, 180]
 */
 #endif // POSITIONS_H
+

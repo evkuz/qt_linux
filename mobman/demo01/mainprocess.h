@@ -17,7 +17,10 @@
 #include <QDateTime>
 #include <QTime>
 #include "hiwonder.h"  // hiwonder class
-#include "qsimpleserver.h"
+#include "manipulator/qsimpleserver.h"
+#include "jsoninfo.h"
+#include "ProcessAction.h"
+
 #include "cvdevice.h"
 #include "protocol.h"
 
@@ -28,6 +31,9 @@
 #include <QJsonObject>
 #include <QJsonValue>
 #include <QJsonArray>
+
+#include <QMutex>
+#include <QMutexLocker>
 
 
 //#include "SocketClient.h"
@@ -40,6 +46,8 @@
 
 #include <QTcpSocket>
 #include <QDataStream>
+
+
 //QT_BEGIN_NAMESPACE
 //namespace Ui { class MainProcess; }
 //QT_END_NAMESPACE
@@ -97,6 +105,9 @@ public:
     //QJsonObject   jsnGetServicesAnswer; // Ответ на команду "/service?name=service_name"
 
     QJsonParseError jsonError; // ОШибка, если полученные данные - не JSON-объект
+    JsonInfo    *jsnStore;
+    QJsonObject mainjsnObj; // temporal Текущий экшен
+    QJsonObject launchActionAnswer;  // Ответ на запуск экшена
 
 
 
@@ -110,7 +121,7 @@ public:
 
 //++++++++++++++++++++++ JSON data +++++++++++++++++++++++++++++++++++++++++++++
 
-#define DEV_NAME "MOBMAN"   // device name - mobile manipulator
+#define DEVICE_NAME "MOBMAN"   // device name - mobile manipulator
 #define RC_SUCCESS 0        // запрос выполнен успешно
 #define RC_WRONG_VALUE -1   // неверные параметры
 #define RC_UNDEFINED -2     // action с таким именем не найден
@@ -140,6 +151,11 @@ public:
 
     int parcel_size ;
     unsigned char Servos [DOF] = {70,90,45,180};//==formoving position //{93,93,93,93};
+    QMutex mutex;
+    int tcpSocketNumber; //Номер сокета, от которого пришёл запрос, и которому потом отправим ответ
+    int currentCommandIndex; // Индекс выполняемой в данный момент команды в списке tcpCommand
+                             // Только для команд, выполняемых манипулятором, чтобы отличать от прочих.
+
 
     unsigned int CVDistance;
 
@@ -157,29 +173,29 @@ public:
     void request_New_CV();
      int my_round(int n); // Округление целого числа до ближайшего кратного 10
 
-   void traversJson(QJsonObject json_obj); // Рекурсивный Парсинг JSON
-   double parseJSON(QString jsnData); // Парсинг JSON из HTTP
+    void traversJson(QJsonObject json_obj); // Рекурсивный Парсинг JSON
+    double parseJSON(QString jsnData); // Парсинг JSON из HTTP
 
-   int getIndexCommand(QString myCommand, QList<QString> theList);
-   void ProcessAction (HiWonder::ActionState * actionName);
-
+    int getIndexCommand(QString myCommand, QList<QString> theList);
+//  void ProcessAction (HiWonder::ActionState * actionName);
+    void ProcessAction(int indexOfCommand, QJsonObject &theObj); // Отрабатывает команду по заданному индексу из списка QList<QString> theList
 private:
 //    SocketClient readSocket;
 
 public slots:
-void Data_From_Web_SLot(QString message);
-void Data_From_TcpClient_Slot(QString);
+    void Data_From_Web_SLot(QString message);
+    void Data_From_TcpClient_Slot(QString message, int socketNumber);
 
-void Data_from_TcpServer_Slot(QString tcpData);
+//    void Data_from_TcpServer_Slot(QString tcpData);
 
-void newConnection_Slot();
-void server_New_Connect_Slot();
+    void newConnection_Slot();
+    void server_New_Connect_Slot();
 
-void onSocketConnected_Slot(); // Слот обработки сигнала void QAbstractSocket::connected()
-void CV_onReadyRead_Slot();    // Слот обработка сигнала readyRead()
-void CV_onDisconnected();      // Слот обработки сигнала
-void CV_NEW_onReadyRead_Slot();    // Слот обработка сигнала readyRead() включая парсинг JSON
-void GetBox(unsigned int distance); // Запускаем захват кубика по значению расстояния до него от камеры.
+    void onSocketConnected_Slot(); // Слот обработки сигнала void QAbstractSocket::connected()
+    void CV_onReadyRead_Slot();    // Слот обработка сигнала readyRead()
+    void CV_onDisconnected();      // Слот обработки сигнала
+    void CV_NEW_onReadyRead_Slot();    // Слот обработка сигнала readyRead() включая парсинг JSON
+    void GetBox(unsigned int distance); // Запускаем захват кубика по значению расстояния до него от камеры.
 
 
 void data_from_CVDevice_Slot(QString); // class CVDevice - слот обработки сигнала data_from_CVDevice_Signal(QString);
@@ -227,7 +243,7 @@ signals:
     void Open_Port_Signal(QString portname); // Сигнал даем по нажатию кнопки "OPEN"
     void Pass_XY_Signal(int x_pix, int y_pix); //Сигнал по нажатию кнопки "Get_XY"
     void FW_Kinemaic_Signal(int S3, int S4, int S5, int l1, int l2, int l3); // Углы приводов, длины соответствующих звеньев.
-    void Write_2_TcpClient_Signal(QString); // Сигнал вебсерверу, - пересылка данных в сокет на отправку.
+    void Write_2_TcpClient_Signal(QString, int); // Сигнал вебсерверу, - пересылка данных в сокет на отправку.
 //    void StartTakeAndPutSignal();
 
 };

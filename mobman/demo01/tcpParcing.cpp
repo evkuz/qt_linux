@@ -1,5 +1,7 @@
 #include "mainprocess.h"
 #include "positions.h"
+//#include "tcpParcing.h"
+
 /*
 преобразование строки параметров
 ?a=12&a=12432354&b=123&c=1241234
@@ -13,286 +15,355 @@
 //   0          1                    3                      5                           7                                   9
 //{"clamp", "get_box", "parking", "ready", "status", "getactions", "getservices", "setservos=", "srvfromfile",  "status?action=get_box", "formoving"};
 
-void MainProcess::Data_From_TcpClient_Slot(QString message)
+
+// Делаем временное решение.
+// ProcessAction запускаем только для значений индекса команды 0 или 1.
+// Для остальных значений, оставляем как было. Только в новом файле теперь.
+
+void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
 {
-//    QByteArray dd ;
     QString str, substr;
     int value = 0xf00f;
+
+    QMutexLocker locker(&mutex);
+
+    this->tcpSocketNumber =  socketNumber;
     new_get_request = true;
-    //str = "!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSimpleServer->Info_2_Log_Signal !!!!!!!!!!!!!!!!!!!";
     str = "From TCP Get new command : "; str += message;
     GUI_Write_To_Log(0xf00f, str);
 
     substr = message;
-    // Определяем индекс команды в списке MainProcess::tcpCommand
+
+//    str = "WRONG DATA from TCP !!!";
+//    // Определяем индекс команды в списке MainProcess::tcpCommand
+//    if (message == str)
+//    {
+//        GUI_Write_To_Log(value, str);
+//        return;
+//    }
+    //mutex.lock();
     int comIndex = getIndexCommand(substr, tcpCommand);
 
-    if (comIndex < 0) {str = "WRONG DATA !!!"; GUI_Write_To_Log(value, str);return;}
-    str = "Index value is "; str += QString::number(comIndex); str += ",\n";
-    str += "List value on that index is \""; str += tcpCommand.at(comIndex); str += "\"";
+//    if (comIndex < 0) {
+//        GUI_Write_To_Log(value, str);
+//        mutex.unlock();
+//        return;}
+//    str = "Index value is "; str += QString::number(comIndex); str += ",\n";
+//    str += "List value on that index is \""; str += tcpCommand.at(comIndex); str += "\"";
+//    GUI_Write_To_Log(value, str);
 
-    GUI_Write_To_Log(value, str);
-
-// So here we've got the index of elemnt representing the command received by TCP
+    // So here we've got the index of elemnt representing the command received by TCP
     // set value of Robot->active_command
-    Robot->active_command = tcpCommand.at(comIndex);
-    str = "Current active command is ";
-    str += Robot->active_command;
-    GUI_Write_To_Log(value, str);
+    // Формируем значение jsnStore->isAnyActionRunning
+    //jsnStore->createActionList();
+    //mutex.unlock();
+
+    // And now make decision
+    // Если не запрос статуса и нет активных экшенов, меняем active_command, идем дальше
+    // active_command != экшен
+
+//    if (comIndex > 0 && !(jsnStore->isAnyActionRunning)){
+//        //mutex.lock();
+//        Robot->active_command = tcpCommand.at(comIndex);
+
+//        //mutex.unlock();
+//        str = "Current active command is ";
+//        str += Robot->active_command;
+//        str += " and isAnyActionRunning is ";
+//        str += QVariant(jsnStore->isAnyActionRunning).toString();
+
+//        GUI_Write_To_Log(value, str);
+
+//    }
+
+    // Если не запрос статуса, И не reset, но есть активный экшен (еще вопрос - тот же самый или другой ?)
+    // Меняем у запрошенного, - если не текущий, - экшена статус - на "не запустился"
+    // Другими словами - во время выполняения экшена приходит команда выполнить другой экшен...
+    // Манипулятор не может 2 экшена выполнять одновременно.
+    // comIndex > 0 && comIndex != 1
+    // #################### ВНИМАНИЕ !!! ТУТ НЕТ ЗАПИСИ В ЛОГ, ЧТОБ БЫСТРЕЕ БЫЛО #########
+    if (comIndex > 1 && jsnStore->isAnyActionRunning ){
+         QJsonObject tempObj;
+                     tempObj = {
+                         {"name", substr},
+                         {"info", "Another action is already running"},
+                         {"rc", RC_UNDEFINED}
+
+                     };
+
+        // ставим экшену статус -2... Если это отличный от текущего
+        if (comIndex != currentCommandIndex)
+        {
+//                {"state", "Not applied"},
+            tempObj["rc"] = jsnStore->AC_Launch_RC_FAILURE;
+         }
+        else        //if (comIndex == currentCommandIndex)
+        {
+            tempObj["info"] = "This action is STILL running";
+            tempObj["rc"] = jsnStore->AC_Launch_RC_ALREADY_HAVE; // Уже запущен
+
+        }
+        // set aimed action values to tempObj
+        // Here we are managedd to not getting dangling pointer.
+        // Ничего не меняем в состояниях экшена, так проще
+//        jsnStore->setActionData(tempObj);
+        launchActionAnswer = tempObj;
+        str = QJsonDocument(launchActionAnswer).toJson(QJsonDocument::Indented);
+        // отправляем ответ на запуск экшена
+        emit Write_2_TcpClient_Signal(str, socketNumber);
+
+        return;
+    }
 
 
-    QStringList list1; // Обязательно сдесь, иначе switch не скомпилируется, внутри switch нельзя объявить.
 
-    // А можно же в ProcessAction передавать сам comIndex и тогда switch не нужен ?!
-    // Не совсем... у разных экшенов все-таки разная обработка...
 
+
+
+    //jsnStore->action_command = tcpCommand.at(comIndex); // сигнал updateAction_List_Signal
+   // jsnStore->setCurrentAction(tcpCommand.at(comIndex));
+    // 0 - status, 5 - start
+//    if (comIndex==0 or comIndex==5 or comIndex==7) {
+//        ProcessAction(comIndex);
+//    }
+//    int indent = 3;
+//     std::string s2;
+
+// Если в данный момент есть работающий экшен, то уже нельзя менять значение mainjsnObj...
+
+
+
+//    str = "Before switch";
+//    str += " and isAnyActionRunning is ";
+//    str += QVariant(jsnStore->isAnyActionRunning).toString();
+
+//    GUI_Write_To_Log(value, str);
+
+   //QString S3;
     switch (comIndex) {
+    case 0: // status
 
-        case 0: //"clamp"
-                on_clampButton_clicked();
+        // Нужно добавлять активный экшен, либо пустой список
+//        str = "Going to create action_list";
+//        GUI_Write_To_Log(value, str);
+        // Надо данные из mainjsnObj переписать в соответствующую jsnAction...
+        // В общем надо с указателями работать.
+        // Если serial port не открыт, иначе не узнаем
+//        mainjsnObj["rc"] = 0;
+//        mainjsnObj["state"] = "Running";
+//        mainjsnObj["info"] = "Request Accepted";
+//        jsnStore->setJsnHeadStatus(mainjsnObj);
+        jsnStore->createActionList(); // формируем список, записываем данные в jsnData, делаем merge (jsnActionList, jsnHeadStatus)
+
+        //str += QJsonDocument(jsnStore->jsnActionList).toJson(QJsonDocument::Indented);
+        str = jsnStore->returnJsnData();
+        GUI_Write_To_Log(value, str);
+//        str = jsnStore->returnJsnData();
+//        str = "{\n\t\"status\": \"testing\"\t\n}";
+//        s2 = jsnStore->jsnInfo.dump(indent);
+//        str = QString::fromStdString(s2);
+
+
+        //Robot->Write_To_Log(value, str);
+
+
+        Robot->active_command = "status";
+        emit Write_2_TcpClient_Signal (str, this->tcpSocketNumber);
+
+//        str = "Current QJsonDocument is ";
+//        str += QJsonDocument(mainjsnObj).toJson(QJsonDocument::Indented);
+//        //emit Write_2_TcpClient_Signal (str);
+//        GUI_Write_To_Log(value, str);
+
+//        str = "Data from jsnData : \n";
+//        str += jsnStore->returnJsnData();
+//        GUI_Write_To_Log(value, str);
+
+//        str = "Data from jsnObj AS GLOBAL : \n";
+//        str += QJsonDocument(jsnStore->returnAllActions()).toJson(QJsonDocument::Indented);
+//        GUI_Write_To_Log(value, str);
+
+//        str = QJsonDocument(jsnStore->jsnActionClamp).toJson(QJsonDocument::Indented);
+//        GUI_Write_To_Log(value, str);
+
+//        emit Write_2_TcpClient_Signal (str);
+
+//        aaa = jsnStore->actionListp.at(0);
+//        str = QJsonDocument(aaa).toJson(QJsonDocument::Indented);
+//        GUI_Write_To_Log(value, str);
+
+
+        break;
+    case -1: // Unknown Action !!! or Error message
+        if (substr.startsWith("socketError")) {
+            GUI_Write_To_Log(value, substr);
+            return;
+        }
+        mainjsnObj = jsnStore->returnJsnActionsUnKnown();
+        mainjsnObj["name"] = message;
+        str = "There is wrong action command : ";
+        str += message;
+        GUI_Write_To_Log(value, str);
+
+        ProcessAction(comIndex, mainjsnObj);
         break;
 
-        case 1: //"get_box"  - это экшен (к вопросу о типе)
-                // Поэтому Process Action
-                ProcessAction(&Robot->getbox_Action);
-        break;
-        case 2: //"parking"
-                ProcessAction(&Robot->parking_Action);
+    case 1:  // reset
+        // Robot->active_command = "reset";
+        jsnStore->resetAllActions();
+        jsnStore->isAnyActionRunning = false;
+        //str = "I'm in reset";
+        mainjsnObj = jsnStore->returnAllActions();
+        str = jsnStore->jsnData;
+        emit Write_2_TcpClient_Signal(str, this->tcpSocketNumber);
 
-        break;
+        GUI_Write_To_Log(value, str);
+//        mainjsnObj = jsnStore->returnJsnActionReset();
+//        str = QJsonDocument(mainjsnObj).toJson(QJsonDocument::Indented);
+//        GUI_Write_To_Log(value, str);
 
+//        jsnStore->createActionList(); // формируем список, записываем данные в jsnData, делаем merge (jsnActionList, jsnHeadStatus)
+//        str = jsnStore->returnJsnData();
+//        GUI_Write_To_Log(value, str);
 
-        case 3: //"ready"
-                ProcessAction(&Robot->ready_Action);
+//        emit Write_2_TcpClient_Signal (str, this->tcpSocketNumber);
 
-
-        break;
-        case 7: //"setservos="
-                substr = substr.remove("setservos=");
-                list1 = substr.split(QLatin1Char(','));
-                for (int i=0; i<DOF; ++i)
-                {
-                    Servos[i] = list1.at(i).toUInt();
-                }//for
-
-                ProcessAction(&Robot->setservos_Action);
-                Robot->active_command = Robot->setservos_Action.name;
-                this->send_Data(LASTONE); //NOT_LAST
-                jsnStatusActionAnswer["state"] = "running";
-
-                str = "After setservos ";
-                Servos_To_Log(str);
-
+//        str = "Current ActionList is :";
+//        mainjsnObj = jsnStore->returnAllActions();
+//        // Берем значение  jsnActionList, весь ответ не нужен
+//        str += QJsonDocument(jsnStore->jsnActionList).toJson(QJsonDocument::Indented);
+//        GUI_Write_To_Log(value, str);
         break;
 
-        case 9: //"get_box" в новом формате - это экшен (к вопросу о типе) "status?action=get_box"
-                // Поэтому Process Action
-                ProcessAction(&Robot->getbox_Action);
+    case 2: // clamp
+        // Robot->active_command = "clamp";
+        mainjsnObj = jsnStore->returnJsnActionClamp();
+//        jsnStore->jsnObjArray[0].toObject()["state"]= "MANYMANY";
+//        str = QJsonDocument(jsnStore->jsnObjArray[0].toObject()).toJson(QJsonDocument::Indented);
+//        GUI_Write_To_Log(value, str);
+
+//        emit Write_2_TcpClient_Signal (str);
+       // ProcessAction(comIndex, mainjsnObj);
         break;
+    case 3: // "get_box"
+        mainjsnObj = jsnStore->returnJsnActionGetBox();
+        ProcessAction(comIndex, mainjsnObj);
 
-        case 10: //"formoving"
-//                memcpy(Servos, mob_moving_position, DOF);
-//                this->send_Data(LASTONE);
-                ProcessAction(&Robot->forMoving_Action);
-        break; //"put_box"
-
-        case 11: //"put_box" в новом формате - это экшен (к вопросу о типе) "status?action=get_box"
-                // Поэтому Process Action
-                ProcessAction(&Robot->putbox_Action);
-        break; //"reset"
-        case 12: //"reset" в новом формате - это экшен (к вопросу о типе) "status?action=get_box"
-                 // НО, т.к. сбрасываем текущую, то без ProcessAction, ставим всем командам RC=-4
-                Robot->getbox_Action.rc = -4;
-                Robot->putbox_Action.rc = -4;
-                Robot->parking_Action.rc = -4;
-                Robot->ready_Action.rc = -4;
-                Robot->forMoving_Action.rc = -4;
-
-
-        break; //
-
-
-
-
-        default:
-                  ;
         break;
 
 
-    }//switch (comIndex)
+    case 4: // "parking"
+        // Robot->active_command = "standup";
+        mainjsnObj = jsnStore->returnJsnActionParking();
+        ProcessAction(comIndex, mainjsnObj);
+        break;
+    case 5: // "ready"
+
+        mainjsnObj = jsnStore->returnJsnActionReady();
+        ProcessAction(comIndex, mainjsnObj);
+        break;
+    case 12: // "put_box"
+        mainjsnObj = jsnStore->returnJsnActionPutbox();
+        ProcessAction(comIndex, mainjsnObj);
+
+
+        break;
+
+    case 7: //getactions
+      //  str = QJsonDocument(jsnStore->returnAllActions()).toJson(QJsonDocument::Indented);
+        mainjsnObj = jsnStore->returnAllActions();
+        str = jsnStore->jsnData;
+        emit Write_2_TcpClient_Signal(str, this->tcpSocketNumber);
+        str += str.insert(0, "Total action_list : \n");
+
+        GUI_Write_To_Log(value, str);
+
+        break;
+    case 10: //lock
+        mainjsnObj = jsnStore->returnJsnActionLock();
+        ProcessAction(comIndex, mainjsnObj);
+       break;
+    case 11: //unlock
+        mainjsnObj = jsnStore->returnJsnActionUnLock();
+        ProcessAction(comIndex, mainjsnObj);
+       break;
 
 
 
-//============================ start
-        if (substr == "start") {
-            Robot->SetCurrentStatus ("init"); // Перед запуском распознавания
+    case 13: //collapse
+        // Robot->active_command = "collapse";
+        mainjsnObj = jsnStore->returnJsnActionCollapse();
+        ProcessAction(comIndex, mainjsnObj);
+        break;
 
-            // Движение только начинаем, поэтому обнулим значение LASTONE
-            emit on_trainButton_clicked ();
-            str = "Robot current status is ";
-            str += Robot->current_status;
-            Robot->Write_To_Log(0xf00F, str);
-
-            str = Robot->current_status;
-            emit Write_2_TcpClient_Signal (str);
-         }
-//============================ reset
-        if (substr == "reset") {
-            if (Robot->GetCurrentStatus () != "wait"){
-                Robot->SetCurrentStatus ("wait");
-                str = "Robot changed status, now it is : ";
-                str += Robot->current_status;
-
-                GUI_Write_To_Log (value, str);
-                str = Robot->current_status;
-                //str = "status_from_robot";
-                emit Write_2_TcpClient_Signal (str);
-            }
-         }
-//         ///run?cmd=status&123
-
-//============================ status
-   if (substr == "status") {
-      // str  = "{\n\t\"status\":\"";
-       Robot->current_status = Robot->statuslst.at(Robot->current_st_index);
-       str = Robot->current_status;
-       jsnStatus["state"] = str.toStdString();
-       jsnStatus["rc"] = RC_SUCCESS;
-       //jsnStatus[""]
-
-       // serialization with pretty printing
-       // pass in the amount of spaces to indent
-       int indent = 3;
-       std::string s2 = jsnStatus.dump(indent);
-
-       GUI_Write_To_Log(value, "!!!!!!!!!!! Current STATUS is ");
-       GUI_Write_To_Log(value, QString::fromStdString(s2));
-
-       str = QString::fromStdString(s2);
-      // str = QJsonDocument(jsnStatus).toJson(QJsonDocument::Compact);
-
-       emit Write_2_TcpClient_Signal (str);
-   }
-//============================ sit
-   if (substr == "sit") {
-
-       QByteArray dd = QByteArray::fromRawData(reinterpret_cast<const char*>(sit_down_position), 6);
-       dd.append(0x31); // Движение "Туда"
-       Robot->GoToPosition(dd);//, sit_down_position
-   }//"sit"
-
-   if (substr == "standup") {
-       QByteArray dd = QByteArray::fromRawData(reinterpret_cast<const char*>(hwr_Start_position), 6);
-       dd.append(0x30); // Движение "Обратно"
-       dd.append(LASTONE);
-       Robot->GoToPosition(dd);//, hwr_Start_position
-
-   }
-
-//   if (substr == "clamp") { on_clampButton_clicked();}//"sit"
-
-//   if (substr == "parking")
-//   {
-//       // str = "Before parking memcpy "; Servos_To_Log(str);
-//        memcpy(Servos, mob_parking_position, DOF);
-//        //str = "After parking memcpy "; Servos_To_Log(str);
-//        this->send_Data(LASTONE);
-//   }
-
-
-//   if (substr == "ready")
-//   {
-//       memcpy(Servos, mob_ready_position, DOF);
-//       this->send_Data(LASTONE);
-//   }
-
-   if (substr == "servo2_20")
-   {
-       Servos[1]=20;
-       QByteArray dd ;
-       dd.resize(parcel_size);
-       memcpy(dd.data(), Servos, DOF);
-       dd.insert(6, 0x31); // Движение "Туда"
-       Robot->GoToPosition(dd);
-
-   }
-   if (substr == "servo2_90")
-   {
-       Servos[1]=90;
-       QByteArray dd ;
-       dd.resize(parcel_size);
-       memcpy(dd.data(), Servos, DOF);
-       dd.insert(6, 0x31); // Движение "Туда"
-       Robot->GoToPosition(dd);
-
-   }
-
-   if (substr == "pos_11") { memcpy(Servos, mob_pos_11, DOF);  this->send_Data(LASTONE); }
-   if (substr == "pos_12") { memcpy(Servos, mob_pos_12, DOF);  this->send_Data(LASTONE); }
-   if (substr == "pos_13") { memcpy(Servos, mob_pos_13, DOF);  this->send_Data(LASTONE); }
-   if (substr == "pos_14") { memcpy(Servos, mob_pos_14, DOF);  this->send_Data(LASTONE); }
-
-   if (substr == "pos_15") { memcpy(Servos, mob_pos_15, DOF);  this->send_Data(LASTONE); }
-   if (substr == "pos_16") { memcpy(Servos, mob_pos_16, DOF);  this->send_Data(LASTONE); }
-   if (substr == "pos_17") { memcpy(Servos, mob_pos_17, DOF);  this->send_Data(LASTONE); }
-   if (substr == "pos_18") { memcpy(Servos, mob_pos_18, DOF);  this->send_Data(LASTONE); }
-   if (substr == "pos_19") { memcpy(Servos, mob_pos_19, DOF);  this->send_Data(LASTONE); }
-   if (substr == "pos_20") { memcpy(Servos, mob_pos_20, DOF);  this->send_Data(LASTONE); }
-   if (substr == "pos_21") { memcpy(Servos, mob_pos_21, DOF);  this->send_Data(LASTONE); }
-   if (substr == "pos_22") { memcpy(Servos, mob_pos_22, DOF);  this->send_Data(LASTONE); }
-   if (substr == "pos_23") { memcpy(Servos, mob_pos_23, DOF);  this->send_Data(LASTONE); }
-
-//+++++++++++++++++++ action  "srvfromfile" +++++
-   // Читаем построчно файл со значениями сервоприводов
-   if (substr == "srvfromfile") {
-       ;
-   }//substr == "srvfromfile"
-
-
-//++++++++++++++++   Запрос информации из service
-
-   if (substr == "getservices") {
-
-       int indent = 3;
-       std::string s2 = jsnGetServicesAnswer.dump(indent);
-       str = QString::fromStdString(s2);
-       GUI_Write_To_Log(value, "!!!!!!!!!!! Current Services LIST is ");
-       GUI_Write_To_Log(value, str);
-
-       emit Write_2_TcpClient_Signal (str);
-
-   }//substr == "getservices"
-//++++++++++++++ /service?name=getactions
-   if (substr == "getactions") {
-
-       int indent = 3;
-       std::string s2 = jsnGetActionsAnswer.dump(indent);
-       str = QString::fromStdString(s2);
-       GUI_Write_To_Log(value, "!!!!!!!!!!! Current Actions LIST is ");
-       GUI_Write_To_Log(value, str);
-
-       emit Write_2_TcpClient_Signal (str);
-
-   }//substr == "getactions"
-//+++++++++++++++++++++++++++++++++++++++++++++    /status?action=get_box
-// Вот тут задаем статус {"waiting","noDetection", "inprogress", "done", "fail"}
-  // if (substr == "status?action=getbox"){;}
+    default:
+        str = "The Command with index ";
+        str += QString::number(comIndex);
+        str += " is not found";
+        GUI_Write_To_Log(value, str);
+        break;
+    }
 
 
 
 
+    // ++++++++++++++++++++++++++++++++ Теперь всё остальное
 
 
-}//Data_From_TcpClient_Slot
-//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-void MainProcess::Data_from_TcpServer_Slot(QString tcpData)
-{
-     int value = 0x1111;
-  GUI_Write_To_Log(value, "!!!!!! Here is Data From CV device !!!!!!!!!!");
-  GUI_Write_To_Log(value,tcpData);
-
-}//Data_from_TcpServer_Slot
-//++++++++++++++++++++++++++++++++++++++++++++++++++++
+//    if (substr == "sit") {
+//        // Go to "sit" position
+//        QByteArray dd;
+//        dd = QByteArray::fromRawData(reinterpret_cast<const char*>(sit_down_position), DOF);
+//        dd.append(0x31); // Движение "Туда"
+//        dd.append(LASTONE); // Всегда последнее ?
+//        Robot->GoToPosition(dd);//, sit_down_position
+//    }//"sit"
 
 
+//    if (substr =="unlock") {
 
+//        str = "######## Try to UNlock the gripper ######### ";
+//        str += "Current clamper value is ";
+//        str += QString::number(Servos[0]);
+//        Servos[0]=0;
+//        this->send_Data(NOT_LAST); //NOT_LAST LASTONE
+//    }//"unlock"
+
+    if (substr == "close") {
+        Robot->serial.close();
+
+    }
+
+    // Запрашиваем в Arduino значения углов сервоприводов
+//    if (substr == "getservos") {
+//        QByteArray dd ;
+//        dd.resize(parcel_size);
+//        memcpy(dd.data(), get_values_position, parcel_size);
+
+//    }
+
+    if (substr == "info") {
+        // Вот тут делаем присвоение статуса.
+        str = Robot->GetCurrentStatus();
+        jsnStore->setCurrentAction(substr);
+
+        str = QJsonDocument(jsnStore->returnJsnInfo()).toJson(QJsonDocument::Indented);
+
+        GUI_Write_To_Log(value, "!!!!!!!!!!! Current INFO is ");
+        GUI_Write_To_Log(value, str);
+
+        //str = QJsonDocument(jsnStatus).toJson(QJsonDocument::Compact);
+
+
+        emit Write_2_TcpClient_Signal (str, this->tcpSocketNumber);
+
+    }
+    // Запрашиваем список экшенов
+//    if (substr == "getactions") {
+//        QByteArray dd ;
+//        dd.resize(parcel_size);
+//        memcpy(dd.data(), get_values_position, parcel_size);
+//     }
+
+
+}// Data_From_TcpClient_Slot
