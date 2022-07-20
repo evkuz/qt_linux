@@ -88,30 +88,17 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
                          {"rc", RC_UNDEFINED}
 
                      };
-//                         {"state", "Not applied"},
 
         // ставим экшену статус -2... Если это отличный от текущего
         if (comIndex != currentCommandIndex)
         {
-//            tempObj = {
-//                {"name", substr},
 //                {"state", "Not applied"},
-//                {"info", "Another action is already running"},
-//                {"rc", RC_UNDEFINED}
-
-//            };
             tempObj["rc"] = jsnStore->AC_Launch_RC_FAILURE;
          }
         else        //if (comIndex == currentCommandIndex)
         {
             tempObj["info"] = "This action is STILL running";
             tempObj["rc"] = jsnStore->AC_Launch_RC_ALREADY_HAVE; // Уже запущен
-//            tempObj = {
-//                {"name", substr},
-//                {"state", "Not applied"},
-//                {"info", "This action is already running"},
-//                {"rc", RC_SUCCESS}
-//             };
 
         }
         // set aimed action values to tempObj
