@@ -3,13 +3,54 @@
 
 /*
  *
+ *
+ *  ~/iqr_lit/mobman/gui-client/release/cv-checker.log
+ *  "GET /favicon.ico HTTP/1.1"
+ *
+ *
+ * //+++++++++++++++++++++++++++++++++++++++
+ * 07.07.2022
+ * Команда "RESET" очень актуальна, надо добавить.
+ *
+ * //+++++++++++++++++++++++++++++++++++++++
+ * 24.06.2022
+ * Добавил сигнал  &myThread::finished.
+ * ДОбавил кнопку "STOP Polling"
+ * Теперь по нажатию кнопки поток ставится на паузу и запрос статуса не отправляется.
+ * При нажатии на кнопку "STATUS 2t./SEC" запрос статуса в потоке возобновляется.
+ * Удалось "вырубить" hiwonder-web. Теперь задача, чтоб сам hiwonder-web ловил вот это событие и не вываливался, а писал в лог, что происходит.
+ * И здесь, на стороне клиента, после отвала hiwonder-web (server) сообщения в лог :
+ *
+ *
+ * 0x2222: The connection was refused by the peer. Make sure the server HIWONDER is running,
+ * and check that the host name and port settings are correct.
+ *
+ * 0x9999: SocketDev state changed Current socketDev state is 1
+ * 0x9999: SocketDev state changed Current socketDev state is 2
+ * 0x9999: SocketDev state changed Current socketDev state is 0
+ *
+ * Смотрим https://doc.qt.io/qt-6/qabstractsocket.html#SocketState-enum
+ *
+ * Т.е. хронологически состояние сокета меняется так :
+ * - QAbstractSocket::HostLookupState
+ * - The socket has started establishing a connection.
+ * - The socket is not connected.
+ *
+ * Т.е. хост находит, но там никто не слушает порт 8383, тогда сокет не подключен.
+ *
  * //++++++++++++++++++++++++++++++++++++
  * Для имитации запросов от ЦУП добавляем таймер опроса статусов.
  * А для таймера нужен отдельный поток.
+ * Пока таймер неиспользуем. Просто паузим поток.
  *
  * //++++++++++++++++++++++++++++++++++++
  * Если целевой хост не отвечает, например не запущен hiwonder-web, то надо что-то сообщать в лог, а то пока тишина в таком случае.
-
+ * Сделано. Ф-ция MainWindow::socketErrorToLog_Slot(QString message)
+ * Выдает сообщение самой системы Qt :
+ * "2022-06-24__13:01:21:996 > 0x2222: The following error occurred:
+ * Out of resources
+ * "
+ *
  * //++++++++++++++++++++++++++++++++++++++++
  * 01.06.2022
  * Доделал вчерашнюю задачу с поллингом.

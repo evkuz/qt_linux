@@ -86,7 +86,7 @@ void JsonInfo::init_json()
          {
             {"name", "standup"},
             {"state", "inprogress | done | fail"},
-            {"info", "Go to start (initital) position"},
+            {"info", "Go to ZERO (home, initital) position"},
             {"rc", "int - action return code"}
          },
          {
@@ -350,9 +350,9 @@ void JsonInfo::init_actions()
 
     jsnActionPutbox = {
         {"name", "put_box"},
-        {"state", "done"},
+        {"state", DEV_ACTION_STATE_DONE},
         {"info", "put down the object for next actions"},
-        {"rc", RC_WAIT}
+        {"rc", this->AC_Launch_RC_DONE}
        };
 
     jsnActionReset = {
@@ -376,11 +376,29 @@ void JsonInfo::init_actions()
         {"rc", RC_WAIT}
     };
 
-
+    jsnActionUnKnown = {
+        {"name", "UnKnown"},
+        {"state", DEV_ACTION_STATE_FAIL},
+        {"info", "There is now action with such a name"},
+        {"rc", AC_WRONG_VALUE}
+    };
+    jsnActionLock = {
+        {"name", "lock"},
+        {"state", DEV_ACTION_STATE_WAIT},
+        {"info", "lock the gripper of manipulator"},
+        {"rc",  this->AC_Launch_RC_DONE}
+    };
+    jsnActionUnLock = {
+        {"name", "unlock"},
+        {"state", DEV_ACTION_STATE_WAIT},
+        {"info", "unlock the gripper of manipulator"},
+        {"rc",  this->AC_Launch_RC_DONE}
+    };
 
 
 //    actionListp = {jsnActionClamp, jsnActionStart, jsnActionPutbox, jsnActionReset, jsnActionCollapse};
-    jsnObjArray = {jsnActionClamp, jsnActionCollapse, jsnActionStandUP, jsnActionReset, jsnActionStart}; //
+    jsnObjArray = {jsnActionClamp, jsnActionCollapse, jsnActionStandUP, jsnActionReset, jsnActionStart, jsnActionPutbox, \
+                   jsnActionUnKnown, jsnActionLock, jsnActionUnLock}; //
     jsnHeadStatus = {
         {"name", DEV_NAME},
         {"rc", RC_UNDEFINED}, //RC_SUCCESS
@@ -400,12 +418,19 @@ void JsonInfo::init_actions()
 // Тут разные списки - action_lst и actionListp. Следует учитывать.
 void JsonInfo::resetAllActions()
 {
-//    QJsonObject myObject;
-    for (int i=0; i < jsnObjArray.size() ; i++) //action_lst.size()
+    QJsonObject myObject;
+    for (int i=0; i < jsnObjArray.size(); i++) //action_lst.size()
     {
-       jsnObjArray.at(i).toObject()["rc"] = -4;
-       jsnObjArray.at(i).toObject()["state"] = "done";
+       myObject = jsnObjArray.at(i).toObject();
+       myObject["rc"] = this->AC_Launch_RC_DONE;
+       myObject["state"] = "done";
+       jsnObjArray.replace(i, myObject);
+
+//       jsnObjArray.at(i).toObject()["rc"] = this->AC_Launch_RC_DONE;
+//       jsnObjArray.at(i).toObject()["state"] = "done";
+
     }
+    isAnyActionRunning = false; // Нет активных экшенов
 
 }///init_json
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -517,7 +542,7 @@ QJsonObject& JsonInfo::returnJsnActionStart()
     return this->jsnActionStart;
 }
 //+++++++++++++++++++++++++++++++++++++++++++
-QJsonObject JsonInfo::returnJsnActionReset()
+QJsonObject& JsonInfo::returnJsnActionReset()
 {
     return this->jsnActionReset;
 }
@@ -537,6 +562,27 @@ QJsonObject& JsonInfo::returnJsnActionCollapse()
 QJsonObject& JsonInfo::returnJsnActionStandUP()
 {
     return this->jsnActionStandUP;
+}
+//+++++++++++++++++++++++++++++++++++++++++++++
+QJsonObject &JsonInfo::returnJsnActionsUnKnown()
+{
+    return this->jsnActionUnKnown;
+}
+//+++++++++++++++++++++++++++++++++++++++++++++
+
+QJsonObject &JsonInfo::returnJsnActionPutbox()
+{
+    return this->jsnActionPutbox;
+}
+//+++++++++++++++++++++++++++++++++++++++++++++
+QJsonObject &JsonInfo::returnJsnActionLock()
+{
+    return this->jsnActionLock;
+}
+//+++++++++++++++++++++++++++++++++++++++++++++
+QJsonObject &JsonInfo::returnJsnActionUnLock()
+{
+    return this->jsnActionUnLock;
 }
 //+++++++++++++++++++++++++++++++++++++++++++
 
@@ -646,34 +692,37 @@ void JsonInfo::setHeadStatusFail()
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 void JsonInfo::setActionStart2NoDetection()
 {
-    jsnActionStart["state"] = DEV_HEAD_STATE_FAIL;
+    jsnActionStart["state"] = DEV_ACTION_STATE_FAIL;
     jsnActionStart["info"] = DEV_HEAD_INFO_NO_DET;
-    jsnActionStart["rc"] = RC_FAIL;
+    jsnActionStart["rc"] = this->AC_Launch_RC_FAILURE;
 
-    jsnHeadStatus["state"] = "Fail";
+//    jsnHeadStatus["state"] = DEV_HEAD_STATE_RUN;
     jsnHeadStatus["info"]  = "No Detection";
-    jsnHeadStatus["rc"] = RC_FAIL;
+//    jsnHeadStatus["rc"] = this->AC_Launch_RC_RUNNING;
 
-    QJsonValue myValue = jsnActionStart;
+//    QJsonValue myValue = jsnActionStart;
 
-    bool OK = this->eraseArray(this->jsnObjArray);
-    if (!OK){
-        this->jsnObjArray.append(myValue);
-    }
-
-
-    jsnActionList["action_list"] = this->jsnObjArray;
-    this->jsnData = merge_json(jsnActionList, jsnHeadStatus);
-    OK = this->eraseArray(this->jsnObjArray);
+//    bool OK = this->eraseArray(this->jsnObjArray);
+//    if (!OK){
+//        this->jsnObjArray.append(myValue);
+//    }
 
 
+//    jsnActionList["action_list"] = this->jsnObjArray;
+//    this->jsnData = merge_json(jsnActionList, jsnHeadStatus);
+//    OK = this->eraseArray(this->jsnObjArray);
+
+this->jsnData = QJsonDocument(jsnActionStart).toJson(QJsonDocument::Indented);
+// That's ok. But now changed value of jsnActionStart should be copied to jsnObjArray
+    this->setActionData(jsnActionStart);
+    this->setActionData(jsnHeadStatus);
 
 } // setActionStart2NoDetection
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // fills Up the jsnActionList["action_list"] with active actions only
 void JsonInfo::createActionList()
 {
-    // Перебираем список  actionListp, определяем у кого state == "inprogress"
+    // Перебираем список  jsnObjArray, определяем у кого state == "inprogress"
     // формируем новый список
     // добавляем его в jsnData
     QJsonValue myValue;
@@ -682,7 +731,7 @@ void JsonInfo::createActionList()
 
 
 
-   myArray = jsnObjArray;
+   myArray = this->jsnObjArray;
    //myArray.swap(jsnObjArray);
    //jsnObjArray.swap(myArray);
    QString str;
@@ -691,7 +740,7 @@ void JsonInfo::createActionList()
         str = myobj.value("state").toString();
 //        если не равно - вынимаем объект из массива, т.е. оставляем только running
 //       if (QString::compare(str, DEV_ACTION_STATE_RUN)){
-         if (str != DEV_ACTION_STATE_RUN){
+         if (str != DEV_ACTION_STATE_RUN ){
              myArray.removeAt(i);
              i--;
 
@@ -713,10 +762,10 @@ void JsonInfo::SetJsnActionStandUP(QJsonObject &theObj)
     this->jsnActionStandUP = theObj;
 }
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
+// repalce data in array jsnObjArray with the new data from theObj
 void JsonInfo::setActionData(QJsonObject &theObj)
 {
-// Ищем в jsnObjArray по "name" нужный action, меняем его на значеня theobj
+// Ищем в jsnObjArray по "name" нужный action, меняем его на значения theobj
 // Так работаем только с массивом.
     QString theName = theObj.value("name").toString();
     // Проходим jsnObjArray, ищем совпадение по "name", меняем "rc" и "state", делаем replase
@@ -727,6 +776,5 @@ void JsonInfo::setActionData(QJsonObject &theObj)
         }
     }
 
-
-
-}
+} // setActionData
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

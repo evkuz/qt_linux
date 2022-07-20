@@ -58,8 +58,8 @@ void clientSocket::onReadyRead()
 // The data for GET request are already in "tcprequest" variable
 void clientSocket::onDEVSocketConnected_Slot()
 {
-    socketDEV->write(request.toUtf8());
-    emit clientSocket::Write_2_TcpClient_Signal(request);
+    socketDEV->write(this->request.toUtf8());
+    emit clientSocket::Write_2_TcpClient_Signal(request); // Пишем в лог отправленные данные
 }
 //+++++++++++++++++++++++++++++++++++++++++++++++++++
 // Слот сигнала &QAbstractSocket::disconnected

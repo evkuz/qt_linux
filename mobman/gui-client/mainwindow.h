@@ -70,7 +70,8 @@ public:
     QTimer *statusTimer;
     QThread *thread_A;
 
-    myThread *thread_Timer;
+    myThread *thread_Timer; // Поток ставится на паузу каждый n-милисекунд.
+    bool timerFlag;
 
     void Log_File_Open(QString lname);
     void GUI_Write_To_Log (int value, QString log_message);
@@ -131,6 +132,22 @@ private slots:
     void on_getStatusButton_clicked();
 
     void on_StandUpButton_clicked();
+
+    void on_StopPollingButton_clicked();
+
+    void on_LockButton_clicked();
+
+    void on_UnLockButton_clicked();
+
+    void on_GetBoxButton_2_clicked();
+
+    void on_PutBoxButton_2_clicked();
+
+    void on_HiWonderGetStatusButton_clicked();
+
+    void on_ResetButton_2_clicked();
+
+    void on_StopTimerButton_clicked();
 
 private:
     Ui::MainWindow *ui;
