@@ -59,19 +59,21 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
     // And now make decision
     // Если не запрос статуса и нет активных экшенов, меняем active_command, идем дальше
     // active_command != экшен
-    if (comIndex > 0 && !(jsnStore->isAnyActionRunning)){
-        //mutex.lock();
-        Robot->active_command = tcpCommand.at(comIndex);
-        //mutex.unlock();
-        str = "Current active command is ";
-        str += Robot->active_command;
-        str += " and isAnyActionRunning is ";
-        str += QVariant(jsnStore->isAnyActionRunning).toString();
 
-        GUI_Write_To_Log(value, str);
+//    if (comIndex > 0 && !(jsnStore->isAnyActionRunning)){
+//        //mutex.lock();
+//        Robot->active_command = tcpCommand.at(comIndex);
 
+//        //mutex.unlock();
+//        str = "Current active command is ";
+//        str += Robot->active_command;
+//        str += " and isAnyActionRunning is ";
+//        str += QVariant(jsnStore->isAnyActionRunning).toString();
 
-    }
+//        GUI_Write_To_Log(value, str);
+
+//    }
+
     // Если не запрос статуса, И не reset, но есть активный экшен (еще вопрос - тот же самый или другой ?)
     // Меняем у запрошенного, - если не текущий, - экшена статус - на "не запустился"
     // Другими словами - во время выполняения экшена приходит команда выполнить другой экшен...
@@ -82,15 +84,15 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
          QJsonObject tempObj;
                      tempObj = {
                          {"name", substr},
-                         {"state", "Not applied"},
                          {"info", "Another action is already running"},
                          {"rc", RC_UNDEFINED}
 
                      };
+//                         {"state", "Not applied"},
 
         // ставим экшену статус -2... Если это отличный от текущего
-//        if (comIndex != currentCommandIndex)
-//        {
+        if (comIndex != currentCommandIndex)
+        {
 //            tempObj = {
 //                {"name", substr},
 //                {"state", "Not applied"},
@@ -98,9 +100,12 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
 //                {"rc", RC_UNDEFINED}
 
 //            };
-//         }
-//        if (comIndex == currentCommandIndex)
-//        {
+            tempObj["rc"] = jsnStore->AC_Launch_RC_FAILURE;
+         }
+        else        //if (comIndex == currentCommandIndex)
+        {
+            tempObj["info"] = "This action is STILL running";
+            tempObj["rc"] = jsnStore->AC_Launch_RC_ALREADY_HAVE; // Уже запущен
 //            tempObj = {
 //                {"name", substr},
 //                {"state", "Not applied"},
@@ -108,7 +113,7 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
 //                {"rc", RC_SUCCESS}
 //             };
 
-//        }
+        }
         // set aimed action values to tempObj
         // Here we are managedd to not getting dangling pointer.
         // Ничего не меняем в состояниях экшена, так проще
@@ -139,11 +144,11 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
 
 
 
-    str = "Before switch";
-    str += " and isAnyActionRunning is ";
-    str += QVariant(jsnStore->isAnyActionRunning).toString();
+//    str = "Before switch";
+//    str += " and isAnyActionRunning is ";
+//    str += QVariant(jsnStore->isAnyActionRunning).toString();
 
-    GUI_Write_To_Log(value, str);
+//    GUI_Write_To_Log(value, str);
 
    //QString S3;
     switch (comIndex) {

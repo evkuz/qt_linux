@@ -260,7 +260,7 @@ void QSocketThread::onReadyRead()
     searchstr = strcommand.at(i);
 
 
-
+// Вот тут надо решать с "/action?name="
     if (matched)
     {
         sPosition += searchstr.size();

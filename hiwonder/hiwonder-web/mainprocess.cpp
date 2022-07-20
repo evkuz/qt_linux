@@ -801,7 +801,7 @@ void MainProcess::Moving_Done_Slot()
     GUI_Write_To_Log(value, "SERVO cycle finished !!!");
     // Меняем статус, теперь "done"
 //    std::cout<<"Set DONE to Robot!" << std::endl;
-    Robot->SetCurrentStatus ("done");
+//    Robot->SetCurrentStatus ("done");
 
     str = "Current json object name is ";
     myname = mainjsnObj.value("name").toString();
