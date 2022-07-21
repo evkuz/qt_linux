@@ -820,6 +820,7 @@ void MainProcess::request_CV()
     connect (this->socketCV, &QTcpSocket::connected, this, &MainProcess::onSocketConnected_Slot);
     socketCV->connectToHost(CVDev_IP, CVDev_Port);
 
+
 }
 //++++++++++++++++++++++++++++++++++++++++++++++++
 void MainProcess::request_New_CV()
@@ -1026,6 +1027,7 @@ void MainProcess::newConnection_Slot()
 // А также это индикатор, что команда выполнена и можно, например, отправить эти данные вебсерверу.
 void MainProcess::Moving_Done_Slot()
 {
+    QString str, myname;
     int value = 0xFAAA;
     GUI_Write_To_Log(value, "Demo cycle finished !!!");
     // Меняем статус, теперь "done"
@@ -1033,82 +1035,99 @@ void MainProcess::Moving_Done_Slot()
     Robot->SetCurrentStatus ("done");
     GUI_Write_To_Log(value, "Now robot status is !!! DONE !!!");
 
-    QString str = "Current active command is ";
-    str += Robot->active_command;
 
+    currentCommandIndex = -1; // Нет текущих команд манипулятора
+
+    str = "Current json object name is ";
+    myname = mainjsnObj.value("name").toString();
+    str += myname;
+    str += "\n\nAction "; str += myname; str += " is finished !!!\n";
     GUI_Write_To_Log(value, str);
+    // Передаем QJsonObject в свой класс и там все меняем через replace...
+    jsnStore->setActionDone(mainjsnObj);
+
+    // Меняем значение.
+    jsnStore->isAnyActionRunning = false;
+
+    QJsonObject headStatus = {
+        {"rc", RC_WAIT}, //RC_SUCCESS
+        {"state", "Wait"},
+        {"info", "Waiting for command"}
+    };
+
+    jsnStore->setJsnHeadStatus(headStatus);
+
+
+
+//    QString str = "Current active command is ";
+//    str += Robot->active_command;
+
+//    GUI_Write_To_Log(value, str);
 
     //Тут тоже надо через switch...
     // Определяем индекс команды в списке MainProcess::tcpCommand
-    int comIndex = getIndexCommand(Robot->active_command, tcpCommand);
+    // Уже нет. Делаем через mainjsnObj
+//    int comIndex = getIndexCommand(Robot->active_command, tcpCommand);
 
-    switch (comIndex) {
+//    switch (comIndex) {
 
-//        case 0: //"clamp"
-//                //on_clampButton_clicked();
+//        case 1: //"get_box"  - это экшен (к вопросу о типе)
+//                // Меняем статус
+//                Robot->getbox_Action.rc = -4;
 //        break;
 
-        case 1: //"get_box"  - это экшен (к вопросу о типе)
-                // Меняем статус
-                Robot->getbox_Action.rc = -4;
-        break;
+//        }// switch (comIndex)
 
-        }// switch (comIndex)
+
 
 
     // Предполагаем, что get_box завержился и мы готовы принимать новые команды.
     // Меняем RC экшена на -4 == "Ожидание"
-    if (Robot->active_command == "get_box") {
-        Robot->STAT_getbox_Action.rc = -4; //"Ожидание"
-        Robot->getbox_Action.rc = -4;
+//    if (Robot->active_command == "get_box") {
+//        Robot->STAT_getbox_Action.rc = -4; //"Ожидание"
+//        Robot->getbox_Action.rc = -4;
 
-        GUI_Write_To_Log(value, "The get_box RC-value have changed");
-        GUI_Write_To_Log(value, "get_box operation is finished !");
-    }
+//        GUI_Write_To_Log(value, "The get_box RC-value have changed");
+//        GUI_Write_To_Log(value, "get_box operation is finished !");
+//    }
 
-    if (Robot->active_command == "parking") {
-        Robot->parking_Action.rc = -4; //"Ожидание"
-        GUI_Write_To_Log(value, "The parking RC-value have changed");
-        GUI_Write_To_Log(value, "parking operation is finished !");
-    }
-    if (Robot->active_command == "ready") {
-        Robot->ready_Action.rc = -4; //"Ожидание"
-        GUI_Write_To_Log(value, "The ready RC-value have changed");
-        GUI_Write_To_Log(value, "ready operation is finished !");
-    }
+//    if (Robot->active_command == "parking") {
+//        Robot->parking_Action.rc = -4; //"Ожидание"
+//        GUI_Write_To_Log(value, "The parking RC-value have changed");
+//        GUI_Write_To_Log(value, "parking operation is finished !");
+//    }
+//    if (Robot->active_command == "ready") {
+//        Robot->ready_Action.rc = -4; //"Ожидание"
+//        GUI_Write_To_Log(value, "The ready RC-value have changed");
+//        GUI_Write_To_Log(value, "ready operation is finished !");
+//    }
 
-    if (Robot->active_command == "formoving") {
-        Robot->forMoving_Action.rc = -4; //"Ожидание"
-        GUI_Write_To_Log(value, "The formoving RC-value have changed");
-        GUI_Write_To_Log(value, "formoving operation is finished !");
-            }
+//    if (Robot->active_command == "formoving") {
+//        Robot->forMoving_Action.rc = -4; //"Ожидание"
+//        GUI_Write_To_Log(value, "The formoving RC-value have changed");
+//        GUI_Write_To_Log(value, "formoving operation is finished !");
+//            }
 
-    if (Robot->active_command == "put_box") {
-        Robot->STAT_getbox_Action.rc = -4; //"Ожидание"
-        Robot->putbox_Action.rc = -4;
+//    if (Robot->active_command == "put_box") {
+//        Robot->STAT_getbox_Action.rc = -4; //"Ожидание"
+//        Robot->putbox_Action.rc = -4;
 
-        GUI_Write_To_Log(value, "The put_box RC-value have changed");
-        GUI_Write_To_Log(value, "put_box operation is finished !");
-    }
-//+++++++++++++++++++++++++++++++++++++++
-    if (Robot->active_command == "setservos=") {
-        Robot->ready_Action.rc = -4; //"Ожидание"
-        GUI_Write_To_Log(value, "The setservos= RC-value have changed");
-        GUI_Write_To_Log(value, "setservos= operation is finished !");
-    }
+//        GUI_Write_To_Log(value, "The put_box RC-value have changed");
+//        GUI_Write_To_Log(value, "put_box operation is finished !");
+//    }
+
+//    if (Robot->active_command == "setservos=") {
+//        Robot->ready_Action.rc = -4; //"Ожидание"
+//        GUI_Write_To_Log(value, "The setservos= RC-value have changed");
+//        GUI_Write_To_Log(value, "setservos= operation is finished !");
+//    }
 
 
 
 
     // И вот тут тоже можно искать имя команды по индексу и менять данные структур соответственно.
+    // Сделано выше. Через jsnStore->setActionDone(mainjsnObj);
 
-
-    // Отправлять клиенту ничего не надо. Он сам опросит сервер и получит статус.
-//    if (new_get_request) // Тогда даем сигнал серверу на отправку данных клиенту. Данные уже в буфере TheWeb->status_buffer
-//    {
-//     // emit Write_2_Client_Signal(Robot->current_status);
-//      new_get_request = false;
-//    }
 
 }
 //++++++++++++++++++++++++++
@@ -1120,7 +1139,7 @@ void MainProcess::server_New_Connect_Slot()
     ;
 }
 //++++++++++++++++++++++++++ Слот сигнала Connected()
-// Как только socket переходит в стату connected, получаем соответствующий сигнал и тут его обрабатываем
+// Как только socket переходит в статус connected, получаем соответствующий сигнал и тут его обрабатываем
 // Формируем HTTP-запрос в CV, отправляем его в CV
 void MainProcess::onSocketConnected_Slot()
 {
@@ -1165,8 +1184,8 @@ void MainProcess::onSocketConnected_Slot()
  // Запрос серверу отправили.
  // Ответ от сервера в слоте CV_onReadyRead_Slot()
 
-
-
+ mainjsnObj = jsnStore->returnJsnActionGetBox();
+ jsnStore->isAnyActionRunning = true;
 
 }
 //+++++++++++++++++++++++++++++++++++
