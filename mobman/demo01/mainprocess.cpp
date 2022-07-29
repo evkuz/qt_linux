@@ -54,11 +54,12 @@ MainProcess::MainProcess(QObject *parent)
     // Инициализируем все json-статусы
     jsnStore = new JsonInfo();
     mainjsnObj = jsnStore->returnJsnActionReset(); //set global value
-
+    jsnStore->createActionList();
 
     Robot = new HiWonder(); // Без этого будет "The program has unexpectedly finished", хотя в начале говорила, что это ambiguous
 
     Robot->Log_File_Open(Log_File_Name);
+    this->LogFile_Open(MOBMAN_LOG);
   //  Robot->Source_Points_File_Open (SOURCE_POINTS_FILE);
 
     QString str = "The application \"";  str +=target_name; str += "\"";
@@ -187,7 +188,7 @@ MainProcess::~MainProcess()
 void MainProcess::GUI_Write_To_Log (int value, QString log_message)
 {
     QDateTime curdate ;
-    QTextStream uin(&Robot->LogFile);
+    QTextStream uin(&this->mobWebLogFile);
 
     QString str, str2;
     curdate = QDateTime::currentDateTime();
@@ -578,15 +579,12 @@ void MainProcess::send_Data(unsigned char thelast)
     int value = 0xcdcd;
     QByteArray dd ;
     dd.resize(parcel_size);
-    QString mystr = "Current Parcel Size is "; mystr += QString::number(parcel_size); // Без этой записи никогда бы не докопался до истины :)
-    GUI_Write_To_Log(value, mystr);
+//    QString mystr = "Current Parcel Size is "; mystr += QString::number(parcel_size); // Без этой записи никогда бы не докопался до истины :)
+//    GUI_Write_To_Log(value, mystr);
 
     memcpy(dd.data(), Servos, DOF);
     dd.insert(parcel_size-2, 0x31); // Движение "Туда"
     dd.insert(parcel_size-1, thelast);
-    //dd.append(0x31);
-    //dd.resize(64);
-    //QByteArray dd = QByteArray::fromRawData(Servos, 6);
     Robot->GoToPosition(dd);
 }
 //+++++++++++++++++++++++++++++++++
@@ -1182,7 +1180,7 @@ void MainProcess::onSocketConnected_Slot()
  socketCV->write(request.toUtf8());
 
  // Запрос серверу отправили.
- // Ответ от сервера в слоте CV_onReadyRead_Slot()
+ // Ответ от сервера в слоте &MainProcess::CV_NEW_onReadyRead_Slot
 
  mainjsnObj = jsnStore->returnJsnActionGetBox();
  jsnStore->isAnyActionRunning = true;
@@ -1340,7 +1338,9 @@ void MainProcess::CV_onDisconnected()
   //  socketCV->close();
 }
 //+++++++++++++++++++++++++++++++++++++++++++++++++++
+// Слот сигнала &QIODevice::readyRead
 // Добавляем парсинг JSON-данных от CV
+// Также меняем значение mainjsnObj
 void MainProcess::CV_NEW_onReadyRead_Slot()
 {
     int value = 0xfafa;
@@ -1403,8 +1403,17 @@ void MainProcess::CV_NEW_onReadyRead_Slot()
     if (rDistance < 110 || rDistance > 230) {
         str = "!!!!!!!!!!!!!!!!! The distance is out of range !!!!!!!!!! ";
         GUI_Write_To_Log(value, str);
-        Robot->getbox_Action.rc = -4; // Ставим экшен RC в "waiting"
-        return;}
+        Robot->getbox_Action.rc = RC_WAIT; // Ставим экшен RC в "waiting"
+        jsnActionAnswer["name"] =  Robot->getbox_Action.name;
+        jsnActionAnswer["rc"] = Robot->getbox_Action.rc;
+        jsnActionAnswer["info"] = Robot->getbox_Action.info;
+
+        jsnDoc = QJsonDocument(jsnActionAnswer);
+        str = jsnDoc.toJson(QJsonDocument::Compact);
+        emit Write_2_TcpClient_Signal (str, value);
+
+        return;
+    }
 
     // Вот тут по уму надо передеать rDistance в класс cvdevice;
     // Но пока заколхозим глобальную переменную.
@@ -1419,11 +1428,6 @@ void MainProcess::CV_NEW_onReadyRead_Slot()
     str = "2nd !!! Bytes before reading "; str += QString::number(befbytes); GUI_Write_To_Log(value, str);
 
     str = "2nd !!! Bytes after reading  "; str += QString::number(afterbytes); GUI_Write_To_Log(value, str);
-
-
-    //socketCV->disconnectFromHost();
-    // Теперь запускаем захват кубика.
-
 
     //           // Запускаем захват объекта.  Теперь это значение distance отправляем в ф-цию GetBox
 
@@ -1441,13 +1445,14 @@ void MainProcess::CV_NEW_onReadyRead_Slot()
 
                str = jsnDoc.toJson(QJsonDocument::Compact);
 
-               GUI_Write_To_Log(value, "!!!!!!!!!!! Current Answer to GetBox command is ");
-               GUI_Write_To_Log(value, str);
+//               GUI_Write_To_Log(value, "!!!!!!!!!!! Current Answer to GetBox command is ");
+//               GUI_Write_To_Log(value, str);
 
                //str = QString::fromStdString(s2);
               // str = QJsonDocument(jsnStatus).toJson(QJsonDocument::Compact);
 
                emit Write_2_TcpClient_Signal (str, value);
+
 
 
 }
@@ -1461,11 +1466,13 @@ void MainProcess::GetBox(unsigned int distance)
 
     str = "I'm in GetBox !!! Current distance is ";
     str += QString::number(distance);
-    GUI_Write_To_Log(value, str);
+    //GUI_Write_To_Log(value, str);
+    // Пишем в лог Serial порта, чтобы не сливалось со статусами.
+    Robot->Write_To_Log(value,str);
 
-    str = "Inside GetBox the Current active command is ";
-    str += Robot->active_command;
-    GUI_Write_To_Log(value, str);
+//    str = "Inside GetBox the Current active command is ";
+//    str += Robot->active_command;
+//    GUI_Write_To_Log(value, str);
 
 
 
@@ -1475,20 +1482,6 @@ void MainProcess::GetBox(unsigned int distance)
    // unsigned char ptr;
 
 
-
-//        case 110: arrPtr = mob_pos_11; break;
-//        case 120: arrPtr = mob_pos_12; break;
-//        case 130: arrPtr = mob_pos_13; break;
-//        case 140: arrPtr = mob_pos_14; break;
-//        case 150: arrPtr = mob_pos_15; break;
-//        case 160: arrPtr = mob_pos_16; break;
-//        case 170: arrPtr = mob_pos_17; break;
-//        case 180: arrPtr = mob_pos_18; break;
-//        case 190: arrPtr = mob_pos_19; break;
-//        case 200: arrPtr = mob_pos_20; break;
-//        case 210: arrPtr = mob_pos_21; break;
-//        case 220: arrPtr = mob_pos_21; break;
-//        case 230: arrPtr = mob_pos_23; break;
 
     case 110: arrPtr = mob_2_pos_11; break;
     case 120: arrPtr = mob_2_pos_12; break;
@@ -1509,10 +1502,10 @@ void MainProcess::GetBox(unsigned int distance)
         GUI_Write_To_Log(value, "!!!!! Unrecognized position, Go to Parking !!!!");
         arrPtr = mob_parking_position; break;
         // Если позиция за рамками руки, значит что-то с распознаванием. Переводим в статус "waiting"
-        Robot->getbox_Action.rc = -4; //"waiting"
+        Robot->getbox_Action.rc = RC_WAIT; //"waiting"
       break;
 
-    }
+    } //switch (distance)
 
     //+++++++++++++++++++++++ Опустить хват для взятия кубика
      memcpy(Servos, arrPtr, DOF);
@@ -1527,11 +1520,14 @@ void MainProcess::GetBox(unsigned int distance)
 */
 
      //++++++++++++++++++++++ Сжать захват
+    str = "BEFORE CATCH Servo[0] is ";
+    str += QString::number(Servos[0]);
+    GUI_Write_To_Log(value, str);
 
      quint8 FULL_OPENED, FULL_CLOSED;
-     FULL_CLOSED = 35;
-     FULL_OPENED = 90;
-     if (Servos[0]>FULL_CLOSED){ Servos[0]=FULL_CLOSED;}
+     FULL_CLOSED = 90;
+     FULL_OPENED = 35;
+     if (Servos[0]<FULL_CLOSED){ Servos[0]=FULL_CLOSED;}
      else {Servos[0]=FULL_OPENED;}
 
      //memcpy(Servos, arrPtr, DOF);

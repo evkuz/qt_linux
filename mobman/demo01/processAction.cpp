@@ -20,7 +20,7 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
 // Меняем содержмое theObj в зависимости от rc
 //    str = theObj.value("rc").toString();
 //    GUI_Write_To_Log(value, str);
-    int returnCode = theObj.value("rc").toInt() ;
+    int returnCode = theObj.value("rc").toInt();
 
     switch (returnCode) {
 
@@ -91,14 +91,12 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
             theObj["state"] = DEV_ACTION_STATE_RUN;
 
             str = QJsonDocument(theObj).toJson(QJsonDocument::Indented);
-            // Вот это нужно, отправляем ответ на запуск экшена
 
-            // while detection is not checked don's send that it's ok
+            // Отправляем ответ на запуск экшена
+            // while detection is not checked dont's send that it's ok
             if (indexOfCommand != 5) {
                 emit Write_2_TcpClient_Signal(str, this->tcpSocketNumber);
                 jsnStore->setActionData(theObj);
-
-
             }
 
             QJsonObject headStatus = {
@@ -108,6 +106,14 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
             };
 
             jsnStore->setJsnHeadStatus(headStatus);
+
+            // Установлено значение экшена
+            // Установлено значение заголовка
+            // А вместе они склеиваются в tcpParcing.cpp (Data_From_TcpClient_Slot)
+            // И это хороший вопрос, что быстрее - тут склеить в один JsonObject и при запросах статуса его выдавать готовый
+            // Или склеивать их каждый раз при запросе статуса ?
+            // По логике  - каждый раз склеивать - более время затратно, чем брать готовое...
+
 
 //            launchActionAnswer["name"] = theObj.value("name").toString();
 //            launchActionAnswer["rc"] = RC_SUCCESS;
@@ -126,9 +132,9 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
 //                jsnStore->setActionDone(theObj);
 //                break;
 
-            case 2: // clamp
-                if(Servos[0]==0) { Servos[0]=90;}
-                else {Servos[0]=0;}
+            case 2: // clamp FULL_CLOSED = 80; FULL_OPENED = 35;
+                if(Servos[0]<=80) { Servos[0]=80;}
+                else {Servos[0]=35;}
                 this->send_Data(LASTONE);
                 break;
             case 3: // "get_box"
@@ -217,5 +223,11 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
     } // switch (returnCode)
 
 //    str = "PROCESSING ACTION IS FINISHED";
-//    GUI_Write_To_Log(value,str);
+    //    GUI_Write_To_Log(value,str);
+}
+
+void MainProcess::LogFile_Open(QString fname)
+{
+    mobWebLogFile.setFileName(fname);
+    mobWebLogFile.open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text);
 }// ProcessAction

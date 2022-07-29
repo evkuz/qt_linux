@@ -5,7 +5,7 @@ JsonInfo::JsonInfo()
     currentStatus = {DEV_NAME, RC_SUCCESS,  "OK", DEV_HEAD_STATE_WAIT}; // Инициализируем структуру
     action_command = "nothing";
 //    struc_2_json(jsnOB1, currentStatus); // Инициализируем  jsnOB1 данными из структуры выше
-    init_json();
+    init_json(); // also initializing jsnData
     init_actions();
     isAnyActionRunning = false;
 }
@@ -408,7 +408,13 @@ void JsonInfo::init_actions()
         {"rc", RC_WAIT}
     };
 
+    jsnActionReady = {
+        {"name", "ready"},
+        {"state", DEV_ACTION_STATE_WAIT},
+        {"info", "TEST position"}, //"Set device's clamper in transporting position"
+        {"rc", RC_WAIT}
 
+    };
 
 //    actionListp = {jsnActionClamp, jsnActionStart, jsnActionPutbox, jsnActionReset, jsnActionCollapse};
     jsnObjArray = {jsnActionClamp, jsnActionParking, jsnActionReady, jsnActionReset, jsnActionGetBox, jsnActionPutbox, \

@@ -25,7 +25,7 @@ public:
 
 #define serial_speed Baud115200
 #define robot_buffer_SIZE 32
-#define Log_File_Name       "./hiwonder.log"
+#define Log_File_Name       "./serial.log"
 #define SOURCE_POINTS_FILE  "../source_points.xls"
 #define DOF 4     // mobman
 //#define szData 6 //Размер посылки в байтах

@@ -119,6 +119,7 @@ public:
 #define BEFORE_LAST 0xE9 //233  // Предпоследняя команда - положить кубик на тележку.
 #define AFTER_PUT   0xF4 //244  Кубик на тележку положили, теперь грамотно убираем манипулятор.
 
+#define MOBMAN_LOG "./mobman.log"
 //++++++++++++++++++++++ JSON data +++++++++++++++++++++++++++++++++++++++++++++
 
 #define DEVICE_NAME "MOBMAN"   // device name - mobile manipulator
@@ -156,6 +157,7 @@ public:
     int currentCommandIndex; // Индекс выполняемой в данный момент команды в списке tcpCommand
                              // Только для команд, выполняемых манипулятором, чтобы отличать от прочих.
 
+    QFile mobWebLogFile;
 
     unsigned int CVDistance;
 
@@ -179,6 +181,7 @@ public:
     int getIndexCommand(QString myCommand, QList<QString> theList);
 //  void ProcessAction (HiWonder::ActionState * actionName);
     void ProcessAction(int indexOfCommand, QJsonObject &theObj); // Отрабатывает команду по заданному индексу из списка QList<QString> theList
+    void LogFile_Open (QString fname);
 private:
 //    SocketClient readSocket;
 

@@ -34,27 +34,11 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
 
     substr = message;
 
-//    str = "WRONG DATA from TCP !!!";
-//    // Определяем индекс команды в списке MainProcess::tcpCommand
-//    if (message == str)
-//    {
-//        GUI_Write_To_Log(value, str);
-//        return;
-//    }
     //mutex.lock();
     int comIndex = getIndexCommand(substr, tcpCommand);
 
-//    if (comIndex < 0) {
-//        GUI_Write_To_Log(value, str);
-//        mutex.unlock();
-//        return;}
-//    str = "Index value is "; str += QString::number(comIndex); str += ",\n";
-//    str += "List value on that index is \""; str += tcpCommand.at(comIndex); str += "\"";
-//    GUI_Write_To_Log(value, str);
 
     // So here we've got the index of elemnt representing the command received by TCP
-    // set value of Robot->active_command
-    // Формируем значение jsnStore->isAnyActionRunning
     //jsnStore->createActionList();
     //mutex.unlock();
 
@@ -104,7 +88,7 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
 
         }
         // set aimed action values to tempObj
-        // Here we are managedd to not getting dangling pointer.
+        // Here we are managed to not getting dangling pointer.
         // Ничего не меняем в состояниях экшена, так проще
 //        jsnStore->setActionData(tempObj);
         launchActionAnswer = tempObj;
@@ -144,53 +128,23 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
     case 0: // status
 
         // Нужно добавлять активный экшен, либо пустой список
-//        str = "Going to create action_list";
-//        GUI_Write_To_Log(value, str);
-        // Надо данные из mainjsnObj переписать в соответствующую jsnAction...
-        // В общем надо с указателями работать.
-        // Если serial port не открыт, иначе не узнаем
-//        mainjsnObj["rc"] = 0;
-//        mainjsnObj["state"] = "Running";
-//        mainjsnObj["info"] = "Request Accepted";
-//        jsnStore->setJsnHeadStatus(mainjsnObj);
         jsnStore->createActionList(); // формируем список, записываем данные в jsnData, делаем merge (jsnActionList, jsnHeadStatus)
 
         //str += QJsonDocument(jsnStore->jsnActionList).toJson(QJsonDocument::Indented);
         str = jsnStore->returnJsnData();
         GUI_Write_To_Log(value, str);
-//        str = jsnStore->returnJsnData();
-//        str = "{\n\t\"status\": \"testing\"\t\n}";
-//        s2 = jsnStore->jsnInfo.dump(indent);
-//        str = QString::fromStdString(s2);
+        //        str = jsnStore->returnJsnData();
+        //        str = "{\n\t\"status\": \"testing\"\t\n}";
+        //        s2 = jsnStore->jsnInfo.dump(indent);
+        //        str = QString::fromStdString(s2);
 
 
-        //Robot->Write_To_Log(value, str);
+                //Robot->Write_To_Log(value, str);
 
 
         Robot->active_command = "status";
         emit Write_2_TcpClient_Signal (str, this->tcpSocketNumber);
 
-//        str = "Current QJsonDocument is ";
-//        str += QJsonDocument(mainjsnObj).toJson(QJsonDocument::Indented);
-//        //emit Write_2_TcpClient_Signal (str);
-//        GUI_Write_To_Log(value, str);
-
-//        str = "Data from jsnData : \n";
-//        str += jsnStore->returnJsnData();
-//        GUI_Write_To_Log(value, str);
-
-//        str = "Data from jsnObj AS GLOBAL : \n";
-//        str += QJsonDocument(jsnStore->returnAllActions()).toJson(QJsonDocument::Indented);
-//        GUI_Write_To_Log(value, str);
-
-//        str = QJsonDocument(jsnStore->jsnActionClamp).toJson(QJsonDocument::Indented);
-//        GUI_Write_To_Log(value, str);
-
-//        emit Write_2_TcpClient_Signal (str);
-
-//        aaa = jsnStore->actionListp.at(0);
-//        str = QJsonDocument(aaa).toJson(QJsonDocument::Indented);
-//        GUI_Write_To_Log(value, str);
 
 
         break;
