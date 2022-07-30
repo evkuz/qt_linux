@@ -21,7 +21,7 @@
  *
  * Запаускаем gui-client /home/ubuntu/iqr_lit/mobman/gui-client/release/gui-client
  *
- * Запускаем "HIWONDER http server" - http://192.168.1.175:5001
+ * Запускаем "HIWONDER http server" -
  *
  * Запускаем команды вручную - http://192.168.1.175:8383/run?cmd=getactions&
  *
