@@ -236,7 +236,7 @@ void MainProcess::on_trainButton_clicked()
     GUI_Write_To_Log(value, str);
 
     // Нужна проверка, запущен ли сервис robot.hiwonder.service
-    if (readSocket.GetState(&state) == 0)
+    if (readSocket.GetState(&state) == 0) // Ф-ция вернула 0, т.е. все ОК.
       {
         str = "Inside IF !!!!!!!!!!!!!";
         GUI_Write_To_Log(value, str);
@@ -270,7 +270,7 @@ void MainProcess::on_trainButton_clicked()
             DETECTED = true;
 
             mainjsnObj["rc"] = JsonInfo::AC_Launch_RC_RUNNING; // Чтобы экшен мог запуститься
-            mainjsnObj["name"] = "start";
+            mainjsnObj["name"] = "start"; // ? =jsnStore->jsnActionStart.value("name").toString();
             mainjsnObj["info"] = str;
             mainjsnObj["state"] = DEV_ACTION_STATE_RUN;
 
@@ -296,11 +296,10 @@ void MainProcess::on_trainButton_clicked()
             jsnStore->returnJsnStatus(); // Берем данные из ordered_json jsnStatus и передаем в QJsonObject::jsnObj
 
             jsnStore->setActionStart2NoDetection(); // jsnstor->jsnData changing also and having these last data
-            //
-//            str = jsnStore->returnJsnData();
-            // теперь делаем экшен доступным для перезапуска
+
+            // Детекции нет, однако оставляем экшен доступным для перезапуска
             mainjsnObj["rc"] = JsonInfo::AC_Launch_RC_DONE; // Чтобы экшен мог запуститься
-            mainjsnObj["name"] = "start";
+            mainjsnObj["name"] = "start"; // ? =jsnStore->jsnActionStart.value("name").toString();
             mainjsnObj["info"] = str;
             mainjsnObj["state"] = DEV_ACTION_STATE_FAIL;
 
@@ -656,14 +655,12 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
             theObj["state"] = DEV_ACTION_STATE_RUN;
 
             str = QJsonDocument(theObj).toJson(QJsonDocument::Indented);
-            // Вот это нужно, отправляем ответ на запуск экшена
 
+            // Отправляем ответ на команду запуска экшена
             // while detection is not checked don's send that it's ok
             if (indexOfCommand != 5) {
                 emit Write_2_TcpClient_Signal(str, this->tcpSocketNumber);
                 jsnStore->setActionData(theObj);
-
-
             }
 
             QJsonObject headStatus = {
@@ -811,6 +808,9 @@ void MainProcess::Moving_Done_Slot()
     GUI_Write_To_Log(value, str);
     // Передаем QJsonObject в свой класс и там все меняем через replace...
     jsnStore->setActionDone(mainjsnObj);
+
+    // И, на будущее... Возможно тут вызываем jsnStore->createActionList();  смена статуса inprogress->done
+    // А в tcpParcing только выводим готовый jsnData.
 
     // Меняем значение.
     jsnStore->isAnyActionRunning = false;

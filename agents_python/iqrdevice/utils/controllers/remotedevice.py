@@ -70,7 +70,7 @@ class RemoteDevice(BaseController):
 
     def __send_get_request(self, url:str, params:Optional[dict], timeout:float)->dict:
         try:
-            resp = requests.get(url=url, params=params, timeout=30)
+            resp = requests.get(url=url, params=params, timeout=timeout)
         except Exception as e:
             raise e
         try:

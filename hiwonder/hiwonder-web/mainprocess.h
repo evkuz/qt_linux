@@ -58,7 +58,7 @@ public:
     JsonInfo    *jsnStore;
     QJsonObject mainjsnObj; // temporal Текущий экшен
     QJsonObject launchActionAnswer;  // Ответ на запуск экшена
-    QJsonDocument myjsnDoc;
+//    QJsonDocument myjsnDoc;
     size_t abc;
 
     //QJsonValueRef &myjsnObj;

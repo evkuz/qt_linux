@@ -1,5 +1,6 @@
 #include <QCoreApplication>
-#include "qsimpleserver.h"
+//#include "qsimpleserver.h"
+#include "manipulator/qsimpleserver.h"
 #include "mainprocess.h"
 
 int main(int argc, char *argv[])

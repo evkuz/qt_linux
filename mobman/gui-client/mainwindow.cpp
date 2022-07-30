@@ -465,7 +465,7 @@ void MainWindow::timerProcessing_Slot()
     request += " HTTP/1.1";
     request += "\r\nHost: ";
     //request += "192.168.1.201:8383\r\n";
-    request += HIWONDER_IP; request+=":"; request+=strARM_Port; request+="\r\n";
+    request += HIWONDER_IP; request+=":"; request+=strARM_Port; request+="\r\n"; //request += QString::number(CVDev_Port);
     request += "Accept: */*\r\n";
     request += "Access-Control-Allow-Origin: *\r\n";
     request += "\r\n";
