@@ -6,7 +6,7 @@
 #ifndef POSITIONS_H
 #define POSITIONS_H
 
-#include <QtCore>
+//#include <QtCore>
 
 //+++++++++++++++ ЗАХВАТ РУЧНИКА ИМЕЕТ НОМЕР ПРИВОДА 0 - ИДЕТ 1-Й В СПИСКЕ.
 
@@ -21,7 +21,7 @@ unsigned char after_put_position [6] = {0, 93, 90, 45, 135, 30};
 
 unsigned char mob_parking_position [4] = {70,90,90,160};//,45,45,49,222
 unsigned char mob_ready_position [4] = {35,90,135,165};
-unsigned char mob_moving_position [4] = {70,90,45,180}; //
+unsigned char mob_moving_position [4] = {90,90,45,180}; // Для малого кубика 70-закрыто
 
 
 //unsigned char mob_pos_10 [4] = {35,90,120,60};
@@ -97,3 +97,4 @@ put_box_2 = [45, 93, 0, 7, 113, 180]
 catch_box_3 = [80, 93, 0, 7, 113, 180]
 */
 #endif // POSITIONS_H
+

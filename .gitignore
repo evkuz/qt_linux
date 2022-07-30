@@ -89,3 +89,7 @@ Thumbs.db
 agents_python/**/cam_color_range.txt
 
 **/__pycache__/
+
+mobman/build*
+hiwonder/build*
+
