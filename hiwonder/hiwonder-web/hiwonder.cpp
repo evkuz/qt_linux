@@ -134,6 +134,7 @@ int HiWonder::Open_Port_Slot(QString portname)
     this->Write_To_Log(0xFF00, str);
     exit_code = 1; //success
     }//else
+
     return exit_code;
 
 }
@@ -228,11 +229,44 @@ void HiWonder::ReadFromSerial_Slot ()
 }
 //++++++++++++++++++++++++++++++++++++++++
 // Слот сигнала QSerialPort::errorOccurred
+// Google for enum QSerialPort::SerialPortError
+// https://doc.qt.io/qt-5/qserialport.html#SerialPortError-enum
 void HiWonder::SerialError_slot(QSerialPort::SerialPortError error)
 {
  int value = 0x7070;
- QString str = "Serial Port ERROR !!!!!!!\n";
- str += "  "; str += QString::number(error);
+ QString str, str1;
+
+ switch (error) {
+
+ case 0:
+     str = "No Error";
+     break;
+ case 1:
+     str = "An error occurred while attempting to open an non-existing device.";
+     break;
+
+ case 2:
+     str = "An error occurred while attempting to open an already opened device by another process";
+     str += " or a user not having enough permission and credentials to open.";
+     break;
+ case 3:
+     str = "An error occurred while attempting to open an already opened device in this object.";
+     break;
+ case 7:
+     str = "An I/O error occurred while writing the data.";
+     break;
+ case 8:
+     str = "An I/O error occurred while reading the data.";
+     break;
+
+
+
+ }
+
+// str1 = "Serial Port ERROR !!!!!!!\n";
+// str1 += "Error number:  "; str += QString::number(error);
+ str1 = "Serial Port ERROR number ";  str1 += QString::number(error); str1 += " == ";
+ str.insert(0, str1);
  this->Write_To_Log(value, str);
 
 }
