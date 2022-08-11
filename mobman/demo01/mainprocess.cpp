@@ -576,7 +576,7 @@ void MainProcess::send_Data(unsigned char thelast)
 {
    // QString str;
 
-    int value = 0xcdcd;
+//    int value = 0xcdcd;
     QByteArray dd ;
     dd.resize(parcel_size);
 //    QString mystr = "Current Parcel Size is "; mystr += QString::number(parcel_size); // Без этой записи никогда бы не докопался до истины :)
