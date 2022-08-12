@@ -112,6 +112,12 @@ public:
 
 
 //#define
+// Актуально для разных размеров кубика
+#define FULL_CLOSED 80
+#define FULL_OPENED 35
+
+
+
 #define FORWARD     0X31 //049
 #define BACKWARD    0X30 //048
 #define NOT_LAST    0xC8 //200  // Не последняя команда

@@ -99,7 +99,7 @@ private:
     SocketClient readSocket; // Читаем координаты из файла сокета.
 
 public slots:
-void Data_From_TcpClient_Slot(QString, int socketNumber);
+void Data_From_TcpClient_Slot(QString, qintptr socketNumber);
 // slot for QSocketThread::socketErrorToLog_Signal
 //void socketErrorToLog_Slot(QString); // write to log socketError message
 
@@ -111,7 +111,7 @@ private slots:
 
 signals:
     void Open_Port_Signal(QString portname); // Сигнал даем по нажатию кнопки "OPEN"
-    void Write_2_TcpClient_Signal(QString, int socketNumber); // Сигнал вебсерверу, - пересылка данных в сокет на отправку.
+    void Write_2_TcpClient_Signal(QString, qintptr socketNumber); // Сигнал вебсерверу, - пересылка данных в сокет на отправку.
 //    void StartTakeAndPutSignal();
 
 

@@ -32,17 +32,7 @@ MainProcess::MainProcess(QObject *parent)
     // Инициализируем все json-статусы
     jsnStore = new JsonInfo();
     mainjsnObj = jsnStore->returnJsnActionReset(); //set global value
-//    jsnStore->init_json();
-// Сейчас объект jsnObj хранит данные из jsnOB1.
-// Получаем объект jsnObj через returnJsonObject()
-
-//    str = QJsonDocument(jsnStore->returnJsonObject()).toJson(QJsonDocument::Indented);
-//    str = QJsonDocument(jsnStore->jsnActionList).toJson(QJsonDocument::Indented);
-//    QString S3 = "JSON object 1 : \n";
-//    S3 += str;
     jsnStore->createActionList();
-//    str = jsnStore->returnJsnData();
-//    GUI_Write_To_Log(value, str);
 
 //   traversJson(jsnStore->jsnHeadStatus);
 
@@ -53,7 +43,7 @@ MainProcess::MainProcess(QObject *parent)
     str = "The application \"";  str +=target_name; str += "\"";
     Robot->Write_To_Log(0xf000, str.append(" is started successfully!!!\n"));
 
-    // write to the same faile &Robot->LogFile
+    // write to the other file &this->hwrWebLogFile
     GUI_Write_To_Log(0000, "Going to Start QTcpSErver");
     if (server.isListening ()) {
 
@@ -63,39 +53,13 @@ MainProcess::MainProcess(QObject *parent)
         GUI_Write_To_Log(0000, str);
     }
 
-    qDebug() << QThread::idealThreadCount() << " - the ideal number of threads that can be run on the system.";
-//    Robot->Write_To_Log(value, S3);
+//    qDebug() << QThread::idealThreadCount() << " - the ideal number of threads that can be run on the system.";
 
-//  s1 хранит данные данные об одном экшене : nlohmann::jsnActionTST, преобразуем его в QJsonObject jsnObj2
-//    str = QString::fromStdString(jsnStore->s1); // json-овтет остальное
-//    str = QJsonDocument(jsnStore->returnJsonObject2()).toJson(QJsonDocument::Indented);
-//    S3 = "JSON ACTION object : \n";
-//    S3 += str;
-//    Robot->Write_To_Log(value, S3);
-
-    // Inititalize actions, each as QJsonObject.
-    // Initialize actions_list as empty QJsonArray
-    //jsnStore->init_actions(); // already in jsnStore
 
     str = QJsonDocument(jsnStore->jsnActionList).toJson(QJsonDocument::Indented);
     S3 = "JSON ACTIONLIST : \n";
     S3 += str;
     Robot->Write_To_Log(value, S3);
-
-    // Вызываем объединение json-объектов по имени экшена. Т.е. к шапке добавляем данные
-    // конкретного экшена. В данном случае эти данные заранее в переменной s1
-//     jsnStore->makeJson_Answer_Slot("clamp"); // Получаем строку из 2 объектов в переменной jsnData
-//     str = jsnStore->jsnData;
-//     str = jsnStore->returnJsnData();
-//     S3 = "JSON MERGED object : \n";
-//     S3 += str;
-//     Robot->Write_To_Log(value, S3);
-
-//    str = "ActionList size is ";
-//    str += QString::number(jsnStore->jsnActionList.size());
-//    str += " elements";
-//    Robot->Write_To_Log(value, str);
-
 
 //    traversJson(jsnStore->jsnObj);
 // Тут мы знаем имя переменной. Или достаточно имя метода...
@@ -140,28 +104,28 @@ MainProcess::MainProcess(QObject *parent)
     // Arduino Mega - как "ttyACM0"
     // emit Open_Port_Signal("ttyUSB1");
 
-//    str = "Current Servo values are : ";
-//    str += QString::number(Servos[0]);
-//    GUI_Write_To_Log(value, str);
 
-    int OKay = Robot->Open_Port_Slot("ttyUSB0");
+    int OKay = Robot->Open_Port_Slot("ttyUSB0"); // 1 - means "success"
     if (!OKay) { //!Robot->SerialIsOpened
         Robot->current_st_index = 4;
+        OKay = Robot->Open_Port_Slot("ttyUSB1");
 
-       OKay = Robot->Open_Port_Slot("ttyUSB1");
+        if (!OKay){
+                    GUI_Write_To_Log(value, "SerialPort  PROBLEM !!!");
+                    // state = "fail"
+                    jsnStore->setHeadStatusFail();
+                    Robot->SetCurrentStatus("Fail");
 
-    } // Robot->GetCurrentStatus() = statuslst.at(4)
+                    qDebug() << "SerialPort  PROBLEM !!!";
 
-    if (!OKay){
-                GUI_Write_To_Log(value, "SerialPort  PROBLEM !!!");
-                // state = "fail"
-                jsnStore->setHeadStatusFail();
-                Robot->SetCurrentStatus("Fail");
-                jsnStore->isAnyActionRunning = false;
-                qDebug() << "SerialPort  PROBLEM !!!";
+                    // ТОгда таймер на переоткрытие порта пускаем ???
+        }
 
-                // ТОгда таймер на переоткрытие порта пускаем ???
-    };
+
+    } //
+
+    jsnStore->isAnyActionRunning = false;
+
     //+++++++++ Проверяем, что работает QSerialPort, открываем/закрываем хват
 //    QThread::sleep(2);
 //    //on_clampButton_clicked();

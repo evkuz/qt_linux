@@ -233,22 +233,22 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
         GUI_Write_To_Log(value, str);
 
         break;
-    case 10: //lock
+    case 13: //lock
         mainjsnObj = jsnStore->returnJsnActionLock();
         ProcessAction(comIndex, mainjsnObj);
        break;
-    case 11: //unlock
+    case 14: //unlock
         mainjsnObj = jsnStore->returnJsnActionUnLock();
         ProcessAction(comIndex, mainjsnObj);
        break;
 
 
 
-    case 13: //collapse
-        // Robot->active_command = "collapse";
-        mainjsnObj = jsnStore->returnJsnActionCollapse();
-        ProcessAction(comIndex, mainjsnObj);
-        break;
+//    case 13: //collapse
+//        // Robot->active_command = "collapse";
+//        mainjsnObj = jsnStore->returnJsnActionCollapse();
+//        ProcessAction(comIndex, mainjsnObj);
+//        break;
 
     default:
         str = "The Command with index ";
