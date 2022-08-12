@@ -359,11 +359,11 @@ void MainProcess::on_socketButton_clicked()
 //+++++++++++++++++++++++++++++++++++++++  ->text().toInt()
 void MainProcess::on_clampButton_clicked()
 {
-    quint8 FULL_OPENED, FULL_CLOSED;
-    FULL_CLOSED = 80;
-    FULL_OPENED = 35;
+//    quint8 FULL_OPENED, FULL_CLOSED;
+//    FULL_CLOSED = 80;
+//    FULL_OPENED = 35;
     // Если открыто, то закрываем
-    if (Servos[0]<FULL_CLOSED){ Servos[0]=FULL_CLOSED;}
+    if (Servos[0] < FULL_CLOSED){ Servos[0]=FULL_CLOSED;}
     else {Servos[0]=FULL_OPENED;}
 
     //on_set_posButton_clicked();
@@ -980,8 +980,11 @@ int MainProcess::getIndexCommand(QString myCommand, QList<QString> theList)
     int value = 0x3355;
 
     while (!matched and i< theList.size()){
-        sPosition = message.indexOf(theList.at(i));
-        if (sPosition != -1) {matched = true; qDebug() << "Inside sPosition is " << sPosition;}
+        if(message == theList.at(i)) {
+            matched = true;
+            qDebug() << value << "Index is " << i;
+        }
+
         ++i;
     }
 
@@ -990,7 +993,8 @@ int MainProcess::getIndexCommand(QString myCommand, QList<QString> theList)
         GUI_Write_To_Log(value, str);
         return -1;
     }
-    qDebug() << "Index value is" << --i;
+    i--;
+    qDebug() << value << "Index value is" << i;
     qDebug() << "Matched command sPosition is " << sPosition;
     if (i>=0) {qDebug() << "Matched string is " << theList.at(i);}
 
@@ -1474,6 +1478,9 @@ void MainProcess::GetBox(unsigned int distance)
 //    str += Robot->active_command;
 //    GUI_Write_To_Log(value, str);
 
+// 1st - "unlock"
+    Servos[0]=0;
+    this->send_Data(LASTONE); //NOT_LAST LASTONE
 
 
     // Выбираем массив углов через switch, потом попробуем через словарь, т.е. ключ - значение, где значением будет массив
@@ -1524,13 +1531,10 @@ void MainProcess::GetBox(unsigned int distance)
     str += QString::number(Servos[0]);
     GUI_Write_To_Log(value, str);
 
-     quint8 FULL_OPENED, FULL_CLOSED;
-     FULL_CLOSED = 90;
-     FULL_OPENED = 35;
-     if (Servos[0]<FULL_CLOSED){ Servos[0]=FULL_CLOSED;}
-     else {Servos[0]=FULL_OPENED;}
-
-     //memcpy(Servos, arrPtr, DOF);
+//     quint8 FULL_OPENED, FULL_CLOSED;
+//     FULL_CLOSED = 90;
+//     FULL_OPENED = 35;
+     Servos[0]=FULL_CLOSED;
      this->send_Data(NOT_LAST);  // Уже не LASTONE
 
 

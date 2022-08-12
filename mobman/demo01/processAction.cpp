@@ -180,17 +180,18 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
                 this->send_Data(LASTONE);
 
                 break;
-            case 10: // "lock"
+            case 13: // "lock"
                 str = "Going to lock the gripper";
-                GUI_Write_To_Log(value,str);
-                Servos[0]=90;
+                Robot->Write_To_Log(value,str);
+
+                Servos[0]=FULL_CLOSED;
                 this->send_Data(LASTONE); //NOT_LAST LASTONE
 
                 break;
-            case 11: // "unlock"
-                str = "Going to unlock the gripper";
-                GUI_Write_To_Log(value,str);
-                Servos[0]=0;
+            case 14: // "unlock"
+                str = "Going to UNlock the gripper";
+                Robot->Write_To_Log(value,str);
+                Servos[0]=FULL_OPENED;
                 this->send_Data(LASTONE); //NOT_LAST LASTONE
 
                 break;

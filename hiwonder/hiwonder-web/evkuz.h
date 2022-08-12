@@ -42,6 +42,14 @@
  *
  *   Ensuring programs are race-free is one of the central difficulties of threaded programming.
  *
+ *  Ловим favicon.ico
+ *  sudo tcpdump -A -i lo -v -n host 192.168.1.175 and dst port 8383 and src port ! 22
+ *
+ * //++++++++++++++++++++++++++++++++++++++++++++++++++
+ * 11.08.2022
+ * Тут тоже не ловит запрос "GET /favicon.ico HTTP/1.1"
+ * Что-то тут не то...
+ * "...Пока ты не выйдешь из слота, сигналов тебе не поступит." - может поэтому не вижу favicon ?
  *
  * //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
  * 31.07.2022
