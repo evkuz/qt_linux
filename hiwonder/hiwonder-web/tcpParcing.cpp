@@ -18,7 +18,7 @@
 // ProcessAction запускаем только для значений индекса команды 0 или 1.
 // Для остальных значений, оставляем как было. Только в новом файле теперь.
 
-void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
+void MainProcess::Data_From_TcpClient_Slot(QString message, qintptr socketNumber)
 {
     QString str, substr;
     int value = 0xf00f;
