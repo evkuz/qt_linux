@@ -976,7 +976,6 @@ int MainProcess::getIndexCommand(QString myCommand, QList<QString> theList)
     int i = 0;
     QString message, str ;
     message = myCommand;
-    int sPosition; // Индекс искомой строки в тексте.
     int value = 0x3355;
 
     while (!matched and i< theList.size()){
@@ -995,7 +994,6 @@ int MainProcess::getIndexCommand(QString myCommand, QList<QString> theList)
     }
     i--;
     qDebug() << value << "Index value is" << i;
-    qDebug() << "Matched command sPosition is " << sPosition;
     if (i>=0) {qDebug() << "Matched string is " << theList.at(i);}
 
     return i;
