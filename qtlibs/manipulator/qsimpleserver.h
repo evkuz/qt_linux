@@ -33,26 +33,30 @@ public:
     QSocketThread *tcpthread;
     quint16 tcpport = 8383;  // Порт, который слушает QTcpServer
     QByteArray tcpdata;
-    //Метод, вызываемый при подключении нового соединения
-    void incomingConnection(qintptr sDescriptor) override;
+    bool isCreatedSocket; // socket creation flag
+    //QTcpSocket *createdSocket;
+    int counterConnections; // counter for incoming tcp connections
+    //Метод, вызываемый при подключении нового соединения.
+    void incomingConnection(qintptr sDescriptor) override; // virtual YES !!! override EXACTLY !
 
 signals:
     // Сигнал на отправку данных наверх, уже роботу.
-    void Data_From_TcpClient_Signal(QString);
+    void Data_From_TcpClient_Signal(QString, qintptr socketNumber);
     // Сигнал на отправку данных вниз, в сокет
-    void Data_2_TcpClient_Signal(QString);
+    void Data_2_TcpClient_Signal(QString, qintptr socketNumber);
 
 
 public slots:
     // Слот принятия строки для отправки клиенту в сокет
     // Обработчик сигнала сверху  Write_2_Client_Signal(QString)
-    void Write_2_TcpClient_SLot(QString);
+    void Write_2_TcpClient_SLot(QString, qintptr socketNumber);
     //Слот отправки наверх команды на выполнение
     // Срабатывает по сигналу ommand_4_Parsing_Signal(QString);
-    void Command_4_Parsing_Slot(QString);
-    //Added by Miksarus
-//    void SetCurrentState(QString);
+    void Command_4_Parsing_Slot(QString, qintptr);
 
+    //Слот получает указатель на вновь созданный сокет - обект QTcpSocket*
+    void isCreatedSocket_Slot(QTcpSocket*); // Слот сигнала QSocketThread::isCreatedSocket_Signal(QTcpSocket);
+    void finshQThread_Slot();
 };
 
 #endif // QSIMPLESERVER_H
