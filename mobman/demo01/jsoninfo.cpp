@@ -416,9 +416,17 @@ void JsonInfo::init_actions()
 
     };
 
+    jsnActionForMoving = {
+        {"name", "formoving"},
+        {"state", DEV_ACTION_STATE_WAIT},
+        {"info", "Going to target position"}, //"Set device's clamper in transporting position"
+        {"rc", RC_WAIT}
+
+
+    };
 //    actionListp = {jsnActionClamp, jsnActionStart, jsnActionPutbox, jsnActionReset, jsnActionCollapse};
     jsnObjArray = {jsnActionClamp, jsnActionParking, jsnActionReady, jsnActionReset, jsnActionGetBox, jsnActionPutbox, \
-                   jsnActionUnKnown, jsnActionLock, jsnActionUnLock}; //
+                   jsnActionUnKnown, jsnActionLock, jsnActionUnLock, jsnActionForMoving}; //
     jsnHeadStatus = {
         {"name", DEV_NAME},
         {"rc", RC_UNDEFINED}, //RC_SUCCESS
@@ -634,6 +642,12 @@ QJsonObject &JsonInfo::returnJsnActionParking()
 QJsonObject &JsonInfo::returnJsnActionReady()
 {
     return this->jsnActionReady;
+}
+//+++++++++++++++++++++++++++++++++++++++++++++
+
+QJsonObject &JsonInfo::returnJsnActionForMoving()
+{
+    return this->jsnActionForMoving;
 }
 //+++++++++++++++++++++++++++++++++++++++++++
 QJsonObject JsonInfo::returnAllActions()

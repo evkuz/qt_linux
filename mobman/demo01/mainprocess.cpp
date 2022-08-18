@@ -1358,11 +1358,11 @@ void MainProcess::CV_NEW_onReadyRead_Slot()
     if (befbytes == 17) {// Пришла строка HTTP/1.0 200 OK, обрабатывать не нужно, выходим.
         return;
     }
-    int afterbytes = socketCV->bytesAvailable();
+//    int afterbytes = socketCV->bytesAvailable();
 
-    str = "Bytes before reading "; str += QString::number(befbytes); GUI_Write_To_Log(value, str);
+//    str = "Bytes before reading "; str += QString::number(befbytes); GUI_Write_To_Log(value, str);
 
-    str = "Bytes after reading  "; str += QString::number(afterbytes); GUI_Write_To_Log(value, str);
+//    str = "Bytes after reading  "; str += QString::number(afterbytes); GUI_Write_To_Log(value, str);
 
 
     GUI_Write_To_Log(value, "!!!!!!!!!!!!!!!!! There are some CONTROL data from SOCKET device !!!!!!!!!!!!!!!!!!!!");
@@ -1393,20 +1393,20 @@ void MainProcess::CV_NEW_onReadyRead_Slot()
 
    // double cvdistance = substr.toDouble();
 
-    str = "Got distance in local value as double : ";
-    str += QString::number(cvdistance);
+//    str = "Got distance in local value as double : ";
+//    str += QString::number(cvdistance);
 
-    GUI_Write_To_Log(value, str);
+//    GUI_Write_To_Log(value, str);
 
     // Переводим double в int и округляем до ближайшего десятка
     int cvd = round(cvdistance);
     // Получили значение с точностью до 1мм, а нам надо округлить до 10мм.
 
     // Теперь сопоставляем значение cvd с числами в массиве
-    str = "!!!!!!!!!!!!!!!!! The distance as int value : ";
-    substr =  QString::number(cvd);
-    str += substr;
-    GUI_Write_To_Log(value, str);
+//    str = "!!!!!!!!!!!!!!!!! The distance as int value : ";
+//    substr =  QString::number(cvd);
+//    str += substr;
+//    GUI_Write_To_Log(value, str);
 
     unsigned int rDistance = my_round(cvd);
     str = "!!!!!!!!!!!!!!!!! The distance Is rounded to closest 10x int value : ";
@@ -1436,8 +1436,8 @@ void MainProcess::CV_NEW_onReadyRead_Slot()
         mainjsnObj["state"] = jsnStore->DEV_ACTION_STATE_FAIL;
 
         // if this causes dangling pointer, try signal|slot data transfer
-        jsnStore->setActionData(mainjsnObj);
-        // emit SetActionData_Signal(mainjsnObj);
+        // jsnStore->setActionData(mainjsnObj);
+         emit SetActionData_Signal(mainjsnObj);
 
         return;
     }
@@ -1486,8 +1486,8 @@ void MainProcess::CV_NEW_onReadyRead_Slot()
     mainjsnObj["state"] = jsnStore->DEV_ACTION_STATE_RUN;
 
     // if this causes dangling pointer, try signal|slot data transfer
-    jsnStore->setActionData(mainjsnObj);
-    // emit SetActionData_Signal(mainjsnObj);
+    // jsnStore->setActionData(mainjsnObj);
+     emit SetActionData_Signal(mainjsnObj);
 
 
 }

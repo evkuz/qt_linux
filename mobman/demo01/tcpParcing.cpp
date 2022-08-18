@@ -233,6 +233,11 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
         GUI_Write_To_Log(value, str);
 
         break;
+    case 11: // "formoving"
+        mainjsnObj = jsnStore->returnJsnActionForMoving();
+        ProcessAction(comIndex, mainjsnObj);
+       break;
+
     case 13: //lock
         mainjsnObj = jsnStore->returnJsnActionLock();
         ProcessAction(comIndex, mainjsnObj);

@@ -159,6 +159,13 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
                 this->send_Data(LASTONE);
 
                 break;
+            case 11: // "formoving"
+                str = "Go to <ForMoving> position";
+                GUI_Write_To_Log(value,str);
+                memcpy(Servos, mob_2_moving_position, DOF);
+                this->send_Data(LASTONE);
+
+                break;
             case 12: // "put_box"
                 str = "ProcessAction: Going to put the box down";
                 GUI_Write_To_Log(value,str);
