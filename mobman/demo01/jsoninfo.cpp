@@ -506,6 +506,22 @@ void JsonInfo::makeJson_Answer_Slot()
     this->jsnData = merge_json(jsnActionList, jsnObj);
 
     // Теперь результат объединения находится в jsnObj2
+}
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// слот сигнала MainProcess::SetActionData_Signal
+void JsonInfo::SetActionData_Slot(QJsonObject &theObj)
+{
+    // Ищем в jsnObjArray по "name" нужный action, меняем его на значения theobj
+    // Так работаем только с массивом.
+        QString theName = theObj.value("name").toString();
+        // Проходим jsnObjArray, ищем совпадение по "name", меняем "rc" и "state", делаем replase
+
+        for (int i=0; i < jsnObjArray.size(); i++) {
+            if (jsnObjArray.at(i).toObject().value("name").toString() == theName){
+                jsnObjArray.replace(i, theObj);
+            }
+        }
+
 }// makeJson_Answer_Slot
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 QJsonObject JsonInfo::returnJsonObject()

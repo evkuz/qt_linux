@@ -47,6 +47,7 @@
 #include <QTcpSocket>
 #include <QDataStream>
 
+#include <QSharedPointer>
 
 //QT_BEGIN_NAMESPACE
 //namespace Ui { class MainProcess; }
@@ -106,10 +107,10 @@ public:
 
     QJsonParseError jsonError; // ОШибка, если полученные данные - не JSON-объект
     JsonInfo    *jsnStore;
-    QJsonObject mainjsnObj; // temporal Текущий экшен
+    QJsonObject mainjsnObj; // temporal Текущий экшен, нужно т.к. при большой скорости опроса это значение постоянно меняется
     QJsonObject launchActionAnswer;  // Ответ на запуск экшена
 
-
+ //   QSharedPointer<QJsonObject> pJsnObject; //
 
 //#define
 // Актуально для разных размеров кубика
@@ -253,7 +254,8 @@ signals:
     void Pass_XY_Signal(int x_pix, int y_pix); //Сигнал по нажатию кнопки "Get_XY"
     void FW_Kinemaic_Signal(int S3, int S4, int S5, int l1, int l2, int l3); // Углы приводов, длины соответствующих звеньев.
     void Write_2_TcpClient_Signal(QString, int); // Сигнал вебсерверу, - пересылка данных в сокет на отправку.
-//    void StartTakeAndPutSignal();
+    void SetActionData_Signal(QJsonObject &theObj);
+    //    void StartTakeAndPutSignal();
 
 };
 

@@ -30,8 +30,8 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
         str += " is already running. Should wait it to finish";
         GUI_Write_To_Log(value, str);
         theObj["rc"] = RC_FAIL;
-        theObj["state"] = DEV_ACTION_STATE_RUN;
-        theObj["info"] = DEV_ACTION_INFO;
+        theObj["state"] = jsnStore->DEV_ACTION_STATE_RUN;
+        theObj["info"] = jsnStore->DEV_ACTION_INFO;
     break;
 
     case -1: // action с таким именем не найден
@@ -80,25 +80,26 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
             str = "Serial port is UNAVAILABLE !!! CAN'T move the ARM !!! Action is FAILED !!!";
             theObj["rc"] = RC_FAIL;
             theObj["info"] = str;
-            theObj["state"] = DEV_ACTION_STATE_FAIL;
+            theObj["state"] = jsnStore->DEV_ACTION_STATE_FAIL;
             GUI_Write_To_Log(value, str);
             jsnStore->setActionData(theObj);
         }
         else { // Все нормально, запускаем манипулятор
 
             jsnStore->isAnyActionRunning = true;
-            theObj["rc"] = RC_SUCCESS; // Now state "inprogress" //theObj
-            theObj["state"] = DEV_ACTION_STATE_RUN;
+            theObj["rc"] = jsnStore->AC_Launch_RC_RUNNING;//RC_SUCCESS; // Now state "inprogress" //theObj
+            theObj["state"] = jsnStore->DEV_ACTION_STATE_RUN;
 
             str = QJsonDocument(theObj).toJson(QJsonDocument::Indented);
 
-            // Отправляем ответ на запуск экшена
-            // while detection is not checked dont's send that it's ok
-            if (indexOfCommand != 5) {
+            // Отправляем ответ на запуск экшена для всех кроме манипулятора, т.к. могут быть проблемы с детекцией, дистанцией и т.д.
+            // !!! while detection is not checked dont's send that it's ok !!!
+            // Вот тут надо брать значение из словаря/кортежа, а не текстовое...
+            if (tcpCommand[indexOfCommand] != "get_box") {
                 emit Write_2_TcpClient_Signal(str, this->tcpSocketNumber);
                 jsnStore->setActionData(theObj);
             }
-
+// Это общий ответ, индикатор, что девайс вообще жив и на связи.
             QJsonObject headStatus = {
                 {"rc", RC_SUCCESS}, //RC_SUCCESS
                 {"state", "Running"},

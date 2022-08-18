@@ -15,12 +15,14 @@
 #include <QJsonArray>
 #include <QJsonParseError>
 #include <QVariantMap>
+//#include <QSharedPointer>
 
 using ordered_json = nlohmann::ordered_json;
 
 
-class JsonInfo
+class JsonInfo : public QObject
 {
+    Q_OBJECT
 public:
     JsonInfo();
      QJsonObject jsnObj1;
@@ -55,12 +57,14 @@ public:
     #define DEV_HEAD_INFO_NO_DET    "No detection"
     #define DEV_HEAD_INFO_REQUEST   "Request Accepted"
 
-    #define DEV_ACTION_INFO   "Action is already running"
+    //#define DEV_ACTION_INFO   "Action is already running"
 
-    #define DEV_ACTION_STATE_RUN  "inprogress"
+//    #define DEV_ACTION_STATE_RUN  "inprogress"
     #define DEV_ACTION_STATE_WAIT "waiting"
-    #define DEV_ACTION_STATE_FAIL "fail"
+//    #define DEV_ACTION_STATE_FAIL "fail"
     #define DEV_ACTION_STATE_DONE "done"
+
+    // #define DEV_ACTION_INFO_OUT "The object distance is out of range"
 
 
 
@@ -115,6 +119,15 @@ public:
 
     const int RC_NO_DETECTION = -5;      // Нет детекции объекта.
     const short INDEX_NODETECTION = 4;
+
+    const char* DEV_STATUS = "TEST";
+
+    const char* DEV_ACTION_INFO = "Action is already running";
+    const char* DEV_ACTION_INFO_OUT = "The object distance is out of range";
+    const char* DEV_ACTION_INFO_TEST = "TEST TEST TEST";
+
+    const char* DEV_ACTION_STATE_FAIL = "fail";
+    const char* DEV_ACTION_STATE_RUN = "inprogress";
 
 
     void init_json();
@@ -195,6 +208,8 @@ public:
 public slots:
 
 void makeJson_Answer_Slot();
+void SetActionData_Slot(QJsonObject &theOb);
+
 protected:
 
 private:
