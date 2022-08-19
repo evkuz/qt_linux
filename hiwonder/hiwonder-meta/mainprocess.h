@@ -101,7 +101,7 @@ private:
     SocketClient readSocket; // Читаем координаты из файла сокета.
 
 public slots:
-void Data_From_TcpClient_Slot(QString message, qintptr socketNumber);
+Q_INVOKABLE void Data_From_TcpClient_Slot(QString message, qintptr socketNumber);
 // slot for QSocketThread::socketErrorToLog_Signal
 //void socketErrorToLog_Slot(QString); // write to log socketError message
 Q_INVOKABLE void Data_FromTcp_Slot(QString tcpData);
