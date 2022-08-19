@@ -1,0 +1,51 @@
+16.08.2022
+Файл console.log_00
+
+Команда "start" приходит дважды.
+New Incoming 14, New Incoming 15
+
+При этом манипулятор отрабатывает только один раз команду start.
+
+Однако, в том же сеансе работы команда "put_box" приходт 1 раз.
+
+New Incoming 55
+//++++++++++++++++++++++++++++++++++
+Файл console.log_01
+
+New Incoming 22, New Incoming 23
+
+При этом манипулятор отрабатывает только один раз команду start.
+
+Однако, в том же сеансе работы команда "put_box" приходт 1 раз.
+
+New Incoming 72
+
+При этом, судя по mobman.log, повторная команда start доходит "наверх" в слот
+ 
+MainProcess::Data_From_TcpClient_Slot(QString message, qintptr socketNumber)
+При этом в лог ответ на такую ситуацию для "start" (новый запрос на запуск экшена, который в данный момент уже выполняется) - не пишется, чтоб не замедлять работу. 
+ОДнако клиенту ответ отправляется.
+Такая запись - это ответ уже на "status", который после "start"
+
+2022-08-16__11:46:36:93 > 0xf014: Now start robot to make movement
+2022-08-16__11:46:37:185 > 0xf00f: From TCP Get new command : start
+2022-08-16__11:46:37:283 > 0xf00f: From TCP Get new command : status
+2022-08-16__11:46:37:283 > 0xf00f: {
+    "action_list": [
+        {
+            "info": "Just float values of state : 0.614062, 0.1947920.614062, 0.194792",
+            "name": "start",
+            "rc": 0,   
+            "state": "inprogress"
+        }
+    ],
+    "info": "Action performing",
+    "name": "HIWONDER",
+    "rc": 0,
+    "state": "Running"
+}
+ 
+//+++++++++++++++++++++++++++++++++++
+
+
+

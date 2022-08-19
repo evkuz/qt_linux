@@ -1,0 +1,1490 @@
+Listening port  8383
+QDateTime(2022-08-16 11:17:44.071 MSK Qt::LocalTime) New Incoming  1
+$$$$$$$$$  QThread(0x55d235bdc230)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x55d235bdc230) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x55d235bdc230) "status"
+QThread(0x55d235bdc230) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x55d235bdc230) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:17:44.872 MSK Qt::LocalTime) New Incoming  2
+$$$$$$$$$  QThread(0x55d235bdc230)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x55d235bdc230) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x55d235bdc230) "status"
+QThread(0x55d235bdc230) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x55d235bdc230) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:17:45.671 MSK Qt::LocalTime) New Incoming  3
+$$$$$$$$$  QThread(0x7f9bbc0051f0)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc0051f0) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc0051f0) "status"
+QThread(0x7f9bbc0051f0) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc0051f0) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:17:46.471 MSK Qt::LocalTime) New Incoming  4
+$$$$$$$$$  QThread(0x7f9bbc005e30)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc005e30) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc005e30) "status"
+QThread(0x7f9bbc005e30) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc005e30) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:17:47.271 MSK Qt::LocalTime) New Incoming  5
+$$$$$$$$$  QThread(0x7f9bbc005260)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc005260) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc005260) "status"
+QThread(0x7f9bbc005260) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc005260) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:17:48.071 MSK Qt::LocalTime) New Incoming  6
+$$$$$$$$$  QThread(0x7f9bbc003ae0)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc003ae0) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc003ae0) "status"
+QThread(0x7f9bbc003ae0) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc003ae0) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:17:48.872 MSK Qt::LocalTime) New Incoming  7
+$$$$$$$$$  QThread(0x7f9bbc0052a0)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc0052a0) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc0052a0) "status"
+QThread(0x7f9bbc0052a0) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc0052a0) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:17:49.671 MSK Qt::LocalTime) New Incoming  8
+$$$$$$$$$  QThread(0x7f9bbc0010d0)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc0010d0) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc0010d0) "status"
+QThread(0x7f9bbc0010d0) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc0010d0) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:17:50.471 MSK Qt::LocalTime) New Incoming  9
+$$$$$$$$$  QThread(0x7f9bbc0043e0)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc0043e0) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc0043e0) "status"
+QThread(0x7f9bbc0043e0) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc0043e0) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:17:51.271 MSK Qt::LocalTime) New Incoming  10
+$$$$$$$$$  QThread(0x7f9bbc000c40)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc000c40) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc000c40) "status"
+QThread(0x7f9bbc000c40) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc000c40) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:17:52.072 MSK Qt::LocalTime) New Incoming  11
+$$$$$$$$$  QThread(0x7f9bbc000c60)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc000c60) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc000c60) "status"
+QThread(0x7f9bbc000c60) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc000c60) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:17:52.871 MSK Qt::LocalTime) New Incoming  12
+$$$$$$$$$  QThread(0x7f9bbc004eb0)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc004eb0) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc004eb0) "status"
+QThread(0x7f9bbc004eb0) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc004eb0) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:17:53.671 MSK Qt::LocalTime) New Incoming  13
+$$$$$$$$$  QThread(0x7f9bbc00a940)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc00a940) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc00a940) "status"
+QThread(0x7f9bbc00a940) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc00a940) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+
+QDateTime(2022-08-16 11:17:54.116 MSK Qt::LocalTime) New Incoming  14
+$$$$$$$$$  QThread(0x7f9bbc00a040)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc00a040) !!!!!!!!!!!!!!!!!!!!! Have got  164  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=start& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc00a040) "start"
+QThread(0x7f9bbc00a040) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc00a040) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+
+QDateTime(2022-08-16 11:17:54.945 MSK Qt::LocalTime) New Incoming  15
+$$$$$$$$$  QThread(0x55d235be72b0)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x55d235be72b0) !!!!!!!!!!!!!!!!!!!!! Have got  164  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=start& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x55d235be72b0) "start"
+QThread(0x55d235be72b0) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x55d235be72b0) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+
+QDateTime(2022-08-16 11:17:55.019 MSK Qt::LocalTime) New Incoming  16
+$$$$$$$$$  QThread(0x55d235be72b0)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x55d235be72b0) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x55d235be72b0) "status"
+QThread(0x55d235be72b0) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x55d235be72b0) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:17:55.594 MSK Qt::LocalTime) New Incoming  17
+$$$$$$$$$  QThread(0x7f9bbc000d50)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc000d50) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc000d50) "status"
+QThread(0x7f9bbc000d50) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc000d50) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:17:55.689 MSK Qt::LocalTime) New Incoming  18
+$$$$$$$$$  QThread(0x7f9bbc00b3c0)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc00b3c0) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc00b3c0) "status"
+QThread(0x7f9bbc00b3c0) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc00b3c0) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:17:56.161 MSK Qt::LocalTime) New Incoming  19
+$$$$$$$$$  QThread(0x7f9bbc002560)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc002560) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc002560) "status"
+QThread(0x7f9bbc002560) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc002560) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:17:56.488 MSK Qt::LocalTime) New Incoming  20
+$$$$$$$$$  QThread(0x7f9bbc00a960)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc00a960) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc00a960) "status"
+QThread(0x7f9bbc00a960) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc00a960) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:17:56.846 MSK Qt::LocalTime) New Incoming  21
+$$$$$$$$$  QThread(0x7f9bbc00ab00)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc00ab00) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc00ab00) "status"
+QThread(0x7f9bbc00ab00) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc00ab00) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:17:57.288 MSK Qt::LocalTime) New Incoming  22
+$$$$$$$$$  QThread(0x7f9bbc0047e0)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc0047e0) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc0047e0) "status"
+QThread(0x7f9bbc0047e0) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc0047e0) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:17:57.425 MSK Qt::LocalTime) New Incoming  23
+$$$$$$$$$  QThread(0x7f9bbc0033e0)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc0033e0) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc0033e0) "status"
+QThread(0x7f9bbc0033e0) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc0033e0) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:17:58.024 MSK Qt::LocalTime) New Incoming  24
+$$$$$$$$$  QThread(0x7f9bbc00abf0)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc00abf0) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc00abf0) "status"
+QThread(0x7f9bbc00abf0) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc00abf0) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:17:58.088 MSK Qt::LocalTime) New Incoming  25
+$$$$$$$$$  QThread(0x7f9bbc0057e0)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc0057e0) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc0057e0) "status"
+QThread(0x7f9bbc0057e0) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc0057e0) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:17:58.604 MSK Qt::LocalTime) New Incoming  26
+$$$$$$$$$  QThread(0x7f9bbc0038e0)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc0038e0) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc0038e0) "status"
+QThread(0x7f9bbc0038e0) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc0038e0) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:17:58.888 MSK Qt::LocalTime) New Incoming  27
+$$$$$$$$$  QThread(0x7f9bbc0038c0)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc0038c0) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc0038c0) "status"
+QThread(0x7f9bbc0038c0) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc0038c0) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:17:59.159 MSK Qt::LocalTime) New Incoming  28
+$$$$$$$$$  QThread(0x7f9bbc00b560)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc00b560) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc00b560) "status"
+QThread(0x7f9bbc00b560) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc00b560) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:17:59.688 MSK Qt::LocalTime) New Incoming  29
+$$$$$$$$$  QThread(0x7f9bbc00b490)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc00b490) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc00b490) "status"
+QThread(0x7f9bbc00b490) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc00b490) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:17:59.741 MSK Qt::LocalTime) New Incoming  30
+$$$$$$$$$  QThread(0x7f9bbc0018d0)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc0018d0) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc0018d0) "status"
+QThread(0x7f9bbc0018d0) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc0018d0) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:00.319 MSK Qt::LocalTime) New Incoming  31
+$$$$$$$$$  QThread(0x7f9bbc003fe0)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc003fe0) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc003fe0) "status"
+QThread(0x7f9bbc003fe0) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc003fe0) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:00.488 MSK Qt::LocalTime) New Incoming  32
+$$$$$$$$$  QThread(0x7f9bbc00b450)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc00b450) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc00b450) "status"
+QThread(0x7f9bbc00b450) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc00b450) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:00.899 MSK Qt::LocalTime) New Incoming  33
+$$$$$$$$$  QThread(0x7f9bbc0018f0)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc0018f0) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc0018f0) "status"
+QThread(0x7f9bbc0018f0) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc0018f0) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:01.288 MSK Qt::LocalTime) New Incoming  34
+$$$$$$$$$  QThread(0x7f9bbc004500)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc004500) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc004500) "status"
+QThread(0x7f9bbc004500) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc004500) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:01.481 MSK Qt::LocalTime) New Incoming  35
+$$$$$$$$$  QThread(0x7f9bbc002c30)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc002c30) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc002c30) "status"
+QThread(0x7f9bbc002c30) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc002c30) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:02.088 MSK Qt::LocalTime) New Incoming  36
+QDateTime(2022-08-16 11:18:02.088 MSK Qt::LocalTime) New Incoming  37
+$$$$$$$$$  QThread(0x7f9bbc002940)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc002940) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc002940) "status"
+$$$$$$$$$  QThread(0x7f9bbc000cb0)  $$$$$$$$$$ new socket $$$  "11"
+I'm in ReadyRead_Slot for socket  11
+thread ID  QThread(0x7f9bbc000cb0) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "11"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "11"
+************ QThread(0x7f9bbc000cb0) "status"
+QThread(0x7f9bbc000cb0) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc000cb0) Going to SEND SEND SEND data to socket with an desctiptor  "11"
+QThread(0x55d235bcab00) Is finished 
+QThread(0x7f9bbc002940) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc002940) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+!!!!!!!!!!!!!!!!!!!!! SOCKET IS NOT VALID
+socket state value is  0
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:02.610 MSK Qt::LocalTime) New Incoming  38
+$$$$$$$$$  QThread(0x55d235c10720)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x55d235c10720) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x55d235c10720) "status"
+QThread(0x55d235c10720) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x55d235c10720) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:02.888 MSK Qt::LocalTime) New Incoming  39
+$$$$$$$$$  QThread(0x7f9bbc003300)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc003300) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc003300) "status"
+QThread(0x7f9bbc003300) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc003300) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:03.171 MSK Qt::LocalTime) New Incoming  40
+$$$$$$$$$  QThread(0x7f9bbc0009e0)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc0009e0) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc0009e0) "status"
+QThread(0x7f9bbc0009e0) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc0009e0) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:03.688 MSK Qt::LocalTime) New Incoming  41
+$$$$$$$$$  QThread(0x7f9bbc0032e0)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc0032e0) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc0032e0) "status"
+QThread(0x7f9bbc0032e0) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc0032e0) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:03.781 MSK Qt::LocalTime) New Incoming  42
+$$$$$$$$$  QThread(0x7f9bbc002830)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc002830) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc002830) "status"
+QThread(0x7f9bbc002830) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc002830) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:04.369 MSK Qt::LocalTime) New Incoming  43
+$$$$$$$$$  QThread(0x7f9bbc002940)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc002940) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc002940) "status"
+QThread(0x7f9bbc002940) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc002940) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:04.488 MSK Qt::LocalTime) New Incoming  44
+$$$$$$$$$  QThread(0x7f9bbc0045d0)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc0045d0) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc0045d0) "status"
+QThread(0x7f9bbc0045d0) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc0045d0) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:04.904 MSK Qt::LocalTime) New Incoming  45
+$$$$$$$$$  QThread(0x7f9bbc0051c0)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc0051c0) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc0051c0) "status"
+QThread(0x7f9bbc0051c0) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc0051c0) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:05.288 MSK Qt::LocalTime) New Incoming  46
+$$$$$$$$$  QThread(0x7f9bbc003300)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc003300) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc003300) "status"
+QThread(0x7f9bbc003300) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc003300) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:05.467 MSK Qt::LocalTime) New Incoming  47
+$$$$$$$$$  QThread(0x7f9bbc005650)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc005650) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc005650) "status"
+QThread(0x7f9bbc005650) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc005650) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:06.033 MSK Qt::LocalTime) New Incoming  48
+$$$$$$$$$  QThread(0x7f9bbc005200)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc005200) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc005200) "status"
+QThread(0x7f9bbc005200) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc005200) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:06.088 MSK Qt::LocalTime) New Incoming  49
+$$$$$$$$$  QThread(0x7f9bbc002900)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc002900) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc002900) "status"
+QThread(0x7f9bbc002900) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc002900) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:06.611 MSK Qt::LocalTime) New Incoming  50
+$$$$$$$$$  QThread(0x55d235bfcb40)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x55d235bfcb40) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x55d235bfcb40) "status"
+QThread(0x55d235bfcb40) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x55d235bfcb40) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:06.890 MSK Qt::LocalTime) New Incoming  51
+$$$$$$$$$  QThread(0x7f9bbc004ec0)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc004ec0) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc004ec0) "status"
+QThread(0x7f9bbc004ec0) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc004ec0) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:07.688 MSK Qt::LocalTime) New Incoming  52
+$$$$$$$$$  QThread(0x7f9bbc004350)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc004350) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc004350) "status"
+QThread(0x7f9bbc004350) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc004350) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:08.488 MSK Qt::LocalTime) New Incoming  53
+$$$$$$$$$  QThread(0x7f9bbc0067e0)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc0067e0) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc0067e0) "status"
+QThread(0x7f9bbc0067e0) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc0067e0) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:09.288 MSK Qt::LocalTime) New Incoming  54
+$$$$$$$$$  QThread(0x7f9bbc004330)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc004330) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc004330) "status"
+QThread(0x7f9bbc004330) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc004330) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+
+QDateTime(2022-08-16 11:18:09.989 MSK Qt::LocalTime) New Incoming  55
+$$$$$$$$$  QThread(0x7f9bbc000920)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc000920) !!!!!!!!!!!!!!!!!!!!! Have got  166  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=put_box& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc000920) "put_box"
+QThread(0x7f9bbc000920) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc000920) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+
+QDateTime(2022-08-16 11:18:10.043 MSK Qt::LocalTime) New Incoming  56
+$$$$$$$$$  QThread(0x55d235bfca10)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x55d235bfca10) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x55d235bfca10) "status"
+QThread(0x55d235bfca10) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x55d235bfca10) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:10.583 MSK Qt::LocalTime) New Incoming  57
+$$$$$$$$$  QThread(0x7f9bbc002e20)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc002e20) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc002e20) "status"
+QThread(0x7f9bbc002e20) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc002e20) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:10.747 MSK Qt::LocalTime) New Incoming  58
+$$$$$$$$$  QThread(0x7f9bbc003b20)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc003b20) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc003b20) "status"
+QThread(0x7f9bbc003b20) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc003b20) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:11.205 MSK Qt::LocalTime) New Incoming  59
+$$$$$$$$$  QThread(0x7f9bbc0047e0)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc0047e0) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc0047e0) "status"
+QThread(0x7f9bbc0047e0) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc0047e0) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:11.547 MSK Qt::LocalTime) New Incoming  60
+$$$$$$$$$  QThread(0x55d235bf32f0)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x55d235bf32f0) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x55d235bf32f0) "status"
+QThread(0x55d235bf32f0) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x55d235bf32f0) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:11.798 MSK Qt::LocalTime) New Incoming  61
+$$$$$$$$$  QThread(0x7f9bbc0028e0)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc0028e0) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc0028e0) "status"
+QThread(0x7f9bbc0028e0) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc0028e0) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:12.347 MSK Qt::LocalTime) New Incoming  62
+$$$$$$$$$  QThread(0x7f9bbc0028c0)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc0028c0) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc0028c0) "status"
+QThread(0x7f9bbc0028c0) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc0028c0) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:12.374 MSK Qt::LocalTime) New Incoming  63
+$$$$$$$$$  QThread(0x7f9bbc003150)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc003150) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc003150) "status"
+QThread(0x7f9bbc003150) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc003150) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:12.896 MSK Qt::LocalTime) New Incoming  64
+$$$$$$$$$  QThread(0x7f9bbc004be0)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc004be0) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc004be0) "status"
+QThread(0x7f9bbc004be0) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc004be0) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:13.147 MSK Qt::LocalTime) New Incoming  65
+$$$$$$$$$  QThread(0x7f9bbc0047e0)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc0047e0) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc0047e0) "status"
+QThread(0x7f9bbc0047e0) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc0047e0) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:13.482 MSK Qt::LocalTime) New Incoming  66
+$$$$$$$$$  QThread(0x55d235bfcd00)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x55d235bfcd00) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x55d235bfcd00) "status"
+QThread(0x55d235bfcd00) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x55d235bfcd00) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:13.947 MSK Qt::LocalTime) New Incoming  67
+$$$$$$$$$  QThread(0x7f9bbc000af0)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc000af0) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc000af0) "status"
+QThread(0x7f9bbc000af0) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc000af0) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:14.010 MSK Qt::LocalTime) New Incoming  68
+$$$$$$$$$  QThread(0x7f9bbc000a30)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc000a30) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc000a30) "status"
+QThread(0x7f9bbc000a30) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc000a30) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:14.556 MSK Qt::LocalTime) New Incoming  69
+$$$$$$$$$  QThread(0x7f9bbc002920)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc002920) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc002920) "status"
+QThread(0x7f9bbc002920) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc002920) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:14.747 MSK Qt::LocalTime) New Incoming  70
+$$$$$$$$$  QThread(0x7f9bbc003130)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc003130) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc003130) "status"
+QThread(0x7f9bbc003130) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc003130) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:15.186 MSK Qt::LocalTime) New Incoming  71
+$$$$$$$$$  QThread(0x55d235c10720)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x55d235c10720) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x55d235c10720) "status"
+QThread(0x55d235c10720) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x55d235c10720) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:15.547 MSK Qt::LocalTime) New Incoming  72
+$$$$$$$$$  QThread(0x7f9bbc0017a0)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc0017a0) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc0017a0) "status"
+QThread(0x7f9bbc0017a0) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc0017a0) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:15.769 MSK Qt::LocalTime) New Incoming  73
+$$$$$$$$$  QThread(0x55d235bfd5c0)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x55d235bfd5c0) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x55d235bfd5c0) "status"
+QThread(0x55d235bfd5c0) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x55d235bfd5c0) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:16.347 MSK Qt::LocalTime) New Incoming  74
+$$$$$$$$$  QThread(0x7f9bbc005a00)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bbc005a00) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+QDateTime(2022-08-16 11:18:16.347 MSK Qt::LocalTime) New Incoming  75
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bbc005a00) "status"
+$$$$$$$$$  QThread(0x7f9bbc0047e0)  $$$$$$$$$$ new socket $$$  "12"
+I'm in ReadyRead_Slot for socket  12
+thread ID  QThread(0x7f9bbc0047e0) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "12"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "12"
+************ QThread(0x7f9bbc0047e0) "status"
+QThread(0x7f9bbc005a00) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc005a00) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x7f9bbc0047e0) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bbc0047e0) Going to SEND SEND SEND data to socket with an desctiptor  "12"
+QThread(0x55d235bcab00) Is finished 
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:16.887 MSK Qt::LocalTime) New Incoming  76
+$$$$$$$$$  QThread(0x55d235bfcd00)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x55d235bfcd00) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x55d235bfcd00) "status"
+QThread(0x55d235bfcd00) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x55d235bfcd00) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:17.147 MSK Qt::LocalTime) New Incoming  77
+$$$$$$$$$  QThread(0x7f9bb40097b0)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bb40097b0) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bb40097b0) "status"
+QThread(0x7f9bb40097b0) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bb40097b0) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:17.475 MSK Qt::LocalTime) New Incoming  78
+$$$$$$$$$  QThread(0x7f9bb40015e0)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bb40015e0) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bb40015e0) "status"
+QThread(0x7f9bb40015e0) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bb40015e0) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:17.947 MSK Qt::LocalTime) New Incoming  79
+$$$$$$$$$  QThread(0x7f9bb4009bb0)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bb4009bb0) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bb4009bb0) "status"
+QThread(0x7f9bb4009bb0) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bb4009bb0) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:18.067 MSK Qt::LocalTime) New Incoming  80
+$$$$$$$$$  QThread(0x7f9bb40015c0)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bb40015c0) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bb40015c0) "status"
+QThread(0x7f9bb40015c0) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bb40015c0) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:18.602 MSK Qt::LocalTime) New Incoming  81
+$$$$$$$$$  QThread(0x55d235bfcd00)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x55d235bfcd00) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x55d235bfcd00) "status"
+QThread(0x55d235bfcd00) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x55d235bfcd00) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:18.747 MSK Qt::LocalTime) New Incoming  82
+$$$$$$$$$  QThread(0x7f9bb4009bd0)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bb4009bd0) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bb4009bd0) "status"
+QThread(0x7f9bb4009bd0) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bb4009bd0) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:19.169 MSK Qt::LocalTime) New Incoming  83
+$$$$$$$$$  QThread(0x55d235c14390)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x55d235c14390) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x55d235c14390) "status"
+QThread(0x55d235c14390) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x55d235c14390) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:19.547 MSK Qt::LocalTime) New Incoming  84
+$$$$$$$$$  QThread(0x55d235bd2d60)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x55d235bd2d60) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x55d235bd2d60) "status"
+QThread(0x55d235bd2d60) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x55d235bd2d60) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:19.744 MSK Qt::LocalTime) New Incoming  85
+$$$$$$$$$  QThread(0x7f9bb4001a90)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bb4001a90) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bb4001a90) "status"
+QThread(0x7f9bb4001a90) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bb4001a90) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:20.288 MSK Qt::LocalTime) New Incoming  86
+$$$$$$$$$  QThread(0x7f9bb4007580)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bb4007580) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bb4007580) "status"
+QThread(0x7f9bb4007580) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bb4007580) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:20.347 MSK Qt::LocalTime) New Incoming  87
+$$$$$$$$$  QThread(0x7f9bb40010e0)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bb40010e0) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bb40010e0) "status"
+QThread(0x7f9bb40010e0) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bb40010e0) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:20.889 MSK Qt::LocalTime) New Incoming  88
+$$$$$$$$$  QThread(0x7f9bb4008fc0)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bb4008fc0) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bb4008fc0) "status"
+QThread(0x7f9bb4008fc0) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bb4008fc0) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:21.147 MSK Qt::LocalTime) New Incoming  89
+$$$$$$$$$  QThread(0x7f9bb4001a90)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bb4001a90) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bb4001a90) "status"
+QThread(0x7f9bb4001a90) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bb4001a90) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:21.445 MSK Qt::LocalTime) New Incoming  90
+$$$$$$$$$  QThread(0x55d235bd5970)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x55d235bd5970) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x55d235bd5970) "status"
+QThread(0x55d235bd5970) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x55d235bd5970) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:21.947 MSK Qt::LocalTime) New Incoming  91
+$$$$$$$$$  QThread(0x7f9bb4008f80)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bb4008f80) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bb4008f80) "status"
+QThread(0x7f9bb4008f80) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bb4008f80) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:22.010 MSK Qt::LocalTime) New Incoming  92
+$$$$$$$$$  QThread(0x7f9bb4007dd0)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bb4007dd0) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bb4007dd0) "status"
+QThread(0x7f9bb4007dd0) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bb4007dd0) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:22.561 MSK Qt::LocalTime) New Incoming  93
+$$$$$$$$$  QThread(0x7f9bb4002b70)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bb4002b70) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bb4002b70) "status"
+QThread(0x7f9bb4002b70) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bb4002b70) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:22.747 MSK Qt::LocalTime) New Incoming  94
+$$$$$$$$$  QThread(0x7f9bb4002b30)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bb4002b30) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bb4002b30) "status"
+QThread(0x7f9bb4002b30) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bb4002b30) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:23.256 MSK Qt::LocalTime) New Incoming  95
+$$$$$$$$$  QThread(0x55d235bf32f0)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x55d235bf32f0) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x55d235bf32f0) "status"
+QThread(0x55d235bf32f0) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x55d235bf32f0) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:23.547 MSK Qt::LocalTime) New Incoming  96
+$$$$$$$$$  QThread(0x7f9bb40021c0)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bb40021c0) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bb40021c0) "status"
+QThread(0x7f9bb40021c0) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bb40021c0) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:23.817 MSK Qt::LocalTime) New Incoming  97
+$$$$$$$$$  QThread(0x7f9bb4001c40)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bb4001c40) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bb4001c40) "status"
+QThread(0x7f9bb4001c40) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bb4001c40) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:24.347 MSK Qt::LocalTime) New Incoming  98
+$$$$$$$$$  QThread(0x7f9bb4002e90)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bb4002e90) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bb4002e90) "status"
+QThread(0x7f9bb4002e90) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bb4002e90) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:24.400 MSK Qt::LocalTime) New Incoming  99
+$$$$$$$$$  QThread(0x7f9bb40085f0)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bb40085f0) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bb40085f0) "status"
+QThread(0x7f9bb40085f0) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bb40085f0) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:24.917 MSK Qt::LocalTime) New Incoming  100
+$$$$$$$$$  QThread(0x55d235c014a0)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x55d235c014a0) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x55d235c014a0) "status"
+QThread(0x55d235c014a0) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x55d235c014a0) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:25.147 MSK Qt::LocalTime) New Incoming  101
+$$$$$$$$$  QThread(0x7f9bb4004180)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bb4004180) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bb4004180) "status"
+QThread(0x7f9bb4004180) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bb4004180) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:25.467 MSK Qt::LocalTime) New Incoming  102
+$$$$$$$$$  QThread(0x7f9bb4001db0)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bb4001db0) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bb4001db0) "status"
+QThread(0x7f9bb4001db0) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bb4001db0) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:25.947 MSK Qt::LocalTime) New Incoming  103
+$$$$$$$$$  QThread(0x7f9bb4002b90)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bb4002b90) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bb4002b90) "status"
+QThread(0x7f9bb4002b90) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bb4002b90) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:26.058 MSK Qt::LocalTime) New Incoming  104
+$$$$$$$$$  QThread(0x7f9bb4001bb0)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bb4001bb0) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bb4001bb0) "status"
+QThread(0x7f9bb4001bb0) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bb4001bb0) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:26.594 MSK Qt::LocalTime) New Incoming  105
+$$$$$$$$$  QThread(0x55d235bea040)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x55d235bea040) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x55d235bea040) "status"
+QThread(0x55d235bea040) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x55d235bea040) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:26.747 MSK Qt::LocalTime) New Incoming  106
+$$$$$$$$$  QThread(0x7f9bb4003f90)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bb4003f90) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bb4003f90) "status"
+QThread(0x7f9bb4003f90) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bb4003f90) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:27.213 MSK Qt::LocalTime) New Incoming  107
+$$$$$$$$$  QThread(0x7f9bb4003c20)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bb4003c20) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bb4003c20) "status"
+QThread(0x7f9bb4003c20) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bb4003c20) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:27.547 MSK Qt::LocalTime) New Incoming  108
+$$$$$$$$$  QThread(0x55d235c014a0)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x55d235c014a0) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x55d235c014a0) "status"
+QThread(0x55d235c014a0) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x55d235c014a0) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:27.777 MSK Qt::LocalTime) New Incoming  109
+$$$$$$$$$  QThread(0x7f9bb4002ac0)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bb4002ac0) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bb4002ac0) "status"
+QThread(0x7f9bb4002ac0) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bb4002ac0) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:28.347 MSK Qt::LocalTime) New Incoming  110
+$$$$$$$$$  QThread(0x7f9bb40017c0)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bb40017c0) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bb40017c0) "status"
+QThread(0x7f9bb40017c0) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bb40017c0) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:29.147 MSK Qt::LocalTime) New Incoming  111
+$$$$$$$$$  QThread(0x7f9bb4004a40)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bb4004a40) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bb4004a40) "status"
+QThread(0x7f9bb4004a40) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bb4004a40) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:29.947 MSK Qt::LocalTime) New Incoming  112
+$$$$$$$$$  QThread(0x7f9bb4005580)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bb4005580) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bb4005580) "status"
+QThread(0x7f9bb4005580) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bb4005580) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:30.747 MSK Qt::LocalTime) New Incoming  113
+$$$$$$$$$  QThread(0x7f9bb4003a80)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bb4003a80) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bb4003a80) "status"
+QThread(0x7f9bb4003a80) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bb4003a80) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
+QDateTime(2022-08-16 11:18:31.547 MSK Qt::LocalTime) New Incoming  114
+$$$$$$$$$  QThread(0x7f9bb4004340)  $$$$$$$$$$ new socket $$$  "10"
+I'm in ReadyRead_Slot for socket  10
+thread ID  QThread(0x7f9bb4004340) !!!!!!!!!!!!!!!!!!!!! Have got  165  bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!! "10"
+"GET //run?cmd=status& HTTP/1.1\r\nHost: 192.168.1.175:8383\r\nUser-Agent: python-requests/2.27.1\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n"
+Index value is 0
+Matched command sPosition is  5
+Matched string is  "/run?cmd="
+!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "10"
+************ QThread(0x7f9bb4004340) "status"
+QThread(0x7f9bb4004340) Current socket  10  state is  QAbstractSocket::ConnectedState
+QThread(0x7f9bb4004340) Going to SEND SEND SEND data to socket with an desctiptor  "10"
+QThread(0x55d235bcab00) Is finished 
