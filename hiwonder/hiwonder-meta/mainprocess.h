@@ -69,7 +69,7 @@ public:
 #define BEFORE_LAST 0xE9 //233  // Предпоследняя команда - положить кубик на тележку.
 #define AFTER_PUT   0xF4 //244  Кубик на тележку положили, теперь грамотно убираем манипулятор.
 
-#define HWR_WEB_LOGFILE "./hwr-web.log"
+#define HWR_WEB_LOGFILE "./hwr-meta.log"
     float X, Y;//Координаты x,y центра объекта при распознавании
     bool DETECTED; // Флаг, показывающий, сработал ли захват изображения.
 

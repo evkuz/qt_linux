@@ -19,8 +19,10 @@
 using ordered_json = nlohmann::ordered_json;
 
 
-class JsonInfo
+class JsonInfo: public QObject
 {
+    Q_OBJECT
+
 public:
     JsonInfo();
      QJsonObject jsnObj1;

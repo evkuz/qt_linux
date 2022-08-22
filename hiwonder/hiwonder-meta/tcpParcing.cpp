@@ -108,7 +108,12 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, qintptr socketNumber
         launchActionAnswer = tempObj;
         str = QJsonDocument(launchActionAnswer).toJson(QJsonDocument::Indented);
         // отправляем ответ на запуск экшена
-        emit Write_2_TcpClient_Signal(str, socketNumber);
+//        emit Write_2_TcpClient_Signal(str, socketNumber);
+        QMetaObject::invokeMethod(this->sender(), "Data_2_TcpClient_Slot",
+                                  Qt::QueuedConnection,
+                                  Q_ARG(QString, str),
+                                  Q_ARG(qintptr, tcpSocketNumber));
+
 
         return;
     }
@@ -166,7 +171,12 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, qintptr socketNumber
 
 
         Robot->active_command = "status";
-        emit Write_2_TcpClient_Signal (str, this->tcpSocketNumber);
+     //   emit Write_2_TcpClient_Signal (str, this->tcpSocketNumber);
+
+        QMetaObject::invokeMethod(this->sender(), "Data_2_TcpClient_Slot",
+                                  Qt::QueuedConnection,
+                                  Q_ARG(QString, str),
+                                  Q_ARG(qintptr, tcpSocketNumber));
 
 //        str = "Current QJsonDocument is ";
 //        str += QJsonDocument(mainjsnObj).toJson(QJsonDocument::Indented);
@@ -213,7 +223,11 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, qintptr socketNumber
         //str = "I'm in reset";
         mainjsnObj = jsnStore->returnAllActions();
         str = jsnStore->jsnData;
-        emit Write_2_TcpClient_Signal(str, this->tcpSocketNumber);
+//        emit Write_2_TcpClient_Signal(str, this->tcpSocketNumber);
+        QMetaObject::invokeMethod(this->sender(), "Data_2_TcpClient_Slot",
+                                  Qt::QueuedConnection,
+                                  Q_ARG(QString, str),
+                                  Q_ARG(qintptr, tcpSocketNumber));
 
         GUI_Write_To_Log(value, str);
 //        mainjsnObj = jsnStore->returnJsnActionReset();
@@ -272,7 +286,12 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, qintptr socketNumber
       //  str = QJsonDocument(jsnStore->returnAllActions()).toJson(QJsonDocument::Indented);
         mainjsnObj = jsnStore->returnAllActions();
         str = jsnStore->jsnData;
-        emit Write_2_TcpClient_Signal(str, this->tcpSocketNumber);
+//        emit Write_2_TcpClient_Signal(str, this->tcpSocketNumber);
+        QMetaObject::invokeMethod(this->sender(), "Data_2_TcpClient_Slot",
+                                  Qt::QueuedConnection,
+                                  Q_ARG(QString, str),
+                                  Q_ARG(qintptr, tcpSocketNumber));
+
         str += str.insert(0, "Total action_list : \n");
 
         GUI_Write_To_Log(value, str);
@@ -287,6 +306,16 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, qintptr socketNumber
         ProcessAction(comIndex, mainjsnObj);
        break;
 
+    case 12: // "info"
+        str = QJsonDocument(jsnStore->returnJsnInfo()).toJson(QJsonDocument::Indented);
+        GUI_Write_To_Log(value, "!!!!!!!!!!! Current INFO is ");
+        GUI_Write_To_Log(value, str);
+
+        QMetaObject::invokeMethod(this->sender(), "Data_2_TcpClient_Slot",
+                                  Qt::QueuedConnection,
+                                  Q_ARG(QString, str),
+                                  Q_ARG(qintptr, tcpSocketNumber));
+        break;
 
 
     case 13: //collapse
@@ -342,22 +371,20 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, qintptr socketNumber
 
     }
 
-    if (substr == "info") {
-        // Вот тут делаем присвоение статуса.
-        str = Robot->GetCurrentStatus();
-        jsnStore->setCurrentAction(substr);
+//    if (substr == "info") {
+//        // Вот тут делаем присвоение статуса.
+//        str = Robot->GetCurrentStatus();
+//        jsnStore->setCurrentAction(substr);
 
-        str = QJsonDocument(jsnStore->returnJsnInfo()).toJson(QJsonDocument::Indented);
+//        str = QJsonDocument(jsnStore->returnJsnInfo()).toJson(QJsonDocument::Indented);
 
-        GUI_Write_To_Log(value, "!!!!!!!!!!! Current INFO is ");
-        GUI_Write_To_Log(value, str);
-
-        //str = QJsonDocument(jsnStatus).toJson(QJsonDocument::Compact);
+//        GUI_Write_To_Log(value, "!!!!!!!!!!! Current INFO is ");
+//        GUI_Write_To_Log(value, str);
 
 
-        emit Write_2_TcpClient_Signal (str, this->tcpSocketNumber);
+//        emit Write_2_TcpClient_Signal (str, this->tcpSocketNumber);
 
-    }
+//    }
     // Запрашиваем список экшенов
     if (substr == "getactions") {
         QByteArray dd ;

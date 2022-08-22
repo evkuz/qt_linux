@@ -779,7 +779,7 @@ void MainProcess::Moving_Done_Slot()
     // И, на будущее... Возможно тут вызываем jsnStore->createActionList();  смена статуса inprogress->done
     // А в tcpParcing только выводим готовый jsnData.
 
-    // Меняем значение.
+    // Меняем значение, чтобы статус выставить правильно.
     jsnStore->isAnyActionRunning = false;
 
     QJsonObject headStatus = {
@@ -790,17 +790,6 @@ void MainProcess::Moving_Done_Slot()
 
     jsnStore->setJsnHeadStatus(headStatus);
 
-//    str = "Action "; str += myname; str += " finished !!!";
-//    GUI_Write_To_Log(value, str);
-    //Создаем список активных экшенов, и там не должно быть текущего, т.к. он DONE
-//    str = "Now full list of ACTIVE actions : \n";
-//    jsnStore->createActionList();
-//    str += QJsonDocument(jsnStore->jsnActionList).toJson(QJsonDocument::Indented);
-//    GUI_Write_To_Log(value, str);
-
-//    str = "Upon exit from switch jsnActionCollape value : \n";
-//    str += QJsonDocument(jsnStore->jsnActionCollapse).toJson(QJsonDocument::Indented);
-//    GUI_Write_To_Log(value, str);
 
 
 }
