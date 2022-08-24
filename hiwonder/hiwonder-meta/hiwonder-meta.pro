@@ -6,7 +6,7 @@ CONFIG -= app_bundle
 
 TEMPLATE = app
 
-INCLUDEPATH += $$(EXTLIBS)
+INCLUDEPATH += $$(LOCLIBS)
 
 # The following define makes your compiler emit warnings if you use
 # any Qt feature that has been marked deprecated (the exact warnings
@@ -23,12 +23,12 @@ SOURCES += \
         main.cpp \
     hiwonder.cpp \
     neuron.cpp \
-    $$(EXTLIBS)/manipulator/SocketClient.cpp \
+    $$(LOCLIBS)/manipulator/meta/SocketClient.cpp \
     mainprocess.cpp \
-    $$(EXTLIBS)/manipulator/mcinfer.cpp \
+    $$(LOCLIBS)/manipulator/meta/mcinfer.cpp \
     tcpParcing.cpp \
-    $$(EXTLIBS)/manipulator/qsimpleserver.cpp \
-    $$(EXTLIBS)/manipulator/qsocketthread.cpp
+    $$(LOCLIBS)/manipulator/meta/qsimpleserver.cpp \
+    $$(LOCLIBS)/manipulator/meta/qsocketthread.cpp
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -39,11 +39,11 @@ HEADERS += \
     evkuz.h \
     hiwonder.h \
     jsoninfo.h \
-    $$(EXTLIBS)/manipulator/mcinfer.h \
+    $$(LOCLIBS)/manipulator/meta/mcinfer.h \
     neuron.h \
     positions.h \
     protocol.h \
-    $$(EXTLIBS)/manipulator/SocketClient.h \
+    $$(LOCLIBS)/manipulator/meta/SocketClient.h \
     mainprocess.h \
-    $$(EXTLIBS)/manipulator/qsimpleserver.h \
-    $$(EXTLIBS)/manipulator/qsocketthread.h
+    $$(LOCLIBS)/manipulator/meta/qsimpleserver.h \
+    $$(LOCLIBS)/manipulator/meta/qsocketthread.h

@@ -1,6 +1,6 @@
 #include <QCoreApplication>
 //#include "qsimpleserver.h"
-#include "manipulator/qsimpleserver.h"
+#include "manipulator/meta/qsimpleserver.h"
 #include "mainprocess.h"
 #include <QMetaObject>
 

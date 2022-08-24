@@ -16,8 +16,8 @@
 #include <QList>
 #include "hiwonder.h"  // hiwonder class
 //#include "qsimpleserver.h"
-#include "manipulator/qsimpleserver.h"
-#include "manipulator/SocketClient.h"
+#include "manipulator/meta/qsimpleserver.h"
+#include "manipulator/meta/SocketClient.h"
 #include "jsoninfo.h"
 #include "protocol.h"
 #include <QMutex>
@@ -83,7 +83,7 @@ public:
     QMetaObject ptrMainProcMeta; // Храним данные Meta-Object Sytem о MainProcess
 
 
-    void GUI_Write_To_Log (int value, QString log_message); //Пишет в лог-файл (тот же, что и в классе HiWonder) номер ошибки value и сообщение message
+    Q_INVOKABLE void GUI_Write_To_Log (int value, QString log_message); //Пишет в лог-файл (тот же, что и в классе HiWonder) номер ошибки value и сообщение message
     void try_mcinfer(float x, float y);
     void update_Servos_from_position(unsigned char *pos); // Фактически - это копирование { Servos[i] = pos[i]; }, либо memcpy(Servos, hwr_Start_position, DOF);
 
@@ -99,9 +99,11 @@ public:
     void LogFile_Open (QString fname);
 private:
     SocketClient readSocket; // Читаем координаты из файла сокета.
+    QObject* ptrTcpClient;   // Указатель на объект, приславший команду от Tcp-клиента
+
 
 public slots:
-Q_INVOKABLE void Data_From_TcpClient_Slot(QString message, qintptr socketNumber);
+Q_INVOKABLE void Data_From_TcpClient_Slot(QString message, qintptr socketNumber, QObject* theSender);
 // slot for QSocketThread::socketErrorToLog_Signal
 //void socketErrorToLog_Slot(QString); // write to log socketError message
 Q_INVOKABLE void Data_FromTcp_Slot(QString tcpData);

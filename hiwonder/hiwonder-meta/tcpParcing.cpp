@@ -18,13 +18,13 @@
 // ProcessAction запускаем только для значений индекса команды 0 или 1.
 // Для остальных значений, оставляем как было. Только в новом файле теперь.
 
-void MainProcess::Data_From_TcpClient_Slot(QString message, qintptr socketNumber)
+void MainProcess::Data_From_TcpClient_Slot(QString message, qintptr socketNumber, QObject* theSender)
 {
     QString str, substr;
     int value = 0xf00f;
 
     QMutexLocker locker(&mutex);
-
+    ptrTcpClient = theSender;
     this->tcpSocketNumber =  socketNumber;
     new_get_request = true;
     str = "From TCP Get new command : "; str += message;
@@ -109,7 +109,7 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, qintptr socketNumber
         str = QJsonDocument(launchActionAnswer).toJson(QJsonDocument::Indented);
         // отправляем ответ на запуск экшена
 //        emit Write_2_TcpClient_Signal(str, socketNumber);
-        QMetaObject::invokeMethod(this->sender(), "Data_2_TcpClient_Slot",
+        QMetaObject::invokeMethod(theSender, "Data_2_TcpClient_Slot", //this->sender()
                                   Qt::QueuedConnection,
                                   Q_ARG(QString, str),
                                   Q_ARG(qintptr, tcpSocketNumber));
@@ -173,7 +173,7 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, qintptr socketNumber
         Robot->active_command = "status";
      //   emit Write_2_TcpClient_Signal (str, this->tcpSocketNumber);
 
-        QMetaObject::invokeMethod(this->sender(), "Data_2_TcpClient_Slot",
+        QMetaObject::invokeMethod(theSender, "Data_2_TcpClient_Slot",
                                   Qt::QueuedConnection,
                                   Q_ARG(QString, str),
                                   Q_ARG(qintptr, tcpSocketNumber));

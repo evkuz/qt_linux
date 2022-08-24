@@ -191,21 +191,23 @@ void MainProcess::on_trainButton_clicked()
     int value = 0xf014;
     DetectorState state;
     QString str, fstr;
-    str = "on_trainButton_Clicked";
-    GUI_Write_To_Log(value, str);
+//    str = "on_trainButton_Clicked";
+//    GUI_Write_To_Log(value, str);
     fstr = "";
+    str = "";
 //Сразу открываем захват
 //    if (ui->servo_1_lineEdit->text().toInt() > 0){ ui->servo_1_lineEdit->setText("0"); Servos[0]=0;}
 //    else {ui->servo_1_lineEdit->setText("160"); Servos[0]=160;}
     Servos[0]=0;
 
-    str = "Before Read SOCket";
-    GUI_Write_To_Log(value, str);
+//    str = "Before Read SOCket";
+//    GUI_Write_To_Log(value, str);
 
     // Нужна проверка, запущен ли сервис robot.hiwonder.service
+    // Проверяем детекцию, готовим быстрый ответ на запуск экшена
     if (readSocket.GetState(&state) == 0) // Ф-ция вернула 0, т.е. все ОК.
       {
-        str = "Inside IF !!!!!!!!!!!!!";
+        str = "Inside IF GetState == 0!!!!!!!!!!!!!";
         GUI_Write_To_Log(value, str);
 
         if (state.isDetected){
@@ -213,13 +215,13 @@ void MainProcess::on_trainButton_clicked()
             jsnStore->isAnyActionRunning = true;
             currentCommandIndex = 5; //"start"
 
-            str = "Just float values of state : ";
+            str = "Current float values of coordinates : ";
             fstr.setNum(state.objectX);
             str += fstr;
             str += ", ";
             fstr.setNum(state.objectY);
             str += fstr;
-            GUI_Write_To_Log(value, str);
+//            GUI_Write_To_Log(value, str);
 
 
             int kf = 100000;
@@ -270,36 +272,46 @@ void MainProcess::on_trainButton_clicked()
             mainjsnObj["info"] = str;
             mainjsnObj["state"] = DEV_ACTION_STATE_FAIL;
 
-           // jsnStore->setActionData(mainjsnObj); cause dangling pointer, so commented
+            jsnStore->setActionData(mainjsnObj); //cause dangling pointer, so commented
 
             jsnStore->jsnActionStart["rc"] = JsonInfo::AC_Launch_RC_DONE;
 
 //            QString s3 = "NO DETECTION";
-            str = "NO DETECTION";
-            GUI_Write_To_Log(value, str);
+//            str = "NO DETECTION";
+//            GUI_Write_To_Log(value, str);
             str = "Now the value of jsnStore->isAnyActionRunning : ";
             str += QVariant(jsnStore->isAnyActionRunning).toString();
             GUI_Write_To_Log(value, str);
 
-            str = jsnStore->returnJsnData();
-        }
+            //str = jsnStore->returnJsnData();
+            str = QJsonDocument(mainjsnObj).toJson(QJsonDocument::Indented);
+
+        } //else
 
 //       std::cout <<  str.toStdString() << std::endl;
 //       Robot->Write_To_Log(value, str);
 //       GUI_Write_To_Log(value, str);
     }//if (state.iqsDetected)
 
-    // Ответ на запуск экшена start отправили
+    // Отправляем ответ на запуск экшена start
+    //    emit Write_2_TcpClient_Signal(str, this->tcpSocketNumber);
 
-    emit Write_2_TcpClient_Signal(str, this->tcpSocketNumber);
-    str = "Start processed,  jsnStore->isAnyActionRunning : ";
-    str += QVariant(jsnStore->isAnyActionRunning).toString();
+    GUI_Write_To_Log(value, "Going to sent to TCP the following data : ");
     GUI_Write_To_Log(value, str);
+    QMetaObject::invokeMethod(this->ptrTcpClient, "Data_2_TcpClient_Slot", //this->sender()
+                              Qt::QueuedConnection,
+                              Q_ARG(QString, str),
+                              Q_ARG(qintptr, tcpSocketNumber));
+
+
+//    str = "Start processed,  jsnStore->isAnyActionRunning : ";
+//    str += QVariant(jsnStore->isAnyActionRunning).toString();
+//    GUI_Write_To_Log(value, str);
 
 
 //В этой точке робот опустился над кубиком, открыл захват.
 
-if (DETECTED)
+if (DETECTED) // Берем кубик, возвращаем манипулятор в исходную точку.
     {
 
         QByteArray dd ;
@@ -626,7 +638,14 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
             // Отправляем ответ на команду запуска экшена
             // while detection is not checked don's send that it's ok
             if (indexOfCommand != 5) {
-                emit Write_2_TcpClient_Signal(str, this->tcpSocketNumber);
+                //emit Write_2_TcpClient_Signal(str, this->tcpSocketNumber);
+
+                QMetaObject::invokeMethod(this->ptrTcpClient, "Data_2_TcpClient_Slot", //this->sender()
+                                          Qt::QueuedConnection,
+                                          Q_ARG(QString, str),
+                                          Q_ARG(qintptr, tcpSocketNumber));
+
+
                 jsnStore->setActionData(theObj);
             }
 
