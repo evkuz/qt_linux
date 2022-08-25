@@ -48,6 +48,8 @@
 #include <QDataStream>
 
 #include <QSharedPointer>
+#include <QMetaObject>
+
 
 //QT_BEGIN_NAMESPACE
 //namespace Ui { class MainProcess; }
@@ -80,7 +82,7 @@ public:
     bool new_get_request; // Флаг сигнализирует, что есть неотвеченный GET-запрос от webserver.
     //QTcpServer* m_pTCPServer;
 
-    QSimpleServer server;
+//    QSimpleServer server;
     QTcpSocket *socketCV;
     CVDevice *CVdevice;
     QThread *threadCV;
@@ -114,7 +116,7 @@ public:
 
 //#define
 // Актуально для разных размеров кубика
-#define FULL_CLOSED 80
+#define FULL_CLOSED 90
 #define FULL_OPENED 35
 
 
@@ -170,7 +172,7 @@ public:
 
     //void update_data_from_sliders(int index, int value);
 
-    void GUI_Write_To_Log (int value, QString log_message); //Пишет в лог-файл номер ошибки value и сообщение message
+    Q_INVOKABLE void GUI_Write_To_Log (int value, QString log_message); //Пишет в лог-файл номер ошибки value и сообщение message
     void Servos_To_Log(QString message);
     void try_mcinfer(int x, int y);
     void update_Servos_from_position(unsigned char *pos);
@@ -189,12 +191,20 @@ public:
 //  void ProcessAction (HiWonder::ActionState * actionName);
     void ProcessAction(int indexOfCommand, QJsonObject &theObj); // Отрабатывает команду по заданному индексу из списка QList<QString> theList
     void LogFile_Open (QString fname);
+
+    struct CV_Answer {
+        double distance; // distance to Object calculated by CV
+        bool   detected; // is there valid object detection ?
+    };
+
+    CV_Answer cvAnswer;
 private:
 //    SocketClient readSocket;
+    QObject* ptrTcpClient;   // Указатель на объект, приславший команду от Tcp-клиента
 
 public slots:
     void Data_From_Web_SLot(QString message);
-    void Data_From_TcpClient_Slot(QString message, int socketNumber);
+    Q_INVOKABLE void Data_From_TcpClient_Slot(QString message, int socketNumber, QObject* theSender);
 
 //    void Data_from_TcpServer_Slot(QString tcpData);
 

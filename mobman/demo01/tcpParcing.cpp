@@ -20,13 +20,13 @@
 // ProcessAction запускаем только для значений индекса команды 0 или 1.
 // Для остальных значений, оставляем как было. Только в новом файле теперь.
 
-void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
+void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber, QObject* theSender)
 {
     QString str, substr;
     int value = 0xf00f;
 
     QMutexLocker locker(&mutex);
-
+    ptrTcpClient = theSender;
     this->tcpSocketNumber =  socketNumber;
     new_get_request = true;
     str = "From TCP Get new command : "; str += message;
@@ -94,7 +94,12 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
         launchActionAnswer = tempObj;
         str = QJsonDocument(launchActionAnswer).toJson(QJsonDocument::Indented);
         // отправляем ответ на запуск экшена
-        emit Write_2_TcpClient_Signal(str, socketNumber);
+        //emit Write_2_TcpClient_Signal(str, socketNumber);
+        QMetaObject::invokeMethod(this->ptrTcpClient, "Data_2_TcpClient_Slot",
+                                  Qt::QueuedConnection,
+                                  Q_ARG(QString, str),
+                                  Q_ARG(qintptr, tcpSocketNumber));
+
 
         return;
     }
@@ -143,7 +148,11 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
 
 
         Robot->active_command = "status";
-        emit Write_2_TcpClient_Signal (str, this->tcpSocketNumber);
+//        emit Write_2_TcpClient_Signal (str, this->tcpSocketNumber);
+        QMetaObject::invokeMethod(this->ptrTcpClient, "Data_2_TcpClient_Slot",
+                                  Qt::QueuedConnection,
+                                  Q_ARG(QString, str),
+                                  Q_ARG(qintptr, tcpSocketNumber));
 
 
 
@@ -169,7 +178,12 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
         //str = "I'm in reset";
         mainjsnObj = jsnStore->returnAllActions();
         str = jsnStore->jsnData;
-        emit Write_2_TcpClient_Signal(str, this->tcpSocketNumber);
+//        emit Write_2_TcpClient_Signal(str, this->tcpSocketNumber);
+        QMetaObject::invokeMethod(this->ptrTcpClient, "Data_2_TcpClient_Slot",
+                                  Qt::QueuedConnection,
+                                  Q_ARG(QString, str),
+                                  Q_ARG(qintptr, tcpSocketNumber));
+
 
         GUI_Write_To_Log(value, str);
 //        mainjsnObj = jsnStore->returnJsnActionReset();
@@ -227,7 +241,12 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
       //  str = QJsonDocument(jsnStore->returnAllActions()).toJson(QJsonDocument::Indented);
         mainjsnObj = jsnStore->returnAllActions();
         str = jsnStore->jsnData;
-        emit Write_2_TcpClient_Signal(str, this->tcpSocketNumber);
+//        emit Write_2_TcpClient_Signal(str, this->tcpSocketNumber);
+        QMetaObject::invokeMethod(this->ptrTcpClient, "Data_2_TcpClient_Slot",
+                                  Qt::QueuedConnection,
+                                  Q_ARG(QString, str),
+                                  Q_ARG(qintptr, tcpSocketNumber));
+
         str += str.insert(0, "Total action_list : \n");
 
         GUI_Write_To_Log(value, str);

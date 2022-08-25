@@ -15,6 +15,8 @@
 #include <QJsonArray>
 #include <QJsonParseError>
 #include <QVariantMap>
+#include <QMetaObject>
+
 //#include <QSharedPointer>
 
 using ordered_json = nlohmann::ordered_json;
@@ -125,10 +127,14 @@ public:
 
     const char* DEV_ACTION_INFO = "Action is already running";
     const char* DEV_ACTION_INFO_OUT = "The object distance is out of range";
-    const char* DEV_ACTION_INFO_TEST = "TEST TEST TEST";
+    const char* DEV_ACTION_INFO_NODETECT = "NO DETECTION";
+    const char* DEV_ACTION_INFO_INCORRECT = "INCORRECT distance";
 
     const char* DEV_ACTION_STATE_FAIL = "fail";
     const char* DEV_ACTION_STATE_RUN = "inprogress";
+    const char* DEV_ACTION_STATE_NODETECT = "NO DETECTION";
+    const char* DEV_ACTION_STATE_INCORRECT = "INCORRECT distance";
+
 
 
     void init_json();

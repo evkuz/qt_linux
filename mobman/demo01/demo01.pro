@@ -7,8 +7,8 @@ CONFIG -= app_bundle
 
 TEMPLATE = app
 
-INCLUDEPATH += $$(EXTLIBS)
-#INCLUDEPATH += $$system( echo $EXTLIBS )
+INCLUDEPATH += $$(LOCLIBS)
+#INCLUDEPATH += $$system( echo $LOCLIBS )
 SOURCES += main.cpp \
     jsoninfo.cpp \
     clientsocket.cpp \
@@ -18,8 +18,8 @@ SOURCES += main.cpp \
     mainprocess.cpp \
     processAction.cpp \
     tcpParcing.cpp  \
-    $$(EXTLIBS)/manipulator/qsimpleserver.cpp \
-    $$(EXTLIBS)/manipulator/qsocketthread.cpp
+    $$(LOCLIBS)/manipulator/meta/qsimpleserver.cpp \
+    $$(LOCLIBS)/manipulator/meta/qsocketthread.cpp
 
 
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -38,6 +38,6 @@ HEADERS += \
     mainprocess.h \
     tcpParcing.h \
     workflow.h \
-    $$(EXTLIBS)/manipulator/qsimpleserver.h \
-    $$(EXTLIBS)/manipulator/qsocketthread.h
+    $$(LOCLIBS)/manipulator/meta/qsimpleserver.h \
+    $$(LOCLIBS)/manipulator/meta/qsocketthread.h
 

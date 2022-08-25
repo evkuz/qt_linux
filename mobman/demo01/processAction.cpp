@@ -37,7 +37,12 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
     case -1: // action с таким именем не найден
         str = QJsonDocument(theObj).toJson(QJsonDocument::Indented);
         // Вот это нужно, отправляем ответ на запуск экшена
-        emit Write_2_TcpClient_Signal(str, this->tcpSocketNumber);
+        //emit Write_2_TcpClient_Signal(str, this->tcpSocketNumber);
+        QMetaObject::invokeMethod(this->ptrTcpClient, "Data_2_TcpClient_Slot", //this->sender()
+                                  Qt::QueuedConnection,
+                                  Q_ARG(QString, str),
+                                  Q_ARG(qintptr, tcpSocketNumber));
+
         str.insert(0, "There is wrong action command !!! : \n");
         GUI_Write_To_Log(value, str);
         break;
@@ -60,7 +65,11 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
 //        launchActionAnswer["info"] = DEV_HEAD_INFO_REQUEST;
         str = QJsonDocument(theObj).toJson(QJsonDocument::Indented);
         // Вот это нужно, отправляем ответ на запуск экшена
-        emit Write_2_TcpClient_Signal(str, this->tcpSocketNumber);
+        //emit Write_2_TcpClient_Signal(str, this->tcpSocketNumber);
+        QMetaObject::invokeMethod(this->ptrTcpClient, "Data_2_TcpClient_Slot", //this->sender()
+                                  Qt::QueuedConnection,
+                                  Q_ARG(QString, str),
+                                  Q_ARG(qintptr, tcpSocketNumber));
 
 
 
@@ -87,6 +96,7 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
         else { // Все нормально, запускаем манипулятор
 
             jsnStore->isAnyActionRunning = true;
+            // Это вместо jsnActionAnswer ?
             theObj["rc"] = jsnStore->AC_Launch_RC_RUNNING;//RC_SUCCESS; // Now state "inprogress" //theObj
             theObj["state"] = jsnStore->DEV_ACTION_STATE_RUN;
 
@@ -96,7 +106,12 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
             // !!! while detection is not checked dont's send that it's ok !!!
             // Вот тут надо брать значение из словаря/кортежа, а не текстовое...
             if (tcpCommand[indexOfCommand] != "get_box") {
-                emit Write_2_TcpClient_Signal(str, this->tcpSocketNumber);
+                //emit Write_2_TcpClient_Signal(str, this->tcpSocketNumber);
+                QMetaObject::invokeMethod(this->ptrTcpClient, "Data_2_TcpClient_Slot", //this->sender()
+                                          Qt::QueuedConnection,
+                                          Q_ARG(QString, str),
+                                          Q_ARG(qintptr, tcpSocketNumber));
+
                 jsnStore->setActionData(theObj);
             }
 // Это общий ответ, индикатор, что девайс вообще жив и на связи.
@@ -183,7 +198,9 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
                 //Поднимаем крайний привод, чтобы снова не схватить кубик при движении обратно
                 Servos[3] = 65;
                 this->send_Data(NOT_LAST);
-                // в позицию "formoving"
+
+
+                // в позицию "formoving", хват постепенно закрывается
                 memcpy(Servos, mob_moving_position, DOF);
                 this->send_Data(LASTONE);
 
