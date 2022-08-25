@@ -83,6 +83,16 @@
    } //list
  }//action_list-field
 
+
+            QJsonObject headStatus = {
+                {"rc", RC_SUCCESS}, //RC_SUCCESS
+                {"state", "Running"},
+                {"info", "Action performing"}
+            };
+
+            jsnStore->setJsnHeadStatus(headStatus);
+
+
 */
 
 #endif // PROTOCOL_H

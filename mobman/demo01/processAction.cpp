@@ -114,7 +114,7 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
 
                 jsnStore->setActionData(theObj);
             }
-// Это общий ответ, индикатор, что девайс вообще жив и на связи.
+// Это общий ответ - быстрый ответ, индикатор, что девайс вообще жив и на связи.
             QJsonObject headStatus = {
                 {"rc", RC_SUCCESS}, //RC_SUCCESS
                 {"state", "Running"},

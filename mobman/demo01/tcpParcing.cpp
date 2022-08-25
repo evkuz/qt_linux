@@ -91,8 +91,8 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber, QO
         // Here we are managed to not getting dangling pointer.
         // Ничего не меняем в состояниях экшена, так проще
 //        jsnStore->setActionData(tempObj);
-        launchActionAnswer = tempObj;
-        str = QJsonDocument(launchActionAnswer).toJson(QJsonDocument::Indented);
+        //launchActionAnswer = tempObj;
+        str = QJsonDocument(tempObj).toJson(QJsonDocument::Indented);
         // отправляем ответ на запуск экшена
         //emit Write_2_TcpClient_Signal(str, socketNumber);
         QMetaObject::invokeMethod(this->ptrTcpClient, "Data_2_TcpClient_Slot",
@@ -105,18 +105,6 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber, QO
     }
 
 
-
-
-
-
-    //jsnStore->action_command = tcpCommand.at(comIndex); // сигнал updateAction_List_Signal
-   // jsnStore->setCurrentAction(tcpCommand.at(comIndex));
-    // 0 - status, 5 - start
-//    if (comIndex==0 or comIndex==5 or comIndex==7) {
-//        ProcessAction(comIndex);
-//    }
-//    int indent = 3;
-//     std::string s2;
 
 // Если в данный момент есть работающий экшен, то уже нельзя менять значение mainjsnObj...
 

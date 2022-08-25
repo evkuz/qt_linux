@@ -840,8 +840,8 @@ void JsonInfo::setActionData(QJsonObject &theObj)
             jsnObjArray.replace(i, theObj);
         }
     }
-    jsnActionList["action_list"] = jsnObjArray;
-    this->jsnData = merge_json(jsnActionList, jsnHeadStatus);
+//    jsnActionList["action_list"] = jsnObjArray;
+//    this->jsnData = merge_json(jsnActionList, jsnHeadStatus);
 
 
 } // setActionData
