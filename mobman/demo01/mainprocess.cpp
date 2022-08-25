@@ -940,17 +940,17 @@ double MainProcess::parseJSON(QString jsnData)
   // GUI_Write_To_Log(value, jsnAnswer["name"]);
 
 //  GUI_Write_To_Log(value, "\n");
-  GUI_Write_To_Log(value, "Received data are as follows !");
+//  GUI_Write_To_Log(value, "Received data are as follows !");
 //  GUI_Write_To_Log(value, "\n");
 
-  str = substr; // jsnData; // Но тут еще надо обрезать HTTP-заголовки. ОБрезаем все до первого символа '{'
-  GUI_Write_To_Log(value, str);
+    str = substr; // jsnData; // Но тут еще надо обрезать HTTP-заголовки. ОБрезаем все до первого символа '{'
+//  GUI_Write_To_Log(value, str);
  // str = "{\" rc\": 0, \"info\": \"success\",\"name\": \"getposition\", \"data\": {\"detected\": true, \"x\": -15.0, \"y\": -60.0, \"width\": 113, \"height\": 108, \"err_angle\": -1.38117702629722, \"distance\": 209.21150512634233}}";
   //Assign the json text to a JSON object
   jsnDoc = QJsonDocument::fromJson(str.toUtf8(), &jsonError);
-  if(jsnDoc.isObject() == false) GUI_Write_To_Log(value,"It is not a JSON object");
+//  if(jsnDoc.isObject() == false) GUI_Write_To_Log(value,"It is not a JSON object");
   if(jsonError.error != QJsonParseError::NoError){
-          str = "Error: "; str += jsonError.errorString();
+          str = "Error while parcing: "; str += jsonError.errorString();
           GUI_Write_To_Log(value, str);
           return 0.0;
    }       //return;
@@ -969,7 +969,7 @@ double MainProcess::parseJSON(QString jsnData)
 //  // Парсинг JSON закончили, получили глобальную переменную  jsndataObj - это объект "data" : {}. Извлекаем из него данные.
 // Проверяем, что "detected": true
   DETECTED = jsndataObj.value("detected").toBool();
-  str = "Detected value after parcing is "; str += DETECTED;
+//  str = "Detected value after parcing is "; str += DETECTED;
 
   // Вот тут мы откуда-то знаем, что есть ключ "distance"... А если его нет ? надо допиливать...
   double cvdistance = jsndataObj.value("distance").toDouble();
@@ -1366,26 +1366,21 @@ void MainProcess::CV_NEW_onReadyRead_Slot()
     nextTcpdata = socketCV->readAll();
     if (befbytes == 17) {// Пришла строка HTTP/1.0 200 OK, обрабатывать не нужно, выходим.
         DETECTED = true;
-        GUI_Write_To_Log(value, "Detected [17] is true !!!");
+//        GUI_Write_To_Log(value, "Detected [17] is true !!!");
         return;
     }
-//    int afterbytes = socketCV->bytesAvailable();
-
-//    str = "Bytes before reading "; str += QString::number(befbytes); GUI_Write_To_Log(value, str);
-
-//    str = "Bytes after reading  "; str += QString::number(afterbytes); GUI_Write_To_Log(value, str);
-
 
     GUI_Write_To_Log(value, "!!!!!!!!!!!!!!!!! There are some CONTROL data from SOCKET device !!!!!!!!!!!!!!!!!!!!");
     GUI_Write_To_Log(value, nextTcpdata);
 
-    str = "Detected value BEFORE parcing is ";
-    str +=  QVariant(DETECTED).toString();
-    GUI_Write_To_Log(value, str);
+//    str = "Detected value BEFORE parcing is ";
+//    str +=  QVariant(DETECTED).toString();
+//    GUI_Write_To_Log(value, str);
 
     // Запускаю JSON-парсинг
     double cvdistance = parseJSON(nextTcpdata);
     str = "Bytes readed "; str += QString::number(nextTcpdata.length());
+    GUI_Write_To_Log(value, str);
     // Вот тут detected должно быть установлено !!!
     if (!DETECTED){
         str = "There is NO DETECTION !!!";
@@ -1422,36 +1417,33 @@ void MainProcess::CV_NEW_onReadyRead_Slot()
 
     }
     if (cvdistance < 1.0) { // Это когда нечитаемый ответ от CV, то в ответ приходит 0.0
-        str = "There is INCORRECT value of distance !!!";
-        GUI_Write_To_Log(value, str);
+//        str = "There is INCORRECT value of distance !!!";
+//        GUI_Write_To_Log(value, str);
 
-        jsnActionAnswer["name"] =  jsnStore->jsnActionGetBox.value("name");
-        jsnActionAnswer["rc"] = jsnStore->AC_Launch_RC_FAILURE;
-        jsnActionAnswer["info"] = jsnStore->DEV_ACTION_INFO_INCORRECT;
+//        jsnActionAnswer["name"] =  jsnStore->jsnActionGetBox.value("name");
+//        jsnActionAnswer["rc"] = jsnStore->AC_Launch_RC_FAILURE;
+//        jsnActionAnswer["info"] = jsnStore->DEV_ACTION_INFO_INCORRECT;
 
-        jsnDoc = QJsonDocument(jsnActionAnswer);
-        str = jsnDoc.toJson(QJsonDocument::Compact);
+//        jsnDoc = QJsonDocument(jsnActionAnswer);
+//        str = jsnDoc.toJson(QJsonDocument::Compact);
 
-        QMetaObject::invokeMethod(this->ptrTcpClient, "Data_2_TcpClient_Slot",
-                                  Qt::QueuedConnection,
-                                  Q_ARG(QString, str),
-                                  Q_ARG(qintptr, tcpSocketNumber));
-        // А теперь следует задать значение "action_list": []
+//        QMetaObject::invokeMethod(this->ptrTcpClient, "Data_2_TcpClient_Slot",
+//                                  Qt::QueuedConnection,
+//                                  Q_ARG(QString, str),
+//                                  Q_ARG(qintptr, tcpSocketNumber));
+//        // А теперь следует задать значение "action_list": []
 
-        mainjsnObj["rc"] = JsonInfo::AC_Launch_RC_DONE; // Чтобы экшен мог запуститься
-        //mainjsnObj["name"] = jsnStore->jsnActionGetBox.value("name").toString();
-        mainjsnObj["info"] = str;
-        mainjsnObj["state"] = jsnStore->DEV_ACTION_STATE_INCORRECT;
-        // if this causes dangling pointer, try signal|slot data transfer
-//         jsnStore->setActionData(mainjsnObj);
-         //emit SetActionData_Signal(mainjsnObj);
-        QMetaObject::invokeMethod(this->jsnStore, "setActionData",
-                                   Qt::QueuedConnection,
-                                   Q_ARG(QJsonObject, mainjsnObj));
-
-
-
-        return;
+//        mainjsnObj["rc"] = JsonInfo::AC_Launch_RC_DONE; // Чтобы экшен мог запуститься
+//        //mainjsnObj["name"] = jsnStore->jsnActionGetBox.value("name").toString();
+//        mainjsnObj["info"] = str;
+//        mainjsnObj["state"] = jsnStore->DEV_ACTION_STATE_INCORRECT;
+//        // if this causes dangling pointer, try signal|slot data transfer
+////         jsnStore->setActionData(mainjsnObj);
+//         //emit SetActionData_Signal(mainjsnObj);
+//        QMetaObject::invokeMethod(this->jsnStore, "setActionData",
+//                                   Qt::QueuedConnection,
+//                                   Q_ARG(QJsonObject, mainjsnObj));
+      return;
 
     }
 
@@ -1466,13 +1458,13 @@ void MainProcess::CV_NEW_onReadyRead_Slot()
 //    GUI_Write_To_Log(value, str);
 
     unsigned int rDistance = my_round(cvd);
-    str = "!!!!!!!!!!!!!!!!! The distance Is rounded to closest 10x int value : ";
-    substr =  QString::number(rDistance);
-    str += substr;
-    GUI_Write_To_Log(value, str);
+//    str = "!!!!!!!!!!!!!!!!! The distance Is rounded to closest 10x int value : ";
+//    substr =  QString::number(rDistance);
+//    str += substr;
+//    GUI_Write_To_Log(value, str);
 
     if (rDistance < 110 || rDistance > 230) {
-        str = "!!!!!!!!!!!!!!!!! The FUCKING distance is out of range !!!!!!!!!! ";
+        str = "!!!!!!!!!!!!!!!!! The distance is out of range !!!!!!!!!! ";
 
         // Вот тут шлём rc==AC_FAILURE -   "экшен не запустился",
         // ОДнако значение rc ставим
@@ -1497,11 +1489,11 @@ void MainProcess::CV_NEW_onReadyRead_Slot()
         mainjsnObj["state"] = jsnStore->DEV_ACTION_STATE_FAIL;
 
         // if this causes dangling pointer, try signal|slot data transfer
-        //jsnStore->setActionData(mainjsnObj);
+        jsnStore->setActionData(mainjsnObj);
         // emit SetActionData_Signal(mainjsnObj);
-        QMetaObject::invokeMethod(this->jsnStore, "setActionData",
-                                   Qt::QueuedConnection,
-                                   Q_ARG(QJsonObject, mainjsnObj));
+//        QMetaObject::invokeMethod(this->jsnStore, "setActionData",
+//                                   Qt::QueuedConnection,
+//                                   Q_ARG(QJsonObject, mainjsnObj));
 
 
 
@@ -1524,10 +1516,10 @@ void MainProcess::CV_NEW_onReadyRead_Slot()
 
     // Дистанция нормальная, можно запускать манипулятор. Тогда отправляем быстрый ответ
     // Предварительно проверяем текущие значеия
-    str = "CV_NEW_onReadyRead_Slot, before GetBox launching  Current json object name is ";
-    QString myname = mainjsnObj.value("name").toString();
-    str += myname;
-    GUI_Write_To_Log(value, str);
+//    str = "CV_NEW_onReadyRead_Slot, before GetBox launching  Current json object name is ";
+//    QString myname = mainjsnObj.value("name").toString();
+//    str += myname;
+//    GUI_Write_To_Log(value, str);
 
     // Быстрый ответ
     QJsonObject theObj;
@@ -1549,49 +1541,6 @@ void MainProcess::CV_NEW_onReadyRead_Slot()
     // Запускаем захват объекта.  Теперь это значение distance отправляем в ф-цию GetBox
     this->GetBox(CVDistance);
     //           //Команду манипулятору запустили. Задаем статус для ответа http-клиенту через структуру HiWonder::ActionState .
-
-               // А из структуры - в JSON-объект
-//    jsnActionAnswer.insert("name", QJsonValue(Robot->getbox_Action.name));
-//    jsnActionAnswer.insert("rc", QJsonValue(Robot->getbox_Action.rc));
-//    jsnActionAnswer.insert("info", QJsonValue(Robot->getbox_Action.info));
-
-//    jsnActionAnswer["name"] =  jsnStore->jsnActionGetBox.value("name");
-//    jsnActionAnswer["rc"] = jsnStore->AC_Launch_RC_RUNNING;
-//    jsnActionAnswer["info"] = jsnStore->DEV_ACTION_STATE_RUN;
-
-//    // И теперь вот этот jsnActionAnswer отправляем http-клиенту в ответ на команду "get_box"
-
-//    jsnDoc = QJsonDocument(jsnActionAnswer);
-
-    // str = jsnDoc.toJson(QJsonDocument::Compact);
-
-// Отправляем tcp-клиенту ответ на запуск экшена
-    // emit Write_2_TcpClient_Signal(jsnDoc.toJson(QJsonDocument::Compact), this->tcpSocketNumber);
-//    str = jsnDoc.toJson(QJsonDocument::Compact);
-//    QMetaObject::invokeMethod(this->ptrTcpClient, "Data_2_TcpClient_Slot",
-//                              Qt::QueuedConnection,
-//                              Q_ARG(QString, str),
-//                              Q_ARG(qintptr, tcpSocketNumber));
-
-//    jsnStore->setActionData(theObj);
-// А теперь меням значение
-
-//    mainjsnObj["rc"] = JsonInfo::AC_Launch_RC_DONE; //
-//    mainjsnObj["name"] = jsnStore->jsnActionGetBox.value("name").toString();
-//    mainjsnObj["info"] = jsnStore->jsnActionGetBox.value("info").toString();
-//    mainjsnObj["state"] = jsnStore->DEV_ACTION_STATE_RUN;
-
-    // if this causes dangling pointer, try signal|slot data transfer
-//    jsnStore->setActionData(mainjsnObj);
-    // Либо создаем аналог JsonInfo::setActionDone(QJsonObject &theObj)
-
-    // emit SetActionData_Signal(mainjsnObj);
-
-//    QMetaObject::invokeMethod(this->jsnStore, "setActionData",
-//                               Qt::QueuedConnection,
-//                               Q_ARG(QJsonObject, mainjsnObj));
-
-
 
 
 }
