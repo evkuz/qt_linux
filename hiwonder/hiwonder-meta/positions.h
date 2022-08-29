@@ -23,6 +23,8 @@ const unsigned char after_put_2_mobman [6] = {60, 93, 90, 140, 140, 140};
 
 const unsigned char collapse[6] = {93, 93, 10, 10, 25, 93};
 
+const unsigned char toMobman[6] = {70, 0, 75, 75, 160, 160};  // Кубик на весу для мобмана
+
 //93, 93, 100, 50, 120, 30
 // 60, 93,90, 40, 145, 30
 

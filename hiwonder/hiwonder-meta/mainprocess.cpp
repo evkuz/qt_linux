@@ -1,6 +1,6 @@
 ﻿#include "mainprocess.h"
 //#include "ui_MainProcess.h"
-#include "positions.h"
+//#include "positions.h"
 //#include "hiwonder.h"
 
 #include <stdlib.h>
@@ -425,29 +425,30 @@ void MainProcess::put_box()
 
     //+++++++++++++++++++++ 3 put the cube, наклоняем захват с кубиком к транспортировщику
     // {60, 93, 100, 35, 145, 35};
-    memcpy(Servos, put_2_mobman, DOF);
+    // memcpy(Servos, put_2_mobman, DOF);
+    memcpy(Servos, toMobman, DOF);
     this->send_Data(NOT_LAST);
-    //+++++++++++++++++++++ 4  Unclamp the gripper, открываем захват, т.е. кладем кубик на пол, чтобы его взял транспортировщик
-    //unlock
-    Servos[0]=0;
-    this->send_Data(NOT_LAST);
-    //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    //+++++++++++++++++++++++++++++++++ 5 Приподнять хват, чтобы не задеть тележку.
-       memcpy(dd.data(), after_put_2_mobman, DOF);
-       dd.insert(parcel_size-2, 0x30); // Движение "обратно"
-       dd.insert(parcel_size-1, NOT_LAST); // AFTER_PUT
-       Robot->GoToPosition(dd);
+//    //+++++++++++++++++++++ 4  Unclamp the gripper, открываем захват, т.е. кладем кубик на пол, чтобы его взял транспортировщик
+//    //unlock
+//    Servos[0]=0;
+//    this->send_Data(NOT_LAST);
+//    //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//    //+++++++++++++++++++++++++++++++++ 5 Приподнять хват, чтобы не задеть тележку.
+//       memcpy(dd.data(), after_put_2_mobman, DOF);
+//       dd.insert(parcel_size-2, 0x30); // Движение "обратно"
+//       dd.insert(parcel_size-1, NOT_LAST); // AFTER_PUT
+//       Robot->GoToPosition(dd);
 
-    //+++++++++++++++++++++ 6 go back to start position
-    //this->update_Servos_from_position(hwr_Start_position);
-    memcpy(Servos, hwr_Start_position, DOF); // Нужно, чтобы в Servo[] были данные последней, т.е. текущей позици.
-                                             // Т.к. до вызова в этой строке там данные для put_2_mobman, см. 1ю команду
-    memcpy(dd.data(), hwr_Start_position, DOF);
-    dd.insert(parcel_size-2, 0x30); // Движение "Обратно"
-    dd.insert(parcel_size-1, LASTONE);
+//    //+++++++++++++++++++++ 6 go back to start position
+//    //this->update_Servos_from_position(hwr_Start_position);
+//    memcpy(Servos, hwr_Start_position, DOF); // Нужно, чтобы в Servo[] были данные последней, т.е. текущей позици.
+//                                             // Т.к. до вызова в этой строке там данные для put_2_mobman, см. 1ю команду
+//    memcpy(dd.data(), hwr_Start_position, DOF);
+//    dd.insert(parcel_size-2, 0x30); // Движение "Обратно"
+//    dd.insert(parcel_size-1, LASTONE);
 
-    // this->send_Data(dd); // Нет. т.к. там всегда движения "Туда"
-    Robot->GoToPosition(dd);
+//    // this->send_Data(dd); // Нет. т.к. там всегда движения "Туда"
+//    Robot->GoToPosition(dd);
 
 }
 //+++++++++++++++++++++++++++++++++++++++++++++++++++

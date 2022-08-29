@@ -10,6 +10,8 @@ void MainProcess::try_mcinfer(float x, float y){
 //            in[0] = actAngle;
 //            in[1] = e_Arr_Max;
 //            in[2] = de;
+    float in[3] = {0,0,0}; //массив для ввода
+    float outKB[4]= {0,0,0,0}; // массив для вывода
 
             in[0] = x;
             in[1] = y;

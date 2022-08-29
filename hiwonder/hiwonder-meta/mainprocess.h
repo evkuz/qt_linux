@@ -20,6 +20,7 @@
 #include "manipulator/meta/SocketClient.h"
 #include "jsoninfo.h"
 #include "protocol.h"
+#include "positions.h"
 #include <QMutex>
 #include <QMutexLocker>
 #include <QProcess>

@@ -1,5 +1,5 @@
 #include "mainprocess.h"
-#include "positions.h"
+//#include "positions.h"
 /*
 преобразование строки параметров
 ?a=12&a=12432354&b=123&c=1241234
@@ -278,6 +278,8 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, qintptr socketNumber
     case 6: // "put_box"
         mainjsnObj = jsnStore->returnJsnActionPutbox();
         ProcessAction(comIndex, mainjsnObj);
+        str = "I'm in <put_box>";
+        GUI_Write_To_Log(value, str);
 
 
         break;
