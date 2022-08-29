@@ -107,6 +107,7 @@ void HiWonder::Open_Port_Slot(QString portname)
 // Задаем роботу углы для нужной позиции - отправляем данные для углов в Serial port
 void HiWonder::GoToPosition(QByteArray &position)//, const char *servo)
 {
+   int value = 0xF001;
    QString str;
    this->MOVEMENT_DONE = false;
    position.resize (szData);
@@ -125,7 +126,7 @@ void HiWonder::GoToPosition(QByteArray &position)//, const char *servo)
         str+= ", ";
     }
     str.truncate(str.lastIndexOf(","));
-    this->Write_To_Log(0xF001, str);
+    this->Write_To_Log(value, str);
 
 }
 //+++++++++++++++++++++++++++++++

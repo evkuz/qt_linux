@@ -510,14 +510,15 @@ void MainWindow::Pass_String_Slot(QString str)
 
 void MainWindow::on_submitButton_clicked()
 {
-    int num;
+    int num, value;
     QString str;
     QString data = ui->All_Servos_lineEdit->text();
     QStringList list;
 
+    value = 0xf010;
     str="The data from line edit are : ";
     str.append(data);
-    GUI_Write_To_Log(0xf010, data);
+    GUI_Write_To_Log(value, data);
 
     QRegExp rx("[, ]");// match a comma or a space
   //  QStringList list = {"100", "100", "100", "100", "100", "100" };
@@ -546,7 +547,7 @@ void MainWindow::on_submitButton_clicked()
         // Если данные введены верно, то возвращаем цвета кнопки и строки ввода к значениям по умолчанию.
         ui->submitButton->setStyleSheet ("");
         ui->All_Servos_lineEdit->setStyleSheet ("");
-        GUI_Write_To_Log(0xf010, "Данные переданы корректно");
+        GUI_Write_To_Log(value, "Данные переданы корректно");
      }//(num == DOF -1)
 
 //    GUI_Write_To_Log(0xf010, str); //QString::number(list.size())
