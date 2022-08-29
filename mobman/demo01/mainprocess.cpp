@@ -1366,7 +1366,9 @@ void MainProcess::CV_NEW_onReadyRead_Slot()
 
     int befbytes = socketCV->bytesAvailable();
     nextTcpdata = socketCV->readAll();
-    if (befbytes == 17) {// Пришла строка HTTP/1.0 200 OK, обрабатывать не нужно, выходим.
+
+    nextTcpdata.simplified();
+    if (befbytes < 20) {// == 17 Пришла строка HTTP/1.0 200 OK, обрабатывать не нужно, выходим.
         DETECTED = true;
 //        GUI_Write_To_Log(value, "Detected [17] is true !!!");
         return;

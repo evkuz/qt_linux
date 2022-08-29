@@ -8,6 +8,6 @@ int main(int argc, char *argv[])
     setlocale(LC_NUMERIC,"C");
     MainWindow w;
     w.show();
-    QSimpleServer server;
+//    QSimpleServer server;
     return a.exec();
 }

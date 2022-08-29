@@ -53,7 +53,7 @@ public:
     bool newYearMode; // Снимаем НГ-поздравление. Кое-где надо медленнее двигаться.
     int moving_mode;  // Режим движения (быстро/медленно)
 
-    QSimpleServer server;
+//    QSimpleServer server;
 
     //+++++++++++++++++++++++++++++ Threads +++++++++++++++
     int thread_counter ;
