@@ -66,6 +66,7 @@ MainProcess::MainProcess(QObject *parent)
     Robot->Write_To_Log(value, str.append(" is started successfully!!!\n"));
 
     qDebug() << "Started " << target_name;
+//    QSimpleServer server;
 
     GUI_Write_To_Log(value, "Going to Start QTcpServer");
     if (server.isListening ()) {
@@ -1533,7 +1534,11 @@ void MainProcess::GetBox(unsigned int distance)
     case 200: arrPtr = mob_2_pos_20; break;
     case 210: arrPtr = mob_2_pos_21; break;
     case 220: arrPtr = mob_2_pos_21; break;
-    case 230: arrPtr = mob_2_pos_23; break;
+//    case 230: arrPtr = mob_2_pos_23; break;
+    //+++++++++++
+    case 250: arrPtr =  mob_3_pos_25; break;//247->250 35,90,135,72
+    case 240: arrPtr =  mob_3_pos_24; break;//244->240 35,90,132,72
+    case 230: arrPtr =  mob_3_pos_22; break;//220 35,90,125,80
 
 
       default:
