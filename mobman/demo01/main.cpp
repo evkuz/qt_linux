@@ -18,8 +18,9 @@ int main(int argc, char *argv[])
     // Запускаем основной поток, где обмен с TCP-сервером, роботом, запись в лог и т.д.
     QObject* ptrMainProcess = new MainProcess();
 
+
 //    // Запускаем TCP-сервер
-    QSimpleServer server(ptrMainProcess);
+    QSimpleServer server(ptrMainProcess, nullptr);
 
     return a.exec();
 }

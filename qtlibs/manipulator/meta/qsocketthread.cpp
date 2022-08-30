@@ -12,6 +12,10 @@ QSocketThread::QSocketThread(qintptr descriptror, QObject* ptrMainThread, volati
     _ptrMainThtread = ptrMainThread;
     pauseTimer = new QTimer(this);
     socketsCounter = _socketsCounter;
+    data2Client = "";
+    data2Client.resize(500);
+    qbData="";
+    qbData.resize(500);
 
 
     //ba.resize(icon)
@@ -294,7 +298,7 @@ void QSocketThread::onReadyRead()
         substr = message.mid(sPosition, (ePosition - sPosition));
         if(substr == "") substr = searchstr;
 
-        if (substr == "start"){ // Долгая операция, ставим на паузу прием новых соединений
+        if ((substr == "start")){ // || (substr == "get_box") Долгая операция, ставим на паузу прием новых соединений
             emit makePause_Signal(); // put on pause incomming connections
             pauseTimer->start(50); // 20msec should be enough
             //...
@@ -362,7 +366,10 @@ void QSocketThread::Data_2_TcpClient_Slot(QString data, qintptr socketNumber)
 //        return;
 //    }
     qDebug() << "%%%%%%%%%%%%%%%% Data for TCP-CLIENT %%%%%%%%%%%%%";
-    data2Client = data.toUtf8(); // have got data from MainProcess as QByteArray
+    qDebug() << "%%%%%%%%%%%%%%%% QByteArray          %%%%%%%%%%%%%";
+    //data2Client.resize(data.size());
+
+//    data2Client = data.toUtf8(); // have got data from MainProcess as QByteArray
     QString response = "HTTP/1.1 200 OK\r\n";
 
 //++++++++++++++++++++++++++ FAVICON ++++++++++++++++++++++++++++++++++++
@@ -370,6 +377,8 @@ void QSocketThread::Data_2_TcpClient_Slot(QString data, qintptr socketNumber)
     response += "Access-Control-Allow-Origin: *\r\n";
 //    response += "connection : close\r\n";
     response += "\r\n";
+
+    response += data;
 //        response += "<html>";
 //        response += "<head>";
 
@@ -382,8 +391,12 @@ void QSocketThread::Data_2_TcpClient_Slot(QString data, qintptr socketNumber)
 //        response += "<body>";
 //        response += "IT'S HTML DATA !";
 
-        QByteArray qbData = response.toUtf8();
-        qbData += data2Client;
+    qbData = response.toUtf8();
+//    qbData.resize(300);
+//    qbData += data2Client;
+//    data2Client += response.toUtf8();
+    qDebug() << "The packet size in bytes is " << QString::number(qbData.size());
+
 //        response += "</body>";
 //        response += "</html>";
 //++++++++++++++++++++++++++ END OF FAVICON ++++++++++++++++++++++++++++++++++++
@@ -414,17 +427,17 @@ void QSocketThread::Data_2_TcpClient_Slot(QString data, qintptr socketNumber)
 //    qDebug() << QThread::currentThread()  << "Current socket " << socketNumber << " state is " << this->socket->state();
 //    qDebug() << QThread::currentThread()  << "Going to SEND SEND SEND data to socket with an desctiptor " << QString::number(this->socketDescriptor);
 
-    this->socket->write(qbData);
+    qint64 bufbytes = socket->write(qbData.constData());
+    socket->waitForBytesWritten();
     // socket->write(response.toUtf8());
     // ВОт тут (дождаться отправки) происходит отсоединение сокета
 
     //Отсоединение от удаленнного сокета
     this->socket->disconnectFromHost();
-    this->socket->waitForDisconnected();
-
-    socketsCounter--;
-    emit decSocketCounter_Signal();
-//    qDebug() << QThread::currentThread()  << "The folowing data has been written to socket : \n" << qbData;
+    socket->deleteLater();
+//    socketsCounter--;
+//    emit decSocketCounter_Signal();
+////    qDebug() << QThread::currentThread()  << "The folowing data has been written to socket : \n" << qbData;
     emit stopThread_signal();
     //this->deleteLater();
     toBeClosed = true;

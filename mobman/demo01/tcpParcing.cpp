@@ -32,6 +32,11 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber, QO
     str = "From TCP Get new command : "; str += message;
     GUI_Write_To_Log(0xf00f, str);
 
+    QString mystr = "Pointer to SENDER QObject is ";
+    mystr += pointer_to_qstring(ptrTcpClient);
+    GUI_Write_To_Log(value, mystr);
+
+
     substr = message;
 
     //mutex.lock();
@@ -150,6 +155,18 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber, QO
             GUI_Write_To_Log(value, substr);
             return;
         }
+        if (substr.startsWith("setservos=")){
+               substr = substr.remove("setservos=");
+               QStringList list1 = substr.split(QLatin1Char(','));
+               for (int i=0; i<DOF; ++i)
+               {
+                   Servos[i] = list1.at(i).toUInt();
+               }//for
+
+               this->send_Data(NOT_LAST);
+           }
+        else
+        {
         mainjsnObj = jsnStore->returnJsnActionsUnKnown();
         mainjsnObj["name"] = message;
         str = "There is wrong action command : ";
@@ -157,6 +174,7 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber, QO
         GUI_Write_To_Log(value, str);
 
         ProcessAction(comIndex, mainjsnObj);
+        }
         break;
 
     case 1:  // reset
@@ -221,9 +239,7 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber, QO
     case 12: // "put_box"
         mainjsnObj = jsnStore->returnJsnActionPutbox();
         ProcessAction(comIndex, mainjsnObj);
-
-
-        break;
+       break;
 
     case 7: //getactions
       //  str = QJsonDocument(jsnStore->returnAllActions()).toJson(QJsonDocument::Indented);
@@ -324,6 +340,18 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber, QO
         emit Write_2_TcpClient_Signal (str, this->tcpSocketNumber);
 
     }
+
+//    if (substr.startsWith("setservos=")){
+//           substr = substr.remove("setservos=");
+//           QStringList list1 = substr.split(QLatin1Char(','));
+//           for (int i=0; i<DOF; ++i)
+//           {
+//               Servos[i] = list1.at(i).toUInt();
+//           }//for
+
+//           this->send_Data(NOT_LAST);
+//       }
+
     // Запрашиваем список экшенов
 //    if (substr == "getactions") {
 //        QByteArray dd ;

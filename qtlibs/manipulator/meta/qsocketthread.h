@@ -31,6 +31,7 @@ public:
     ~QSocketThread();
 
     QByteArray data2Client; // храним данные на отправку клиенту.
+    QByteArray qbData;      // еще данные на отправку клиенту в сокет.
     bool data_ready; // Данные на отправку сформированы, можно отправлять.
     bool toBeClosed; // Поток для сокета закрываем, Сокет без данных закрываем.
     QString current_status;
@@ -67,7 +68,7 @@ public slots:
     //Слот закрытия сокета
     void onDisconnected();
     //Слот принятия данных на отправку в сокет.
-    Q_INVOKABLE void Data_2_TcpClient_Slot(QString, qintptr socketNumber);
+    Q_INVOKABLE void Data_2_TcpClient_Slot(QString data, qintptr socketNumber);
     // Слот сигнала изменения состояния сокета
     void onSocketDevState_Changed();
 

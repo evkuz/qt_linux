@@ -198,6 +198,7 @@ public:
     };
 
     CV_Answer cvAnswer;
+    QString pointer_to_qstring(void *ptr);
 private:
 //    SocketClient readSocket;
     QObject* ptrTcpClient;   // Указатель на объект, приславший команду от Tcp-клиента

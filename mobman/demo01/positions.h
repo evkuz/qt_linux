@@ -60,6 +60,13 @@ unsigned char mob_2_put_23 [4] = {80,90,172,35};
 
 unsigned char mob_2_moving_position [4] = {80,90,45,180};
 
+unsigned char mob_3_pos_25[4] = {35,90,135,72}; //247->250 35,90,135,72
+unsigned char mob_3_pos_24[4] = {35,90,132,72}; //244->240 35,90,132,72
+
+unsigned char mob_3_pos_22[4] = {35,90,125,80}; //220 35,90,125,80
+
+
+
 
 
 
