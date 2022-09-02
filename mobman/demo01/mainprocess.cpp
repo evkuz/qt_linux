@@ -833,9 +833,9 @@ void MainProcess::request_CV()
     //Сохраняем значение указателя, иначе вновь пришедший запрос статуса переписывает его.
     this->newPtrTcpClient = this->ptrTcpClient;
 
-    QString mystr = "requestCV Pointer to SENDER QObject is ";
-    mystr += pointer_to_qstring(this->ptrTcpClient);
-    GUI_Write_To_Log(0x9999, mystr);
+//    QString mystr = "requestCV Pointer to SENDER QObject is ";
+//    mystr += pointer_to_qstring(this->ptrTcpClient);
+//    GUI_Write_To_Log(0x9999, mystr);
 
 }
 //++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1269,9 +1269,10 @@ void MainProcess::onSocketConnected_Slot()
  // Дублирование ???
 // mainjsnObj = jsnStore->returnJsnActionGetBox();
 // jsnStore->isAnyActionRunning = true;
- QString mystr = "onSocketConnected_Slot Pointer to SENDER QObject is ";
- mystr += pointer_to_qstring(this->ptrTcpClient);
- GUI_Write_To_Log(0x9999, mystr);
+
+// QString mystr = "onSocketConnected_Slot Pointer to SENDER QObject is ";
+// mystr += pointer_to_qstring(this->ptrTcpClient);
+// GUI_Write_To_Log(0x9999, mystr);
 
 
 }
@@ -1435,7 +1436,7 @@ void MainProcess::CV_NEW_onReadyRead_Slot()
     int value = 0xfafa;
     QString message, nextTcpdata, str, substr;
 
-    QMutexLocker locker(&mutex);
+//    QMutexLocker locker(&mutex);
 
     int befbytes = socketCV->bytesAvailable();
     nextTcpdata = socketCV->readAll();
@@ -1528,17 +1529,17 @@ void MainProcess::CV_NEW_onReadyRead_Slot()
     // Переводим double в int и округляем до ближайшего десятка
     int cvd = round(cvdistance);
     // Получили значение с точностью до 1мм, а нам надо округлить до 10мм.
-    str = "The int value of distance is ";
-    substr =  QString::number(cvd);
-    str += substr;
-    GUI_Write_To_Log(value, str);
+//    str = "The int value of distance is ";
+//    substr =  QString::number(cvd);
+//    str += substr;
+//    GUI_Write_To_Log(value, str);
 
 
     unsigned int rDistance = my_round(cvd);
-    str = "!!!!!!!!!!!!!!!!! The distance Is rounded to closest 10x int value : ";
-    substr =  QString::number(rDistance);
-    str += substr;
-    GUI_Write_To_Log(value, str);
+//    str = "!!!!!!!!!!!!!!!!! The distance Is rounded to closest 10x int value : ";
+//    substr =  QString::number(rDistance);
+//    str += substr;
+//    GUI_Write_To_Log(value, str);
 
     if (rDistance < 110 || rDistance > 270) {
         jsnStore->isAnyActionRunning = false;
@@ -1589,20 +1590,23 @@ void MainProcess::CV_NEW_onReadyRead_Slot()
     // Быстрый ответ если все нормально (наконец-то :)
     jsnStore->isAnyActionRunning = true;
     //QJsonObject theObj;
-    mainjsnObj["name"] =  "get_box"; //jsnStore->jsnActionGetBox.value("name").toString();
-    mainjsnObj["rc"] = jsnStore->AC_Launch_RC_RUNNING;
-    mainjsnObj["info"] = "Get box by manipulator ARM";// jsnStore->DEV_ACTION_INFO_;
+    mainjsnObj["name"]  =  "get_box"; //jsnStore->jsnActionGetBox.value("name").toString();
+    mainjsnObj["rc"]    = jsnStore->AC_Launch_RC_RUNNING;
+    mainjsnObj["info"]  = "Get box by manipulator ARM";// jsnStore->DEV_ACTION_INFO_;
     mainjsnObj["state"] = jsnStore->DEV_ACTION_STATE_RUN;
 
+    //Сравнить с hiwonder, тут не всегда успевает.
+    // Возможно надо заменить глобальный mainjsnObj на локальный, например QJsonObject theObj
+    // Хотя изначально так и было...
     jsnStore->setActionData(mainjsnObj);
 
-    QString mystr = "CV_NEW_onReadyRead_Slot Pointer to SENDER QObject is ";
-    mystr += pointer_to_qstring(this->ptrTcpClient);
-    GUI_Write_To_Log(value, mystr);
+//    QString mystr = "CV_NEW_onReadyRead_Slot Pointer to SENDER QObject is ";
+//    mystr += pointer_to_qstring(this->ptrTcpClient);
+//    GUI_Write_To_Log(value, mystr);
 
-    mystr = "CV_NEW_onReadyRead_Slot COPY Pointer to SENDER QObject is ";
-    mystr += pointer_to_qstring(this->newPtrTcpClient);
-    GUI_Write_To_Log(value, mystr);
+//    mystr = "CV_NEW_onReadyRead_Slot COPY Pointer to SENDER QObject is ";
+//    mystr += pointer_to_qstring(this->newPtrTcpClient);
+//    GUI_Write_To_Log(value, mystr);
 
 
 
@@ -1613,11 +1617,8 @@ void MainProcess::CV_NEW_onReadyRead_Slot()
                               Qt::QueuedConnection,
                               Q_ARG(QString, str),
                               Q_ARG(qintptr, tcpSocketNumber));
-//        mystr = "The method <Data_2_TcpClient_Slot> could not be inoked !";
-//        GUI_Write_To_Log(value, mystr);
 
-
-    //jsnStore->setActionData(theObj); // Так работает на intel
+// jsnStore->setActionData(theObj); // Так работает на intel
 //    emit SetActionData_Signal(mainjsnObj);
 
     // Запускаем захват объекта.  Теперь это значение distance отправляем в ф-цию GetBox

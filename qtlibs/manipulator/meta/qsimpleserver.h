@@ -36,9 +36,8 @@ public:
     quint16 tcpport = 8383;  // Порт, который слушает QTcpServer
     QByteArray tcpdata;
     bool isCreatedSocket; // socket creation flag
-    //QTcpSocket *createdSocket;
     int counterConnections; // counter for incoming tcp connections
-    //Метод, вызываемый при подключении нового соединения.
+    //Метод, вызываемый при возникновении новой порции данных в tcp-socket - НЕ onReadyRead.
     void incomingConnection(qintptr sDescriptor) override; // virtual YES !!! override EXACTLY !
     volatile int  clientsCounter; // counter for sockets being processed
 signals:
@@ -49,13 +48,6 @@ signals:
 
 
 public slots:
-    // Слот принятия строки для отправки клиенту в сокет
-    // Обработчик сигнала сверху  Write_2_Client_Signal(QString)
-    // void Write_2_TcpClient_SLot(QString, qintptr socketNumber);
-    //Слот отправки наверх команды на выполнение
-    // Срабатывает по сигналу ommand_4_Parsing_Signal(QString);
-    //void Command_4_Parsing_Slot(QString, qintptr);
-
     //Слот получает указатель на вновь созданный сокет - обект QTcpSocket*
     void isCreatedSocket_Slot(QTcpSocket*); // Слот сигнала QSocketThread::isCreatedSocket_Signal(QTcpSocket);
     void finshQThread_Slot();
@@ -64,6 +56,8 @@ public slots:
     void decSocketCounter_Slot();
 
 private:
+//  Указатель на объект класса MainProcess, нужен для вызова методов из этого класса
+//  через invokeMethod()
     QObject* ptrServerToMainProc;
 };
 
