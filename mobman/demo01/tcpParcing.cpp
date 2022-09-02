@@ -26,6 +26,7 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber, QO
     int value = 0xf00f;
 
     QMutexLocker locker(&mutex);
+
     ptrTcpClient = theSender;
     this->tcpSocketNumber =  socketNumber;
     new_get_request = true;

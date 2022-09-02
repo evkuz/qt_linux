@@ -13,7 +13,7 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
 {
     int value;
     QString str;
-
+QMutexLocker locker(&mutex);
     value = 0x1122;
 //    str = "I'm in  ProcessAction"; GUI_Write_To_Log(value, str);
 
@@ -160,9 +160,9 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
                 memcpy(Servos, mob_parking_position, DOF);
                 this->send_Data(LASTONE);
 
-                str = "Parking ACTION, current theObj value :\n";
-                str += QJsonDocument(theObj).toJson(QJsonDocument::Indented);
-                GUI_Write_To_Log(value,str);
+//                str = "Parking ACTION, current theObj value :\n";
+//                str += QJsonDocument(theObj).toJson(QJsonDocument::Indented);
+//                GUI_Write_To_Log(value,str);
 
                 break;
             case 5: // "ready"
@@ -175,15 +175,15 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
 
                 break;
             case 11: // "formoving"
-                str = "Go to <ForMoving> position";
-                GUI_Write_To_Log(value,str);
+//                str = "Go to <ForMoving> position";
+//                GUI_Write_To_Log(value,str);
                 memcpy(Servos, mob_2_moving_position, DOF);
                 this->send_Data(LASTONE);
 
                 break;
             case 12: // "put_box"
-                str = "ProcessAction: Going to put the box down";
-                GUI_Write_To_Log(value,str);
+//                str = "ProcessAction: Going to put the box down";
+//                GUI_Write_To_Log(value,str);
                 // раскладываем на 4 команды :
                 // 1. хват в позицию mob_put_23
                 // 2. открыть хват 3. Поднять привод [3] 4. в позицию "formoving"

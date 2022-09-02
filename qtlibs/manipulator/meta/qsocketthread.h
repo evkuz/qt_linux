@@ -32,6 +32,7 @@ public:
 
     QByteArray data2Client; // храним данные на отправку клиенту.
     QByteArray qbData;      // еще данные на отправку клиенту в сокет.
+    QString response;       // см. выше. Тоже самое, но QString
     bool data_ready; // Данные на отправку сформированы, можно отправлять.
     bool toBeClosed; // Поток для сокета закрываем, Сокет без данных закрываем.
     QString current_status;

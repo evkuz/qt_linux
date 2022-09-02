@@ -12,10 +12,20 @@ QSocketThread::QSocketThread(qintptr descriptror, QObject* ptrMainThread, volati
     _ptrMainThtread = ptrMainThread;
     pauseTimer = new QTimer(this);
     socketsCounter = _socketsCounter;
-    data2Client = "";
-    data2Client.resize(500);
+//    data2Client = "";
+//    data2Client.resize(500);
     qbData="";
     qbData.resize(500);
+
+    //Шапка ответа клиенту в tcp-сокет
+    response = "HTTP/1.1 200 OK\r\n";
+    response += "content-type: application/json\r\n"; //text/html
+    response += "Access-Control-Allow-Origin: *\r\n";
+//    response += "connection : close\r\n";
+    response += "\r\n";
+
+
+
 
 
     //ba.resize(icon)
@@ -370,14 +380,15 @@ void QSocketThread::Data_2_TcpClient_Slot(QString data, qintptr socketNumber)
     //data2Client.resize(data.size());
 
 //    data2Client = data.toUtf8(); // have got data from MainProcess as QByteArray
-    QString response = "HTTP/1.1 200 OK\r\n";
+//    QString response = "HTTP/1.1 200 OK\r\n";
 
 //++++++++++++++++++++++++++ FAVICON ++++++++++++++++++++++++++++++++++++
-    response += "content-type: application/json\r\n"; //text/html
-    response += "Access-Control-Allow-Origin: *\r\n";
+//    response += "content-type: application/json\r\n"; //text/html
+//    response += "Access-Control-Allow-Origin: *\r\n";
 //    response += "connection : close\r\n";
-    response += "\r\n";
+//    response += "\r\n";
 
+// Добавляем данные "сверху" к шапке из конструктора
     response += data;
 //        response += "<html>";
 //        response += "<head>";

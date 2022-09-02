@@ -34,6 +34,7 @@
 
 #include <QMutex>
 #include <QMutexLocker>
+#include <QRecursiveMutex>
 
 
 //#include "SocketClient.h"
@@ -116,7 +117,7 @@ public:
 
 //#define
 // Актуально для разных размеров кубика
-#define FULL_CLOSED 90
+#define FULL_CLOSED 75
 #define FULL_OPENED 35
 
 
@@ -161,7 +162,8 @@ public:
 
     int parcel_size ;
     unsigned char Servos [DOF] = {70,90,45,180};//==formoving position //{93,93,93,93};
-    QMutex mutex;
+    //QMutex mutex;
+    QRecursiveMutex mutex;
     int tcpSocketNumber; //Номер сокета, от которого пришёл запрос, и которому потом отправим ответ
     int currentCommandIndex; // Индекс выполняемой в данный момент команды в списке tcpCommand
                              // Только для команд, выполняемых манипулятором, чтобы отличать от прочих.
@@ -201,8 +203,8 @@ public:
     QString pointer_to_qstring(void *ptr);
 private:
 //    SocketClient readSocket;
-    QObject* ptrTcpClient;   // Указатель на объект, приславший команду от Tcp-клиента
-
+    QObject *ptrTcpClient;   // Указатель на объект, приславший команду от Tcp-клиента
+    QObject *newPtrTcpClient;
 public slots:
     void Data_From_Web_SLot(QString message);
     Q_INVOKABLE void Data_From_TcpClient_Slot(QString message, int socketNumber, QObject* theSender);

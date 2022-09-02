@@ -60,6 +60,8 @@ MainProcess::MainProcess(QObject *parent)
     mainjsnObj = jsnStore->returnJsnActionReset(); //set global value
     jsnStore->createActionList();
 
+    ptrTcpClient = new QObject();
+
     Robot = new HiWonder(); // Без этого будет "The program has unexpectedly finished", хотя в начале говорила, что это ambiguous
 
     Robot->Log_File_Open(Log_File_Name);
@@ -813,20 +815,27 @@ void MainProcess::request_CV()
 
 
 
-    QString str = "Going to create tcp-socket for CVDevice";
-    GUI_Write_To_Log(0xC1C1, str);
+//    QString str = "Going to create tcp-socket for CVDevice";
+//    GUI_Write_To_Log(0xC1C1, str);
+    QMutexLocker locker(&mutex);
     socketCV = new QTcpSocket(this);
     socketCV->setSocketOption(QAbstractSocket::KeepAliveOption, true);
     //in.setDevice(socketCV);
 
     //Соединение сигналов со слотами                        было  CV_onReadyRead_Slot
-    connect(socketCV, &QIODevice::readyRead, this, &MainProcess::CV_NEW_onReadyRead_Slot);//, Qt::QueuedConnection);
-    connect(socketCV, &QAbstractSocket::disconnected, this, &MainProcess::CV_onDisconnected,Qt::QueuedConnection);
+    connect(socketCV, &QIODevice::readyRead, this, &MainProcess::CV_NEW_onReadyRead_Slot, Qt::QueuedConnection);//, Qt::QueuedConnection);
+    connect(socketCV, &QAbstractSocket::disconnected, this, &MainProcess::CV_onDisconnected, Qt::QueuedConnection);
     connect(socketCV, &QAbstractSocket::disconnected, socketCV, &QAbstractSocket::deleteLater);
 
     connect (this->socketCV, &QTcpSocket::connected, this, &MainProcess::onSocketConnected_Slot);
     socketCV->connectToHost(CVDev_IP, CVDev_Port);
 
+    //Сохраняем значение указателя, иначе вновь пришедший запрос статуса переписывает его.
+    this->newPtrTcpClient = this->ptrTcpClient;
+
+    QString mystr = "requestCV Pointer to SENDER QObject is ";
+    mystr += pointer_to_qstring(this->ptrTcpClient);
+    GUI_Write_To_Log(0x9999, mystr);
 
 }
 //++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1032,16 +1041,15 @@ double MainProcess::parseJSON(QString jsnData)
   }
 
 
-  // Вот тут мы откуда-то знаем, что есть ключ "distance"... А если его нет ? надо допиливать...
-  double cvdistance = jsndataObj.value("distance").toDouble();
-  str = "Got distance value as double : ";
-  str += QString::number(cvdistance);
+    // Вот тут мы откуда-то знаем, что есть ключ "distance"... А если его нет ? надо допиливать...
+    double cvdistance = jsndataObj.value("distance").toDouble();
+    str = "Got distance value as double : ";
+    str += QString::number(cvdistance);
 
     GUI_Write_To_Log(value, str);
 
-    // Возвращаем distance
     return cvdistance;
-}
+} // parseJSON
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 int MainProcess::getIndexCommand(QString myCommand, QList<QString> theList)
 {
@@ -1218,21 +1226,21 @@ void MainProcess::server_New_Connect_Slot()
 void MainProcess::onSocketConnected_Slot()
 {
  //in.setDevice(socketCV);
- QString str = "CV connection established";
- int value = 0x7777;
- GUI_Write_To_Log(value, str);
+// QString str = "CV connection established";
+// int value = 0x7777;
+// GUI_Write_To_Log(value, str);
 
- str = "Current socket state is ";
+// str = "Current socket state is ";
 
- if (socketCV->state() == QTcpSocket::ConnectedState){str += " Connected State";}
- else {str += " Some OTHER than Connected State !!!!";}
+// if (socketCV->state() == QTcpSocket::ConnectedState){str += " Connected State";}
+// else {str += " Some OTHER than Connected State !!!!";}
 
-    GUI_Write_To_Log(value, str);
+//    GUI_Write_To_Log(value, str);
 
 // A read buffer size of 0 (the default) means that the buffer has no size limit, ensuring that no data is lost.
-    str = "###################### Current TCPSocket BUFFER SIZE is ";
-    str += QString::number(socketCV->readBufferSize());
-    GUI_Write_To_Log(value, str);
+//    str = "###################### Current TCPSocket BUFFER SIZE is ";
+//    str += QString::number(socketCV->readBufferSize());
+//    GUI_Write_To_Log(value, str);
 
 
 
@@ -1251,8 +1259,8 @@ void MainProcess::onSocketConnected_Slot()
 
 // request += "";
 
- GUI_Write_To_Log(0xfefe, "The following Data is going to be sent to CV :");
- GUI_Write_To_Log(0xfefe, request.toUtf8());
+// GUI_Write_To_Log(0xfefe, "The following Data is going to be sent to CV :");
+// GUI_Write_To_Log(0xfefe, request.toUtf8());
  socketCV->write(request.toUtf8());
 
  // Запрос серверу отправили.
@@ -1261,6 +1269,10 @@ void MainProcess::onSocketConnected_Slot()
  // Дублирование ???
 // mainjsnObj = jsnStore->returnJsnActionGetBox();
 // jsnStore->isAnyActionRunning = true;
+ QString mystr = "onSocketConnected_Slot Pointer to SENDER QObject is ";
+ mystr += pointer_to_qstring(this->ptrTcpClient);
+ GUI_Write_To_Log(0x9999, mystr);
+
 
 }
 //+++++++++++++++++++++++++++++++++++
@@ -1423,6 +1435,8 @@ void MainProcess::CV_NEW_onReadyRead_Slot()
     int value = 0xfafa;
     QString message, nextTcpdata, str, substr;
 
+    QMutexLocker locker(&mutex);
+
     int befbytes = socketCV->bytesAvailable();
     nextTcpdata = socketCV->readAll();
 
@@ -1433,7 +1447,7 @@ void MainProcess::CV_NEW_onReadyRead_Slot()
         return;
     }
 
-    GUI_Write_To_Log(value, "!!!!!!!!!!!!!!!!! There are some CONTROL data from SOCKET device !!!!!!!!!!!!!!!!!!!!");
+    GUI_Write_To_Log(value, "!!!!!!!!!!!!!!!!! There are some data from CV device !!!!!!!!!!!!!!!!!!!!");
     GUI_Write_To_Log(value, nextTcpdata);
 
 //    str = "Detected value BEFORE parcing is ";
@@ -1509,6 +1523,8 @@ void MainProcess::CV_NEW_onReadyRead_Slot()
 
     }
 
+    cvdistance = 232.24; // Заглушка для тестов
+
     // Переводим double в int и округляем до ближайшего десятка
     int cvd = round(cvdistance);
     // Получили значение с точностью до 1мм, а нам надо округлить до 10мм.
@@ -1578,16 +1594,22 @@ void MainProcess::CV_NEW_onReadyRead_Slot()
     mainjsnObj["info"] = "Get box by manipulator ARM";// jsnStore->DEV_ACTION_INFO_;
     mainjsnObj["state"] = jsnStore->DEV_ACTION_STATE_RUN;
 
+    jsnStore->setActionData(mainjsnObj);
 
-    QString mystr = "Pointer to QObject is ";
-    mystr += pointer_to_qstring(ptrTcpClient);
+    QString mystr = "CV_NEW_onReadyRead_Slot Pointer to SENDER QObject is ";
+    mystr += pointer_to_qstring(this->ptrTcpClient);
     GUI_Write_To_Log(value, mystr);
+
+    mystr = "CV_NEW_onReadyRead_Slot COPY Pointer to SENDER QObject is ";
+    mystr += pointer_to_qstring(this->newPtrTcpClient);
+    GUI_Write_To_Log(value, mystr);
+
 
 
     jsnDoc = QJsonDocument(mainjsnObj);
     str = jsnDoc.toJson(QJsonDocument::Compact);
     //emit Write_2_TcpClient_Signal (jsnDoc.toJson(QJsonDocument::Compact), this->tcpSocketNumber);
-    QMetaObject::invokeMethod(ptrTcpClient, "Data_2_TcpClient_Slot",
+    QMetaObject::invokeMethod(this->newPtrTcpClient, "Data_2_TcpClient_Slot",
                               Qt::QueuedConnection,
                               Q_ARG(QString, str),
                               Q_ARG(qintptr, tcpSocketNumber));
@@ -1643,10 +1665,12 @@ void MainProcess::GetBox(unsigned int distance)
     case 190: arrPtr = mob_2_pos_19; break;
     case 200: arrPtr = mob_2_pos_20; break;
     case 210: arrPtr = mob_2_pos_21; break;
-    case 220: arrPtr = mob_2_pos_21; break;
+    //case 220: arrPtr = mob_2_pos_21; break;
     //case 230: arrPtr = mob_2_pos_23; break;
     //++++++++++++++++++++++++++++++++++++++
-    case 230: arrPtr = mob_3_pos_24; break;
+    case 220: arrPtr = mob_3_pos_22; break;
+    case 230: arrPtr = mob_3_pos_22; break;
+    case 240: arrPtr = mob_3_pos_24; break;
     case 250: arrPtr = mob_3_pos_25; break;
 
 
