@@ -5,8 +5,8 @@
 #include <QList>
 //                                               1                  3                    5                           7
  const QList<QString> tcpCommand = {"status", "reset", "clamp", "get_box", "parking", "ready", "getactions", "getservices", "setservos=", \
-                                    "srvfromfile",  "status?action=get_box", "formoving", "put_box", "lock", "unlock"};
-//                                         9                                     11                     13
+                                    "srvfromfile",  "status?action=get_box", "formoving", "put_box", "lock", "unlock", "detach", "attach"};
+//                                         9                                     11                     13                15
 /*
  * у нас структура запроса получается такая:
  * <address>/run?cmd=<name>&<parameter_name>=<parameter_value>

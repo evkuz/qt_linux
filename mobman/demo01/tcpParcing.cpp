@@ -25,17 +25,23 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber, QO
     QString str, substr;
     int value = 0xf00f;
 
-    QMutexLocker locker(&mutex);
+//    QMutexLocker locker(&mutex);
 
     ptrTcpClient = theSender;
     this->tcpSocketNumber =  socketNumber;
     new_get_request = true;
     str = "From TCP Get new command : "; str += message;
-    GUI_Write_To_Log(0xf00f, str);
+    GUI_Write_To_Log(value, str);
+
+    str = "$$$$$$$$$$$$$$$$$$$$$$ <Data_From_TcpClient_Slot>'s thread is ";
+    //str += QString("0x%1").arg((qintptr)this->QObject::thread(),8);
+    str += pointer_to_qstring(QObject::thread());
+    GUI_Write_To_Log(value, str);
 
     QString mystr = "Pointer to SENDER QObject is ";
     mystr += pointer_to_qstring(ptrTcpClient);
     GUI_Write_To_Log(value, mystr);
+
 
 
     substr = message;
@@ -123,6 +129,8 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber, QO
 //    GUI_Write_To_Log(value, str);
 
    //QString S3;
+
+    QJsonObject tempObj;
     switch (comIndex) {
     case 0: // status
 
@@ -168,13 +176,17 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber, QO
            }
         else
         {
-        mainjsnObj = jsnStore->returnJsnActionsUnKnown();
-        mainjsnObj["name"] = message;
-        str = "There is wrong action command : ";
-        str += message;
-        GUI_Write_To_Log(value, str);
-
-        ProcessAction(comIndex, mainjsnObj);
+// Неизвестный экшен не должен выполняться...
+//        mainjsnObj = jsnStore->returnJsnActionsUnKnown();
+//        mainjsnObj["name"] = message;
+//        str = "There is wrong action command : ";
+          tempObj = jsnStore->returnJsnActionsUnKnown();
+          str = QJsonDocument(tempObj).toJson(QJsonDocument::Indented);
+          GUI_Write_To_Log(value, str);
+          QMetaObject::invokeMethod(this->ptrTcpClient, "Data_2_TcpClient_Slot",
+                                  Qt::QueuedConnection,
+                                  Q_ARG(QString, str),
+                                  Q_ARG(qintptr, tcpSocketNumber));
         }
         break;
 
@@ -185,7 +197,6 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber, QO
         //str = "I'm in reset";
         mainjsnObj = jsnStore->returnAllActions();
         str = jsnStore->jsnData;
-//        emit Write_2_TcpClient_Signal(str, this->tcpSocketNumber);
         QMetaObject::invokeMethod(this->ptrTcpClient, "Data_2_TcpClient_Slot",
                                   Qt::QueuedConnection,
                                   Q_ARG(QString, str),
@@ -242,11 +253,12 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber, QO
         ProcessAction(comIndex, mainjsnObj);
        break;
 
-    case 7: //getactions
+    case 6: //getactions
       //  str = QJsonDocument(jsnStore->returnAllActions()).toJson(QJsonDocument::Indented);
-        mainjsnObj = jsnStore->returnAllActions();
+        jsnStore->isAnyActionRunning = false;
+        //mainjsnObj = jsnStore->returnAllActions();
+        tempObj = jsnStore->returnAllActions();
         str = jsnStore->jsnData;
-//        emit Write_2_TcpClient_Signal(str, this->tcpSocketNumber);
         QMetaObject::invokeMethod(this->ptrTcpClient, "Data_2_TcpClient_Slot",
                                   Qt::QueuedConnection,
                                   Q_ARG(QString, str),
@@ -262,6 +274,9 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber, QO
         ProcessAction(comIndex, mainjsnObj);
        break;
 
+
+
+
     case 13: //lock
         mainjsnObj = jsnStore->returnJsnActionLock();
         ProcessAction(comIndex, mainjsnObj);
@@ -270,6 +285,61 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber, QO
         mainjsnObj = jsnStore->returnJsnActionUnLock();
         ProcessAction(comIndex, mainjsnObj);
        break;
+    case 15: // "detach"
+        jsnStore->isAnyActionRunning = false;
+        for (int i=0; i<DOF; ++i)
+        {
+            Servos[i] = 250; //0xFA
+        }//for
+
+        this->send_Data(LASTONE); //NOT_LAST
+
+        tempObj = jsnStore->returnJsnActionDetach();
+        str = QJsonDocument(tempObj).toJson(QJsonDocument::Indented);
+        GUI_Write_To_Log(value, str);
+
+        QMetaObject::invokeMethod(this->ptrTcpClient, "Data_2_TcpClient_Slot",
+                                Qt::QueuedConnection,
+                                Q_ARG(QString, str),
+                                Q_ARG(qintptr, tcpSocketNumber));
+
+
+        tempObj = {
+            {"rc", RC_SUCCESS}, //RC_SUCCESS
+            {"state", "Running, but all servos are detached"},
+            {"info", "Action performing"}
+        };
+
+        jsnStore->setJsnHeadStatus(tempObj);
+
+
+       break;
+
+    case 16: // "attach"
+        jsnStore->isAnyActionRunning = false;
+        for (int i=0; i<DOF; ++i)
+        {
+            Servos[i] = 252; //0xFC
+        }//for
+
+        this->send_Data(LASTONE); //NOT_LAST
+        tempObj = jsnStore->returnJsnActionAttach();
+        str = QJsonDocument(tempObj).toJson(QJsonDocument::Indented);
+        GUI_Write_To_Log(value, str);
+        QMetaObject::invokeMethod(this->ptrTcpClient, "Data_2_TcpClient_Slot",
+                                Qt::QueuedConnection,
+                                Q_ARG(QString, str),
+                                Q_ARG(qintptr, tcpSocketNumber));
+        tempObj = {
+            {"rc", RC_SUCCESS}, //RC_SUCCESS
+            {"state", "Running"},
+            {"info", "Action performing"}
+        };
+
+        jsnStore->setJsnHeadStatus(tempObj);
+
+
+        break;
 
 
 
@@ -342,16 +412,16 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber, QO
 
     }
 
-//    if (substr.startsWith("setservos=")){
-//           substr = substr.remove("setservos=");
-//           QStringList list1 = substr.split(QLatin1Char(','));
-//           for (int i=0; i<DOF; ++i)
-//           {
-//               Servos[i] = list1.at(i).toUInt();
-//           }//for
+    if (substr.startsWith("setservos=")){
+           substr = substr.remove("setservos=");
+           QStringList list1 = substr.split(QLatin1Char(','));
+           for (int i=0; i<DOF; ++i)
+           {
+               Servos[i] = list1.at(i).toUInt();
+           }//for
 
-//           this->send_Data(NOT_LAST);
-//       }
+           this->send_Data(LASTONE); //NOT_LAST
+       }
 
     // Запрашиваем список экшенов
 //    if (substr == "getactions") {

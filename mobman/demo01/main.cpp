@@ -22,6 +22,9 @@ int main(int argc, char *argv[])
 //    // Запускаем TCP-сервер
     QSimpleServer server(ptrMainProcess, nullptr);
 
+    qDebug() << "The object MainProcess is in thread " << ptrMainProcess->thread();
+    qDebug() << "The object QSimpleserver is in thread " << server.thread();
+
     return a.exec();
 }
 

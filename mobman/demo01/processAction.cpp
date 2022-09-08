@@ -13,7 +13,7 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
 {
     int value;
     QString str;
-QMutexLocker locker(&mutex);
+//QMutexLocker locker(&mutex02);
     value = 0x1122;
 //    str = "I'm in  ProcessAction"; GUI_Write_To_Log(value, str);
 
@@ -149,7 +149,7 @@ QMutexLocker locker(&mutex);
 //                break;
 
             case 2: // clamp FULL_CLOSED = 80; FULL_OPENED = 35;
-                if(Servos[0]<=80) { Servos[0]=80;}
+                if(Servos[0]<=75) { Servos[0]=75;}
                 else {Servos[0]=35;}
                 this->send_Data(LASTONE);
                 break;

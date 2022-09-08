@@ -39,6 +39,96 @@
  *
  * http://192.168.1.201:8383/run?cmd=status&
  *
+ * //++++++++++++++++++++++++++++++++++++++++++++
+ * 08.09.2022
+ * Добавил команды отключения/подключения сервоприводов от пинов платы Ардуино.
+ * Команды detach/attach соответсвтенно.
+ * Так экономится энергия аккумулятора пока приводы не используются.
+ * А также нет этого режущего слух шума.
+ * В список getactions добавил.
+ * Соответственно, добавил эти команды в прошивку ардуино мега. (надо не забыть добавить это для прошивки НАНО, т.е. hiwonder-у)
+ * Фиксим.
+ *
+ * //++++++++++++++++++++++++++++++++++++++++++++
+ * 07.09.2022
+ * Задача:
+ * - Не посылать новую команду в QSerialPort пока не завершится выполнение текущей.
+ * ...
+ * Это сделано. В ... есть проверка переменной jsnStore->isAnyActionRunning и далее вывод
+ * {"info", "Another action is already running"},
+ * Т.е. команда в serial port даже не отправляется.
+ * Ошибка возникает из-за того, что плата ардуино посылает в serial port 32 байта сообщения не за 1 раз, а частями.
+ * Т.е. сообщение в 32 байта приходит как 2 подряд сообщения (11+21) байт, или (28+4) байт, или (29+3) байт.
+ * И вот в случае (29+3 байт) слово "LAST", которое ловит слот HiWonder::ReadFromSerial_Slot, - тоже приходит частями, соответственно
+ * слот его не видит целиком
+ * Или слово "DONE!" - 5 символов - также не приходит в случае (28+4), соответственно, нет сигнала HiWonder::Moving_Done_Signal =>
+ * => не меняется статус у робота.
+ *
+ * Попробовать запуск команд через таймер.
+ *
+ *
+ *
+ * //++++++++++++++++++++++++++++++++++++++++++++
+ * 06.09.2022
+ * Если неизвестная команда, то НЕ меняем значение mainjsnObj.
+ * Шлем ответ из временного QJsonObject::tempObj
+ * Значение mainjsnobj меняем, только, если манипулятор что-то делает.
+ *
+ * //++++++++++++++++++++++++++++++++++++++
+ * 05.02.2022
+ * Сравнить поведения указателя для случаев DirectConnection vs QueuedConnection request_CV.
+ * Возможно из-за этого не срабатывает mutex.
+ * Возможно, что происходит несоответствие emitter's thread <----> receiver's thread.
+ * Причем, в hiwonder все работало без дополнительного хранения указателя перед запуском сокета в CV
+ * В общем, целое исследование предстоит. Статью напишем.
+ * Проверяем:
+ * сигнал &QIODevice::readyRead --> Слот &MainProcess::CV_NEW_onReadyRead_Slot, Qt::QueuedConnection
+ * - Поток request_CV, значение указателя this->ptrTcpClient
+ *
+ * !!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET  "9"
+ * !!!!!!!!!!!!!!!!!!!!!  QThread(0xb3a038d8) "get_box"
+ * $$$$$$$$$$$$$$ request_CV thread  QThread(0x20e7d0)
+ * $$$$$$$$$$$$$$ request_CV ptrSender  QSocketThread(0x225be8)
+ * $$$$$$$$$$$$$$ CV_NEW_onReadyRead_Slot thread  QThread(0x20e7d0)
+ * $$$$$$$$$$$$$$ CV_NEW_onReadyRead_Slot ptrSender  QSocketThread(0x225be8)
+ *
+ * При этом имеем QSimpleServer::incomingConnection QThread(0x20e7d0) == request_CV thread  QThread(0x20e7d0)
+ * т.е. ф-ция request_CV "живет" в потоке объекта QSimpleServer, а не MainProcess
+ *
+ * ОБъекты ... живут в одном потоке, что логично.
+ * The object MainProcess is in thread  QThread(0x1cbd7d0)
+ * The object QSimpleserver is in thread  QThread(0x1cbd7d0)
+ *
+ * Еще надо сравнить потоки QSimpleServer::incomingConnection QThread(???) и QSimpleserver is in thread  QThread(???)
+
+ *
+ *
+ * - Поток слота CV_NEW_onReadyRead_Slot, значение указателя this->ptrTcpClient
+ *
+ *
+ * ...
+ * Ф-ция MainProcess::CV_NEW_onReadyRead_Slot
+ * Добавляю 3 строки
+ *
+ *  qDebug() << "$$$$$$$$$$$$$$ CV_NEW_onReadyRead_Slot thread " << QThread::currentThread();
+ *  qDebug() << "$$$$$$$$$$$$$$ CV_NEW_onReadyRead_Slot ptrSender " << this->ptrTcpClient;
+ *  qDebug() << "$$$$$$$$$$$$$$ CV_NEW_onReadyRead_Slot newPtrSender " << this->newPtrTcpClient;
+ *
+ * Причем ПОСЛЕ вызова  QMetaObject::invokeMethod(...);
+ * И прога вылетает на вызове  QMetaObject::invokeMethod(...)
+ * мистика...
+ * Однако идея убрать qDebug() из объекта MainProcess была очень верной.
+ *
+ * Ф-ция request_CV() даже не выводит результат qDebug() !
+ *
+ * Задача :
+ * - Разобраться с выводом QThread::currentThread() в лог.
+ *   Т.е. чтоб значение совпадало с выводом из qDebug()
+ *
+ * - QSharedMemory Class
+ *
+ *
+ *
  *
  * //++++++++++++++++++++++++++++++++++++++
  * 02.09.2022

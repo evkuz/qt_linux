@@ -112,6 +112,8 @@ public:
      QJsonObject jsnActionGetBox;    // mobman
      QJsonObject jsnActionReady;     // mobman
      QJsonObject jsnActionForMoving; // mobman "formoving"
+     QJsonObject jsnActionDetach;    // mobman "detach"
+     QJsonObject jsnActionAttach;    // mobman "attach"
 
      QJsonObject jsnActionList;  // list for "action_list" key
      QJsonArray  jsnArray;       // list for action_list
@@ -160,6 +162,8 @@ public:
     QJsonObject& returnJsnActionParking();
     QJsonObject& returnJsnActionReady();
     QJsonObject& returnJsnActionForMoving();
+    QJsonObject& returnJsnActionDetach();
+    QJsonObject& returnJsnActionAttach();
 
     QJsonObject returnAllActions();
 

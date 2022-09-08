@@ -17,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
     currentTcpdata = "";
 //  Old Style
 //    request = "GET ";
-//    request += "/run?cmd=status&";
+//    request += "/run?cmd=status";
 //    request += " HTTP/1.1";
 //    request += "\r\nHost: ";
 //    request += HIWONDER_IP; request+=":"; request+=strARM_Port; request+="\r\n";
@@ -26,7 +26,7 @@ MainWindow::MainWindow(QWidget *parent)
 //    request += "\r\n";
 
     request = "GET ";
-    request += "/run?cmd=status&";
+    request += "/run?cmd=status";
     request += " HTTP/1.1\r\n";
     request += "Host: ";
     request += HIWONDER_IP; request+=":"; request+=strARM_Port; request+="\r\n";
@@ -545,13 +545,13 @@ void MainWindow::on_GetDistanceButton_clicked()
 
 }
 //++++++++++++++++++++++++++++++++++++++++
-// - prepare HTTP request  http://192.168.1.201:8383/run?cmd=status&
+// - prepare HTTP request  http://192.168.1.201:8383/run?cmd=status
 void MainWindow::on_GetStatusButton_clicked()
 {
     // Формируем запрос, "кнопка Get Status"
-    // А вот теперь готовим команду "/run?cmd=status&"
+    // А вот теперь готовим команду "/run?cmd=status"
      request = "GET ";
-     request += "/run?cmd=status&";
+     request += "/run?cmd=status";
      request += " HTTP/1.1";
      request += "\r\nHost: ";
 //     request += "192.168.1.201:8383\r\n";
@@ -572,7 +572,7 @@ void MainWindow::on_GetReadyButton_clicked()
     // Формируем запрос, "кнопка Get Ready"
     // А вот теперь готовим команду "/run?cmd=ready&"
      request = "GET ";
-     request += "/run?cmd=ready&";
+     request += "/run?cmd=ready";
      request += " HTTP/1.1";
      request += "\r\nHost: ";
      request += "192.168.1.201:8383\r\n";
@@ -592,7 +592,7 @@ void MainWindow::on_GetParkingButton_clicked()
     // Формируем запрос, "кнопка Parking"
     // А вот теперь готовим команду "/run?cmd=parking&"
      request = "GET ";
-     request += "/run?cmd=parking&";
+     request += "/run?cmd=parking";
      request += " HTTP/1.1";
      request += "\r\nHost: ";
      request += "192.168.1.201:8383\r\n";
@@ -611,7 +611,7 @@ void MainWindow::on_GetParkingButton_clicked()
 void MainWindow::on_GetBoxButton_clicked()
 {
     request = "GET ";
-    request += "/run?cmd=get_box&";
+    request += "/run?cmd=get_box";
     request += " HTTP/1.1";
     request += "\r\nHost: ";
     //request += "192.168.1.201:8383\r\n";
@@ -695,7 +695,7 @@ void MainWindow::traversJson(QJsonObject json_obj){
 void MainWindow::on_GetServicesButton_clicked()
 {
     request = "GET ";
-    request += "/service?name=getservices&";
+    request += "/service?name=getservices";
     request += " HTTP/1.1";
     request += "\r\nHost: ";
     request += "192.168.1.201:8383\r\n";
@@ -731,9 +731,9 @@ void MainWindow::on_GetActionsButton_clicked()
 void MainWindow::on_NEW_GetStatusButton_clicked()
 {
     // Формируем запрос, "кнопка Get Status"
-    // А вот теперь готовим команду "/run?cmd=status&"
+    // А вот теперь готовим команду "/run?cmd=status"
      request = "GET ";
-     request += "/status&";
+     request += "/status";
      request += " HTTP/1.1";
      request += "\r\nHost: ";
      request += "192.168.1.201:8383\r\n";
@@ -753,7 +753,7 @@ void MainWindow::on_BeforeMovingButton_clicked()
     // Формируем запрос, "кнопка Before Moving"
     // А вот теперь готовим команду "/run?cmd=formoving&"
      request = "GET ";
-     request += "/run?cmd=formoving&";
+     request += "/run?cmd=formoving";
      request += " HTTP/1.1";
      request += "\r\nHost: ";
      request += "192.168.1.201:8383\r\n";
@@ -774,7 +774,7 @@ void MainWindow::on_PutBoxButton_clicked()
     // Формируем запрос, "кнопка Put Box"
     // А вот теперь готовим команду "/run?cmd=put_box&"
      request = "GET ";
-     request += "/run?cmd=put_box&";
+     request += "/run?cmd=put_box";
      request += " HTTP/1.1";
      request += "\r\nHost: ";
      //request += "192.168.1.201:8383\r\n";
@@ -795,7 +795,7 @@ void MainWindow::on_ClampButton_clicked()
     // Формируем запрос, "кнопка Clamp"
     // А вот теперь готовим команду "/run?cmd=clamp&"
      request = "GET ";
-     request += "/run?cmd=clamp&";
+     request += "/run?cmd=clamp";
      request += " HTTP/1.1";
      request += "\r\nHost: ";
      //request += "192.168.1.201:8383\r\n";
@@ -824,7 +824,7 @@ void MainWindow::on_SetServosButton_clicked()
 //     num = list.size (); //Число элементов, начиная с 1
 
      request = "GET ";
-     request += "/run?cmd=setservos="; request+=ui->Param_lineEdit->text(); request+="&"; //
+     request += "/run?cmd=setservos="; request+=ui->Param_lineEdit->text(); //
      // Вот тут добавляем значения Servos
      request += " HTTP/1.1";
      request += "\r\nHost: ";
@@ -845,7 +845,7 @@ void MainWindow::on_ResetButton_clicked()
     // Формируем запрос, "кнопка Reset"
     // А вот теперь готовим команду "/run?cmd=reset&"
      request = "GET ";
-     request += "/run?cmd=reset&";
+     request += "/run?cmd=reset";
      request += " HTTP/1.1";
      request += "\r\nHost: ";
      request += CVDev_IP; request+=":"; request+=strARM_Port; request+="\r\n";
@@ -867,7 +867,7 @@ void MainWindow::on_CollapsButton_clicked()
     // Формируем запрос, "кнопка Collaps"
     // А вот теперь готовим команду "/run?cmd=collapse&"
      request = "GET ";
-     request += "/run?cmd=collapse&";
+     request += "/run?cmd=collapse";
      request += " HTTP/1.1\r\n";
      request += "Host: ";
      //request += "192.168.1.201:8383\r\n";
@@ -899,7 +899,7 @@ void MainWindow::on_CollapsButton_clicked()
 void MainWindow::on_getStatusButton_clicked()
 {
 //    request = "GET ";
-//    request += "/run?cmd=status&";
+//    request += "/run?cmd=status";
 //    request += " HTTP/1.1";
 //    request += "\r\nHost: ";
 //    request += HIWONDER_IP; request+=":"; request+=strARM_Port; request+="\r\n";
@@ -907,7 +907,7 @@ void MainWindow::on_getStatusButton_clicked()
 //    request += "Access-Control-Allow-Origin: *\r\n";
 //    request += "\r\n";
     request = "GET ";
-    request += "/run?cmd=status&";
+    request += "/run?cmd=status";
     request += " HTTP/1.1\r\n";
     request += "Host: ";
     request += HIWONDER_IP; request+=":"; request+=strARM_Port; request+="\r\n";
@@ -934,7 +934,7 @@ void MainWindow::on_StandUpButton_clicked()
     // Формируем запрос, "кнопка standup"
     // А вот теперь готовим команду "/run?cmd=standup&"
      request = "GET ";
-     request += "/run?cmd=standup&";
+     request += "/run?cmd=standup";
      request += " HTTP/1.1";
      request += "\r\nHost: ";
      //request += "192.168.1.201:8383\r\n";
@@ -973,7 +973,7 @@ void MainWindow::on_LockButton_clicked()
 {
     // А вот теперь готовим команду "/run?cmd=lock&"
      request = "GET ";
-     request += "/run?cmd=lock&";
+     request += "/run?cmd=lock";
      request += " HTTP/1.1";
      request += "\r\nHost: ";
      //request += "192.168.1.201:8383\r\n";
@@ -993,7 +993,7 @@ void MainWindow::on_UnLockButton_clicked()
 {
     // А вот теперь готовим команду "/run?cmd=unlock&"
      request = "GET ";
-     request += "/run?cmd=unlock&";
+     request += "/run?cmd=unlock";
      request += " HTTP/1.1";
      request += "\r\nHost: ";
      request += HIWONDER_IP; request+=":"; request+=strARM_Port; request+="\r\n";
@@ -1013,7 +1013,7 @@ void MainWindow::on_GetBoxButton_2_clicked()
 {
     // А вот теперь готовим команду "/run?cmd=start&"
      request = "GET ";
-     request += "/run?cmd=start&";
+     request += "/run?cmd=start";
      request += " HTTP/1.1";
      request += "\r\nHost: ";
      request += HIWONDER_IP; request+=":"; request+=strARM_Port; request+="\r\n";
@@ -1032,7 +1032,7 @@ void MainWindow::on_PutBoxButton_2_clicked()
 {
     // А вот теперь готовим команду "/run?cmd=put_box&"
      request = "GET ";
-     request += "/run?cmd=put_box&";
+     request += "/run?cmd=put_box";
      request += " HTTP/1.1\r\n";
      request += "Host: ";
      request += HIWONDER_IP; request+=":"; request+=strARM_Port; request+="\r\n";
@@ -1050,9 +1050,9 @@ void MainWindow::on_PutBoxButton_2_clicked()
 // Get status
 void MainWindow::on_HiWonderGetStatusButton_clicked()
 {
-    // А вот теперь готовим команду "/run?cmd=status&"
+    // А вот теперь готовим команду "/run?cmd=status"
      request = "GET ";
-     request += "/run?cmd=status&";
+     request += "/run?cmd=status";
      request += " HTTP/1.1\r\n";
      request += "Host: ";
      request += HIWONDER_IP; request+=":"; request+=strARM_Port; request+="\r\n";
@@ -1078,9 +1078,9 @@ void MainWindow::on_HiWonderGetStatusButton_clicked()
 
 void MainWindow::on_ResetButton_2_clicked()
 {
-    // А вот теперь готовим команду "/run?cmd=status&"
+    // А вот теперь готовим команду "/run?cmd=status"
      request = "GET ";
-     request += "/run?cmd=reset&";
+     request += "/run?cmd=reset";
      request += " HTTP/1.1\r\n";
      request += "Host: ";
      request += HIWONDER_IP; request+=":"; request+=strARM_Port; request+="\r\n";
@@ -1106,5 +1106,58 @@ void MainWindow::on_ResetButton_2_clicked()
 void MainWindow::on_StopTimerButton_clicked()
 {
     statusTimer->stop();
+}
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++
+
+void MainWindow::on_DetachButton_clicked()
+{
+    // Готовим команду "/run?cmd=detach"
+     request = "GET ";
+     request += "/run?cmd=detach";
+     request += " HTTP/1.1\r\n";
+     request += "Host: ";
+     request += CVDev_IP; request+=":"; request+=strARM_Port; request+="\r\n";
+     request += "Connection: keep-alive\r\n";
+     request += "Cache-Control: max-age=0\r\n";
+     request += "Upgrade-Insecure-Requests: 1\r\n";
+     request += "User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36\r\n";
+     request += "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9\r\n";
+     request += "Accept-Encoding: gzip, deflate\r\n";
+     request += "Accept-Language: en-US,en;q=0.9\r\n";
+     request += "Access-Control-Allow-Origin: *\r\n";
+     request += "\r\n";
+
+
+     QString myipaddress = CVDev_IP;
+     quint16 myport = ARM_Port;
+     makeSocket(myipaddress, myport);
+
+}
+//+++++++++++++++++++++++++++++++++++++++++++++++++
+
+void MainWindow::on_AttachButton_clicked()
+{
+    // Готовим команду "/run?cmd=attach"
+     request = "GET ";
+     request += "/run?cmd=attach";
+     request += " HTTP/1.1\r\n";
+     request += "Host: ";
+     request += CVDev_IP; request+=":"; request+=strARM_Port; request+="\r\n";
+     request += "Connection: keep-alive\r\n";
+     request += "Cache-Control: max-age=0\r\n";
+     request += "Upgrade-Insecure-Requests: 1\r\n";
+     request += "User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36\r\n";
+     request += "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9\r\n";
+     request += "Accept-Encoding: gzip, deflate\r\n";
+     request += "Accept-Language: en-US,en;q=0.9\r\n";
+     request += "Access-Control-Allow-Origin: *\r\n";
+     request += "\r\n";
+
+
+     QString myipaddress = CVDev_IP;
+     quint16 myport = ARM_Port;
+     makeSocket(myipaddress, myport);
+
 }
 

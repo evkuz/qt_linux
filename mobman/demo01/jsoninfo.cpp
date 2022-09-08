@@ -425,9 +425,26 @@ void JsonInfo::init_actions()
 
 
     };
-//    actionListp = {jsnActionClamp, jsnActionStart, jsnActionPutbox, jsnActionReset, jsnActionCollapse};
-    jsnObjArray = {jsnActionClamp, jsnActionParking, jsnActionReady, jsnActionReset, jsnActionGetBox, jsnActionPutbox, \
-                   jsnActionUnKnown, jsnActionLock, jsnActionUnLock, jsnActionForMoving}; //
+
+    jsnActionDetach = {
+        {"name", "detach"},
+        {"state", DEV_ACTION_STATE_WAIT},
+        {"info", "Detach servos FROM arduino pins"},
+        {"rc", RC_WAIT}
+    };
+
+    jsnActionAttach = {
+        {"name", "attach"},
+        {"state", DEV_ACTION_STATE_WAIT},
+        {"info", "Attach servos TO arduino pins"},
+        {"rc", RC_WAIT}
+
+    };
+
+    jsnObjArray = {jsnActionClamp,   jsnActionParking, jsnActionReady,  jsnActionReset,     jsnActionGetBox, jsnActionPutbox, \
+                   jsnActionUnKnown, jsnActionLock,    jsnActionUnLock, jsnActionForMoving, jsnActionDetach, jsnActionAttach
+    }; // jsnObjArray
+
     jsnHeadStatus = {
         {"name", DEV_NAME},
         {"rc", RC_UNDEFINED}, //RC_SUCCESS
@@ -649,6 +666,16 @@ QJsonObject &JsonInfo::returnJsnActionReady()
 QJsonObject &JsonInfo::returnJsnActionForMoving()
 {
     return this->jsnActionForMoving;
+}
+//+++++++++++++++++++++++++++++++++++++++++++++
+QJsonObject &JsonInfo::returnJsnActionDetach()
+{
+    return this->jsnActionDetach;
+}
+//+++++++++++++++++++++++++++++++++++++++++++++
+QJsonObject &JsonInfo::returnJsnActionAttach()
+{
+    return this->jsnActionAttach;
 }
 //+++++++++++++++++++++++++++++++++++++++++++
 QJsonObject JsonInfo::returnAllActions()

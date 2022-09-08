@@ -8,6 +8,7 @@
 #define MainProcess_H
 
 #include <QtCore>
+#include <QCoreApplication>
 #include <QSerialPort>
 #include <QSerialPortInfo>
 #include <QByteArray>
@@ -162,8 +163,8 @@ public:
 
     int parcel_size ;
     unsigned char Servos [DOF] = {70,90,45,180};//==formoving position //{93,93,93,93};
-    //QMutex mutex;
-    QRecursiveMutex mutex;
+    QMutex mutex, mutex02;
+    //QRecursiveMutex mutex, mutex02;
     int tcpSocketNumber; //Номер сокета, от которого пришёл запрос, и которому потом отправим ответ
     int currentCommandIndex; // Индекс выполняемой в данный момент команды в списке tcpCommand
                              // Только для команд, выполняемых манипулятором, чтобы отличать от прочих.

@@ -247,7 +247,7 @@ void QSocketThread::onReadyRead()
 //    qDebug() << qbmessage;
 //    qDebug() << "!!!!!!!!!!!!!!!!!!!!! Get Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!!"<< QString::number(socketNumber);
 
-//    qDebug() << nextTcpdata;// nextTcpdata;  httpHeaders;
+    qDebug() << httpHeaders;// nextTcpdata;  httpHeaders;
     //Парсим команду.
     QString message, substr, searchstr;
     //message = QString(qbmessage);
@@ -265,6 +265,7 @@ void QSocketThread::onReadyRead()
        }
     bool matched = false;
     int i = 0; sPosition = 0;
+// Перебираем разные Виды команд - strcommand
     while (!matched and i< strcommand.size()){
         sPosition = message.indexOf(strcommand.at(i));
         if (sPosition != -1) {
@@ -297,6 +298,7 @@ void QSocketThread::onReadyRead()
 //        return;
 //    }
 
+    // вид определили, пишем в переменную
     searchstr = strcommand.at(i);
 
 
@@ -304,7 +306,9 @@ void QSocketThread::onReadyRead()
     if (matched)
     {
         sPosition += searchstr.size();
-        ePosition = message.indexOf("&", sPosition);
+        // Это пробел, который идет перед "the HTTP version that defines the structure of the remaining message"
+        // В нашем случае - "HTTP/1.1"
+        ePosition = message.indexOf(" ", sPosition);
         substr = message.mid(sPosition, (ePosition - sPosition));
         if(substr == "") substr = searchstr;
 
@@ -318,7 +322,7 @@ void QSocketThread::onReadyRead()
         }
         // Получили команду. Передаем её наверх
         qDebug() << "!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET " << QString::number(this->socketDescriptor);
-        qDebug() << "!!!!!!!!!!!!!!!!!!!!! " << QThread::currentThread() << substr;
+        qDebug() << "!!!!!!!!!!!!!!!!!!!!! QSocketThread::onReadyRead()" << QThread::currentThread() << substr;
 
         //        qDebug() << "Socket descriptor " << QString::number(this->socketDescriptor);
 
@@ -450,7 +454,8 @@ void QSocketThread::Data_2_TcpClient_Slot(QString data, qintptr socketNumber)
 //    emit decSocketCounter_Signal();
 ////    qDebug() << QThread::currentThread()  << "The folowing data has been written to socket : \n" << qbData;
     emit stopThread_signal();
-    //this->deleteLater();
+
+    // Поток завершили. Объект QSocketThread удалили
     toBeClosed = true;
 
     qDebug() << QThread::currentThread()  << "Finished" << "\n";

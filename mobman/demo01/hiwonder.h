@@ -84,13 +84,13 @@ public:
 
 
     // НА каждый экшен свой - экземпляр ActionState
-    ActionState getbox_Action;
-    ActionState STAT_getbox_Action;
-    ActionState parking_Action;
-    ActionState ready_Action;
-    ActionState forMoving_Action; //Get ready for moving accross
-    ActionState putbox_Action;
-    ActionState setservos_Action;
+//    ActionState getbox_Action;
+//    ActionState STAT_getbox_Action;
+//    ActionState parking_Action;
+//    ActionState ready_Action;
+//    ActionState forMoving_Action; //Get ready for moving accross
+//    ActionState putbox_Action;
+//    ActionState setservos_Action;
 
 
 //Global for the whole robot
@@ -138,6 +138,10 @@ signals:
 public slots:
     int Open_Port_Slot(QString portname); // https://doc.qt.io/qt-5/qserialport.html#SerialPortError-enum - список ошибок при открытии порта.
     void ReadFromSerial_Slot();
+
+private slots:
+    void serialErrorParcer(QSerialPort::SerialPortError error);
+
 };
 
 #endif // HIWONDER_H
