@@ -21,7 +21,7 @@ HiWonder::HiWonder()
     memset(outputData, 0xDD, szData); //Инициализация массива с данными для отправки
    // this->SetCurrentStatus ("wait");
     current_st_index = 0;
-    this->current_status = statuslst.at(current_st_index); // "init" state //"Ready";
+//    this->current_status = statuslst.at(current_st_index); // "init" state //"Ready";
 
     connect(&serial, &QSerialPort::errorOccurred, this, &HiWonder::serialErrorParcer, Qt::QueuedConnection);
 
@@ -195,8 +195,8 @@ void HiWonder::ReadFromSerial_Slot ()
         if (list_str.contains (str)) {
             emit this->Moving_Done_Signal();
             this->MOVEMENT_DONE = true;
-            this->Write_To_Log(value, "Robot TOTALY finished complex command");
-            this->current_status = "done";
+            this->Write_To_Log(value, "Robot TOTALLY finished complex command");
+//            this->current_status = "done";
 
         }
 

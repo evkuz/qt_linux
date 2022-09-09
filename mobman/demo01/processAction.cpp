@@ -197,7 +197,7 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
 
                 //Поднимаем крайний привод, чтобы снова не схватить кубик при движении обратно
                 Servos[3] = 65;
-                this->send_Data(NOT_LAST);
+                this->send_Data(NOT_LAST); // NOT_LAST
 
 
                 // в позицию "formoving", хват постепенно закрывается

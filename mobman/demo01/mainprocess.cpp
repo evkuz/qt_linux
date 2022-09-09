@@ -607,7 +607,7 @@ void MainProcess::make_json_answer()
   jsn_str += "\r\n";
   jsn_str += "\"status\":";
   jsn_str += "\"";
-  jsn_str += Robot->current_status;
+  jsn_str += "Under Construction"; //Robot->current_status;
   jsn_str += "\","; jsn_str += "\r\n";
   jsn_str += "\"return_code\":";
   jsn_str += "\"";
@@ -1126,16 +1126,17 @@ void MainProcess::Moving_Done_Slot()
     // Меняем статус, теперь "done"
 //    std::cout<<"Set DONE to Robot!" << std::endl;
 //    Robot->SetCurrentStatus ("done");
-    GUI_Write_To_Log(value, "Now robot status is !!! DONE !!!");
+
+//    GUI_Write_To_Log(value, "Now robot status is !!! DONE !!!");
 
 
-    currentCommandIndex = -1; // Нет текущих команд манипулятора
+//    currentCommandIndex = -1; // Нет текущих команд манипулятора
 
-    str = "Current json object name is ";
-    myname = mainjsnObj.value("name").toString();
-    str += myname;
-    str += "\n\nAction "; str += myname; str += " is finished !!!\n";
-    GUI_Write_To_Log(value, str);
+//    str = "Current json object name is ";
+//    myname = mainjsnObj.value("name").toString();
+//    str += myname;
+//    str += "\n\nAction "; str += myname; str += " is finished !!!\n";
+//    GUI_Write_To_Log(value, str);
     // Передаем QJsonObject в свой класс и там все меняем через replace...
     // А, по идее, можно данные об объекте извлекать из "action_list": []
     jsnStore->setActionDone(mainjsnObj);
@@ -1417,14 +1418,15 @@ void MainProcess::CV_NEW_onReadyRead_Slot()
 //    QMutexLocker locker(&mutex);
 
     int befbytes = socketCV->bytesAvailable();
-    nextTcpdata = socketCV->readAll();
 
-    nextTcpdata = nextTcpdata.simplified();
-    if (befbytes < 20) {// == 17 Пришла строка HTTP/1.0 200 OK, обрабатывать не нужно, выходим.
-        DETECTED = true;
+    if (befbytes < 20) {// HTTP/1.0 200 OK == 17 Пришла строка , обрабатывать не нужно, выходим.
+//        DETECTED = true;
 //        GUI_Write_To_Log(value, "Detected [17] is true !!!");
         return;
     }
+    nextTcpdata = socketCV->readAll();
+    nextTcpdata = nextTcpdata.simplified();
+
 
     GUI_Write_To_Log(value, "!!!!!!!!!!!!!!!!! There are some data from CV device !!!!!!!!!!!!!!!!!!!!");
     GUI_Write_To_Log(value, nextTcpdata);

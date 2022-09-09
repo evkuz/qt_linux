@@ -149,7 +149,7 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber, QO
                 //Robot->Write_To_Log(value, str);
 
 
-        Robot->active_command = "status";
+//        Robot->active_command = "status";
 //        emit Write_2_TcpClient_Signal (str, this->tcpSocketNumber);
         QMetaObject::invokeMethod(this->ptrTcpClient, "Data_2_TcpClient_Slot",
                                   Qt::QueuedConnection,
@@ -363,24 +363,6 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber, QO
     // ++++++++++++++++++++++++++++++++ Теперь всё остальное
 
 
-//    if (substr == "sit") {
-//        // Go to "sit" position
-//        QByteArray dd;
-//        dd = QByteArray::fromRawData(reinterpret_cast<const char*>(sit_down_position), DOF);
-//        dd.append(0x31); // Движение "Туда"
-//        dd.append(LASTONE); // Всегда последнее ?
-//        Robot->GoToPosition(dd);//, sit_down_position
-//    }//"sit"
-
-
-//    if (substr =="unlock") {
-
-//        str = "######## Try to UNlock the gripper ######### ";
-//        str += "Current clamper value is ";
-//        str += QString::number(Servos[0]);
-//        Servos[0]=0;
-//        this->send_Data(NOT_LAST); //NOT_LAST LASTONE
-//    }//"unlock"
 
     if (substr == "close") {
         Robot->serial.close();
