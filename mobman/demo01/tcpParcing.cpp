@@ -248,10 +248,6 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber, QO
         mainjsnObj = jsnStore->returnJsnActionReady();
         ProcessAction(comIndex, mainjsnObj);
         break;
-    case 12: // "put_box"
-        mainjsnObj = jsnStore->returnJsnActionPutbox();
-        ProcessAction(comIndex, mainjsnObj);
-       break;
 
     case 6: //getactions
       //  str = QJsonDocument(jsnStore->returnAllActions()).toJson(QJsonDocument::Indented);
@@ -269,10 +265,17 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber, QO
         GUI_Write_To_Log(value, str);
 
         break;
+
     case 11: // "formoving"
         mainjsnObj = jsnStore->returnJsnActionForMoving();
         ProcessAction(comIndex, mainjsnObj);
        break;
+
+    case 12: // "put_box"
+        mainjsnObj = jsnStore->returnJsnActionPutbox();
+        ProcessAction(comIndex, mainjsnObj);
+       break;
+
 
 
 
@@ -361,8 +364,6 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber, QO
 
 
     // ++++++++++++++++++++++++++++++++ Теперь всё остальное
-
-
 
     if (substr == "close") {
         Robot->serial.close();

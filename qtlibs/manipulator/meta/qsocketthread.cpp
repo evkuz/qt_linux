@@ -156,7 +156,9 @@ void QSocketThread::process_TheSocket()
 
 
     //Соединение сигналов со слотами
-    connect(socket, &QAbstractSocket::readyRead, this, &QSocketThread::onReadyRead, Qt::QueuedConnection); //, Qt::QueuedConnection DirectConnection
+    // сигнал readyRead и слот onReadyRead живут в одном потоке, поэтому DirectConnection
+    connect(socket, &QAbstractSocket::readyRead, this, &QSocketThread::onReadyRead, Qt::DirectConnection); //, Qt::QueuedConnection DirectConnection
+
     connect(socket, &QAbstractSocket::disconnected, this, &QSocketThread::deleteLater); //, Qt::AutoConnection
 
 
@@ -199,6 +201,13 @@ void QSocketThread::onReadyRead()
 //    }
 //    nextTcpdata += socket->readAll();
     // Output http-headers being received
+
+    int befbytes = socket->bytesAvailable();
+    if (befbytes < 20) {// HTTP/1.0 200 OK == 17 Пришла строка , обрабатывать не нужно, выходим.
+        qDebug() << "######### onReadyRead thread ID " <<  QThread::currentThread() << "!!!!!!!!! Too few bytes readed " << befbytes;
+        return;
+    }
+
     QByteArray httpHeaders = socket->readAll();
 //    emit Command_4_Parsing_Signal(httpHeaders, socketNumber); // works !
 

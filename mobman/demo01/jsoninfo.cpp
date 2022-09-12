@@ -145,7 +145,10 @@ void JsonInfo::init_json()
 
     }; //jsnStatus
 
-
+// info -> description
+// state -> statuses
+// rc - убираем
+// parameters - добавляем.
 
     jsnInfo = {
        {"name", DEV_NAME},
@@ -318,18 +321,7 @@ void JsonInfo::init_json()
     //Get the main JSON object and get the data in it
     jsnObj = jsnDoc.object();
 
-//+++++++++++++++++++++++++++++
-//jsnActionClamp.insert("name", "myname");
-// init actionList
-//    for (int i=0; i < structActionList.size(); i++){
-//        structActionList.at(i).name = "myname";
-
-
-//    }
-//++++++++++++++++++++++++++++++++
-// Инициализируем this->action_command крайним значением из списка
-    //    setCurrentAction(action_lst.at(action_lst.size()-1));
-}
+} // init_json
 //++++++++++++++++++++++++++++++++
 
 void JsonInfo::init_actions()
@@ -459,7 +451,8 @@ void JsonInfo::init_actions()
 
 
 
-}
+} // init_actions
+
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // Тут разные списки - action_lst и actionListp. Следует учитывать.
 void JsonInfo::resetAllActions()
