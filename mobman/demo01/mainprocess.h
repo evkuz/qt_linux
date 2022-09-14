@@ -202,6 +202,7 @@ public:
 
     CV_Answer cvAnswer;
     QString pointer_to_qstring(void *ptr);
+    void returnActionLaunch(QJsonObject &theObj);
 private:
 //    SocketClient readSocket;
     QObject *ptrTcpClient;   // Указатель на объект, приславший команду от Tcp-клиента

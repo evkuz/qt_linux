@@ -3,9 +3,11 @@
 
 
 /*
- * Ветка mobman-meta. Разработка для мобильного робота (мобильный манипулятор)
+ * Ветка mobman-light. Разработка для мобильного робота (мобильный манипулятор)
  * За основу взят софт для стационарного манипулятора.
  * https://pm.jinr.ru/projects/iqr_lit/wiki/Mobman
+ * - Убираем ф-цию MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj),
+ *   т.е. весь файл processAction.cpp (260 строк)
  *
  * Библиотечные файлы QSocketThread.h/cpp QSimpleServer.h/cpp изменены, поэтому для них создана
  * отдельная переменная окружения - LOCLIB
@@ -38,6 +40,25 @@
  * http://localhost:5050/
  *
  * http://192.168.1.201:8383/run?cmd=status&
+ *
+ * //+++++++++++++++++++++++++++++++++++++++++++++
+ * 14.09.2022
+ * Добавим в ф-цию MainProcess::GetBox(unsigned int distance) // [MainProcess::request_CV()]
+ * Проверку на "attached" для сервоприводов.
+ * Так добавим эффективности в энергопотреблении.
+ * ...
+ * Нужна возможность отключать приводы, например, когда манипулятор ждет команды.
+ * А при получении таковой, если надо, приводы включаем.
+ * Вот "оно" точно надо при команде "get_box" -> ф-ция MainProcess::GetBox и
+ * "put_box" -> ф-ция TcpParcing
+ *
+ * Соответственно, добавляем команду "Is attached ?" - коды
+ *
+ * Т.к. убрираем ф-цию "processAction", значит ответ на запуск экшена будет выполнять отдельная ф-ция :
+ * MainProcess::returnActionLaunch(QString acName)
+ * И запуск этой ф-ции добавляем в
+ * MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber, QObject* theSender)
+ * для каждого экшена.
  *
  *
  * //+++++++++++++++++++++++++++++++++++++++++++++

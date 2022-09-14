@@ -1623,11 +1623,14 @@ void MainProcess::GetBox(unsigned int distance)
     int value = 0xA9B9;
     unsigned char *arrPtr = mob_parking_position;
 
+// Проверяем подключены ли приводы.
+
     str = "I'm in GetBox !!! Current distance is ";
     str += QString::number(distance);
     //GUI_Write_To_Log(value, str);
     // Пишем в лог Serial порта, чтобы не сливалось со статусами.
     Robot->Write_To_Log(value,str);
+
 
 //    str = "Inside GetBox the Current active command is ";
 //    str += Robot->active_command;
@@ -1725,6 +1728,11 @@ void MainProcess::data_from_CVDevice_Slot(QString message)
 
 }
 //++++++++++++++++++++++++++++++++++++++
+void MainProcess::LogFile_Open(QString fname)
+{
+    mobWebLogFile.setFileName(fname);
+    mobWebLogFile.open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text);
+}// LogFile_Open
 
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1740,6 +1748,52 @@ QString MainProcess::pointer_to_qstring(void *ptr)
     char temp[16];
     sprintf(temp, "%08p", ptr);
     return QString(static_cast<char *>(temp));
+}
+//++++++++++++++++++++++++++++++++++++++++++++++++++++
+void MainProcess::returnActionLaunch(QJsonObject &theObj)
+{
+    QString str;
+    int value = 0x3939;
+
+    if (!Robot->SerialIsOpened){
+       jsnStore->isAnyActionRunning = false;
+       theObj["rc"] = RC_FAIL;
+       theObj["info"] = str;
+       theObj["state"] = jsnStore->DEV_ACTION_STATE_FAIL;
+       jsnStore->setActionData(theObj);
+       str = "Serial port is UNAVAILABLE !!! CAN'T move the ARM !!! Action is FAILED !!!";
+       GUI_Write_To_Log(value, str);
+       return;
+   }
+
+
+
+
+    jsnStore->isAnyActionRunning = true;
+    theObj["rc"] = RC_SUCCESS;
+    str = QJsonDocument(theObj).toJson(QJsonDocument::Indented);
+    QMetaObject::invokeMethod(this->ptrTcpClient, "Data_2_TcpClient_Slot",
+                              Qt::QueuedConnection,
+                              Q_ARG(QString, str),
+                              Q_ARG(qintptr, tcpSocketNumber));
+
+    QJsonObject headStatus = {
+        {"rc", RC_SUCCESS}, //RC_SUCCESS
+        {"state", "Running"},
+        {"info", "Action performing"}
+    };
+
+    jsnStore->setJsnHeadStatus(headStatus);
+
+    theObj["rc"] = jsnStore->AC_Launch_RC_RUNNING;//RC_SUCCESS; // Now state "inprogress" //theObj
+    theObj["state"] = jsnStore->DEV_ACTION_STATE_RUN;
+
+    jsnStore->setActionData(theObj);
+
+    // И вот тут проверяем подключены ли сервоприводы.
+    // Это время затратно.
+
+
 }
 
 

@@ -249,11 +249,6 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
     } // switch (returnCode)
 
 //    str = "PROCESSING ACTION IS FINISHED";
-    //    GUI_Write_To_Log(value,str);
-}
+//    GUI_Write_To_Log(value,str);
+} // ProcessAction
 
-void MainProcess::LogFile_Open(QString fname)
-{
-    mobWebLogFile.setFileName(fname);
-    mobWebLogFile.open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text);
-}// ProcessAction

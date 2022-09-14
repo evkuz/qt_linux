@@ -130,7 +130,10 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber, QO
 
    //QString S3;
 
+// Если убрали processAction, то ответ на запуск экшена, каждый раз, как ф-цию.
+
     QJsonObject tempObj;
+
     switch (comIndex) {
     case 0: // status
 
@@ -194,16 +197,13 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber, QO
         // Robot->active_command = "reset";
         jsnStore->resetAllActions();
         jsnStore->isAnyActionRunning = false;
+        mainjsnObj = jsnStore->returnJsnActionReset();
+        returnActionLaunch(mainjsnObj); // Отправляем быстрый ответ
         //str = "I'm in reset";
-        mainjsnObj = jsnStore->returnAllActions();
-        str = jsnStore->jsnData;
-        QMetaObject::invokeMethod(this->ptrTcpClient, "Data_2_TcpClient_Slot",
-                                  Qt::QueuedConnection,
-                                  Q_ARG(QString, str),
-                                  Q_ARG(qintptr, tcpSocketNumber));
-
-
-        GUI_Write_To_Log(value, str);
+       // mainjsnObj = jsnStore->returnAllActions();
+//        str = jsnStore->jsnData;
+//        str = QJsonDocument(mainjsnObj).toJson(QJsonDocument::Indented);
+//        GUI_Write_To_Log(value, str);
 //        mainjsnObj = jsnStore->returnJsnActionReset();
 //        str = QJsonDocument(mainjsnObj).toJson(QJsonDocument::Indented);
 //        GUI_Write_To_Log(value, str);
@@ -222,37 +222,31 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber, QO
         break;
 
     case 2: // clamp
-        // Robot->active_command = "clamp";
         mainjsnObj = jsnStore->returnJsnActionClamp();
-//        jsnStore->jsnObjArray[0].toObject()["state"]= "MANYMANY";
-//        str = QJsonDocument(jsnStore->jsnObjArray[0].toObject()).toJson(QJsonDocument::Indented);
-//        GUI_Write_To_Log(value, str);
-
-//        emit Write_2_TcpClient_Signal (str);
-       // ProcessAction(comIndex, mainjsnObj);
         break;
     case 3: // "get_box"
         mainjsnObj = jsnStore->returnJsnActionGetBox();
-        ProcessAction(comIndex, mainjsnObj);
+        request_CV();
 
         break;
-
-
     case 4: // "parking"
-        // Robot->active_command = "standup";
+        memcpy(Servos, mob_parking_position, DOF);
+        this->send_Data(LASTONE);
+
         mainjsnObj = jsnStore->returnJsnActionParking();
-        ProcessAction(comIndex, mainjsnObj);
+        returnActionLaunch(mainjsnObj); // Отправляем быстрый ответ
+
         break;
     case 5: // "ready"
-
         mainjsnObj = jsnStore->returnJsnActionReady();
-        ProcessAction(comIndex, mainjsnObj);
+        returnActionLaunch(mainjsnObj);
+        memcpy(Servos, mob_ready_position, DOF);
+        this->send_Data(LASTONE);
+
         break;
 
     case 6: //getactions
-      //  str = QJsonDocument(jsnStore->returnAllActions()).toJson(QJsonDocument::Indented);
         jsnStore->isAnyActionRunning = false;
-        //mainjsnObj = jsnStore->returnAllActions();
         tempObj = jsnStore->returnAllActions();
         str = jsnStore->jsnData;
         QMetaObject::invokeMethod(this->ptrTcpClient, "Data_2_TcpClient_Slot",
@@ -268,25 +262,48 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber, QO
 
     case 11: // "formoving"
         mainjsnObj = jsnStore->returnJsnActionForMoving();
-        ProcessAction(comIndex, mainjsnObj);
+        returnActionLaunch(mainjsnObj);
+        memcpy(Servos, mob_2_moving_position, DOF);
+        this->send_Data(LASTONE);
+
        break;
 
     case 12: // "put_box"
         mainjsnObj = jsnStore->returnJsnActionPutbox();
-        ProcessAction(comIndex, mainjsnObj);
+        returnActionLaunch(mainjsnObj); // Отправляем быстрый ответ
+
+        memcpy(Servos, mob_2_put_23, DOF);
+        this->send_Data(NOT_LAST);
+
+        // Открываем
+        Servos[0] = 45;
+        this->send_Data(NOT_LAST);
+
+        //Поднимаем крайний привод, чтобы снова не схватить кубик при движении обратно
+        Servos[3] = 65;
+        this->send_Data(NOT_LAST); // NOT_LAST
+
+
+        // в позицию "formoving", хват постепенно закрывается
+        memcpy(Servos, mob_moving_position, DOF);
+        this->send_Data(LASTONE);
+
        break;
-
-
-
 
 
     case 13: //lock
         mainjsnObj = jsnStore->returnJsnActionLock();
-        ProcessAction(comIndex, mainjsnObj);
+        returnActionLaunch(mainjsnObj);
+        Servos[0]=FULL_CLOSED;
+        this->send_Data(LASTONE); //NOT_LAST LASTONE
+
        break;
     case 14: //unlock
         mainjsnObj = jsnStore->returnJsnActionUnLock();
-        ProcessAction(comIndex, mainjsnObj);
+        returnActionLaunch(mainjsnObj);
+        Servos[0]=FULL_OPENED;
+        this->send_Data(LASTONE); //NOT_LAST LASTONE
+
        break;
     case 15: // "detach"
         jsnStore->isAnyActionRunning = false;
@@ -344,13 +361,31 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber, QO
 
         break;
 
+    case 17: // "isAttached?"
+        jsnStore->isAnyActionRunning = false;
+        for (int i=0; i<DOF; ++i)
+        {
+            Servos[i] = 254; //0xFE
+        }//for
+
+        this->send_Data(LASTONE); //NOT_LAST
+        tempObj = jsnStore->returnJsnActionAttach();
+        str = QJsonDocument(tempObj).toJson(QJsonDocument::Indented);
+        GUI_Write_To_Log(value, str);
+        QMetaObject::invokeMethod(this->ptrTcpClient, "Data_2_TcpClient_Slot",
+                                Qt::QueuedConnection,
+                                Q_ARG(QString, str),
+                                Q_ARG(qintptr, tcpSocketNumber));
+        tempObj = {
+            {"rc", RC_SUCCESS}, //RC_SUCCESS
+            {"state", "Running"},
+            {"info", "Action performing"}
+        };
+
+        jsnStore->setJsnHeadStatus(tempObj);
 
 
-//    case 13: //collapse
-//        // Robot->active_command = "collapse";
-//        mainjsnObj = jsnStore->returnJsnActionCollapse();
-//        ProcessAction(comIndex, mainjsnObj);
-//        break;
+        break;
 
     default:
         str = "The Command with index ";
