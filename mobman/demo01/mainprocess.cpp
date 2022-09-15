@@ -1419,7 +1419,8 @@ void MainProcess::CV_NEW_onReadyRead_Slot()
 
     int befbytes = socketCV->bytesAvailable();
 
-    if (befbytes < 20) {// HTTP/1.0 200 OK == 17 Пришла строка , обрабатывать не нужно, выходим.
+    if (befbytes < 200) {// HTTP/1.0 200 OK == 17 Пришла строка + заголовки, но без тела сообщения(170 символов),
+//                          обрабатывать не нужно, выходим.
 //        DETECTED = true;
 //        GUI_Write_To_Log(value, "Detected [17] is true !!!");
         return;
@@ -1625,11 +1626,11 @@ void MainProcess::GetBox(unsigned int distance)
 
 // Проверяем подключены ли приводы.
 
-    str = "I'm in GetBox !!! Current distance is ";
-    str += QString::number(distance);
+//    str = "I'm in GetBox !!! Current distance is ";
+//    str += QString::number(distance);
     //GUI_Write_To_Log(value, str);
     // Пишем в лог Serial порта, чтобы не сливалось со статусами.
-    Robot->Write_To_Log(value,str);
+//    Robot->Write_To_Log(value,str);
 
 
 //    str = "Inside GetBox the Current active command is ";

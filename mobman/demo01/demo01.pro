@@ -16,7 +16,6 @@ SOURCES += main.cpp \
     hiwonder.cpp \
     json_answer.cpp \
     mainprocess.cpp \
-    processAction.cpp \
     tcpParcing.cpp  \
     $$(LOCLIBS)/manipulator/meta/qsimpleserver.cpp \
     $$(LOCLIBS)/manipulator/meta/qsocketthread.cpp
@@ -27,7 +26,6 @@ else: unix:!android: target.path = /home/pi/qt_projects/$${TARGET}
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
-    ProcessAction.h \
     jsoninfo.h \
     clientsocket.h \
     cvdevice.h \
