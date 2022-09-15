@@ -17,7 +17,7 @@
 #include <QList>
 #include <QDateTime>
 #include <QTime>
-#include "hiwonder.h"  // hiwonder class
+#include "serialRobot.h"  // SerialRobot class
 #include "manipulator/qsimpleserver.h"
 #include "jsoninfo.h"
 #include "ProcessAction.h"
@@ -77,7 +77,7 @@ public:
     //char       *servos;    //unsigned char
     QByteArray LineEdits[6];
 
-    HiWonder *Robot;
+    SerialRobot *Robot;
 //    Robo_Math * RMath;
 
 
@@ -191,7 +191,6 @@ public:
     double parseJSON(QString jsnData); // Парсинг JSON из HTTP
 
     int getIndexCommand(QString myCommand, QList<QString> theList);
-//  void ProcessAction (HiWonder::ActionState * actionName);
     void ProcessAction(int indexOfCommand, QJsonObject &theObj); // Отрабатывает команду по заданному индексу из списка QList<QString> theList
     void LogFile_Open (QString fname);
 

@@ -13,9 +13,9 @@ SOURCES += main.cpp \
     jsoninfo.cpp \
     clientsocket.cpp \
     cvdevice.cpp \
-    hiwonder.cpp \
     json_answer.cpp \
     mainprocess.cpp \
+    serialRobot.cpp \
     tcpParcing.cpp  \
     $$(LOCLIBS)/manipulator/meta/qsimpleserver.cpp \
     $$(LOCLIBS)/manipulator/meta/qsocketthread.cpp
@@ -30,10 +30,10 @@ HEADERS += \
     clientsocket.h \
     cvdevice.h \
     evkuz.h \
-    hiwonder.h \
     positions.h \
     protocol.h \
     mainprocess.h \
+    serialRobot.h \
     tcpParcing.h \
     workflow.h \
     $$(LOCLIBS)/manipulator/meta/qsimpleserver.h \

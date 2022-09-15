@@ -1,7 +1,7 @@
 ﻿#include "mainprocess.h"
 //#include "ui_MainProcess.h"
 //#include "positions.h"
-//#include "hiwonder.h"
+//#include "SerialRobot.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -62,7 +62,7 @@ MainProcess::MainProcess(QObject *parent)
 
     ptrTcpClient = new QObject();
 
-    Robot = new HiWonder(); // Без этого будет "The program has unexpectedly finished", хотя в начале говорила, что это ambiguous
+    Robot = new SerialRobot(); // Без этого будет "The program has unexpectedly finished", хотя в начале говорила, что это ambiguous
 
     Robot->Log_File_Open(Log_File_Name);
     this->LogFile_Open(MOBMAN_LOG);
@@ -92,12 +92,12 @@ MainProcess::MainProcess(QObject *parent)
     //+++++++++++++++++++++++++++++++++  signal/slot of Get Request to webserver
 
     //################### SERIAL SIGNAL/SLOTS ############################
-    connect( this, &MainProcess::Open_Port_Signal, Robot, &HiWonder::Open_Port_Slot);
-    connect( &Robot->serial, &QSerialPort::readyRead, Robot, &HiWonder::ReadFromSerial_Slot);  //&QSerialPort::
+    connect( this, &MainProcess::Open_Port_Signal, Robot, &SerialRobot::Open_Port_Slot);
+    connect( &Robot->serial, &QSerialPort::readyRead, Robot, &SerialRobot::ReadFromSerial_Slot);  //&QSerialPort::
 
 
     //#################### Signal to web-server
-    connect( Robot, &HiWonder::Moving_Done_Signal, this, &MainProcess::Moving_Done_Slot);
+    connect( Robot, &SerialRobot::Moving_Done_Signal, this, &MainProcess::Moving_Done_Slot);
 
 
     //++++++++++++++++++++++++++++++++++++ JSON signal/slot ++++++++++++++++++++++++++++++
@@ -1429,8 +1429,8 @@ void MainProcess::CV_NEW_onReadyRead_Slot()
     nextTcpdata = nextTcpdata.simplified();
 
 
-    GUI_Write_To_Log(value, "!!!!!!!!!!!!!!!!! There are some data from CV device !!!!!!!!!!!!!!!!!!!!");
-    GUI_Write_To_Log(value, nextTcpdata);
+//    GUI_Write_To_Log(value, "!!!!!!!!!!!!!!!!! There are some data from CV device !!!!!!!!!!!!!!!!!!!!");
+//    GUI_Write_To_Log(value, nextTcpdata);
 
 //    str = "Detected value BEFORE parcing is ";
 //    str +=  QVariant(DETECTED).toString();
@@ -1577,7 +1577,7 @@ void MainProcess::CV_NEW_onReadyRead_Slot()
     mainjsnObj["info"]  = "Get box by manipulator ARM";// jsnStore->DEV_ACTION_INFO_;
     mainjsnObj["state"] = jsnStore->DEV_ACTION_STATE_RUN;
 
-    //Сравнить с hiwonder, тут не всегда успевает.
+    //Сравнить с SerialRobot, тут не всегда успевает.
     // Возможно надо заменить глобальный mainjsnObj на локальный, например QJsonObject theObj
     // Хотя изначально так и было...
     jsnStore->setActionData(mainjsnObj);
