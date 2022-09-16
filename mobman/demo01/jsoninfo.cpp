@@ -1,9 +1,10 @@
 ﻿#include "jsoninfo.h"
 
-JsonInfo::JsonInfo()
+JsonInfo::JsonInfo(QString deviceName)
 {
 
-    currentStatus = {DEV_NAME, RC_SUCCESS,  "OK", DEV_HEAD_STATE_WAIT}; // Инициализируем структуру
+    DEV_NAME = deviceName;
+    currentStatus = {DEV_NAME.toStdString(), RC_SUCCESS,  "OK", DEV_HEAD_STATE_WAIT}; // Инициализируем структуру
     action_command = "nothing";
 //    struc_2_json(jsnOB1, currentStatus); // Инициализируем  jsnOB1 данными из структуры выше
     init_json(); // also initializing jsnData
@@ -120,7 +121,7 @@ void JsonInfo::init_json()
 
 //  Ответ на команду Action в формате json
     jsnStatus = {
-        {"name", DEV_NAME},
+        {"name", DEV_NAME.toStdString()},
         {"rc", RC_UNDEFINED}, //RC_SUCCESS
         {"state", "Wait"},
         {"info", "Request Accepted"}
@@ -151,7 +152,7 @@ void JsonInfo::init_json()
 // parameters - добавляем.
 
     jsnInfo = {
-       {"name", DEV_NAME},
+       {"name", DEV_NAME.toStdString()},
        {"rc", RC_UNDEFINED}, //RC_SUCCESS
        {"info", "Request Accepted"},
        {"state", "Wait | Running | Fail"},
@@ -327,12 +328,12 @@ void JsonInfo::init_json()
 void JsonInfo::init_actions()
 {
     //+++++++++++++++++++++++++++++++++++++++++++++++++
-    jsnActionClamp = {
-        {"name", "clamp"},
-        {"state", "waiting"},
-        {"info", "Open/Close clamper"},
-        {"rc", RC_WAIT} // "int - action return code"
-     };
+//    jsnActionClamp = {
+//        {"name", "clamp"},
+//        {"state", "waiting"},
+//        {"info", "Open/Close clamper"},
+//        {"rc", RC_WAIT} // "int - action return code"
+//     };
     jsnActionStart = {
         {"name", "start"},
         {"state", "waiting"},
@@ -432,9 +433,9 @@ void JsonInfo::init_actions()
         {"rc", RC_WAIT}
 
     };
-
-    jsnObjArray = {jsnActionClamp,   jsnActionParking, jsnActionReady,  jsnActionReset,     jsnActionGetBox, jsnActionPutbox, \
-                   jsnActionUnKnown, jsnActionLock,    jsnActionUnLock, jsnActionForMoving, jsnActionDetach, jsnActionAttach
+//jsnActionClamp,
+    jsnObjArray = {jsnActionParking, jsnActionReady,  jsnActionReset,     jsnActionGetBox, jsnActionPutbox, \
+                   jsnActionUnKnown, jsnActionLock,   jsnActionUnLock, jsnActionForMoving, jsnActionDetach, jsnActionAttach
     }; // jsnObjArray
 
     jsnHeadStatus = {
@@ -674,16 +675,9 @@ QJsonObject &JsonInfo::returnJsnActionAttach()
 QJsonObject JsonInfo::returnAllActions()
 {
     QJsonValue myValue;
-//    bool OK = this->eraseArray(this->jsnObjArray);
-
-//    for (int i = 0; i< actionListp.size(); i++){
-//        myValue = actionListp.at(i);
-//        jsnArray.append(myValue);
-//    } //for
 
     jsnActionList["action_list"] = jsnObjArray;
     this->jsnData = merge_json(jsnActionList, jsnHeadStatus);
-//    OK = this->eraseArray(this->jsnObjArray);
     return this->jsnObj; // Изменено в merge_json
 
 

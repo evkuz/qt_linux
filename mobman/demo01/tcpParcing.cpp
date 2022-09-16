@@ -77,9 +77,12 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber, QO
     // Другими словами - во время выполняения экшена приходит команда выполнить другой экшен...
     // Манипулятор не может 2 экшена выполнять одновременно.
     // comIndex > 0 && comIndex != 1
-    // #################### ВНИМАНИЕ !!! ТУТ НЕТ ЗАПИСИ В ЛОГ, ЧТОБ БЫСТРЕЕ БЫЛО #########
+    // #################### ВНИМАНИЕ !!! ТУТ НЕТ ЗАПИСИ В ЛОГ, только ответ клиенту. ЧТОБ БЫСТРЕЕ БЫЛО #########
+
+    QJsonObject tempObj;
+
     if (comIndex > 1 && jsnStore->isAnyActionRunning ){
-         QJsonObject tempObj;
+
                      tempObj = {
                          {"name", substr},
                          {"info", "Another action is already running"},
@@ -132,7 +135,7 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber, QO
 
 // Если убрали processAction, то ответ на запуск экшена, каждый раз, как ф-цию.
 
-    QJsonObject tempObj;
+//    QJsonObject tempObj;
 
     switch (comIndex) {
     case 0: // status
@@ -195,10 +198,32 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber, QO
 
     case 1:  // reset
         // Robot->active_command = "reset";
-        jsnStore->resetAllActions();
+        jsnStore->resetAllActions(); // all actions to "done"
         jsnStore->isAnyActionRunning = false;
-        mainjsnObj = jsnStore->returnJsnActionReset();
-        returnActionLaunch(mainjsnObj); // Отправляем быстрый ответ
+
+
+        tempObj = {
+            {"name", "reset"},
+            {"rc", RC_SUCCESS}, //RC_SUCCESS
+            {"info", "Reset successful"}
+        };
+
+//        jsnStore->setActionDone(tempObj);
+
+        str = QJsonDocument(tempObj).toJson(QJsonDocument::Indented);
+        GUI_Write_To_Log(value, str);
+        QMetaObject::invokeMethod(this->ptrTcpClient, "Data_2_TcpClient_Slot",
+                                Qt::QueuedConnection,
+                                Q_ARG(QString, str),
+                                Q_ARG(qintptr, tcpSocketNumber));
+
+//        jsnStore->setJsnHeadStatus(headStatus);
+
+
+//        jsnStore->setActionData(theObj);
+
+//        mainjsnObj = jsnStore->returnJsnActionReset();
+//        returnActionLaunch(mainjsnObj); // Отправляем быстрый ответ
         //str = "I'm in reset";
        // mainjsnObj = jsnStore->returnAllActions();
 //        str = jsnStore->jsnData;
@@ -227,19 +252,24 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber, QO
     case 3: // "get_box"
         mainjsnObj = jsnStore->returnJsnActionGetBox();
         request_CV();
-
+//      Тут нет returnActionLaunch(mainjsnObj); т.к.
+//      Может не быть детекции. Быстрый ответ отпрвляем из
+//      MainProcess::CV_NEW_onReadyRead_Slot() если детекция есть.
         break;
     case 4: // "parking"
+        mainjsnObj = jsnStore->returnJsnActionParking();
+        returnActionLaunch(mainjsnObj, theSender); // Отправляем быстрый ответ
+
+
         memcpy(Servos, mob_parking_position, DOF);
         this->send_Data(LASTONE);
 
-        mainjsnObj = jsnStore->returnJsnActionParking();
-        returnActionLaunch(mainjsnObj); // Отправляем быстрый ответ
 
         break;
     case 5: // "ready"
         mainjsnObj = jsnStore->returnJsnActionReady();
-        returnActionLaunch(mainjsnObj);
+        returnActionLaunch(mainjsnObj, theSender);
+
         memcpy(Servos, mob_ready_position, DOF);
         this->send_Data(LASTONE);
 
@@ -262,7 +292,8 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber, QO
 
     case 11: // "formoving"
         mainjsnObj = jsnStore->returnJsnActionForMoving();
-        returnActionLaunch(mainjsnObj);
+        returnActionLaunch(mainjsnObj, theSender);
+
         memcpy(Servos, mob_2_moving_position, DOF);
         this->send_Data(LASTONE);
 
@@ -270,7 +301,7 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber, QO
 
     case 12: // "put_box"
         mainjsnObj = jsnStore->returnJsnActionPutbox();
-        returnActionLaunch(mainjsnObj); // Отправляем быстрый ответ
+        returnActionLaunch(mainjsnObj, theSender); // Отправляем быстрый ответ
 
         memcpy(Servos, mob_2_put_23, DOF);
         this->send_Data(NOT_LAST);
@@ -293,14 +324,14 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber, QO
 
     case 13: //lock
         mainjsnObj = jsnStore->returnJsnActionLock();
-        returnActionLaunch(mainjsnObj);
+        returnActionLaunch(mainjsnObj, theSender);
         Servos[0]=FULL_CLOSED;
         this->send_Data(LASTONE); //NOT_LAST LASTONE
 
        break;
     case 14: //unlock
         mainjsnObj = jsnStore->returnJsnActionUnLock();
-        returnActionLaunch(mainjsnObj);
+        returnActionLaunch(mainjsnObj, theSender);
         Servos[0]=FULL_OPENED;
         this->send_Data(LASTONE); //NOT_LAST LASTONE
 
@@ -393,7 +424,7 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber, QO
         str += " is not found";
         GUI_Write_To_Log(value, str);
         break;
-    }
+    } //switch (comIndex)
 
 
 

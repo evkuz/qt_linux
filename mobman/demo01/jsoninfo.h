@@ -26,22 +26,23 @@ class JsonInfo : public QObject
 {
     Q_OBJECT
 public:
-    JsonInfo();
-     QJsonObject jsnObj1;
-     QJsonObject jsnObj2;
+    JsonInfo(QString deviceName);
+    QString DEV_NAME;
+    QJsonObject jsnObj1;
+    QJsonObject jsnObj2;
 
 //     QJsonParseError jsonError; // ОШибка, если полученные данные - не JSON-объект
 
 //     QString jsnData;
 //     QJsonArray actions_list;
 
-     std::string s1;
-     QVariantMap map;
+    std::string s1;
+    QVariantMap map;
 
 
     //++++++++++++++++++++++ JSON data +++++++++++++++++++++++++++++++++++++++++++++
 
-    #define DEV_NAME "HIWONDER"   // device name - mobile manipulator
+//    #define DEV_NAME "HIWONDER"   // device name - mobile manipulator
     #define RC_SUCCESS 0             // запрос выполнен успешно
     #define RC_WRONG_VALUE  -1     // неверные параметры
     #define RC_UNDEFINED    -2       // action с таким именем не найден

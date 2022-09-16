@@ -389,7 +389,7 @@ void QSocketThread::Data_2_TcpClient_Slot(QString data, qintptr socketNumber)
 //        return;
 //    }
     qDebug() << "%%%%%%%%%%%%%%%% Data for TCP-CLIENT %%%%%%%%%%%%%";
-    qDebug() << "%%%%%%%%%%%%%%%% QByteArray          %%%%%%%%%%%%%";
+//    qDebug() << "%%%%%%%%%%%%%%%% QByteArray          %%%%%%%%%%%%%";
     //data2Client.resize(data.size());
 
 //    data2Client = data.toUtf8(); // have got data from MainProcess as QByteArray
@@ -419,6 +419,7 @@ void QSocketThread::Data_2_TcpClient_Slot(QString data, qintptr socketNumber)
 //    qbData.resize(300);
 //    qbData += data2Client;
 //    data2Client += response.toUtf8();
+//    qDebug() << qbData;
     qDebug() << "The packet size in bytes is " << QString::number(qbData.size());
 
 //        response += "</body>";

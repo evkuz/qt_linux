@@ -120,7 +120,7 @@ void MainWindow:: makeSocket(QString ipaddress, quint16 port)
     connect(socketDEV, &QAbstractSocket::disconnected, this, &MainWindow::socketDEV_onDisconnected_Slot,Qt::AutoConnection);
 
     connect (this->socketDEV, &QTcpSocket::connected, this, &MainWindow::onDEVSocketConnected_Slot); // Send "status" command
-    connect (this->socketDEV, &QTcpSocket::stateChanged, this, &MainWindow::onSocketDevState_Changed);
+ //   connect (this->socketDEV, &QTcpSocket::stateChanged, this, &MainWindow::onSocketDevState_Changed);
 
     socketDEV->connectToHost(ipaddress, port);
 
@@ -416,14 +416,18 @@ void MainWindow::onDEVSocketReadyRead_Slot()
     QString nextTcpdata, str;
     int value = 0xf9f9;
     int befbytes = socketDEV->bytesAvailable();
-        nextTcpdata = socketDEV->readAll();
+    if (befbytes < 100) {return;}
+
+    // Считано байт больше, чем заголовки, т.е. все сообщение
+    // "HTTP/1.0 200 OK" + заголовки + JSON-сообщение
+    nextTcpdata = socketDEV->readAll();
     int realbytes = nextTcpdata.size();
     int afterbytes = socketDEV->bytesAvailable();
 
-    str = "Bytes before reading "; str += QString::number(befbytes); GUI_Write_To_Log(value, str);
+//    str = "Bytes before reading "; str += QString::number(befbytes); GUI_Write_To_Log(value, str);
     str = QString::number(realbytes); str += " bytes has been readed"; GUI_Write_To_Log(value, str);
 
-    str = "Bytes after reading  "; str += QString::number(afterbytes); GUI_Write_To_Log(value, str);
+//    str = "Bytes after reading  "; str += QString::number(afterbytes); GUI_Write_To_Log(value, str);
 
     GUI_Write_To_Log(value, "!!!!!!!!!!!!!!!!! There are some  data from SOCKET device !!!!!!!!!!!!!!!!!!!!");
     GUI_Write_To_Log(value, nextTcpdata);

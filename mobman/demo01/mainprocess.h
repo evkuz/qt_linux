@@ -20,7 +20,7 @@
 #include "serialRobot.h"  // SerialRobot class
 #include "manipulator/qsimpleserver.h"
 #include "jsoninfo.h"
-#include "ProcessAction.h"
+//#include "ProcessAction.h"
 
 #include "cvdevice.h"
 #include "protocol.h"
@@ -201,7 +201,7 @@ public:
 
     CV_Answer cvAnswer;
     QString pointer_to_qstring(void *ptr);
-    void returnActionLaunch(QJsonObject &theObj);
+    void returnActionLaunch(QJsonObject &theObj, QObject *theSender);
 private:
 //    SocketClient readSocket;
     QObject *ptrTcpClient;   // Указатель на объект, приславший команду от Tcp-клиента

@@ -9,6 +9,22 @@
 //                                         9                                     11                     13                15
                                    "isAttached?"};
 //                                       17
+
+ /*
+  *  Data races sources   *  MainProcess::Data_From_TcpClient_Slot()
+  *
+  *  ptrTcpClient = theSender; - Указатель на объект, вызвавший ф-цию MainProcess::Data_From_TcpClient_Slot()
+  *  Это объект QSocketThread
+  *
+  *
+  *
+  *
+  *
+  *
+  *
+  */
+
+
 /*
  * у нас структура запроса получается такая:
  * <address>/run?cmd=<name>&<parameter_name>=<parameter_value>

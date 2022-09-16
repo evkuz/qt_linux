@@ -25,12 +25,6 @@ MainProcess::MainProcess(QObject *parent)
     int value = 0x0000;
     parcel_size  = 6;
 
-    //json jsncommand; // Команду извне упакуем в json
-//    json jsnAnswer;  // ответ tcp-клменту в json
-  //  json jsnStatus;
-
-//    init_json(); // Инициализируем json_status
-
     DETECTED = false;
     new_get_request = false;
     thread_counter = 0;
@@ -38,16 +32,6 @@ MainProcess::MainProcess(QObject *parent)
 
     cvAnswer.detected = false;
     cvAnswer.distance = 0.0;
-//    socketCV = new QTcpSocket(this);
-//    in.setDevice(socketCV);
-
-
-//    CVdevice = new CVDevice(CVDev_IP, CVDev_Port);
-//            : QObject(parent)
-//            , CVDev_IP
-//            , CVDev_Port
-
-  //  connect (CVdevice, &CVDevice::data_from_CVDevice_Signal, this, &MainProcess::data_from_CVDevice_Slot);
 
     target_name = QFileInfo(QCoreApplication::applicationFilePath()).fileName();
     //QByteArray ba = target_name.toLocal8Bit();
@@ -56,13 +40,13 @@ MainProcess::MainProcess(QObject *parent)
 
     // Инициализируем все json-статусы
     qRegisterMetaType<QJsonObject>("QJsonObject");
-    jsnStore = new JsonInfo();
+    jsnStore = new JsonInfo(DEVICE_NAME);
     mainjsnObj = jsnStore->returnJsnActionReset(); //set global value
     jsnStore->createActionList();
 
-    ptrTcpClient = new QObject();
+    ptrTcpClient = new QObject(nullptr);
 
-    Robot = new SerialRobot(); // Без этого будет "The program has unexpectedly finished", хотя в начале говорила, что это ambiguous
+    Robot = new SerialRobot();
 
     Robot->Log_File_Open(Log_File_Name);
     this->LogFile_Open(MOBMAN_LOG);
@@ -80,14 +64,6 @@ MainProcess::MainProcess(QObject *parent)
     qDebug() << "Started " << target_name;
 
     GUI_Write_To_Log(value, "Going to Start QTcpServer");
-//    if (server.isListening ()) {
-
-//        str = "Listening on address "; str += server.serverAddress().toString();
-//        str += " and port "; str += QString::number(server.serverPort());//QString::number(server.tcpport);
-
-//        GUI_Write_To_Log(value, str);
-//         qDebug() << str;
-//    }
 
     //+++++++++++++++++++++++++++++++++  signal/slot of Get Request to webserver
 
@@ -103,8 +79,7 @@ MainProcess::MainProcess(QObject *parent)
     //++++++++++++++++++++++++++++++++++++ JSON signal/slot ++++++++++++++++++++++++++++++
     connect(this, &MainProcess::SetActionData_Signal, jsnStore, &JsonInfo::SetActionData_Slot, Qt::QueuedConnection);
 
-    // ============================================== Создаем поток 1 - web-server
-//        connect(chan_A, SIGNAL(Process_A()), TheWeb, SLOT(Output_Data_From_Client_Slot()), Qt::QueuedConnection); //Считываем из железки в ПК по каналу А
+    // ==============================================
                                                                        // Qt::DirectConnection
                                                                        // Qt::QueuedConnection
                                                                        // Qt::BlockingQueuedConnection
@@ -190,6 +165,7 @@ MainProcess::~MainProcess()
     delete Robot;
     delete jsnStore;
     delete socketCV;
+    delete ptrTcpClient;
 
 
 
@@ -637,7 +613,7 @@ void MainProcess::make_json_answer()
 void MainProcess::init_json()
 {
      jsnStatus = {
-        {"name", DEV_NAME},
+        {"name", DEVICE_NAME},
         {"rc", RC_UNDEFINED}, //RC_SUCCESS
         {"info", "Request Accepted"},
         {"state", "Wait"},
@@ -870,6 +846,9 @@ int MainProcess::my_round(int n)
 //++++++++++++++++++++++++++++++++++++++++++++++++++
 // В конкретном проекте с мобильным манипулятором нужно парсить только ответ от CV, так что
 // пока не претендуем на универсальность.
+// JSON-данные пишем в глобальную переменную jsndataObj
+// Нам повезло, что по окончании это ф-ции значение jsndataObj как раз хранит
+// значение объекта "data"
 void MainProcess::traversJson(QJsonObject json_obj)
 {
     QString str;
@@ -904,6 +883,8 @@ void MainProcess::traversJson(QJsonObject json_obj)
             // А теперь определяем тип данных поля.
              //jsndataObj = json_obj["data"].toObject(); // Так тоже работает, но уже есть привязка к конкретному случаю.
              jsndataObj = value.toObject(); // В нашем случае объект единственный - "data"
+             // При последующем запуске traversJson попадаем уже в блок  if(!value.isObject() )==true
+             // и там достаем "distance"
              // check if there is the key "detected"
 //             if (jsndataObj.contains("detected")){
 
@@ -1052,6 +1033,7 @@ double MainProcess::parseJSON(QString jsnData)
 
 
     // Вот тут мы откуда-то знаем, что есть ключ "distance"... А если его нет ? надо допиливать...
+    // Выведем весь jsndataObj
     double cvdistance = jsndataObj.value("distance").toDouble();
     str = "Got distance value as double : ";
     str += QString::number(cvdistance);
@@ -1510,7 +1492,8 @@ void MainProcess::CV_NEW_onReadyRead_Slot()
 
     // Переводим double в int и округляем до ближайшего десятка
     int cvd = round(cvdistance);
-    // Получили значение с точностью до 1мм, а нам надо округлить до 10мм.
+    // Получили значение с точностью до 1мм, а нам надо округлить до 10мм. т.к.
+    // позиции кубика подобраны с разницей в 1см==10мм
 //    str = "The int value of distance is ";
 //    substr =  QString::number(cvd);
 //    str += substr;
@@ -1751,10 +1734,12 @@ QString MainProcess::pointer_to_qstring(void *ptr)
     return QString(static_cast<char *>(temp));
 }
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
-void MainProcess::returnActionLaunch(QJsonObject &theObj)
+void MainProcess::returnActionLaunch(QJsonObject &theObj, QObject* theSender)
 {
     QString str;
     int value = 0x3939;
+//    str = "I'm in returnActionLaunch";
+//    GUI_Write_To_Log(value, str);
 
     if (!Robot->SerialIsOpened){
        jsnStore->isAnyActionRunning = false;
@@ -1772,8 +1757,14 @@ void MainProcess::returnActionLaunch(QJsonObject &theObj)
 
     jsnStore->isAnyActionRunning = true;
     theObj["rc"] = RC_SUCCESS;
+    theObj["rc"] = jsnStore->AC_Launch_RC_RUNNING;//RC_SUCCESS; // Now state "inprogress" //theObj
+    theObj["state"] = jsnStore->DEV_ACTION_STATE_RUN;
+
+    jsnStore->setActionData(theObj);
+
+
     str = QJsonDocument(theObj).toJson(QJsonDocument::Indented);
-    QMetaObject::invokeMethod(this->ptrTcpClient, "Data_2_TcpClient_Slot",
+    QMetaObject::invokeMethod(theSender, "Data_2_TcpClient_Slot",
                               Qt::QueuedConnection,
                               Q_ARG(QString, str),
                               Q_ARG(qintptr, tcpSocketNumber));
@@ -1786,10 +1777,7 @@ void MainProcess::returnActionLaunch(QJsonObject &theObj)
 
     jsnStore->setJsnHeadStatus(headStatus);
 
-    theObj["rc"] = jsnStore->AC_Launch_RC_RUNNING;//RC_SUCCESS; // Now state "inprogress" //theObj
-    theObj["state"] = jsnStore->DEV_ACTION_STATE_RUN;
 
-    jsnStore->setActionData(theObj);
 
     // И вот тут проверяем подключены ли сервоприводы.
     // Это время затратно.
