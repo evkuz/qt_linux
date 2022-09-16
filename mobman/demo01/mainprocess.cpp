@@ -967,7 +967,7 @@ double MainProcess::parseJSON(QString jsnData)
 
 //  Just for information, so no needed in production
 //  GUI_Write_To_Log(value, "!!!!!!!!!!!!!!!!!!!! Go to recursive parsing !!!!!!!!!!!!!!!!!!!!");
-  traversJson(jsnObj);
+  traversJson(jsnObj); // Ф-ция заполняет json-объект jsndataObj актуальными данными от CV
 //  GUI_Write_To_Log(value, "!!!!!!!!!!!!!!!!!!!! Get back from recursive parsing !!!!!!!!!!!!!!!!!!!!");
 
 //  // Парсинг JSON закончили, получили глобальную переменную  jsndataObj - это объект "data" : {}. Извлекаем из него данные.
@@ -1032,7 +1032,7 @@ double MainProcess::parseJSON(QString jsnData)
   }
 
 
-    // Вот тут мы откуда-то знаем, что есть ключ "distance"... А если его нет ? надо допиливать...
+    // Вот тут мы откуда-то знаем, что есть ключ "distance"... А если его нет ? надо делать проверку, допиливать...
     // Выведем весь jsndataObj
     double cvdistance = jsndataObj.value("distance").toDouble();
     str = "Got distance value as double : ";

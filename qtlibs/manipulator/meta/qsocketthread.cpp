@@ -256,7 +256,7 @@ void QSocketThread::onReadyRead()
 //    qDebug() << qbmessage;
 //    qDebug() << "!!!!!!!!!!!!!!!!!!!!! Get Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!!"<< QString::number(socketNumber);
 
-    qDebug() << httpHeaders;// nextTcpdata;  httpHeaders;
+//    qDebug() << httpHeaders;// nextTcpdata;  httpHeaders;
     //Парсим команду.
     QString message, substr, searchstr;
     //message = QString(qbmessage);

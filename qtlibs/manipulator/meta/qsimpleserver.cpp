@@ -47,9 +47,9 @@ void QSimpleServer::incomingConnection(qintptr sDescriptor)
 {
 
     this->counterConnections++;
-    this->clientsCounter++;
+//    this->clientsCounter++;
     qDebug() << QDateTime::currentDateTime() << "New Incoming" << this->counterConnections;
-    qDebug() << QDateTime::currentDateTime() << "Total processing connections" << this->clientsCounter;
+//    qDebug() << QDateTime::currentDateTime() << "Total processing connections" << this->clientsCounter;
     isCreatedSocket = false;
     // Создание объекта потока QObject
     thread_A = new QThread();
@@ -71,10 +71,10 @@ void QSimpleServer::incomingConnection(qintptr sDescriptor)
     connect(thread_A, &QThread::started, tcpthread, &QSocketThread::process_TheSocket, Qt::QueuedConnection); //, Qt::QueuedConnection)
     connect(thread_A, &QThread::finished, thread_A,  &QThread::deleteLater);
 
-    connect(tcpthread, &QSocketThread::makePause_Signal, this, &QSimpleServer::makePause_Slot, Qt::QueuedConnection);
-    connect(tcpthread->pauseTimer, &QTimer::timeout, this, &QSimpleServer::resumePause_Slot, Qt::QueuedConnection);
+//    connect(tcpthread, &QSocketThread::makePause_Signal, this, &QSimpleServer::makePause_Slot, Qt::QueuedConnection);
+//    connect(tcpthread->pauseTimer, &QTimer::timeout, this, &QSimpleServer::resumePause_Slot, Qt::QueuedConnection);
 
-    connect(tcpthread, &QSocketThread::decSocketCounter_Signal, this, &QSimpleServer::decSocketCounter_Slot, Qt::QueuedConnection);
+//    connect(tcpthread, &QSocketThread::decSocketCounter_Signal, this, &QSimpleServer::decSocketCounter_Slot, Qt::QueuedConnection);
 
 
 //    connect(tcpthread, &QSocketThread::Command_4_Parsing_Signal, this, &QSimpleServer::Command_4_Parsing_Slot);
@@ -87,30 +87,7 @@ void QSimpleServer::incomingConnection(qintptr sDescriptor)
     thread_A->start();
 //    qDebug() << "pointer to the event dispatcher object for the thread : " << thread_A->eventDispatcher();
 
-    // Нужно получить из tcpthread значение QTcpSocket *socket, чтобы вызвать ф-цию addPendingConnection(QTcpSocket *socket);
-//    while (!isCreatedSocket) {
-//    ;
-//    }
-//    this->addPendingConnection(sDescriptor);
-}
-//++++++++++++++++
-// Слот отправки данных от робота клиенту в сокет (в ЦУП)
-/*
-void QSimpleServer::Write_2_TcpClient_SLot(QString data, qintptr socketNumber)
-{
-    // Передаем данные дальше вниз в qtcpsocket
-    emit Data_2_TcpClient_Signal(data, socketNumber);
-}
-//++++++++++++
-// ОТправляем команду наверх, роботу на выполнение.
-void QSimpleServer::Command_4_Parsing_Slot(QString message, qintptr socketNumber)
-{
-  emit Data_From_TcpClient_Signal(message, socketNumber); // works ???
-//    qDebug() << "!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSimpleServer->Command_4_Parsing_Slot !!!!!!!!!!!!!!!!!!!";
-//    qDebug() << message;
-
-}
-*/
+} // incomingConnection
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //
 void QSimpleServer::isCreatedSocket_Slot(QTcpSocket *theSocket)
@@ -148,9 +125,3 @@ void QSimpleServer::decSocketCounter_Slot()
     qDebug() << "Current connected socket counter is " << clientsCounter;
 }
 
-//++++++++++++
-//Added by Miksarus
-//void QSimpleServer::SetCurrentState(QString newStatus){
-//    //this->current_status = newStatus;
-//    ;
-//}

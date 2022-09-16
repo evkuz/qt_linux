@@ -33,14 +33,14 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber, QO
     str = "From TCP Get new command : "; str += message;
     GUI_Write_To_Log(value, str);
 
-    str = "$$$$$$$$$$$$$$$$$$$$$$ <Data_From_TcpClient_Slot>'s thread is ";
+//    str = "$$$$$$$$$$$$$$$$$$$$$$ <Data_From_TcpClient_Slot>'s thread is ";
     //str += QString("0x%1").arg((qintptr)this->QObject::thread(),8);
-    str += pointer_to_qstring(QObject::thread());
-    GUI_Write_To_Log(value, str);
+//    str += pointer_to_qstring(QObject::thread());
+//    GUI_Write_To_Log(value, str);
 
-    QString mystr = "Pointer to SENDER QObject is ";
-    mystr += pointer_to_qstring(ptrTcpClient);
-    GUI_Write_To_Log(value, mystr);
+//    QString mystr = "Pointer to SENDER QObject is ";
+//    mystr += pointer_to_qstring(ptrTcpClient);
+//    GUI_Write_To_Log(value, mystr);
 
 
 
