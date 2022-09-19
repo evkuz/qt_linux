@@ -355,7 +355,6 @@ QStringList list1;
 
         jsnStore->setJsnHeadStatus(tempObj);
 
-
        break;
 
     case 16: // "attach"
@@ -418,23 +417,12 @@ QStringList list1;
         break;
     } //switch (comIndex)
 
-
-
-
     // ++++++++++++++++++++++++++++++++ Теперь всё остальное
 
     if (substr == "close") {
         Robot->serial.close();
 
     }
-
-    // Запрашиваем в Arduino значения углов сервоприводов
-//    if (substr == "getservos") {
-//        QByteArray dd ;
-//        dd.resize(parcel_size);
-//        memcpy(dd.data(), get_values_position, parcel_size);
-
-//    }
 
     if (substr == "info") {
         // Вот тут делаем присвоение статуса.
@@ -452,24 +440,5 @@ QStringList list1;
         emit Write_2_TcpClient_Signal (str, this->tcpSocketNumber);
 
     }
-
-//    if (substr.startsWith("setservos=")){
-//           substr = substr.remove("setservos=");
-//           QStringList list1 = substr.split(QLatin1Char(','));
-//           for (int i=0; i<DOF; ++i)
-//           {
-//               Servos[i] = list1.at(i).toUInt();
-//           }//for
-
-//           this->send_Data(LASTONE); //NOT_LAST
-//       }
-
-    // Запрашиваем список экшенов
-//    if (substr == "getactions") {
-//        QByteArray dd ;
-//        dd.resize(parcel_size);
-//        memcpy(dd.data(), get_values_position, parcel_size);
-//     }
-
 
 }// Data_From_TcpClient_Slot

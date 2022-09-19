@@ -111,7 +111,12 @@ public:
 
     QJsonParseError jsonError; // ОШибка, если полученные данные - не JSON-объект
     JsonInfo    *jsnStore;
+    // Важно ! Меняем значение mainjsnObj только, если экшен означает движение манипулятора. для остальных есть tempObj
+    // Значение mainjsnObj используется после завершения опреаций для сервоприводов в слоте Moving_Done_Slot
+    // В многопоточном режиме значение mainjsnObj не меняется, пока не завершится текущая операция.
+    // ЗА этим следит переменная JsonInfo::isAnyActionRunning
     QJsonObject mainjsnObj; // temporal Текущий экшен, нужно т.к. при большой скорости опроса это значение постоянно меняется
+
     QJsonObject launchActionAnswer;  // Ответ на запуск экшена
 
  //   QSharedPointer<QJsonObject> pJsnObject; //
