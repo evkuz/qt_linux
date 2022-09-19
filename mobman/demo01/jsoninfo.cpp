@@ -435,9 +435,20 @@ void JsonInfo::init_actions()
         {"rc", RC_WAIT}
 
     };
+
+    jsnActionSetservos = {
+        {"name", "setservos="},
+        {"state", DEV_ACTION_STATE_WAIT},
+        {"info", "Move servos to values supplied, as parameters"},
+        {"rc", RC_WAIT}
+
+
+    };
+
 //jsnActionClamp,
     jsnObjArray = {jsnActionParking, jsnActionReady,  jsnActionReset,     jsnActionGetBox, jsnActionPutbox, \
-                   jsnActionUnKnown, jsnActionLock,   jsnActionUnLock, jsnActionForMoving, jsnActionDetach, jsnActionAttach
+                   jsnActionUnKnown, jsnActionLock,   jsnActionUnLock, jsnActionForMoving, jsnActionDetach, \
+                   jsnActionAttach,  jsnActionSetservos
     }; // jsnObjArray
 
     jsnHeadStatus = {
@@ -485,6 +496,15 @@ void JsonInfo::init_actions_new()
         {"Waiting", "Action is in awaiting state"},
         {"No Detection !", "There is no detection of object by CV-camera"}
     };
+
+    actSetServoParams = {
+        {"Servo_1", "servo 1 value 0-180, base"},
+        {"Servo_2", "servo 2 value 0-180"},
+        {"Servo_3", "servo 3 value 0-180"},
+        {"Servo_4", "servo 4 value 0-180, gripper"},
+        };
+//        values in range 0-180 Degrees, separated by coma, started from base to gripper""
+
 
 //        {"Undefined", "There is now action with such a name"},
 
@@ -597,6 +617,10 @@ ordered_json& JsonInfo::QtJson_2_NlohmannJson(QJsonObject theObj)
 //        {"statuses", this->actStatuses}
 
     };
+
+    if (str1 == "setservos="){
+        jsnAction["parameters"] = this->actSetServoParams;
+    }
 
     if (str1 == "get_box") { // Тут особые статусы есть, не как у остальных экшенов
          jsnAction["statuses"] = this->actGetStatuses;
@@ -758,6 +782,11 @@ QJsonObject &JsonInfo::returnJsnActionDetach()
 QJsonObject &JsonInfo::returnJsnActionAttach()
 {
     return this->jsnActionAttach;
+}
+//+++++++++++++++++++++++++++++++++++++++++++++
+QJsonObject &JsonInfo::returnJsnAcionSetservos()
+{
+    return this->jsnActionSetservos;
 }
 //+++++++++++++++++++++++++++++++++++++++++++
 QString JsonInfo::returnAllActions()

@@ -115,6 +115,7 @@ public:
      QJsonObject jsnActionForMoving; // mobman "formoving"
      QJsonObject jsnActionDetach;    // mobman "detach"
      QJsonObject jsnActionAttach;    // mobman "attach"
+     QJsonObject jsnActionSetservos; // mobman "setservos="
 
      QJsonObject jsnActionList;  // list for "action_list" key
      QJsonArray  jsnArray;       // list for action_list
@@ -170,6 +171,7 @@ public:
     QJsonObject& returnJsnActionForMoving();
     QJsonObject& returnJsnActionDetach();
     QJsonObject& returnJsnActionAttach();
+    QJsonObject& returnJsnAcionSetservos();
 
     QString returnAllActions();
 
@@ -255,6 +257,7 @@ private:
     ordered_json& getAllActionsOrderedJson(QJsonObject theObj);
     ordered_json actStatuses; // Хранит статусы экшена. ключ — имя статуса, значение — описание данного статуса.
     ordered_json actGetStatuses; // ТО же для команды "get_box", есть особые статусы
+    ordered_json actSetServoParams;
 
 
     // Порядок элементов должен совпадать с action_lst

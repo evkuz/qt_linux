@@ -136,7 +136,7 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber, QO
 // Если убрали processAction, то ответ на запуск экшена, каждый раз, как ф-цию.
 
 //    QJsonObject tempObj;
-
+QStringList list1;
     switch (comIndex) {
     case 0: // status
 
@@ -170,16 +170,16 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber, QO
             GUI_Write_To_Log(value, substr);
             return;
         }
-        if (substr.startsWith("setservos=")){
-               substr = substr.remove("setservos=");
-               QStringList list1 = substr.split(QLatin1Char(','));
-               for (int i=0; i<DOF; ++i)
-               {
-                   Servos[i] = list1.at(i).toUInt();
-               }//for
+//        if (substr.startsWith("setservos=")){
+//               substr = substr.remove("setservos=");
+//               QStringList list1 = substr.split(QLatin1Char(','));
+//               for (int i=0; i<DOF; ++i)
+//               {
+//                   Servos[i] = list1.at(i).toUInt();
+//               }//for
 
-               this->send_Data(NOT_LAST);
-           }
+//               this->send_Data(NOT_LAST);
+//           }
         else
         {
 // Неизвестный экшен не должен выполняться...
@@ -217,33 +217,6 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber, QO
                                 Q_ARG(QString, str),
                                 Q_ARG(qintptr, tcpSocketNumber));
 
-//        jsnStore->setJsnHeadStatus(headStatus);
-
-
-//        jsnStore->setActionData(theObj);
-
-//        mainjsnObj = jsnStore->returnJsnActionReset();
-//        returnActionLaunch(mainjsnObj); // Отправляем быстрый ответ
-        //str = "I'm in reset";
-       // mainjsnObj = jsnStore->returnAllActions();
-//        str = jsnStore->jsnData;
-//        str = QJsonDocument(mainjsnObj).toJson(QJsonDocument::Indented);
-//        GUI_Write_To_Log(value, str);
-//        mainjsnObj = jsnStore->returnJsnActionReset();
-//        str = QJsonDocument(mainjsnObj).toJson(QJsonDocument::Indented);
-//        GUI_Write_To_Log(value, str);
-
-//        jsnStore->createActionList(); // формируем список, записываем данные в jsnData, делаем merge (jsnActionList, jsnHeadStatus)
-//        str = jsnStore->returnJsnData();
-//        GUI_Write_To_Log(value, str);
-
-//        emit Write_2_TcpClient_Signal (str, this->tcpSocketNumber);
-
-//        str = "Current ActionList is :";
-//        mainjsnObj = jsnStore->returnAllActions();
-//        // Берем значение  jsnActionList, весь ответ не нужен
-//        str += QJsonDocument(jsnStore->jsnActionList).toJson(QJsonDocument::Indented);
-//        GUI_Write_To_Log(value, str);
         break;
 
     case 2: // clamp
@@ -292,6 +265,20 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber, QO
         // А значит нужна ф-ция QJsonObject -> ordered_json
         // Можно попробовать QJsonObject -> QString -> oredered_json
 
+
+        break;
+    case 8: // "setservos="
+        mainjsnObj = jsnStore->returnJsnAcionSetservos();
+        returnActionLaunch(mainjsnObj, theSender);
+
+        substr = substr.remove("setservos=");
+        list1 = substr.split(QLatin1Char(','));
+        for (int i=0; i<DOF; ++i)
+        {
+            Servos[i] = list1.at(i).toUInt();
+        }//for
+
+        this->send_Data(LASTONE);
 
         break;
 
@@ -466,16 +453,16 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber, QO
 
     }
 
-    if (substr.startsWith("setservos=")){
-           substr = substr.remove("setservos=");
-           QStringList list1 = substr.split(QLatin1Char(','));
-           for (int i=0; i<DOF; ++i)
-           {
-               Servos[i] = list1.at(i).toUInt();
-           }//for
+//    if (substr.startsWith("setservos=")){
+//           substr = substr.remove("setservos=");
+//           QStringList list1 = substr.split(QLatin1Char(','));
+//           for (int i=0; i<DOF; ++i)
+//           {
+//               Servos[i] = list1.at(i).toUInt();
+//           }//for
 
-           this->send_Data(LASTONE); //NOT_LAST
-       }
+//           this->send_Data(LASTONE); //NOT_LAST
+//       }
 
     // Запрашиваем список экшенов
 //    if (substr == "getactions") {

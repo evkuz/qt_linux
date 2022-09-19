@@ -1051,8 +1051,12 @@ int MainProcess::getIndexCommand(QString myCommand, QList<QString> theList)
     message = myCommand;
     int value = 0x3355;
 
+
+
     while (!matched and i< theList.size()){
-        if(message == theList.at(i)) {
+//        if(message == theList.at(i)) {
+// Делаем так из-за команды "setservos=" т.к. значения servos всегда разные
+          if (message.startsWith(theList.at(i))){
             matched = true;
 //            qDebug() << value << "Index is " << i;
         }
