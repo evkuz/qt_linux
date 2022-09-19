@@ -120,6 +120,10 @@ public:
      QJsonArray  jsnArray;       // list for action_list
      QJsonArray  jsnObjArray;    // array of objects
 
+     //++++++++++++++++++++ NEW Actions
+     QJsonObject jsnActionForMovingNEW; // mobman "formoving"
+
+
 
      QList<QJsonObject> actionListp;
 
@@ -142,6 +146,7 @@ public:
 
     void init_json();
     void init_actions();
+    void init_actions_new();
     void resetAllActions();
     QString merge_json(QJsonObject src, QJsonObject dst);
 
@@ -166,7 +171,8 @@ public:
     QJsonObject& returnJsnActionDetach();
     QJsonObject& returnJsnActionAttach();
 
-    QJsonObject returnAllActions();
+    QString returnAllActions();
+
 
     bool isAnyActionRunning; // флаг, что выополняется экшен
     void setActionDone(QJsonObject &theObj);  //Меняем rc of action upon device moving
@@ -176,10 +182,11 @@ public:
     bool eraseArray(QJsonArray &theArray); // Очистка массива
     void setHeadStatusFail(); // serial port problem
     void setActionStart2NoDetection();
-    void createActionList(); // Подготовить список активных (выполняемых в данный момент) экшенов
+    QString createActionList(); // Подготовить список активных (выполняемых в данный момент) экшенов
     void SetJsnActionCollapse(QJsonObject &theObj);
     void SetJsnActionStandUP(QJsonObject &theObj);
     void setActionData(QJsonObject &theObj); // Меняем данные экшенов на данные "снаружи", целевой экшен определяем по name
+
 
 
     // Структура хранит данные для json-ответа.
@@ -232,6 +239,7 @@ private:
     ordered_json jsnGetServicesAnswer; // Ответ на команду "/service?name=getservices"
     ordered_json jsnGetActionsAnswer; // Ответ на команду "/service?name=getactions"
     ordered_json jsnList; // JSON-объект Хранит JSON-список
+    ordered_json ordjsnHeadStatus;  // Шапка в ответе в формате nlohmann
 
 //    ordered_json jsnInfo;
     // List of actions
@@ -241,6 +249,13 @@ private:
     ordered_json jsnOB1;  // Объект для шапки, "заголовок"
     ordered_json jsnOB2;  // Объект для списка
     ordered_json jsnOB3;  // Объект результирующий.
+
+    ordered_json& QtJson_2_NlohmannJson(QJsonObject theObj);     //convert single QJsonObject action tosingle  ordered_json object
+    ordered_json& QtJson_2_NlohmannJson_Head(QJsonObject theObj);// convert header of each answer
+    ordered_json& getAllActionsOrderedJson(QJsonObject theObj);
+    ordered_json actStatuses; // Хранит статусы экшена. ключ — имя статуса, значение — описание данного статуса.
+    ordered_json actGetStatuses; // ТО же для команды "get_box", есть особые статусы
+
 
     // Порядок элементов должен совпадать с action_lst
     //QList<QJsonObject> actionList = {&jsnActionClamp, &jsnActionStart};

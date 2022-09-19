@@ -141,10 +141,10 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber, QO
     case 0: // status
 
         // Нужно добавлять активный экшен, либо пустой список
-        jsnStore->createActionList(); // формируем список, записываем данные в jsnData, делаем merge (jsnActionList, jsnHeadStatus)
+        str = jsnStore->createActionList(); // формируем список, записываем данные в jsnData, делаем merge (jsnActionList, jsnHeadStatus)
 
         //str += QJsonDocument(jsnStore->jsnActionList).toJson(QJsonDocument::Indented);
-        str = jsnStore->returnJsnData();
+        //str = jsnStore->returnJsnData();
         GUI_Write_To_Log(value, str);
         //        str = jsnStore->returnJsnData();
         //        str = "{\n\t\"status\": \"testing\"\t\n}";
@@ -277,8 +277,8 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber, QO
 
     case 6: //getactions
         jsnStore->isAnyActionRunning = false;
-        tempObj = jsnStore->returnAllActions();
-        str = jsnStore->jsnData;
+        //tempObj = jsnStore->returnAllActions();
+        str = jsnStore->returnAllActions(); //jsnStore->jsnData;
         QMetaObject::invokeMethod(this->ptrTcpClient, "Data_2_TcpClient_Slot",
                                   Qt::QueuedConnection,
                                   Q_ARG(QString, str),
@@ -287,6 +287,11 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber, QO
         str += str.insert(0, "Total action_list : \n");
 
         GUI_Write_To_Log(value, str);
+
+        //Преобразовать каждый элемент QJsonArray  jsnObjArray в ordered_json
+        // А значит нужна ф-ция QJsonObject -> ordered_json
+        // Можно попробовать QJsonObject -> QString -> oredered_json
+
 
         break;
 
