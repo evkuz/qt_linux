@@ -170,22 +170,9 @@ QStringList list1;
             GUI_Write_To_Log(value, substr);
             return;
         }
-//        if (substr.startsWith("setservos=")){
-//               substr = substr.remove("setservos=");
-//               QStringList list1 = substr.split(QLatin1Char(','));
-//               for (int i=0; i<DOF; ++i)
-//               {
-//                   Servos[i] = list1.at(i).toUInt();
-//               }//for
-
-//               this->send_Data(NOT_LAST);
-//           }
         else
         {
 // Неизвестный экшен не должен выполняться...
-//        mainjsnObj = jsnStore->returnJsnActionsUnKnown();
-//        mainjsnObj["name"] = message;
-//        str = "There is wrong action command : ";
           tempObj = jsnStore->returnJsnActionsUnKnown();
           str = QJsonDocument(tempObj).toJson(QJsonDocument::Indented);
           GUI_Write_To_Log(value, str);

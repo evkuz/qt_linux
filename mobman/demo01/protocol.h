@@ -10,6 +10,8 @@
                                    "isAttached?"};
 //                                       17
 
+ // setservos=45,90,95,107
+
  /*
   *  Data races sources   *  MainProcess::Data_From_TcpClient_Slot()
   *
@@ -17,7 +19,12 @@
   *  Это объект QSocketThread
   *
   *
-  *
+  *     QJsonObject json = doc.object();
+        foreach(const QString& key, json.keys()) {
+        QJsonValue value = json.value(key);
+        qDebug() << "Key = " << key << ", Value = " << value.toString();
+    }
+
   *
   *
   *
@@ -109,6 +116,20 @@
             };
 
             jsnStore->setJsnHeadStatus(headStatus);
+
+        N1=захват
+    distance by CV, mm	Servos [N1, N2, N3, N4]
+1	156	45,90,82,117
+2	147	45,90,78,119
+3	169	45,90,87,112
+4	187	45,90,90,109
+5	196	45,90,100,102
+6	204	45,90,107,98
+7	214	45,90,114,93
+8	225	45,90,125,86
+9	239	45,90,132,83
+10	249	45,90,145,72
+
 
 
 */
