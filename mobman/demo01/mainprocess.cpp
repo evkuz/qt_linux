@@ -1492,7 +1492,7 @@ void MainProcess::CV_NEW_onReadyRead_Slot()
 
     }
 
-    cvdistance = 232.24; // Заглушка для тестов
+//    cvdistance = 232.24; // Заглушка для тестов
 
     // Переводим double в int и округляем до ближайшего десятка
     int cvd = round(cvdistance);
@@ -1600,36 +1600,155 @@ void MainProcess::CV_NEW_onReadyRead_Slot()
 //    qDebug() << "$$$$$$$$$$$$$$ CV_NEW_onReadyRead_Slot ptrSender " << this->ptrTcpClient;
 //    qDebug() << "$$$$$$$$$$$$$$ CV_NEW_onReadyRead_Slot newPtrSender " << this->newPtrTcpClient;
 
-    this->GetBox(CVDistance);
+   // this->GetBox(CVDistance);
+    this->GetBox(cvdistance);
+
 
 } // CV_NEW_onReadyRead_Slot
 //+++++++++++++++++++++++++++++++++++++++++
 // catch the cube
-void MainProcess::GetBox(unsigned int distance)
+void MainProcess::GetBox(double distance)
 {
     QString str;
     int value = 0xA9B9;
-    unsigned char *arrPtr = mob_parking_position;
+    unsigned char *arrPtr = mob_3_final_position;
+    unsigned char finPosition[4] = {FULL_OPENED,90,0,0};
+    double maxVal[2] = {0,0};
+    double minVal[2] = {0,0};
+    double N3_Delta, N4_Delta; // absolute difference among max and minimum values for servo 3,4
+    int S3, S4;
+    double distance_delta; // Расстояние в мм между соседними точками массива набора, точка - значение distance
+    double distance_delta_max; // Расстояние между точкой превышения и distance
+    double distance_delta_min; // Расстояние между точкой "недолёта" и distance
+    double delta;
+    double N3;
+    double N4;
 
 // Проверяем подключены ли приводы.
 
-//    str = "I'm in GetBox !!! Current distance is ";
-//    str += QString::number(distance);
+    str = "I'm in GetBox !!! Current distance is ";
+    str += QString::number(distance);
     //GUI_Write_To_Log(value, str);
     // Пишем в лог Serial порта, чтобы не сливалось со статусами.
-//    Robot->Write_To_Log(value,str);
+    Robot->Write_To_Log(value,str);
 
 
 //    str = "Inside GetBox the Current active command is ";
 //    str += Robot->active_command;
 //    GUI_Write_To_Log(value, str);
 
-// 1st - "unlock"
-    Servos[0]=0;
-    this->send_Data(NOT_LAST); //NOT_LAST LASTONE
+// 1st - "unlock" to be able to get box
+//    Servos[0]=0;
+//    this->send_Data(NOT_LAST); //NOT_LAST LASTONE
+
+
+    //this->CVDistance ;
+
+    // Разницу в дистанции конвертируем в разницу углов серво
+    for(int i=0; i<ROWS; i++){
+
+        if(mob_3_position[i][0] == round(distance)){
+            finPosition[2] = mob_3_position[i][1];
+            finPosition[3] = mob_3_position[i][2];
+            str = "Position matched the distance !!!";
+            Robot->Write_To_Log(value, str);
+            break;
+        }
+
+        if(round(distance) < mob_3_position[i][0])
+        {
+            if (i==0) {
+                str = "It's to close !!! Move back  little";
+
+                Robot->Write_To_Log(value, str);
+                break;
+            }
+           ;
+        } // идем дальше, ничео не делаем.
+
+        // Нашли в массиве mob_3_position соседние значения, между которыми находится фактическая  дистанция
+
+        if(mob_3_position[i][0] > distance) // Останавливаем итерацию, начинаем обработку.
+        {
+
+
+            maxVal[0] =  mob_3_position[i][1]; // servo 3 major value
+            maxVal[1] =  mob_3_position[i][2]; // servo 4 major value
+
+            minVal[0] =  mob_3_position[i-1][1]; // servo 3 minor value
+            minVal[1] =  mob_3_position[i-1][2]; // servo 4 minor value
+
+            // count the delta of servos 3,4  between max and previous
+            N3_Delta = maxVal[0] - minVal[0];
+            //Тут вычитаем наоборот, т.к. в 4 приводе идет уменьшение угла с увеличением дистанции
+            N4_Delta = minVal[1] - maxVal[1] ;
+
+            str = "N3 absolute delta <N3_Delta> is "; str += QString::number(N3_Delta); str += "; ";
+            str += "N4 absolute delta <N4_Delta> is "; str += QString::number(N4_Delta);
+            Robot->Write_To_Log(value, str);
+
+            distance_delta = mob_3_position[i][0] - mob_3_position[i-1][0];
+            distance_delta_max = mob_3_position[i][0] - distance;
+            distance_delta_min = distance - mob_3_position[i-1][0];
+            str = "Distance delta <distance_delta> is "; str += QString::number(distance_delta);
+            Robot->Write_To_Log(value, str);
+
+//         __________.minVal______________________________.distance____________.maxVal
+
+            // пляшем от точки "недолета", к её занчениям приводов добавляем, чтобы достать до предмета (в точку distance).
+            delta = distance_delta_min/distance_delta;
+            str = "Relation of distance delta_min to delta <delta> is "; str += QString::number(delta);
+            Robot->Write_To_Log(value, str);
+
+            N3 = N3_Delta*delta;
+            N4 = N4_Delta*delta;
+            str = "N3 servo delta <N3> is "; str += QString::number(N3); str += "; ";
+            str += "N4 servo delta <N4> is "; str += QString::number(N4);
+            Robot->Write_To_Log(value, str);
+
+
+            // Servo 3,4 values counted from "previous" position
+            N3 = mob_3_position[i-1][1] + N3_Delta*delta;
+            //Тут вычитаем, т.к. в 4 приводе идет уменьшение угла с увеличением дистанции
+            N4 = mob_3_position[i-1][2] - N4_Delta*delta;
+            str = "from <previous>  Servo 3 <N3> is "; str += QString::number(N3);  str += "; ";
+            str += "from <previous>  Servo 4 <N4 >is "; str += QString::number(N4);
+            //GUI_Write_To_Log(value, str);
+            Robot->Write_To_Log(value, str);
+
+
+            S3 = round(N3);
+            S4 = round(N4);
+            str = "from <previous>  Servo 3 as integer is "; str += QString::number(S3);  str += "; ";
+            str += "from <previous>  Servo 4 as integer is "; str += QString::number(S4);
+            Robot->Write_To_Log(value, str);
+
+            // Convert to unsigned char
+//            unsigned char* bytes = reinterpret_cast<unsigned char*>(&S3);
+//            *(mob_3_final_position +2)  = *bytes;
+            finPosition[2] = S3;
+//            bytes = reinterpret_cast<unsigned char*>(&S4);
+//            *(mob_3_final_position +3) = *bytes;
+            finPosition[3] = S4;
+            str = "Servo 3 as unsigned char is "; str += QString::number(finPosition[2]);  str += "; ";
+            str += "Servo 4 as as unsigned char is "; str += QString::number(finPosition[3]);
+            Robot->Write_To_Log(value, str);
+
+            break;
+
+        }
+
+
+    } //for(int i=0; i<ROWS; i++)
+
+
+
+
+
 
 
     // Выбираем массив углов через switch, потом попробуем через словарь, т.е. ключ - значение, где значением будет массив
+ /*
     switch (distance)
     {
    // unsigned char ptr;
@@ -1664,10 +1783,10 @@ void MainProcess::GetBox(unsigned int distance)
       break;
 
     } //switch (distance)
-
+*/
     //+++++++++++++++++++++++ Опустить хват для взятия кубика
-     memcpy(Servos, arrPtr, DOF);
-     this->send_Data(NOT_LAST);  // Уже не LASTONE
+//     memcpy(Servos, finPosition, DOF); //arrPtr
+//     this->send_Data(LASTONE);  // Уже не  NOT_LAST
 /*
  Это мы только опустили захват в нужную точку.
  Далее нужно следующее :
@@ -1685,13 +1804,22 @@ void MainProcess::GetBox(unsigned int distance)
 //     quint8 FULL_OPENED, FULL_CLOSED;
 //     FULL_CLOSED = 90;
 //     FULL_OPENED = 35;
-     Servos[0]=FULL_CLOSED;
-     this->send_Data(LASTONE);  // Уже не LASTONE NOT_LAST
+//     Servos[0]=FULL_CLOSED;
+//     this->send_Data(LASTONE);  // Уже не LASTONE NOT_LAST
 
 
      //++++++++++++++++++++++ в позицию formoving, теперь последняя
-//     memcpy(Servos, mob_moving_position, DOF);
-//     this->send_Data(LASTONE);
+//    Servos[0]=FULL_OPENED;
+//    this->send_Data(NOT_LAST); //NOT_LAST LASTONE
+
+
+     memcpy(Servos, finPosition, DOF);
+     this->send_Data(NOT_LAST); //not last
+
+     Servos[0]=FULL_CLOSED;
+     this->send_Data(LASTONE); //NOT_LAST LASTONE
+
+
 
 //    str = "!!!!!!!!!!!!!!!! The command Action \"";
 //    str += Robot->getbox_Action.name; str += "\"";
@@ -1734,7 +1862,7 @@ void MainProcess::update_Servos_from_position(unsigned char *pos)
 QString MainProcess::pointer_to_qstring(void *ptr)
 {
     char temp[16];
-    sprintf(temp, "%08p", ptr);
+    sprintf(temp, "%8p", ptr);
     return QString(static_cast<char *>(temp));
 }
 //++++++++++++++++++++++++++++++++++++++++++++++++++++

@@ -224,7 +224,8 @@ public slots:
     void CV_onReadyRead_Slot();    // Слот обработка сигнала readyRead()
     void CV_onDisconnected();      // Слот обработки сигнала
     void CV_NEW_onReadyRead_Slot();    // Слот обработка сигнала readyRead() включая парсинг JSON
-    void GetBox(unsigned int distance); // Запускаем захват кубика по значению расстояния до него от камеры.
+//    void GetBox(unsigned int distance); // Запускаем захват кубика по значению расстояния до него от камеры.
+    void GetBox(double distance); // Запускаем захват кубика по значению расстояния до него от камеры.
 
 
 void data_from_CVDevice_Slot(QString); // class CVDevice - слот обработки сигнала data_from_CVDevice_Signal(QString);
