@@ -19,8 +19,8 @@ const  byte pinBm1 = 18;
 volatile long posAm1 = 0;
 volatile long posBm1 = 0;
 
-const  byte pinAm2 = 2;  //(PE4 for ATMega2560, Digital 2-pin)
-const  byte pinBm2 = 3;  //(PE5 for ATMega2560, Digital 3-pin)
+const  byte pinAm2 = 20;  //(PE4 for ATMega2560, Digital 2-pin)
+const  byte pinBm2 = 21;  //(PE5 for ATMega2560, Digital 3-pin)
 volatile long posAm2 = 0;
 volatile long posBm2 = 0;
 
@@ -62,13 +62,13 @@ std_msgs::String str_msg;
 ros::Publisher chatter("encoders", &str_msg);
 
 
-void messageCb(std_msgs::String& toggle_msg){
+void messageCb(std_msgs::String& mobplatCommand){
   
   digitalWrite(LED_BUILTIN, HIGH-digitalRead(LED_BUILTIN));   // blink the led
-  currCommand = toggle_msg.data;
+  currCommand = mobplatCommand.data;
 }
 
-ros::Subscriber<std_msgs::String> sub("toggle_led", &messageCb );
+ros::Subscriber<std_msgs::String> sub("mobplatform", &messageCb );
 
 
 
