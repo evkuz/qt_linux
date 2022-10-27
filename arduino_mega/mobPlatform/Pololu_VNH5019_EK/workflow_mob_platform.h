@@ -77,8 +77,11 @@
  * publisher "toggle_led"
  *
  * Задача :
- * Поменять топик "toggle_led" на "movingON"
+ * Поменять топик "toggle_led" на "movingON". [Сделано]
+ * Поменял subscriber "toggle_led" на "mobplatform"
+ * ...
  *
+ * Поменял publisher "chatter" на "encoders"
  * //++++++++++++++++++++++++++++++++
  * 19.10.2022
  * Запускаем связку ROS<--->Arduino.
@@ -100,19 +103,19 @@
  * rosrun rosserial_python serial_node.py /dev/ttyACM0
  *
  * В новом терминале   ЗАПУСК платформы
- * rostopic pub "toggle_led" std_msgs/String "start" --once
+ * rostopic pub "mobplatform" std_msgs/String "start" --once
  * 
  * В новом терминале СТОП платформы
- * rostopic pub "toggle_led" std_msgs/String "stop" --once
+ * rostopic pub "mobplatform" std_msgs/String "stop" --once
  * 
  * Проверить работу топика можем так
  * в новом терминале
- * rostopic echo /toggle_led
+ * rostopic echo /encoders
  *
  * Задача :
  * Считываем данные, посылаемые из arduino в ROS [почти]
- * Смотрим данные топика chatter
- * rostopic echo /chatter 
+ * Смотрим данные топика encoders
+ * rostopic echo /encoders
 ---
 data: "posAm1 91155"
 ---
