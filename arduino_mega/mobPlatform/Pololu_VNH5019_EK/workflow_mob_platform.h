@@ -23,6 +23,62 @@
  * posBm2 29392
  * Вообще, мотор М2 крутится дольше, чем М1. Поэтому и число posBm2 больше, чем posBm1.
  *
+ *
+ * //20.10.2022
+ * Нужный функционал получен.
+ * Подключаем ардуино либу #include "DualVNH5019MotorShield.h"
+ * Создаем объект класса DualVNH5019MotorShield :
+ * DualVNH5019MotorShield md;
+ *
+ * Создаем нодХолдер - объект класса  ros::NodeHandle:
+ * ros::NodeHandle  nh;
+ *
+ * Создаем "публикователь" сообщений типа String, который в ROS будет виден как encoders:
+ * std_msgs::String str_msg;
+ * ros::Publisher chatter("encoders", &str_msg);
+ *
+ * Создаем "подписчика" на сообщения типа std_msgs::String топика "tofggle_led" из ROS :
+ * ros::Subscriber<std_msgs::String> sub("toggle_led", &messageCb );
+ *
+ * Топик "toggle_led" - посылаем строковые команды(из ROS).
+ * "toggle_led" - задается в ROS
+ * Внутри ардуино мы подписываемся на этот топик
+ *
+ *
+ * ros::Subscriber<std_msgs::String> sub("toggle_led", &messageCb );
+ * ...
+ * setup {
+ * ...
+ * nh.subscribe(sub);
+ * ...
+ * }
+ * Данные с этого топика обрабатывает ф-ция messageCb.
+ * Внутри ф-ции messageCb считываем данные из топика :
+ *
+ * currCommand = toggle_msg.data;
+ *
+ * Внутри loop парсим команду и вызываем соответствующие ф-ции
+ * if (currCommand == "start") {
+ *     forward();
+ * }
+ *
+ * ....
+ *
+ * Для отправки данных из ардуино в serial port и далее в ROS создаем через нодХолдер
+ * nh.advertise(chatter);
+ * Для отправки в сериал порт кладем данные в переменную data и публикуем:
+ *
+ * str_msg.data = char_BM1_array;
+ * chatter.publish( &str_msg );
+ *
+ *
+ *
+ * Также внути ардуино создаем
+ * publisher "toggle_led"
+ *
+ * Задача :
+ * Поменять топик "toggle_led" на "movingON"
+ *
  * //++++++++++++++++++++++++++++++++
  * 19.10.2022
  * Запускаем связку ROS<--->Arduino.

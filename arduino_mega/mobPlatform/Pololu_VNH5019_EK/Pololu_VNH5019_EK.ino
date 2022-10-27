@@ -59,7 +59,7 @@ int str_len;
 
 ros::NodeHandle  nh;
 std_msgs::String str_msg;
-ros::Publisher chatter("chatter", &str_msg);
+ros::Publisher chatter("encoders", &str_msg);
 
 
 void messageCb(std_msgs::String& toggle_msg){
