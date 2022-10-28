@@ -37,6 +37,14 @@
  * И начинаем полноценную одометрию.
  * По размеру колеса и количеству его боротов рассчитываем расстояние пройденное роботом.
  *
+nvidia@tegra-ubuntu:~$ rosrun rosserial_python serial_node.py /dev/ttyACM0
+[INFO] [1666884337.376983]: ROS Serial Python Node
+[INFO] [1666884337.417194]: Connecting to /dev/ttyACM0 at 57600 baud
+[INFO] [1666884339.532458]: Requesting topics...
+[INFO] [1666884339.572045]: Note: publish buffer size is 512 bytes
+[INFO] [1666884339.578394]: Setup publisher on encoders [std_msgs/String]
+[INFO] [1666884339.598692]: Note: subscribe buffer size is 512 bytes
+[INFO] [1666884339.604493]: Setup subscriber on mobplatform [std_msgs/String]
 
  * //+++++++++++++++++++++++++++++++++++++
  * 20.10.2022
