@@ -132,7 +132,10 @@ void loop()
       stop();
   }
 
-  
+  if (currCommand == "moveit") {
+      move_fwd(1);
+  }
+
 
 
 
