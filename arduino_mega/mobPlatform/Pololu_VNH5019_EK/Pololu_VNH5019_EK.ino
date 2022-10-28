@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <stdlib.h>
 #include "DualVNH5019MotorShield.h"
+//#include "mobPlatform.h"
 
 #include <ros.h>
 #include <std_msgs/String.h>
@@ -13,6 +14,8 @@
 //Returns current reading from motor 2 in milliamps.
 
 DualVNH5019MotorShield md;
+//mobPlatform telega;
+
 
 const  byte pinAm1 = 19;
 const  byte pinBm1 = 18;
@@ -87,6 +90,31 @@ void stopIfFault()
     while(1);
   }
 }
+//+++++++++++++++++++++++++++++++
+    int diameter; // 90mm
+    int m1A_count, m1B_Count, m2A_count, m2B_count;
+    double m1_count, m2_count;
+    int m1A_k, m1B_k, m2A_k, m2B_k;
+    int  smooth_speed;
+
+//+++++++++++++++++++++++++++++++
+//void mobPlatformInit()
+//  {
+//    diameter = 90; // 90mm
+//    
+//    // set the value of rotation counts
+//    m1A_count = 0; //
+//    m1A_k = 486;
+//    m1B_Count = 0;
+//    m1B_k = 487;
+//    m2A_count = 0;
+//    m2A_k = 473;
+//    m2B_count = 0;
+//    m2B_k = 473;
+//
+//    smooth_speed = 40;
+//    
+//    }
 
 void setup()
 {
@@ -111,6 +139,7 @@ void setup()
   nh.initNode();
   nh.subscribe(sub);
   nh.advertise(chatter);
+  mobPlatformInit();
 
 
   
@@ -134,6 +163,11 @@ void loop()
 
   if (currCommand == "moveit") {
       move_fwd(1);
+  }
+
+// Reset to 0 values of ALL encoders
+  if (currCommand == "reset") {
+      reset_All();
   }
 
 

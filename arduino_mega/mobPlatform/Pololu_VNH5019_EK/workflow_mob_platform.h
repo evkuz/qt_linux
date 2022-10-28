@@ -24,6 +24,15 @@
  * Вообще, мотор М2 крутится дольше, чем М1. Поэтому и число posBm2 больше, чем posBm1.
  *
  *
+   //+++++++++++++++++++++++++++++++++++++
+28.10.2022
+
+cd /home/nvidia/iqr_lit
+rsync -ar arduino_mega/mobPlatform/Pololu_VNH5019_EK /home/nvidia/Arduino/
+sed -i '/^---/d' encoders.txt
+rsync -ar /home/nvidia/Arduino/Pololu_VNH5019_EK .
+ Провел калибровку значений энкодеров для 1 полного оборота колеса.
+В процессе отладки, т.к. сел единственный рабочий аккумулятор.
  * //+++++++++++++++++++++++++++++++++++++
  * 27.10.2022
  * Поменял subscriber "toggle_led" на "mobplatform"
