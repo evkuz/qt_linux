@@ -7,9 +7,9 @@ void mobPlatformInit()
     
     // set the value of rotation counts
     m1A_count = 0; //
-    m1A_k = 486;
+    m1A_k = 473; //486
     m1B_Count = 0;
-    m1B_k = 487;
+    m1B_k = 473; //487
     m2A_count = 0;
     m2A_k = 473;
     m2B_count = 0;
@@ -52,27 +52,27 @@ void mobPlatformInit()
 
           if ((m1_count >1.00) || (m2_count > 1.00))
           {
-//            str = "Reached 1.00 value";
-//            str_len = str.length() +1;
-//            str = "Finished with i value ";
-//            str = str.concat(i);
-//            str_len = str.length() + 1;
-//            char int_array[str_len];
-//            str.toCharArray(int_array, str_len);
-//            str_msg.data = int_array;
-//            chatter.publish( &str_msg );
+            str = "Reached 1.00 value on one of 2 wheels with i value ";
+            //str_len = str.length() +1;
+            //str += "Finished with i value ";
+            str.concat(i);
+            str_len = str.length() + 1;
+            char int_array[str_len];
+            str.toCharArray(int_array, str_len);
+            str_msg.data = int_array;
+            chatter.publish( &str_msg );
             
             break;
             }
         } //for
 
-     double dval = 0.3764;
-     str = String(dval,4);
-     str_len = str.length() +1;
-     char dbl_array[str_len];
-     str.toCharArray(dbl_array, str_len);
-     str_msg.data = dbl_array;
-     chatter.publish( &str_msg );
+//     double dval = 0.3764;
+//     str = String(dval,4);
+//     str_len = str.length() +1;
+//     char dbl_array[str_len];
+//     str.toCharArray(dbl_array, str_len);
+//     str_msg.data = dbl_array;
+//     chatter.publish( &str_msg );
      
      currCommand = "stop";
 
