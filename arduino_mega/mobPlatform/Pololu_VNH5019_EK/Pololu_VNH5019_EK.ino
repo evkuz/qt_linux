@@ -165,6 +165,11 @@ void loop()
       move_fwd(1);
   }
 
+  if (currCommand == "moveback") {
+      move_fwd(-1);
+  }
+
+
 // Reset to 0 values of ALL encoders
   if (currCommand == "reset") {
       reset_All();

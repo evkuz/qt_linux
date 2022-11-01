@@ -19,13 +19,14 @@ void mobPlatformInit()
     
     }
 //+++++++++++++++++++++++++=
-
-  void move_fwd (byte rot)
+//fwd = 1 вперед
+//fwd = -1 назад
+  void move_fwd (byte fwd)
   {
       for (int i=0; i<350; i++)
       {
-          md.setM1Speed(smooth_speed);
-          md.setM2Speed(smooth_speed);
+          md.setM1Speed(fwd*smooth_speed);
+          md.setM2Speed(fwd*smooth_speed);
           
           delay(5);
           
