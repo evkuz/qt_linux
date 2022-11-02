@@ -21,7 +21,7 @@ void mobPlatformInit()
 //+++++++++++++++++++++++++=
 //fwd = 1 вперед
 //fwd = -1 назад
-  void move_fwd (byte fwd)
+  void move_fwd (int fwd)
   {
       for (int i=0; i<350; i++)
       {

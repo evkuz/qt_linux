@@ -91,11 +91,11 @@ void stopIfFault()
   }
 }
 //+++++++++++++++++++++++++++++++
-    int diameter; // 90mm
-    int m1A_count, m1B_Count, m2A_count, m2B_count;
-    double m1_count, m2_count;
-    int m1A_k, m1B_k, m2A_k, m2B_k;
-    int  smooth_speed;
+volatile int diameter; // 90mm
+volatile int m1A_count, m1B_Count, m2A_count, m2B_count;
+volatile double m1_count, m2_count;
+volatile int m1A_k, m1B_k, m2A_k, m2B_k;
+volatile int  smooth_speed;
 
 //+++++++++++++++++++++++++++++++
 //void mobPlatformInit()
