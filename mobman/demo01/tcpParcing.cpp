@@ -274,6 +274,7 @@ QStringList list1;
         returnActionLaunch(mainjsnObj, theSender);
 
         memcpy(Servos, mob_2_moving_position, DOF);
+        Servos[0] = 120;
         this->send_Data(LASTONE);
 
        break;
