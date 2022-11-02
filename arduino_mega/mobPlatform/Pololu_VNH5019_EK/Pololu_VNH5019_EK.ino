@@ -163,9 +163,9 @@ void loop()
       currCommand = "waiting";
   }
 
-  if (currCommand == "waiting") {
-      write2chatter("waiting");
-  }
+//  if (currCommand == "waiting") {
+//      write2chatter("waiting");
+//  }
 
 
 

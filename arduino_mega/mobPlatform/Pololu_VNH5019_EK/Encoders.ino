@@ -6,7 +6,7 @@ void Am1()
 //  if (micros() - lastTurn < pause) return;  // Если с момента последнего изменения состояния не прошло
 //  // достаточно времени - выходим из прерывания
   pinAm1Value = digitalRead(pinAm1);            // Получаем состояние пинов A и B
-  pinBm1Value = digitalRead(pinBm1);
+//  pinBm1Value = digitalRead(pinBm1);
 
 intM1counter++;
   if (pinAm1Value >0) {
@@ -23,7 +23,7 @@ void Bm1()
 {
     cli();    // Запрещаем обработку прерываний, чтобы не отвлекаться
 //  if (micros() - lastTurn < pause) return;
-  pinAm1Value = digitalRead(pinAm1);
+//  pinAm1Value = digitalRead(pinAm1);
   pinBm1Value = digitalRead(pinBm1);
 
 
@@ -50,8 +50,8 @@ void Am2()
 //  if (micros() - lastTurn < pause) return;  // Если с момента последнего изменения состояния не прошло
 //  // достаточно времени - выходим из прерывания
 intM2counter++;
-  pinAm1Value = digitalRead(pinAm2);            // Получаем состояние пинов A и B
-  pinBm1Value = digitalRead(pinBm2);
+  pinAm2Value = digitalRead(pinAm2);            // Получаем состояние пинов A и B
+//  pinBm2Value = digitalRead(pinBm2);
 
   if (pinAm2Value >0) {
     posAm2++;
@@ -67,7 +67,7 @@ void Bm2()
     cli();    // Запрещаем обработку прерываний, чтобы не отвлекаться
     intM2Bcounter++;
 //  if (micros() - lastTurn < pause) return;
-  pinAm2Value = digitalRead(pinAm2);
+//  pinAm2Value = digitalRead(pinAm2);
   pinBm2Value = digitalRead(pinBm2);
 
   if (pinBm2Value >0) {
