@@ -58,6 +58,8 @@ byte ints[sBufSize]; // Данные, полученные по serial, - ном
 volatile int m1Speed = 100;
 volatile int m2Speed = 100;
 
+volatile bool resetDone = false;
+
 int str_len;
 
 ros::NodeHandle  nh;
@@ -136,6 +138,7 @@ void loop()
 {
   nh.spinOnce();
 
+//  checkReset();
   
 //  if (Serial.available()) {
 //    parse_command ();
@@ -154,12 +157,12 @@ void loop()
 
   if (currCommand == "moveit") {
       move_fwd(1);
-      write2chatter("Move forward");
+      write2chatter("Move forward finished");
   }
 
   if (currCommand == "moveback") {
       move_fwd(-1);
-      write2chatter("Move backward");
+      write2chatter("Move backward finished");
   }
 
 
@@ -170,7 +173,7 @@ void loop()
       currCommand = "waiting";
   }
 
-  if (currCommand == "getvalues"{
+  if (currCommand == "getvalues"){
       getValues();
       currCommand = "waiting";
 }
@@ -203,24 +206,6 @@ void parse_command ()
     strData.trim();
     Serial.println(strData);
     currCommand = strData;
-//    switch (strData) {
-//
-//        case "start":
-//
-//            forward();
-//        break;
-//
-//        case "stop":
-//            stop();
-//        break;
-//
-//    default:
-//        message = "Wrong data !!!";
-//        //strcpy(buf, message.c_str());
-//        Serial.print(message);
-//
-//
-//    }
 
 
 }
@@ -398,6 +383,23 @@ void write2chatter(String mystr)
   
   }
 //++++++++++++
+void checkReset()
+{
+  if(resetDone==true){
+    resetDone = false;
+    //reset_All();
+      posAm1 = 0;
+  posBm1 = 0;
+  posAm2 = 0;
+  posBm2 = 0;
+  m1_count = 0.0;
+  m2_count = 0.0;
+
+    
+    }
+}
+
+//+++++++++++++
 
 //for (int i = 0; i <= 400; i++)
 //{

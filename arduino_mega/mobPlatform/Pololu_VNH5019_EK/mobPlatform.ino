@@ -21,8 +21,13 @@ void mobPlatformInit()
 //+++++++++++++++++++++++++=
 //fwd = 1 вперед
 //fwd = -1 назад
-  void move_fwd (int fwd)
-  {
+void move_fwd (int fwd)
+{
+  posAm1 = 0;
+  posBm1 = 0;
+  posAm2 = 0;
+  posBm2 = 0;
+
       for (int i=0; i<350; i++)
       {
           md.setM1Speed(fwd*smooth_speed);
@@ -53,13 +58,6 @@ void mobPlatformInit()
 
           if ((m1_count >1.00) || (m2_count > 1.00))
           {
-            reset_All();
-            posAm1 = 0;
-            posBm1 = 0;
-            posAm2 = 0;
-            posBm2 = 0;
-  
-
             str = "Reached 1.00 value on one of 2 wheels with i value ";
             //str_len = str.length() +1;
             //str += "Finished with i value ";
@@ -80,7 +78,8 @@ void mobPlatformInit()
 //     str.toCharArray(dbl_array, str_len);
 //     str_msg.data = dbl_array;
 //     chatter.publish( &str_msg );
-     
+
+
      currCommand = "stop";
 
 
