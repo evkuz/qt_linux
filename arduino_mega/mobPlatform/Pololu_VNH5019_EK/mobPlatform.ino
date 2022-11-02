@@ -15,7 +15,7 @@ void mobPlatformInit()
     m2B_count = 0;
     m2B_k = 473;
 
-    smooth_speed = 70;
+    smooth_speed = 90;
     
     }
 //+++++++++++++++++++++++++=

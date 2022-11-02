@@ -137,4 +137,6 @@ void reset_All()
   posBm1 = 0;
   posAm2 = 0;
   posBm2 = 0;
+  m1_count = 0;
+  m2_count = 0;
   }

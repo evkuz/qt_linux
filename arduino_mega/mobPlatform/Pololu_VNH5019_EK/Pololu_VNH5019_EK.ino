@@ -173,6 +173,7 @@ void loop()
 // Reset to 0 values of ALL encoders
   if (currCommand == "reset") {
       reset_All();
+      write2chatter("reset done");
   }
 
 
@@ -339,6 +340,18 @@ void forward ()
   delay(2000);
 } //forward
 //++++++++++
+
+void write2chatter(String mystr)
+{
+  
+  str_len = mystr.length() +1;
+  char char_MY_array[str_len];
+  mystr.toCharArray(char_MY_array, str_len);
+  str_msg.data = char_MY_array;
+  chatter.publish( &str_msg );
+  
+  }
+//++++++++++++
 
 //for (int i = 0; i <= 400; i++)
 //{
