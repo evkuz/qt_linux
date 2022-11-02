@@ -19,17 +19,17 @@ DualVNH5019MotorShield md;
 
 const  byte pinAm1 = 19;
 const  byte pinBm1 = 18;
-volatile long posAm1 = 0;
-volatile long posBm1 = 0;
+volatile int posAm1 = 0;
+volatile int posBm1 = 0;
 
 const  byte pinAm2 = 20;  //(PE4 for ATMega2560, Digital 2-pin)
 const  byte pinBm2 = 21;  //(PE5 for ATMega2560, Digital 3-pin)
-volatile long posAm2 = 0;
-volatile long posBm2 = 0;
+volatile int posAm2 = 0;
+volatile int posBm2 = 0;
 
-volatile long intM1counter = 0;
-volatile long intM2counter = 0;
-volatile long intM2Bcounter = 0;
+volatile int intM1counter = 0;
+volatile int intM2counter = 0;
+volatile int intM2Bcounter = 0;
 
 String str="";
 volatile String currCommand = "";
@@ -65,10 +65,11 @@ std_msgs::String str_msg;
 ros::Publisher chatter("encoders", &str_msg);
 
 
+//========== data from Serial port
 void messageCb(std_msgs::String& mobplatCommand){
   
   digitalWrite(LED_BUILTIN, HIGH-digitalRead(LED_BUILTIN));   // blink the led
-  currCommand = mobplatCommand.data;
+  currCommand = mobplatCommand.data; // here we are getting currCommand from serial
 }
 
 ros::Subscriber<std_msgs::String> sub("mobplatform", &messageCb );
@@ -98,23 +99,6 @@ volatile int m1A_k, m1B_k, m2A_k, m2B_k;
 volatile int  smooth_speed;
 
 //+++++++++++++++++++++++++++++++
-//void mobPlatformInit()
-//  {
-//    diameter = 90; // 90mm
-//    
-//    // set the value of rotation counts
-//    m1A_count = 0; //
-//    m1A_k = 486;
-//    m1B_Count = 0;
-//    m1B_k = 487;
-//    m2A_count = 0;
-//    m2A_k = 473;
-//    m2B_count = 0;
-//    m2B_k = 473;
-//
-//    smooth_speed = 40;
-//    
-//    }
 
 void setup()
 {
@@ -163,10 +147,12 @@ void loop()
 
   if (currCommand == "moveit") {
       move_fwd(1);
+      write2chatter("Move forward");
   }
 
   if (currCommand == "moveback") {
       move_fwd(-1);
+      write2chatter("Move backward");
   }
 
 
@@ -174,8 +160,12 @@ void loop()
   if (currCommand == "reset") {
       reset_All();
       write2chatter("reset done");
+      currCommand = "waiting";
   }
 
+  if (currCommand == "waiting") {
+      write2chatter("waiting");
+  }
 
 
 
