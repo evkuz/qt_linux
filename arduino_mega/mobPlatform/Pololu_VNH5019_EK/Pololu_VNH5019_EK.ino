@@ -170,6 +170,12 @@ void loop()
       currCommand = "waiting";
   }
 
+  if (currCommand == "getvalues"{
+      getValues();
+      currCommand = "waiting";
+}
+
+
 //  if (currCommand == "waiting") {
 //      write2chatter("waiting");
 //  }
@@ -337,7 +343,50 @@ void forward (int fwd)
   delay(2000);
 } //forward
 //++++++++++
+void getValues()
+{
+    //+++++++++++++++++++
+    str = "posAm1 ";
+    str.concat(posAm1);
+        // Serial.println(str);
+    str_len = str.length() +1;
+    char char_AM1_array[str_len];
 
+    // Copy it over
+    str.toCharArray(char_AM1_array, str_len);
+    str_msg.data = char_AM1_array;
+    chatter.publish( &str_msg );
+
+    str = "posBm1 ";
+    str.concat(posBm1);
+    str_len = str.length() +1;
+    char char_BM1_array[str_len];
+    // Copy it over
+    str.toCharArray(char_BM1_array, str_len);
+    str_msg.data = char_BM1_array;
+    chatter.publish( &str_msg );
+    //+++++++++++++++++++++
+    str = "posAm2 ";
+    str.concat(posAm2);
+    str_len = str.length() +1;
+    char char_AM2_array[str_len];
+    // Copy it over
+    str.toCharArray(char_AM2_array, str_len);
+    str_msg.data = char_AM2_array;
+    chatter.publish( &str_msg );
+
+
+    str = "posBm2 ";
+    str.concat(posBm2);
+    str_len = str.length() +1;
+    char char_BM2_array[str_len];
+    // Copy it over
+    str.toCharArray(char_BM2_array, str_len);
+    str_msg.data = char_BM2_array;
+    chatter.publish( &str_msg );
+
+}
+//+++++++++++++++++++++++++++
 void write2chatter(String mystr)
 {
   
