@@ -19,25 +19,25 @@ DualVNH5019MotorShield md;
 
 const  byte pinAm1 = 19;
 const  byte pinBm1 = 18;
-volatile int posAm1 = 0;
-volatile int posBm1 = 0;
+volatile long posAm1 = 0;
+volatile long posBm1 = 0;
 
 const  byte pinAm2 = 20;  //(PE4 for ATMega2560, Digital 2-pin)
 const  byte pinBm2 = 21;  //(PE5 for ATMega2560, Digital 3-pin)
-volatile int posAm2 = 0;
-volatile int posBm2 = 0;
+volatile long posAm2 = 0;
+volatile long posBm2 = 0;
 
-volatile int intM1counter = 0;
-volatile int intM2counter = 0;
-volatile int intM2Bcounter = 0;
+volatile long intM1counter = 0;
+volatile long intM2counter = 0;
+volatile long intM2Bcounter = 0;
 
 String str="";
-volatile String currCommand = "";
+String currCommand = "";
 
 volatile long pause    = 50;  // Пауза для борьбы с дребезгом
 volatile long lastTurn = 0;   // Переменная для хранения времени последнего изменения
 
-volatile int count = 0;       // Счетчик оборотов
+volatile long count = 0;       // Счетчик оборотов
 int actualcount    = 0;       // Временная переменная определяющая изменение основного счетчика
 
 volatile int state = 0;       // Статус одного шага - от 0 до 4 в одну сторону, от 0 до -4 - в другую
@@ -70,7 +70,10 @@ void messageCb(std_msgs::String& mobplatCommand){
   
   digitalWrite(LED_BUILTIN, HIGH-digitalRead(LED_BUILTIN));   // blink the led
   currCommand = mobplatCommand.data; // here we are getting currCommand from serial
-}
+  str = "The NEXT command is ";
+  str.concat(currCommand);
+  write2chatter(str);
+}  
 
 ros::Subscriber<std_msgs::String> sub("mobplatform", &messageCb );
 
@@ -139,11 +142,15 @@ void loop()
 //  }
 //
   if (currCommand == "start") {
-      forward();
+      forward(1);
   }
   if (currCommand == "stop") {
       stop();
   }
+  if (currCommand == "rear") {
+      forward(-1);
+  }
+
 
   if (currCommand == "moveit") {
       move_fwd(1);
@@ -257,7 +264,7 @@ void stop()
 
 }
 //++++++++++++++++++++++++++
-void forward ()
+void forward (int fwd)
 {
 //+++++++++++++++++++
   str = "posAm1 ";
@@ -315,9 +322,9 @@ void forward ()
 
 
 
-  md.setM1Speed(m1Speed);
+  md.setM1Speed(fwd*m1Speed);
   stopIfFault();
-  md.setM2Speed(m2Speed);
+  md.setM2Speed(fwd*m2Speed);
   stopIfFault();
 
   delay(2000);

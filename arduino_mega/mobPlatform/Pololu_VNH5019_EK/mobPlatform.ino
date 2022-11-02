@@ -15,7 +15,7 @@ void mobPlatformInit()
     m2B_count = 0;
     m2B_k = 473;
 
-    smooth_speed = 90;
+    smooth_speed = 70;
     
     }
 //+++++++++++++++++++++++++=
@@ -53,6 +53,13 @@ void mobPlatformInit()
 
           if ((m1_count >1.00) || (m2_count > 1.00))
           {
+            reset_All();
+            posAm1 = 0;
+            posBm1 = 0;
+            posAm2 = 0;
+            posBm2 = 0;
+  
+
             str = "Reached 1.00 value on one of 2 wheels with i value ";
             //str_len = str.length() +1;
             //str += "Finished with i value ";
@@ -62,7 +69,6 @@ void mobPlatformInit()
             str.toCharArray(int_array, str_len);
             str_msg.data = int_array;
             chatter.publish( &str_msg );
-            
             break;
             }
         } //for
