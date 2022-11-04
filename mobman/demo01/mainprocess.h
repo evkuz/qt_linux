@@ -114,7 +114,7 @@ public:
 
 //#define
 // Актуально для разных размеров кубика
-#define FULL_CLOSED 80
+#define FULL_CLOSED 90
 #define FULL_OPENED 35
 
 
