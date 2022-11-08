@@ -13,7 +13,7 @@
 //unsigned int getM2CurrentMilliamps()
 //Returns current reading from motor 2 in milliamps.
 
-DualVNH5019MotorShield md;
+DualVNH5019MotorShield md; // Motor Driver
 //mobPlatform telega;
 
 
