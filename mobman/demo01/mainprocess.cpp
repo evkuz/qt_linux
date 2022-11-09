@@ -62,6 +62,7 @@ MainProcess::MainProcess(QObject *parent)
     GUI_Write_To_Log(value, str);
 
     qDebug() << "Started " << target_name;
+//    QSimpleServer server;
 
     GUI_Write_To_Log(value, "Going to Start QTcpServer");
 
