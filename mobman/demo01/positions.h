@@ -21,7 +21,7 @@ unsigned char after_put_position [6] = {0, 93, 90, 45, 135, 30};
 
 unsigned char mob_parking_position [4] = {70,90,90,160};//,45,45,49,222
 unsigned char mob_ready_position [4] = {35,90,135,165};
-unsigned char mob_moving_position [4] = {90,90,45,180}; // Для малого кубика 70-закрыто
+unsigned char mob_moving_position [4] = {80,90,57,180}; // Для малого кубика 70-закрыто
 
 
 //unsigned char mob_pos_10 [4] = {35,90,120,60};
