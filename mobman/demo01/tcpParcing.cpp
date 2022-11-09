@@ -272,9 +272,10 @@ QStringList list1;
     case 11: // "formoving"
         mainjsnObj = jsnStore->returnJsnActionForMoving();
         returnActionLaunch(mainjsnObj, theSender);
+        // Хват полностью сжат
+        memcpy(Servos, mob_2_moving_position, DOF); // Для малого кубика
 
-        memcpy(Servos, mob_2_moving_position, DOF);
-        Servos[0] = 120;
+        //Servos[0] = 120;
         this->send_Data(LASTONE);
 
        break;
@@ -296,7 +297,7 @@ QStringList list1;
 
 
         // в позицию "formoving", хват постепенно закрывается
-        memcpy(Servos, mob_moving_position, DOF);
+        memcpy(Servos, mob_2_moving_position, DOF);
         this->send_Data(LASTONE);
 
        break;
@@ -305,6 +306,8 @@ QStringList list1;
     case 13: //lock
         mainjsnObj = jsnStore->returnJsnActionLock();
         returnActionLaunch(mainjsnObj, theSender);
+        //GUI_Write_To_Log(value, "BEFORE lock ");
+//        Servos_To_Log("BEFORE lock ");
         Servos[0]=FULL_CLOSED;
         this->send_Data(LASTONE); //NOT_LAST LASTONE
 

@@ -150,8 +150,9 @@ MainProcess::MainProcess(QObject *parent)
 // qDebug() << str;
 
     str = "On start ";
-    Servos_To_Log(str);
-    //
+    Servos_To_Log(str); // Тут значения из массива Servos
+    // А вот тут еще надо считывать из Arduino и выводить в лог.
+//    GUI_Write_To_Log(value, "Listen for mobman commands...");
  QThread::sleep(1);
 
 
@@ -190,6 +191,7 @@ void MainProcess::GUI_Write_To_Log (int value, QString log_message)
 
 void MainProcess::Servos_To_Log(QString message)
 {
+//    GUI_Write_To_Log(0000, "I'm in Servos_To_Log");
  QString   str = message;
     str += "Current servo values are : ";
 

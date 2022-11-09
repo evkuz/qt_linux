@@ -27,7 +27,6 @@ public:
 #define robot_buffer_SIZE 32
 #define Log_File_Name       "./serial.log"
 #define SOURCE_POINTS_FILE  "../source_points.xls"
-#define DOF 4     // mobman
 //#define szData 6 //Размер посылки в байтах
     int szData = 6;
     unsigned char outputData [6];

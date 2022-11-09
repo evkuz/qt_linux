@@ -123,10 +123,11 @@ public:
 
 //#define
 // Актуально для разных размеров кубика
-#define FULL_CLOSED 95 //75
+#define FULL_CLOSED 87 //75
 #define FULL_OPENED 35
 
-
+//static constexpr int AC = 25;
+#define DOF 4     // mobman
 
 #define FORWARD     0X31 //049
 #define BACKWARD    0X30 //048
@@ -167,7 +168,7 @@ public:
     bool DETECTED; // Флаг, показывающий, сработал ли захват изображения.
 
     int parcel_size ;
-    unsigned char Servos [DOF] = {70,90,45,180};//==formoving position //{93,93,93,93};
+    unsigned char Servos [DOF] = {FULL_OPENED,90,57,180};//==formoving position //{93,93,93,93};
     QMutex mutex, mutex02;
     //QRecursiveMutex mutex, mutex02;
     int tcpSocketNumber; //Номер сокета, от которого пришёл запрос, и которому потом отправим ответ

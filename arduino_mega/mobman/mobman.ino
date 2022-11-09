@@ -78,7 +78,7 @@ void setup() {
 
 // Это parking
 
-servos[0].write(45);
+servos[0].write(35);
 servos[1].write(90);
 servos[2].write(58);
 servos[3].write(180);
