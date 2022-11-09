@@ -1,5 +1,5 @@
 #include <QObject>
-#include "hiwonder.h"
+#include "serialRobot.h"
 #include <QDataStream>
 #include <QTextStream>
 #include <stdlib.h>
@@ -10,8 +10,8 @@
 #include <QSerialPortInfo>
 
 
-//HiWonder::HiWonder(QObject *parent) : QObject(parent)
-HiWonder::HiWonder()
+//SerialRobot::SerialRobot(QObject *parent) : QObject(parent)
+SerialRobot::SerialRobot()
 {
     // Инициализируем буфер данными QByteArray
     memset(byInputBuffer, 0xEE, robot_buffer_SIZE); //sizeof(byInputBuffer)
@@ -23,7 +23,7 @@ HiWonder::HiWonder()
     current_st_index = 0;
 //    this->current_status = statuslst.at(current_st_index); // "init" state //"Ready";
 
-    connect(&serial, &QSerialPort::errorOccurred, this, &HiWonder::serialErrorParcer, Qt::QueuedConnection);
+    connect(&serial, &QSerialPort::errorOccurred, this, &SerialRobot::serialErrorParcer, Qt::QueuedConnection);
 
     // Инициализируем все экшены
 //    getbox_Action.name = "get_box";
@@ -61,28 +61,28 @@ HiWonder::HiWonder()
 
 }
 //+++++++++++++++++
-HiWonder::~HiWonder()
+SerialRobot::~SerialRobot()
 {
     LogFile.close();
     serial.close();
     this->deleteLater();
     }
 //++++++++++++++++++++++++++++++
-void HiWonder::Log_File_Open(QString lname)
+void SerialRobot::Log_File_Open(QString lname)
 {
     LogFile.setFileName(lname);
     LogFile.open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text);
 }
 //+++++++++++++++++++++
 // ОТкрытие файла для записи координат и углов. Для ускорения процесса набора тестовых точек
-void HiWonder::Source_Points_File_Open(QString fname)
+void SerialRobot::Source_Points_File_Open(QString fname)
 {
     SourceFile.setFileName(fname);         //QIODevice::Truncate
     SourceFile.open(QIODevice::ReadWrite | QIODevice::Append | QIODevice::Text);
 
 }
 //++++++++++++++++++++++++++++++
-void HiWonder::Write_To_Log (int value, QString log_message)
+void SerialRobot::Write_To_Log (int value, QString log_message)
 {
     QDateTime curdate ;
     QTextStream uin(&LogFile);
@@ -98,7 +98,7 @@ void HiWonder::Write_To_Log (int value, QString log_message)
 
 }
 //++++++++++++++++++++++++++++
-void HiWonder::Write_To_Source(int value, QString points_data)
+void SerialRobot::Write_To_Source(int value, QString points_data)
 {
     QDateTime curdate ;
     QTextStream uin(&SourceFile);
@@ -128,7 +128,7 @@ where <username> is your Linux user name. You will need to log out and log in ag
 
 //++++++++++++++++++++++
 // Задаем роботу углы для нужной позиции - отправляем данные для углов в Serial port
-void HiWonder::GoToPosition(QByteArray &position)//, const char *servo)
+void SerialRobot::GoToPosition(QByteArray &position)//, const char *servo)
 {
    QString str;
    int value = 0xF002;
@@ -159,7 +159,7 @@ void HiWonder::GoToPosition(QByteArray &position)//, const char *servo)
 //+++++++++++++++++++++++++++++++
 // Слот сигнала &QSerialPort::readyRead
 // Считываем данные из Serial port, т.е. от робота.  code From Robot :
-void HiWonder::ReadFromSerial_Slot ()
+void SerialRobot::ReadFromSerial_Slot ()
 {
     QString str;
     int value = 0xF001;
@@ -206,7 +206,7 @@ void HiWonder::ReadFromSerial_Slot ()
 }// ReadFromSerial_Slot
 //++++++++++++++++++++++++++++++++++++++++++++++++
 
-void HiWonder::serialErrorParcer(QSerialPort::SerialPortError error)
+void SerialRobot::serialErrorParcer(QSerialPort::SerialPortError error)
 {
     int value = 0x5555;
     QString str = "";
@@ -256,13 +256,13 @@ void HiWonder::serialErrorParcer(QSerialPort::SerialPortError error)
 
 }
 //++++++++++++++++++++++++
-void HiWonder::SetCurrentStatus(QString newStatus) {
+void SerialRobot::SetCurrentStatus(QString newStatus) {
     this->current_status = newStatus;
 //    emit this->StatusChangedSignal(newStatus);
 
 }
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
-int HiWonder::Open_Port_Slot(QString portname)
+int SerialRobot::Open_Port_Slot(QString portname)
 
 {
     bool OK;

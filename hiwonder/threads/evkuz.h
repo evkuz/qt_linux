@@ -16,6 +16,10 @@
  * Путь к Supervisor-у
  * file:///home/ubuntu/iqr_lit/supervisor/index.html
  *
+ * //+++++++++++++++++++++++++++++++++++++++
+ * 26.08.2022
+ * hiwonder servo-controller 5pin of connector -> pwm1
+ *
  *
  * //+++++++++++++++++++++++++++++++++++++++
  * 28.02.2022

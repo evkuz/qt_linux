@@ -33,6 +33,8 @@
 #define serv_number 4 // Количество приводов под управлением
 #define sBufSize 32   // Размер буфера компорта в плате NANO - 64 байта.
 #define szParcel 6
+short servoPins [4] = {2, 3, 4, 7}; // DFROBOT shield V7.1
+
 Servo servo1, servo2, servo3,servo4,servo5,servo6;
 Servo servos [serv_number] = {servo1, servo2, servo3,servo4};//,servo5,servo6}; // Текущие значения углов
 
@@ -65,28 +67,20 @@ void setup() {
 
     }
 // attach servos to correspondent pin
-  //for (int i=0; i<= serv_number -1; i++)  { servos[i].attach(i+2); } //, 500, 2500;
+   for (int i=0; i< serv_number; i++)  { servos[i].attach(servoPins[i]); } //, 500, 2500;
   
-  servos[0].attach(2);
-  servos[1].attach(3);
-  servos[2].attach(4);
-  servos[3].attach(7);
+//  servos[0].attach(2);
+//  servos[1].attach(3);
+//  servos[2].attach(4);
+//  servos[3].attach(7);
   
-  //smoothStart();
-
-//  move_servo_together(hwr_Start_position, 1, 6);
   delay(1000);
 
-/// Это parking?
+// Это parking
 
-//servos[0].write(35);
-//servos[1].write(1);
-//servos[2].write(45);
-//servos[3].write(90);
-
-servos[0].write(45);
+servos[0].write(35);
 servos[1].write(90);
-servos[2].write(45);
+servos[2].write(58);
 servos[3].write(180);
 
 
@@ -139,15 +133,15 @@ void to_fix_position(byte *pos) { for (int i=0; i<= serv_number -1; i++) { servo
 */
 void get_all_servos(String when)
 {
-    String message;
-    message = "From robot "; message += when; message += " get_all_servo  :  ";
+//    String message;
+//   message = "From robot "; message += when; message += " get_all_servo  :  ";
     for (int i=0; i<=serv_number - 1; i++)
     {
 
       current_s[i] = servos[i].read(); //Current servo
       //readed_pos[i] = current_s[i];
         //  message += String(i); message += " position ";
-      message += String(current_s[i]);  message += ", ";
+//      message += String(current_s[i]);  message += ", ";
     //
     }
   //  Serial.println(message);
@@ -191,20 +185,28 @@ void parse_command ()
       byte numReaded;
       
       numReaded=Serial.readBytes(ints, szParcel); // Считали данные из Serial в массив ints
-      message = ""; 
-      for (int i=0; i<numReaded; i++)
-      {
-          message += String(ints[i]); message += " ";
+      
+//      message = ""; 
+//      for (int i=0; i<numReaded; i++)
+//      {
+//          message += String(ints[i]); message += " ";
+//      }
+//
+//      message.remove(message.length()-1);
+//      strcpy(buf, message.c_str());
+//      Serial.print(buf);
+
+
+    if (ints[szParcel-3] == 0xFA){ //detach
+// detach servos from correspondent pin
+      for (int i=0; i< serv_number; i++)  { servos[i].detach(); } //, 500, 2500;
+        
       }
-
-      message.remove(message.length()-1);
-      strcpy(buf, message.c_str());
-      Serial.print(buf);
-
-      Go_To_Position(ints);
-
-      /*Now send current servo data to PC*/
-     // get_all_servos();
+    else if (ints[szParcel-3] == 0xFC){ // attach previously detached
+      for (int i=0; i< serv_number; i++)  { servos[i].attach(servoPins[i]); } //, 500, 2500;
+    
+      }
+    else { Go_To_Position(ints); } //else
 
     }//if (serial.available())
 
@@ -219,11 +221,13 @@ void Go_To_Position(byte *pos)
   * Для позиций у дальнего края надо вводить поправку.
   * Если серво 5 больше 135, то привод 4 двигаем сначала на половину,
   * потом открываем захват, и потом уже 4 и 3 приводы до конца.
+  * 
+  * 
 
 */
+
+
     switch (pos[szParcel-2]) {
-
-
 
     case 0x31: // Движение "Туда"
 // Особый и различный порядок движения приводов в разных ситуациях
@@ -278,15 +282,16 @@ void Go_To_Position(byte *pos)
 
     default:
         message = "Wrong data !!!";
-        Serial.println(message);
+        strcpy(buf, message.c_str());
+        Serial.print(message);
         
     }//switch (pos[6])
     
 if (pos[szParcel-1]==0xDE) {
-   message = "Robot movement DONE! LAST !!"; 
+   message = "Robot movement finished the LAST"; 
   }
   else {
-   message = "Robot current movement DONE!"; //28 bytes  //message += String(numBytes);}
+   message = "Robot' current movement is DONE!"; //32 bytes  //message += String(numBytes);}
   }
     
 

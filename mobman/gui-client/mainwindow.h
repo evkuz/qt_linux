@@ -149,6 +149,10 @@ private slots:
 
     void on_StopTimerButton_clicked();
 
+    void on_DetachButton_clicked();
+
+    void on_AttachButton_clicked();
+
 private:
     Ui::MainWindow *ui;
 };

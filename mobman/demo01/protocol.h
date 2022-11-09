@@ -5,8 +5,33 @@
 #include <QList>
 //                                               1                  3                    5                           7
  const QList<QString> tcpCommand = {"status", "reset", "clamp", "get_box", "parking", "ready", "getactions", "getservices", "setservos=", \
-                                    "srvfromfile",  "status?action=get_box", "formoving", "put_box", "lock", "unlock"};
-//                                         9                                     11                     13
+                                    "srvfromfile",  "status?action=get_box", "formoving", "put_box", "lock", "unlock", "detach", "attach", \
+//                                         9                                     11                     13                15
+                                   "isAttached?"};
+//                                       17
+
+ // setservos=45,90,95,107
+
+ /*
+  *  Data races sources   *  MainProcess::Data_From_TcpClient_Slot()
+  *
+  *  ptrTcpClient = theSender; - Указатель на объект, вызвавший ф-цию MainProcess::Data_From_TcpClient_Slot()
+  *  Это объект QSocketThread
+  *
+  *
+  *     QJsonObject json = doc.object();
+        foreach(const QString& key, json.keys()) {
+        QJsonValue value = json.value(key);
+        qDebug() << "Key = " << key << ", Value = " << value.toString();
+    }
+
+  *
+  *
+  *
+  *
+  */
+
+
 /*
  * у нас структура запроса получается такая:
  * <address>/run?cmd=<name>&<parameter_name>=<parameter_value>
@@ -49,7 +74,7 @@
 //    http://192.168.1.201:8383/run?cmd=servos=45,90,45,165,0,0,125,222&
 //    http://192.168.1.175:8383/run?cmd=servos=45,90,45,165,0,0,125,222&
 
-        //servos=35,90,145,50,0,0,125,222&
+        //setservos=35,90,145,50,0,0,125,222&
 
 /*
 {"action_list", {
@@ -82,6 +107,43 @@
 
    } //list
  }//action_list-field
+
+
+            QJsonObject headStatus = {
+                {"rc", RC_SUCCESS}, //RC_SUCCESS
+                {"state", "Running"},
+                {"info", "Action performing"}
+            };
+
+            jsnStore->setJsnHeadStatus(headStatus);
+
+        N1=захват
+    distance, mm	Servos [N1, N2, N3, N4]
+    156	45,90,82,117
+    147	45,90,78,119
+    169	45,90,87,112
+    187	45,90,90,109
+    196	45,90,100,102
+    204	45,90,107,98
+    214	45,90,114,93
+    225	45,90,125,86
+    239	45,90,132,83
+    249	45,90,145,72
+
+    N1=45, N2=90
+    156,82,117
+    147,78,119
+    169,87,112
+    187,90,109
+    196,100,102
+    204,107,98
+    214,114,93
+    225,125,86
+    239,132,83
+    249,145,72
+
+
+
 
 */
 

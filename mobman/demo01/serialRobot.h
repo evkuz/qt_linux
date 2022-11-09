@@ -1,10 +1,10 @@
 /*
- * Класс hiwonder - для объекта робот. Написан под робота LeArm или, в более поздней версии, - Hiwonder.
+ * Класс SerialRobot - для объекта робот. Написан под робота LeArm или, в более поздней версии, - SerialRobot.
  * В этом проекте - Плата Arduino Mega - управление сервоприводами
 */
 
-#ifndef HIWONDER_H
-#define HIWONDER_H
+#ifndef SerialRobot_H
+#define SerialRobot_H
 
 #include <QObject>
 #include <QString>
@@ -15,19 +15,18 @@
 
 
 
-class HiWonder : public QObject
+class SerialRobot : public QObject
 {
     Q_OBJECT
 public:
-    //explicit HiWonder(QObject *parent = nullptr);
-    HiWonder();
-    ~HiWonder();
+    //explicit SerialRobot(QObject *parent = nullptr);
+    SerialRobot();
+    ~SerialRobot();
 
 #define serial_speed Baud115200
 #define robot_buffer_SIZE 32
 #define Log_File_Name       "./serial.log"
 #define SOURCE_POINTS_FILE  "../source_points.xls"
-#define DOF 4     // mobman
 //#define szData 6 //Размер посылки в байтах
     int szData = 6;
     unsigned char outputData [6];
@@ -144,4 +143,4 @@ private slots:
 
 };
 
-#endif // HIWONDER_H
+#endif // SerialRobot_H

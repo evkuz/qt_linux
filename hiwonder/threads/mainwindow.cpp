@@ -50,18 +50,18 @@ MainWindow::MainWindow(QWidget *parent)
     Robot->Write_To_Log(0xf000, str.append(" is started successfully!!!\n"));
 
     GUI_Write_To_Log(0xF000, "Going to Start QTcpServer");
-    if (server.isListening ()) {
+//    if (server.isListening ()) {
 
-        str = "Listening on address "; str += server.serverAddress().toString();
-        str += " and port "; str += QString::number(server.serverPort());//QString::number(server.tcpport);
+//        str = "Listening on address "; str += server.serverAddress().toString();
+//        str += " and port "; str += QString::number(server.serverPort());//QString::number(server.tcpport);
 
-        GUI_Write_To_Log(0000, str);
-    }
+//        GUI_Write_To_Log(0000, str);
+//    }
 
 
     //+++++++++++++++++++++++++++++++++  signal/slot of Get Request to webserver
-    connect(this, &MainWindow::Write_2_TcpClient_Signal, &server, &QSimpleServer::Write_2_TcpClient_Slot);
-    connect(&server, SIGNAL(Data_From_TcpClient_Signal(QString)), this, SLOT(Data_From_TcpClient_Slot(QString)));
+//    connect(this, &MainWindow::Write_2_TcpClient_Signal, &server, &QSimpleServer::Write_2_TcpClient_Slot);
+//    connect(&server, SIGNAL(Data_From_TcpClient_Signal(QString)), this, SLOT(Data_From_TcpClient_Slot(QString)));
 
     //################### SERIAL SIGNAL/SLOTS ############################
     connect( this, SIGNAL (Open_Port_Signal(QString)), Robot, SLOT(Open_Port_Slot(QString)));

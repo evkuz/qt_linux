@@ -8,6 +8,9 @@
 
 //#include <QtCore>
 
+#define FULL_CLOSED 87 //75
+#define FULL_OPENED 35
+
 //+++++++++++++++ ЗАХВАТ РУЧНИКА ИМЕЕТ НОМЕР ПРИВОДА 0 - ИДЕТ 1-Й В СПИСКЕ.
 
 unsigned char hwr_Start_position [6] = {93, 93, 93, 93, 93, 93}; // servo1,,,servo6
@@ -21,7 +24,7 @@ unsigned char after_put_position [6] = {0, 93, 90, 45, 135, 30};
 
 unsigned char mob_parking_position [4] = {70,90,90,160};//,45,45,49,222
 unsigned char mob_ready_position [4] = {35,90,135,165};
-unsigned char mob_moving_position [4] = {80,90,57,180}; // Для малого кубика 70-закрыто
+unsigned char mob_moving_position [4] = {FULL_CLOSED,90,57,180}; // Для малого кубика 70-закрыто
 
 
 //unsigned char mob_pos_10 [4] = {35,90,120,60};
@@ -58,13 +61,34 @@ unsigned char mob_2_pos_22 [4] = {35,90,168,35};
 unsigned char mob_2_pos_23 [4] = {35,90,177,30}; //35,90,175,32 - тоже подойдет
 unsigned char mob_2_put_23 [4] = {80,90,172,35};
 
-unsigned char mob_2_moving_position [4] = {80,90,45,180};
+unsigned char mob_2_moving_position [4] = {FULL_CLOSED,90,57,180};
 
 unsigned char mob_3_pos_25[4] = {35,90,135,72}; //247->250 35,90,135,72
 unsigned char mob_3_pos_24[4] = {35,90,132,72}; //244->240 35,90,132,72
 
 unsigned char mob_3_pos_22[4] = {35,90,125,80}; //220 35,90,125,80
 
+
+unsigned int mob_3_position[11][3] = {
+                          { 147,78,119 },
+                          { 156,82,117 },
+                          { 169,87,112 },
+                          { 187,90,109 },
+                          { 196,100,102 },
+                          { 204,107,98 },
+                          { 214,114,93 },
+                          { 225,125,86 },
+                          { 239,132,83 },
+                          { 249,145,72 },
+                          { 271,150,70 }
+
+};
+
+unsigned char mob_3_final_position [4] = {40,90,0,0};
+const char ROWS = 10;
+const char COLMNS = 3;
+
+//72,90,125,80
 
 
 // moving position 75,90,0,180

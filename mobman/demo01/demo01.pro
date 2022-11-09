@@ -7,19 +7,18 @@ CONFIG -= app_bundle
 
 TEMPLATE = app
 
-INCLUDEPATH += $$(EXTLIBS)
-#INCLUDEPATH += $$system( echo $EXTLIBS )
+INCLUDEPATH += $$(LOCLIBS)
+#INCLUDEPATH += $$system( echo $LOCLIBS )
 SOURCES += main.cpp \
     jsoninfo.cpp \
     clientsocket.cpp \
     cvdevice.cpp \
-    hiwonder.cpp \
     json_answer.cpp \
     mainprocess.cpp \
-    processAction.cpp \
+    serialRobot.cpp \
     tcpParcing.cpp  \
-    $$(EXTLIBS)/manipulator/qsimpleserver.cpp \
-    $$(EXTLIBS)/manipulator/qsocketthread.cpp
+    $$(LOCLIBS)/manipulator/meta/qsimpleserver.cpp \
+    $$(LOCLIBS)/manipulator/meta/qsocketthread.cpp
 
 
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -27,17 +26,16 @@ else: unix:!android: target.path = /home/pi/qt_projects/$${TARGET}
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
-    ProcessAction.h \
     jsoninfo.h \
     clientsocket.h \
     cvdevice.h \
     evkuz.h \
-    hiwonder.h \
     positions.h \
     protocol.h \
     mainprocess.h \
+    serialRobot.h \
     tcpParcing.h \
     workflow.h \
-    $$(EXTLIBS)/manipulator/qsimpleserver.h \
-    $$(EXTLIBS)/manipulator/qsocketthread.h
+    $$(LOCLIBS)/manipulator/meta/qsimpleserver.h \
+    $$(LOCLIBS)/manipulator/meta/qsocketthread.h
 

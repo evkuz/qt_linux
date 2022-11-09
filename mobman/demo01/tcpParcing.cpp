@@ -20,17 +20,29 @@
 // ProcessAction запускаем только для значений индекса команды 0 или 1.
 // Для остальных значений, оставляем как было. Только в новом файле теперь.
 
-void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
+void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber, QObject* theSender)
 {
     QString str, substr;
     int value = 0xf00f;
 
-    QMutexLocker locker(&mutex);
+//    QMutexLocker locker(&mutex);
 
+    ptrTcpClient = theSender;
     this->tcpSocketNumber =  socketNumber;
     new_get_request = true;
     str = "From TCP Get new command : "; str += message;
-    GUI_Write_To_Log(0xf00f, str);
+    GUI_Write_To_Log(value, str);
+
+//    str = "$$$$$$$$$$$$$$$$$$$$$$ <Data_From_TcpClient_Slot>'s thread is ";
+    //str += QString("0x%1").arg((qintptr)this->QObject::thread(),8);
+//    str += pointer_to_qstring(QObject::thread());
+//    GUI_Write_To_Log(value, str);
+
+//    QString mystr = "Pointer to SENDER QObject is ";
+//    mystr += pointer_to_qstring(ptrTcpClient);
+//    GUI_Write_To_Log(value, mystr);
+
+
 
     substr = message;
 
@@ -65,9 +77,12 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
     // Другими словами - во время выполняения экшена приходит команда выполнить другой экшен...
     // Манипулятор не может 2 экшена выполнять одновременно.
     // comIndex > 0 && comIndex != 1
-    // #################### ВНИМАНИЕ !!! ТУТ НЕТ ЗАПИСИ В ЛОГ, ЧТОБ БЫСТРЕЕ БЫЛО #########
+    // #################### ВНИМАНИЕ !!! ТУТ НЕТ ЗАПИСИ В ЛОГ, только ответ клиенту. ЧТОБ БЫСТРЕЕ БЫЛО #########
+
+    QJsonObject tempObj;
+
     if (comIndex > 1 && jsnStore->isAnyActionRunning ){
-         QJsonObject tempObj;
+
                      tempObj = {
                          {"name", substr},
                          {"info", "Another action is already running"},
@@ -91,27 +106,20 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
         // Here we are managed to not getting dangling pointer.
         // Ничего не меняем в состояниях экшена, так проще
 //        jsnStore->setActionData(tempObj);
-        launchActionAnswer = tempObj;
-        str = QJsonDocument(launchActionAnswer).toJson(QJsonDocument::Indented);
+        //launchActionAnswer = tempObj;
+        str = QJsonDocument(tempObj).toJson(QJsonDocument::Indented);
         // отправляем ответ на запуск экшена
-        emit Write_2_TcpClient_Signal(str, socketNumber);
+        //emit Write_2_TcpClient_Signal(str, socketNumber);
+        QMetaObject::invokeMethod(this->ptrTcpClient, "Data_2_TcpClient_Slot",
+                                  Qt::QueuedConnection,
+                                  Q_ARG(QString, str),
+                                  Q_ARG(qintptr, tcpSocketNumber));
+
 
         return;
     }
 
 
-
-
-
-
-    //jsnStore->action_command = tcpCommand.at(comIndex); // сигнал updateAction_List_Signal
-   // jsnStore->setCurrentAction(tcpCommand.at(comIndex));
-    // 0 - status, 5 - start
-//    if (comIndex==0 or comIndex==5 or comIndex==7) {
-//        ProcessAction(comIndex);
-//    }
-//    int indent = 3;
-//     std::string s2;
 
 // Если в данный момент есть работающий экшен, то уже нельзя менять значение mainjsnObj...
 
@@ -124,14 +132,19 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
 //    GUI_Write_To_Log(value, str);
 
    //QString S3;
+
+// Если убрали processAction, то ответ на запуск экшена, каждый раз, как ф-цию.
+
+//    QJsonObject tempObj;
+QStringList list1;
     switch (comIndex) {
     case 0: // status
 
         // Нужно добавлять активный экшен, либо пустой список
-        jsnStore->createActionList(); // формируем список, записываем данные в jsnData, делаем merge (jsnActionList, jsnHeadStatus)
+        str = jsnStore->createActionList(); // формируем список, записываем данные в jsnData, делаем merge (jsnActionList, jsnHeadStatus)
 
         //str += QJsonDocument(jsnStore->jsnActionList).toJson(QJsonDocument::Indented);
-        str = jsnStore->returnJsnData();
+        //str = jsnStore->returnJsnData();
         GUI_Write_To_Log(value, str);
         //        str = jsnStore->returnJsnData();
         //        str = "{\n\t\"status\": \"testing\"\t\n}";
@@ -142,8 +155,12 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
                 //Robot->Write_To_Log(value, str);
 
 
-        Robot->active_command = "status";
-        emit Write_2_TcpClient_Signal (str, this->tcpSocketNumber);
+//        Robot->active_command = "status";
+//        emit Write_2_TcpClient_Signal (str, this->tcpSocketNumber);
+        QMetaObject::invokeMethod(this->ptrTcpClient, "Data_2_TcpClient_Slot",
+                                  Qt::QueuedConnection,
+                                  Q_ARG(QString, str),
+                                  Q_ARG(qintptr, tcpSocketNumber));
 
 
 
@@ -153,107 +170,235 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
             GUI_Write_To_Log(value, substr);
             return;
         }
-        mainjsnObj = jsnStore->returnJsnActionsUnKnown();
-        mainjsnObj["name"] = message;
-        str = "There is wrong action command : ";
-        str += message;
-        GUI_Write_To_Log(value, str);
-
-        ProcessAction(comIndex, mainjsnObj);
+        else
+        {
+// Неизвестный экшен не должен выполняться...
+          tempObj = jsnStore->returnJsnActionsUnKnown();
+          str = QJsonDocument(tempObj).toJson(QJsonDocument::Indented);
+          GUI_Write_To_Log(value, str);
+          QMetaObject::invokeMethod(this->ptrTcpClient, "Data_2_TcpClient_Slot",
+                                  Qt::QueuedConnection,
+                                  Q_ARG(QString, str),
+                                  Q_ARG(qintptr, tcpSocketNumber));
+        }
         break;
 
     case 1:  // reset
         // Robot->active_command = "reset";
-        jsnStore->resetAllActions();
+        jsnStore->resetAllActions(); // all actions to "done"
         jsnStore->isAnyActionRunning = false;
-        //str = "I'm in reset";
-        mainjsnObj = jsnStore->returnAllActions();
-        str = jsnStore->jsnData;
-        emit Write_2_TcpClient_Signal(str, this->tcpSocketNumber);
 
+
+        tempObj = {
+            {"name", "reset"},
+            {"rc", RC_SUCCESS}, //RC_SUCCESS
+            {"info", "Reset successful"}
+        };
+
+//        jsnStore->setActionDone(tempObj);
+
+        str = QJsonDocument(tempObj).toJson(QJsonDocument::Indented);
         GUI_Write_To_Log(value, str);
-//        mainjsnObj = jsnStore->returnJsnActionReset();
-//        str = QJsonDocument(mainjsnObj).toJson(QJsonDocument::Indented);
-//        GUI_Write_To_Log(value, str);
+        QMetaObject::invokeMethod(this->ptrTcpClient, "Data_2_TcpClient_Slot",
+                                Qt::QueuedConnection,
+                                Q_ARG(QString, str),
+                                Q_ARG(qintptr, tcpSocketNumber));
 
-//        jsnStore->createActionList(); // формируем список, записываем данные в jsnData, делаем merge (jsnActionList, jsnHeadStatus)
-//        str = jsnStore->returnJsnData();
-//        GUI_Write_To_Log(value, str);
-
-//        emit Write_2_TcpClient_Signal (str, this->tcpSocketNumber);
-
-//        str = "Current ActionList is :";
-//        mainjsnObj = jsnStore->returnAllActions();
-//        // Берем значение  jsnActionList, весь ответ не нужен
-//        str += QJsonDocument(jsnStore->jsnActionList).toJson(QJsonDocument::Indented);
-//        GUI_Write_To_Log(value, str);
         break;
 
     case 2: // clamp
-        // Robot->active_command = "clamp";
         mainjsnObj = jsnStore->returnJsnActionClamp();
-//        jsnStore->jsnObjArray[0].toObject()["state"]= "MANYMANY";
-//        str = QJsonDocument(jsnStore->jsnObjArray[0].toObject()).toJson(QJsonDocument::Indented);
-//        GUI_Write_To_Log(value, str);
-
-//        emit Write_2_TcpClient_Signal (str);
-       // ProcessAction(comIndex, mainjsnObj);
         break;
     case 3: // "get_box"
         mainjsnObj = jsnStore->returnJsnActionGetBox();
-        ProcessAction(comIndex, mainjsnObj);
-
+        request_CV();
+//      Тут нет returnActionLaunch(mainjsnObj); т.к.
+//      Может не быть детекции. Быстрый ответ отпрвляем из
+//      MainProcess::CV_NEW_onReadyRead_Slot() если детекция есть.
         break;
-
-
     case 4: // "parking"
-        // Robot->active_command = "standup";
         mainjsnObj = jsnStore->returnJsnActionParking();
-        ProcessAction(comIndex, mainjsnObj);
+        returnActionLaunch(mainjsnObj, theSender); // Отправляем быстрый ответ
+
+
+        memcpy(Servos, mob_parking_position, DOF);
+        this->send_Data(LASTONE);
+
+
         break;
     case 5: // "ready"
-
         mainjsnObj = jsnStore->returnJsnActionReady();
-        ProcessAction(comIndex, mainjsnObj);
-        break;
-    case 12: // "put_box"
-        mainjsnObj = jsnStore->returnJsnActionPutbox();
-        ProcessAction(comIndex, mainjsnObj);
+        returnActionLaunch(mainjsnObj, theSender);
 
+        memcpy(Servos, mob_ready_position, DOF);
+        this->send_Data(LASTONE);
 
         break;
 
-    case 7: //getactions
-      //  str = QJsonDocument(jsnStore->returnAllActions()).toJson(QJsonDocument::Indented);
-        mainjsnObj = jsnStore->returnAllActions();
-        str = jsnStore->jsnData;
-        emit Write_2_TcpClient_Signal(str, this->tcpSocketNumber);
+    case 6: //getactions
+        jsnStore->isAnyActionRunning = false;
+        //tempObj = jsnStore->returnAllActions();
+        str = jsnStore->returnAllActions(); //jsnStore->jsnData;
+        QMetaObject::invokeMethod(this->ptrTcpClient, "Data_2_TcpClient_Slot",
+                                  Qt::QueuedConnection,
+                                  Q_ARG(QString, str),
+                                  Q_ARG(qintptr, tcpSocketNumber));
+
         str += str.insert(0, "Total action_list : \n");
 
         GUI_Write_To_Log(value, str);
 
+        //Преобразовать каждый элемент QJsonArray  jsnObjArray в ordered_json
+        // А значит нужна ф-ция QJsonObject -> ordered_json
+        // Можно попробовать QJsonObject -> QString -> oredered_json
+
+
         break;
+    case 8: // "setservos="
+        mainjsnObj = jsnStore->returnJsnAcionSetservos();
+        returnActionLaunch(mainjsnObj, theSender);
+
+        substr = substr.remove("setservos=");
+        list1 = substr.split(QLatin1Char(','));
+        for (int i=0; i<DOF; ++i)
+        {
+            Servos[i] = list1.at(i).toUInt();
+        }//for
+
+        this->send_Data(LASTONE);
+
+        break;
+
     case 11: // "formoving"
         mainjsnObj = jsnStore->returnJsnActionForMoving();
-        ProcessAction(comIndex, mainjsnObj);
+        returnActionLaunch(mainjsnObj, theSender);
+        // Хват полностью сжат
+        memcpy(Servos, mob_2_moving_position, DOF); // Для малого кубика
+
+        //Servos[0] = 120;
+        this->send_Data(LASTONE);
+
        break;
+
+    case 12: // "put_box"
+        mainjsnObj = jsnStore->returnJsnActionPutbox();
+        returnActionLaunch(mainjsnObj, theSender); // Отправляем быстрый ответ
+
+        memcpy(Servos, mob_2_put_23, DOF);
+        this->send_Data(NOT_LAST);
+
+        // Открываем
+        Servos[0] = 45;
+        this->send_Data(NOT_LAST);
+
+        //Поднимаем крайний привод, чтобы снова не схватить кубик при движении обратно
+        Servos[3] = 65;
+        this->send_Data(NOT_LAST); // NOT_LAST
+
+
+        // в позицию "formoving", хват постепенно закрывается
+        memcpy(Servos, mob_2_moving_position, DOF);
+        this->send_Data(LASTONE);
+
+       break;
+
 
     case 13: //lock
         mainjsnObj = jsnStore->returnJsnActionLock();
-        ProcessAction(comIndex, mainjsnObj);
+        returnActionLaunch(mainjsnObj, theSender);
+        //GUI_Write_To_Log(value, "BEFORE lock ");
+//        Servos_To_Log("BEFORE lock ");
+        Servos[0]=FULL_CLOSED;
+        this->send_Data(LASTONE); //NOT_LAST LASTONE
+
        break;
     case 14: //unlock
         mainjsnObj = jsnStore->returnJsnActionUnLock();
-        ProcessAction(comIndex, mainjsnObj);
+        returnActionLaunch(mainjsnObj, theSender);
+        Servos[0]=FULL_OPENED;
+        this->send_Data(LASTONE); //NOT_LAST LASTONE
+
+       break;
+    case 15: // "detach"
+        jsnStore->isAnyActionRunning = false;
+        for (int i=0; i<DOF; ++i)
+        {
+            Servos[i] = 250; //0xFA
+        }//for
+
+        this->send_Data(LASTONE); //NOT_LAST
+
+        tempObj = jsnStore->returnJsnActionDetach();
+        str = QJsonDocument(tempObj).toJson(QJsonDocument::Indented);
+        GUI_Write_To_Log(value, str);
+
+        QMetaObject::invokeMethod(this->ptrTcpClient, "Data_2_TcpClient_Slot",
+                                Qt::QueuedConnection,
+                                Q_ARG(QString, str),
+                                Q_ARG(qintptr, tcpSocketNumber));
+
+
+        tempObj = {
+            {"rc", RC_SUCCESS}, //RC_SUCCESS
+            {"state", "Running, but all servos are detached"},
+            {"info", "Action performing"}
+        };
+
+        jsnStore->setJsnHeadStatus(tempObj);
+
        break;
 
+    case 16: // "attach"
+        jsnStore->isAnyActionRunning = false;
+        for (int i=0; i<DOF; ++i)
+        {
+            Servos[i] = 252; //0xFC
+        }//for
+
+        this->send_Data(LASTONE); //NOT_LAST
+        tempObj = jsnStore->returnJsnActionAttach();
+        str = QJsonDocument(tempObj).toJson(QJsonDocument::Indented);
+        GUI_Write_To_Log(value, str);
+        QMetaObject::invokeMethod(this->ptrTcpClient, "Data_2_TcpClient_Slot",
+                                Qt::QueuedConnection,
+                                Q_ARG(QString, str),
+                                Q_ARG(qintptr, tcpSocketNumber));
+        tempObj = {
+            {"rc", RC_SUCCESS}, //RC_SUCCESS
+            {"state", "Running"},
+            {"info", "Action performing"}
+        };
+
+        jsnStore->setJsnHeadStatus(tempObj);
 
 
-//    case 13: //collapse
-//        // Robot->active_command = "collapse";
-//        mainjsnObj = jsnStore->returnJsnActionCollapse();
-//        ProcessAction(comIndex, mainjsnObj);
-//        break;
+        break;
+
+    case 17: // "isAttached?"
+        jsnStore->isAnyActionRunning = false;
+        for (int i=0; i<DOF; ++i)
+        {
+            Servos[i] = 254; //0xFE
+        }//for
+
+        this->send_Data(LASTONE); //NOT_LAST
+        tempObj = jsnStore->returnJsnActionAttach();
+        str = QJsonDocument(tempObj).toJson(QJsonDocument::Indented);
+        GUI_Write_To_Log(value, str);
+        QMetaObject::invokeMethod(this->ptrTcpClient, "Data_2_TcpClient_Slot",
+                                Qt::QueuedConnection,
+                                Q_ARG(QString, str),
+                                Q_ARG(qintptr, tcpSocketNumber));
+        tempObj = {
+            {"rc", RC_SUCCESS}, //RC_SUCCESS
+            {"state", "Running"},
+            {"info", "Action performing"}
+        };
+
+        jsnStore->setJsnHeadStatus(tempObj);
+
+
+        break;
 
     default:
         str = "The Command with index ";
@@ -261,45 +406,14 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
         str += " is not found";
         GUI_Write_To_Log(value, str);
         break;
-    }
-
-
-
+    } //switch (comIndex)
 
     // ++++++++++++++++++++++++++++++++ Теперь всё остальное
-
-
-//    if (substr == "sit") {
-//        // Go to "sit" position
-//        QByteArray dd;
-//        dd = QByteArray::fromRawData(reinterpret_cast<const char*>(sit_down_position), DOF);
-//        dd.append(0x31); // Движение "Туда"
-//        dd.append(LASTONE); // Всегда последнее ?
-//        Robot->GoToPosition(dd);//, sit_down_position
-//    }//"sit"
-
-
-//    if (substr =="unlock") {
-
-//        str = "######## Try to UNlock the gripper ######### ";
-//        str += "Current clamper value is ";
-//        str += QString::number(Servos[0]);
-//        Servos[0]=0;
-//        this->send_Data(NOT_LAST); //NOT_LAST LASTONE
-//    }//"unlock"
 
     if (substr == "close") {
         Robot->serial.close();
 
     }
-
-    // Запрашиваем в Arduino значения углов сервоприводов
-//    if (substr == "getservos") {
-//        QByteArray dd ;
-//        dd.resize(parcel_size);
-//        memcpy(dd.data(), get_values_position, parcel_size);
-
-//    }
 
     if (substr == "info") {
         // Вот тут делаем присвоение статуса.
@@ -317,12 +431,5 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber)
         emit Write_2_TcpClient_Signal (str, this->tcpSocketNumber);
 
     }
-    // Запрашиваем список экшенов
-//    if (substr == "getactions") {
-//        QByteArray dd ;
-//        dd.resize(parcel_size);
-//        memcpy(dd.data(), get_values_position, parcel_size);
-//     }
-
 
 }// Data_From_TcpClient_Slot

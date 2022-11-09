@@ -1,7 +1,7 @@
 ﻿#include "mainprocess.h"
 //#include "ui_MainProcess.h"
 //#include "positions.h"
-//#include "hiwonder.h"
+//#include "SerialRobot.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -22,29 +22,16 @@ MainProcess::MainProcess(QObject *parent)
 //    , readSocket("../../simpledetector_cpp/iqr.socket")
 
 {
-    int value = 0x000;
+    int value = 0x0000;
     parcel_size  = 6;
-
-    //json jsncommand; // Команду извне упакуем в json
-//    json jsnAnswer;  // ответ tcp-клменту в json
-  //  json jsnStatus;
-
-//    init_json(); // Инициализируем json_status
 
     DETECTED = false;
     new_get_request = false;
     thread_counter = 0;
     currentTcpdata = "";
-//    socketCV = new QTcpSocket(this);
-//    in.setDevice(socketCV);
 
-
-//    CVdevice = new CVDevice(CVDev_IP, CVDev_Port);
-//            : QObject(parent)
-//            , CVDev_IP
-//            , CVDev_Port
-
-  //  connect (CVdevice, &CVDevice::data_from_CVDevice_Signal, this, &MainProcess::data_from_CVDevice_Slot);
+    cvAnswer.detected = false;
+    cvAnswer.distance = 0.0;
 
     target_name = QFileInfo(QCoreApplication::applicationFilePath()).fileName();
     //QByteArray ba = target_name.toLocal8Bit();
@@ -52,71 +39,65 @@ MainProcess::MainProcess(QObject *parent)
     //printf("Appname : %s", c_str);
 
     // Инициализируем все json-статусы
-    jsnStore = new JsonInfo();
+    qRegisterMetaType<QJsonObject>("QJsonObject");
+    jsnStore = new JsonInfo(DEVICE_NAME);
     mainjsnObj = jsnStore->returnJsnActionReset(); //set global value
     jsnStore->createActionList();
 
-    Robot = new HiWonder(); // Без этого будет "The program has unexpectedly finished", хотя в начале говорила, что это ambiguous
+    ptrTcpClient = new QObject(nullptr);
+
+    Robot = new SerialRobot();
 
     Robot->Log_File_Open(Log_File_Name);
     this->LogFile_Open(MOBMAN_LOG);
   //  Robot->Source_Points_File_Open (SOURCE_POINTS_FILE);
 
     QString str = "The application \"";  str +=target_name; str += "\"";
+    //qDebug() << QCoreApplication::instance()->thread();
+//    qintptr myThread = QThread::currentThread()->toInt;
+
     Robot->Write_To_Log(value, str.append(" is started successfully!!!\n"));
+    str = "The thread of \"";  str +=target_name; str += "\" is ";
+    str += QString("0x%1").arg((qintptr)this->QObject::thread(),16);
+    GUI_Write_To_Log(value, str);
 
     qDebug() << "Started " << target_name;
 //    QSimpleServer server;
 
     GUI_Write_To_Log(value, "Going to Start QTcpServer");
-    if (server.isListening ()) {
-
-        str = "Listening on address "; str += server.serverAddress().toString();
-        str += " and port "; str += QString::number(server.serverPort());//QString::number(server.tcpport);
-
-        GUI_Write_To_Log(value, str);
-         qDebug() << str;
-    }
 
     //+++++++++++++++++++++++++++++++++  signal/slot of Get Request to webserver
-    // Отправка данных от сервера клиенту (в  ЦУП)
-    connect(this, &MainProcess::Write_2_TcpClient_Signal, &server, &QSimpleServer::Write_2_TcpClient_SLot); // works ?
-
-    // Чтение данных от клиента серверу (из ЦУП)
-    //connect(&server, SIGNAL(Info_2_Log_Signal(QString)), this, SLOT(Info_2_Log_Slot(QString))); // Not working
-    connect(&server, &QSimpleServer::Data_From_TcpClient_Signal, this, &MainProcess::Data_From_TcpClient_Slot);
-
-   // connect(this, socketCV::QTcpSocket::connected, this, &MainProcess::onSocketConnected_Slot);
-
-
-   // connect(&server, &QTcpServer::newConnection, this, &MainProcess::newConnection_Slot);
 
     //################### SERIAL SIGNAL/SLOTS ############################
-    connect( this, &MainProcess::Open_Port_Signal, Robot, &HiWonder::Open_Port_Slot);
-    connect( &Robot->serial, &QSerialPort::readyRead, Robot, &HiWonder::ReadFromSerial_Slot);  //&QSerialPort::
+    connect( this, &MainProcess::Open_Port_Signal, Robot, &SerialRobot::Open_Port_Slot);
+    connect( &Robot->serial, &QSerialPort::readyRead, Robot, &SerialRobot::ReadFromSerial_Slot);  //&QSerialPort::
+
 
     //#################### Signal to web-server
-    connect( Robot, &HiWonder::Moving_Done_Signal, this, &MainProcess::Moving_Done_Slot);
+    connect( Robot, &SerialRobot::Moving_Done_Signal, this, &MainProcess::Moving_Done_Slot);
 
 
     //++++++++++++++++++++++++++++++++++++ JSON signal/slot ++++++++++++++++++++++++++++++
     connect(this, &MainProcess::SetActionData_Signal, jsnStore, &JsonInfo::SetActionData_Slot, Qt::QueuedConnection);
 
-    // ============================================== Создаем поток 1 - web-server
-//        connect(chan_A, SIGNAL(Process_A()), TheWeb, SLOT(Output_Data_From_Client_Slot()), Qt::QueuedConnection); //Считываем из железки в ПК по каналу А
+    // ==============================================
                                                                        // Qt::DirectConnection
                                                                        // Qt::QueuedConnection
                                                                        // Qt::BlockingQueuedConnection
                                                                        // Qt::DirectConnection
-/*
- * "2) DirectConnection - The slot is invoked immediately, when the signal is emitted. The slot is executed in the emitter's thread,
+/*  Value
+    0   AutoConnection (Default) If the receiver lives in the thread that emits the signal, Qt::DirectConnection is used.
+        Otherwise, Qt::QueuedConnection is used. The connection type is determined when the signal is emitted.
+ *
+ *  1 DirectConnection - The slot is invoked immediately, when the signal is emitted. The slot is executed in the emitter's thread,
  *     which is not necessarily the receiver's thread.
  *
-    3) QueuedConnection - The slot is invoked when control returns to the event loop of the receiver's thread.
+    2 QueuedConnection - The slot is invoked when control returns to the event loop of the receiver's thread.
        The slot is executed in the receiver's thread.
 
-    4) BlockingQueuedConnection - The slot is invoked as for the Queued Connection,
-       except the current thread blocks until the slot returns. Note: Using this type to connect objects in the same thread will cause deadlock."
+    3 BlockingQueuedConnection - The slot is invoked as for the Queued Connection,
+       except the current thread blocks until the slot returns. Note: Using this type to connect objects in the same thread will cause deadlock.
+
 */
 
 
@@ -170,8 +151,9 @@ MainProcess::MainProcess(QObject *parent)
 // qDebug() << str;
 
     str = "On start ";
-    Servos_To_Log(str);
-    //
+    Servos_To_Log(str); // Тут значения из массива Servos
+    // А вот тут еще надо считывать из Arduino и выводить в лог.
+//    GUI_Write_To_Log(value, "Listen for mobman commands...");
  QThread::sleep(1);
 
 
@@ -182,8 +164,10 @@ MainProcess::~MainProcess()
     QString str = "Program is going to be closed";
     GUI_Write_To_Log(0xffff, str);
     qDebug() << str;
-    //delete Robot;
-    delete this;
+    delete Robot;
+    delete jsnStore;
+    delete socketCV;
+    delete ptrTcpClient;
 
 
 
@@ -191,6 +175,7 @@ MainProcess::~MainProcess()
 //+++++++++++++++++++++++++++++++++++++++
 void MainProcess::GUI_Write_To_Log (int value, QString log_message)
 {
+    QMutexLocker locker(&mutex);
     QDateTime curdate ;
     QTextStream uin(&this->mobWebLogFile);
 
@@ -207,6 +192,7 @@ void MainProcess::GUI_Write_To_Log (int value, QString log_message)
 
 void MainProcess::Servos_To_Log(QString message)
 {
+//    GUI_Write_To_Log(0000, "I'm in Servos_To_Log");
  QString   str = message;
     str += "Current servo values are : ";
 
@@ -418,13 +404,13 @@ void MainProcess::on_getXYButton_clicked()
    // str = "sdklfjlk";
     make_json_answer();
 
-    if (server.isListening ()) {
+//    if (server.isListening ()) {
 
-        str = "Listening on address "; str += server.serverAddress().toString();
-        str += " and port "; str += QString::number(server.serverPort());//QString::number(server.tcpport);
+//        str = "Listening on address "; str += server.serverAddress().toString();
+//        str += " and port "; str += QString::number(server.serverPort());//QString::number(server.tcpport);
 
-        GUI_Write_To_Log(0000, str);
-    }
+//        GUI_Write_To_Log(0000, str);
+//    }
 
 
 }
@@ -600,7 +586,7 @@ void MainProcess::make_json_answer()
   jsn_str += "\r\n";
   jsn_str += "\"status\":";
   jsn_str += "\"";
-  jsn_str += Robot->current_status;
+  jsn_str += "Under Construction"; //Robot->current_status;
   jsn_str += "\","; jsn_str += "\r\n";
   jsn_str += "\"return_code\":";
   jsn_str += "\"";
@@ -630,7 +616,7 @@ void MainProcess::make_json_answer()
 void MainProcess::init_json()
 {
      jsnStatus = {
-        {"name", DEV_NAME},
+        {"name", DEVICE_NAME},
         {"rc", RC_UNDEFINED}, //RC_SUCCESS
         {"info", "Request Accepted"},
         {"state", "Wait"},
@@ -809,19 +795,35 @@ void MainProcess::request_CV()
 
 
 
-    QString str = "Going to create tcp-socket for CVDevice";
-    GUI_Write_To_Log(0xC1C1, str);
+//    QString str = "Going to create tcp-socket for CVDevice";
+//    GUI_Write_To_Log(0xC1C1, str);
+    QMutexLocker locker(&mutex);
     socketCV = new QTcpSocket(this);
     socketCV->setSocketOption(QAbstractSocket::KeepAliveOption, true);
     //in.setDevice(socketCV);
 
     //Соединение сигналов со слотами                        было  CV_onReadyRead_Slot
-    connect(socketCV, &QIODevice::readyRead, this, &MainProcess::CV_NEW_onReadyRead_Slot);//, Qt::QueuedConnection);
-    connect(socketCV, SIGNAL(disconnected()), this, SLOT(CV_onDisconnected()),Qt::AutoConnection);
+    connect(socketCV, &QIODevice::readyRead, this, &MainProcess::CV_NEW_onReadyRead_Slot, Qt::QueuedConnection);//, Qt::QueuedConnection);
+
+
+    // Убираем, т.к. единственная цель была - запись в лог. В продакшене не нужно.
+    //connect(socketCV, &QAbstractSocket::disconnected, this, &MainProcess::CV_onDisconnected, Qt::QueuedConnection);
+
+    // Удаляем объект QAbstractSocket иначе утечики памяти и прога вылетит через некоторое время(когда сожрет всю память).
+    connect(socketCV, &QAbstractSocket::disconnected, socketCV, &QAbstractSocket::deleteLater);
 
     connect (this->socketCV, &QTcpSocket::connected, this, &MainProcess::onSocketConnected_Slot);
     socketCV->connectToHost(CVDev_IP, CVDev_Port);
 
+    //Сохраняем значение указателя, иначе вновь пришедший запрос статуса переписывает его.
+    this->newPtrTcpClient = this->ptrTcpClient;
+
+//    qDebug() << "$$$$$$$$$$$$$$ request_CV thread " << QThread::currentThread();
+//    qDebug() << "$$$$$$$$$$$$$$ request_CV ptrSender " << this->ptrTcpClient;
+
+//    QString mystr = "requestCV Pointer to SENDER QObject is ";
+//    mystr += pointer_to_qstring(this->ptrTcpClient);
+//    GUI_Write_To_Log(0x9999, mystr);
 
 }
 //++++++++++++++++++++++++++++++++++++++++++++++++
@@ -847,19 +849,22 @@ int MainProcess::my_round(int n)
 //++++++++++++++++++++++++++++++++++++++++++++++++++
 // В конкретном проекте с мобильным манипулятором нужно парсить только ответ от CV, так что
 // пока не претендуем на универсальность.
+// JSON-данные пишем в глобальную переменную jsndataObj
+// Нам повезло, что по окончании это ф-ции значение jsndataObj как раз хранит
+// значение объекта "data"
 void MainProcess::traversJson(QJsonObject json_obj)
 {
     QString str;
-    bool isDetected, boolValue;
+    bool isDetected;
     int thevalue = 0x5555;
     foreach(const QString& key, json_obj.keys()) {
         str = "";
         QJsonValue value = json_obj.value(key);
         if(!value.isObject() ){
-                      str +=  "Key = "; str += key; str += ", Value = ";
+//                      str +=  "Key = "; str += key; str += ", Value = ";
                       // Важно. Сначала нужно привести к типу bool
                       //  QVariant(value).toBool() - не работает
-                      if (value.isBool()) {boolValue = value.toBool(); str += QVariant(boolValue).toString();}
+                      if (value.isBool() && key == "detected") {this->DETECTED = value.toBool(); str += QVariant(this->DETECTED).toString();}
                       if (value.isString()) {str += QVariant(value).toString();}
                       if (value.isDouble()) {str += QString::number( QVariant(value).toDouble());}
                       // Хотя у CV в ответе и нет никакого массива, но все же добавим.
@@ -872,8 +877,8 @@ void MainProcess::traversJson(QJsonObject json_obj)
 
 
                      // str += value.toString();
-                      GUI_Write_To_Log(0x5555, str);
-                      str = "";
+//                      GUI_Write_To_Log(0x5555, str);
+//                      str = "";
 
           //qDebug() << "Key = " << key << ", Value = " << value;
          }
@@ -881,30 +886,34 @@ void MainProcess::traversJson(QJsonObject json_obj)
             // А теперь определяем тип данных поля.
              //jsndataObj = json_obj["data"].toObject(); // Так тоже работает, но уже есть привязка к конкретному случаю.
              jsndataObj = value.toObject(); // В нашем случае объект единственный - "data"
+             // При последующем запуске traversJson попадаем уже в блок  if(!value.isObject() )==true
+             // и там достаем "distance"
              // check if there is the key "detected"
-             if (jsndataObj.contains("detected")){
+//             if (jsndataObj.contains("detected")){
 
-                 isDetected = jsndataObj.value("detected").toBool();
+//                 isDetected = jsndataObj.value("detected").toBool();
+//                 //this->DETECTED = jsndataObj.value("detected").toBool();
 
-                 str = "Detected value is ";
-                 str += QVariant(isDetected).toString();
-                 GUI_Write_To_Log(thevalue, str);
+//                 str = "Object Detected value is ";
+//                 str += QVariant(isDetected).toString();
+//                 GUI_Write_To_Log(thevalue, str);
 
-                 if (!isDetected){
-                     GUI_Write_To_Log(thevalue, "!!!!!! Exit. Try Again !!!!!!!!!!!");
-                     return;
-                 }
+//                 if (!isDetected){
+
+//                     GUI_Write_To_Log(thevalue, "!!!!!! No Detection. Exit. Try Again !!!!!!!!!!!");
+//                     return;
+//                 }
 
                  traversJson(jsndataObj);
 
-             } //if (jsndataObj.contains("detected"))
+//             } //if (jsndataObj.contains("detected"))
 
              //traversJson(value.toObject());
 
 
         }//else
 
-        GUI_Write_To_Log(0x5555, str);
+//        GUI_Write_To_Log(0x5555, str);
 
 
     }//foreach
@@ -936,18 +945,18 @@ double MainProcess::parseJSON(QString jsnData)
    // str = QString(jsnAnswer["name"]);
   // GUI_Write_To_Log(value, jsnAnswer["name"]);
 
-  GUI_Write_To_Log(value, "\n");
-  GUI_Write_To_Log(value, "Http headers cutted, so data are as follows !");
-  GUI_Write_To_Log(value, "\n");
+//  GUI_Write_To_Log(value, "\n");
+//  GUI_Write_To_Log(value, "Received data are as follows !");
+//  GUI_Write_To_Log(value, "\n");
 
-  str = substr; // jsnData; // Но тут еще надо обрезать HTTP-заголовки. ОБрезаем все до первого символа '{'
-  GUI_Write_To_Log(value, str);
+    str = substr; // jsnData; // Но тут еще надо обрезать HTTP-заголовки. ОБрезаем все до первого символа '{'
+//  GUI_Write_To_Log(value, str);
  // str = "{\" rc\": 0, \"info\": \"success\",\"name\": \"getposition\", \"data\": {\"detected\": true, \"x\": -15.0, \"y\": -60.0, \"width\": 113, \"height\": 108, \"err_angle\": -1.38117702629722, \"distance\": 209.21150512634233}}";
   //Assign the json text to a JSON object
   jsnDoc = QJsonDocument::fromJson(str.toUtf8(), &jsonError);
-  if(jsnDoc.isObject() == false) GUI_Write_To_Log(value,"It is not a JSON object");
+//  if(jsnDoc.isObject() == false) GUI_Write_To_Log(value,"It is not a JSON object");
   if(jsonError.error != QJsonParseError::NoError){
-          str = "Error: "; str += jsonError.errorString();
+          str = "Error while parcing: "; str += jsonError.errorString();
           GUI_Write_To_Log(value, str);
           return 0.0;
    }       //return;
@@ -959,21 +968,83 @@ double MainProcess::parseJSON(QString jsnData)
 //  str = "JSON data :\n";
 //  QJsonValue name= jsnObj.value("name");
 
-  GUI_Write_To_Log(value, "!!!!!!!!!!!!!!!!!!!! Go to recursive parsing !!!!!!!!!!!!!!!!!!!!");
-  traversJson(jsnObj);
-  GUI_Write_To_Log(value, "!!!!!!!!!!!!!!!!!!!! Get back from recursive parsing !!!!!!!!!!!!!!!!!!!!");
+//  Just for information, so no needed in production
+//  GUI_Write_To_Log(value, "!!!!!!!!!!!!!!!!!!!! Go to recursive parsing !!!!!!!!!!!!!!!!!!!!");
+  traversJson(jsnObj); // Ф-ция заполняет json-объект jsndataObj актуальными данными от CV
+//  GUI_Write_To_Log(value, "!!!!!!!!!!!!!!!!!!!! Get back from recursive parsing !!!!!!!!!!!!!!!!!!!!");
 
 //  // Парсинг JSON закончили, получили глобальную переменную  jsndataObj - это объект "data" : {}. Извлекаем из него данные.
-  // Вот тут мы откуда-то знаем, что есть ключ "distance"... А если его нет ? надо допиливать...
-  double cvdistance = jsndataObj.value("distance").toDouble();
-  str = "Got distance value as double : ";
-  str += QString::number(cvdistance);
+// Проверяем, что "detected": true
+  //this->DETECTED = jsnObj.value("detected").toBool();
+//  str = "Detected value after parcing is "; str += QVariant(this->DETECTED).toString();
+//  GUI_Write_To_Log(value, str);
+
+  if (this->DETECTED != true){
+      jsnStore->isAnyActionRunning = false;
+
+      str = "There is NO DETECTION !!!";
+      GUI_Write_To_Log(value, str);
+      jsnActionAnswer["name"] =  "get_box"; //jsnStore->jsnActionGetBox.value("name");
+      jsnActionAnswer["rc"] = jsnStore->AC_Launch_RC_FAILURE;
+      jsnActionAnswer["info"] = jsnStore->DEV_ACTION_INFO_NODETECT;
+
+      jsnDoc = QJsonDocument(jsnActionAnswer);
+      str = jsnDoc.toJson(QJsonDocument::Compact);
+      // Даем быстрый ответ
+      QMetaObject::invokeMethod(this->newPtrTcpClient, "Data_2_TcpClient_Slot",
+                                Qt::QueuedConnection,
+                                Q_ARG(QString, str),
+                                Q_ARG(qintptr, tcpSocketNumber));
+      // А теперь следует задать значение "action_list": []
+      // Меняем только "rc"
+      jsnActionAnswer["rc"] = JsonInfo::AC_Launch_RC_DONE; // Чтобы экшен мог запуститься
+//        mainjsnObj["name"] = jsnStore->jsnActionGetBox.value("name").toString();
+//        mainjsnObj["info"] = str;
+//        mainjsnObj["state"] = jsnStore->DEV_ACTION_STATE_NODETECT;
+
+      // if this causes dangling pointer, try signal|slot data transfer
+      jsnStore->setActionData(jsnActionAnswer);
+      // emit SetActionData_Signal(mainjsnObj);
+
+      QJsonObject headStatus = {
+          {"rc", RC_SUCCESS}, //RC_SUCCESS
+          {"state", "Waiting"},
+          {"info", "NO DETECTION"}
+      };
+
+      jsnStore->setJsnHeadStatus(headStatus);
+
+      jsnActionAnswer = jsnStore->returnJsnActionGetBox();
+      jsnDoc = QJsonDocument(jsnActionAnswer);
+      str = jsnDoc.toJson(QJsonDocument::Compact);
+      str.insert(0, "New value of get_box :\n");
+      GUI_Write_To_Log(value,str);
+
+      str = " The value of <jsnStore->isAnyActionRunning> is ";
+      str  += QVariant(jsnStore->isAnyActionRunning).toString();
+      GUI_Write_To_Log(value,str);
+
+      str = " The value of <DETECTED> is ";
+      str  += QVariant(this->DETECTED).toString();
+      GUI_Write_To_Log(value,str);
+
+
+      return 0.0;
+
+
+  }
+
+
+    // Вот тут мы откуда-то знаем, что есть ключ "distance"... А если его нет ? надо делать проверку, допиливать...
+    // Выведем весь jsndataObj
+    double cvdistance = jsndataObj.value("distance").toDouble();
+    str = "Got distance value as double : ";
+    str += QString::number(cvdistance);
 
     GUI_Write_To_Log(value, str);
 
-    // Возвращаем distance
     return cvdistance;
-}
+} // parseJSON
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 int MainProcess::getIndexCommand(QString myCommand, QList<QString> theList)
 {
@@ -983,10 +1054,14 @@ int MainProcess::getIndexCommand(QString myCommand, QList<QString> theList)
     message = myCommand;
     int value = 0x3355;
 
+
+
     while (!matched and i< theList.size()){
-        if(message == theList.at(i)) {
+//        if(message == theList.at(i)) {
+// Делаем так из-за команды "setservos=" т.к. значения servos всегда разные
+          if (message.startsWith(theList.at(i))){
             matched = true;
-            qDebug() << value << "Index is " << i;
+//            qDebug() << value << "Index is " << i;
         }
 
         ++i;
@@ -998,8 +1073,8 @@ int MainProcess::getIndexCommand(QString myCommand, QList<QString> theList)
         return -1;
     }
     i--;
-    qDebug() << value << "Index value is" << i;
-    if (i>=0) {qDebug() << "Matched string is " << theList.at(i);}
+//    qDebug() << value << "Index value is" << i;
+//    if (i>=0) {qDebug() << "Matched string is " << theList.at(i);}
 
     return i;
 
@@ -1034,20 +1109,23 @@ void MainProcess::Moving_Done_Slot()
 {
     QString str, myname;
     int value = 0xFAAA;
-    GUI_Write_To_Log(value, "Demo cycle finished !!!");
+    QMutexLocker locker(&mutex02);
+
+//    GUI_Write_To_Log(value, "Demo cycle finished !!!");
     // Меняем статус, теперь "done"
-    std::cout<<"Set DONE to Robot!" << std::endl;
-    Robot->SetCurrentStatus ("done");
-    GUI_Write_To_Log(value, "Now robot status is !!! DONE !!!");
+//    std::cout<<"Set DONE to Robot!" << std::endl;
+//    Robot->SetCurrentStatus ("done");
+
+//    GUI_Write_To_Log(value, "Now robot status is !!! DONE !!!");
 
 
-    currentCommandIndex = -1; // Нет текущих команд манипулятора
+//    currentCommandIndex = -1; // Нет текущих команд манипулятора
 
-    str = "Current json object name is ";
-    myname = mainjsnObj.value("name").toString();
-    str += myname;
-    str += "\n\nAction "; str += myname; str += " is finished !!!\n";
-    GUI_Write_To_Log(value, str);
+//    str = "Current json object name is ";
+//    myname = mainjsnObj.value("name").toString();
+//    str += myname;
+//    str += "\n\nAction "; str += myname; str += " is finished !!!\n";
+//    GUI_Write_To_Log(value, str);
     // Передаем QJsonObject в свой класс и там все меняем через replace...
     // А, по идее, можно данные об объекте извлекать из "action_list": []
     jsnStore->setActionDone(mainjsnObj);
@@ -1087,40 +1165,6 @@ void MainProcess::Moving_Done_Slot()
 
 
 
-    // Предполагаем, что get_box завержился и мы готовы принимать новые команды.
-    // Меняем RC экшена на -4 == "Ожидание"
-//    if (Robot->active_command == "get_box") {
-//        Robot->STAT_getbox_Action.rc = -4; //"Ожидание"
-//        Robot->getbox_Action.rc = -4;
-
-//        GUI_Write_To_Log(value, "The get_box RC-value have changed");
-//        GUI_Write_To_Log(value, "get_box operation is finished !");
-//    }
-
-//    if (Robot->active_command == "parking") {
-//        Robot->parking_Action.rc = -4; //"Ожидание"
-//        GUI_Write_To_Log(value, "The parking RC-value have changed");
-//        GUI_Write_To_Log(value, "parking operation is finished !");
-//    }
-//    if (Robot->active_command == "ready") {
-//        Robot->ready_Action.rc = -4; //"Ожидание"
-//        GUI_Write_To_Log(value, "The ready RC-value have changed");
-//        GUI_Write_To_Log(value, "ready operation is finished !");
-//    }
-
-//    if (Robot->active_command == "formoving") {
-//        Robot->forMoving_Action.rc = -4; //"Ожидание"
-//        GUI_Write_To_Log(value, "The formoving RC-value have changed");
-//        GUI_Write_To_Log(value, "formoving operation is finished !");
-//            }
-
-//    if (Robot->active_command == "put_box") {
-//        Robot->STAT_getbox_Action.rc = -4; //"Ожидание"
-//        Robot->putbox_Action.rc = -4;
-
-//        GUI_Write_To_Log(value, "The put_box RC-value have changed");
-//        GUI_Write_To_Log(value, "put_box operation is finished !");
-//    }
 
 //    if (Robot->active_command == "setservos=") {
 //        Robot->ready_Action.rc = -4; //"Ожидание"
@@ -1150,21 +1194,21 @@ void MainProcess::server_New_Connect_Slot()
 void MainProcess::onSocketConnected_Slot()
 {
  //in.setDevice(socketCV);
- QString str = "CV connection established";
- int value = 0x7777;
- GUI_Write_To_Log(value, str);
+// QString str = "CV connection established";
+// int value = 0x7777;
+// GUI_Write_To_Log(value, str);
 
- str = "Current socket state is ";
+// str = "Current socket state is ";
 
- if (socketCV->state() == QTcpSocket::ConnectedState){str += " Connected State";}
- else {str += " Some OTHER than Connected State !!!!";}
+// if (socketCV->state() == QTcpSocket::ConnectedState){str += " Connected State";}
+// else {str += " Some OTHER than Connected State !!!!";}
 
-    GUI_Write_To_Log(value, str);
+//    GUI_Write_To_Log(value, str);
 
 // A read buffer size of 0 (the default) means that the buffer has no size limit, ensuring that no data is lost.
-    str = "###################### Current TCPSocket BUFFER SIZE is ";
-    str += QString::number(socketCV->readBufferSize());
-    GUI_Write_To_Log(value, str);
+//    str = "###################### Current TCPSocket BUFFER SIZE is ";
+//    str += QString::number(socketCV->readBufferSize());
+//    GUI_Write_To_Log(value, str);
 
 
 
@@ -1183,15 +1227,21 @@ void MainProcess::onSocketConnected_Slot()
 
 // request += "";
 
- GUI_Write_To_Log(0xfefe, "The following Data is going to be sent to CV :");
- GUI_Write_To_Log(0xfefe, request.toUtf8());
+// GUI_Write_To_Log(0xfefe, "The following Data is going to be sent to CV :");
+// GUI_Write_To_Log(0xfefe, request.toUtf8());
  socketCV->write(request.toUtf8());
 
  // Запрос серверу отправили.
  // Ответ от сервера в слоте &MainProcess::CV_NEW_onReadyRead_Slot
 
- mainjsnObj = jsnStore->returnJsnActionGetBox();
- jsnStore->isAnyActionRunning = true;
+ // Дублирование ???
+// mainjsnObj = jsnStore->returnJsnActionGetBox();
+// jsnStore->isAnyActionRunning = true;
+
+// QString mystr = "onSocketConnected_Slot Pointer to SENDER QObject is ";
+// mystr += pointer_to_qstring(this->ptrTcpClient);
+// GUI_Write_To_Log(0x9999, mystr);
+
 
 }
 //+++++++++++++++++++++++++++++++++++
@@ -1341,12 +1391,12 @@ str = "Bytes after reading  "; str += QString::number(afterbytes); GUI_Write_To_
 void MainProcess::CV_onDisconnected()
 {
     int value = 0xf1f1;
-    GUI_Write_To_Log(value, "!!!!!!!!!!!!!!!!! Connection closed to SOCKET device !!!!!!!!!!!!!!!!!!!!");
+    GUI_Write_To_Log(value, "!!!!!!!!!!!!!!!!! Connection closed to CV device !!!!!!!!!!!!!!!!!!!!");
 
   //  socketCV->close();
 }
 //+++++++++++++++++++++++++++++++++++++++++++++++++++
-// Слот сигнала &QIODevice::readyRead
+// Слот сигнала &QIODevice::readyRead, приходит от CV
 // Добавляем парсинг JSON-данных от CV
 // Также меняем значение mainjsnObj
 void MainProcess::CV_NEW_onReadyRead_Slot()
@@ -1354,91 +1404,144 @@ void MainProcess::CV_NEW_onReadyRead_Slot()
     int value = 0xfafa;
     QString message, nextTcpdata, str, substr;
 
+//    QMutexLocker locker(&mutex);
+
     int befbytes = socketCV->bytesAvailable();
-    nextTcpdata = socketCV->readAll();
-    if (befbytes == 17) {// Пришла строка HTTP/1.0 200 OK, обрабатывать не нужно, выходим.
+
+    if (befbytes < 200) {// HTTP/1.0 200 OK == 17 Пришла строка + заголовки, но без тела сообщения(170 символов),
+//                          обрабатывать не нужно, выходим.
+//        DETECTED = true;
+//        GUI_Write_To_Log(value, "Detected [17] is true !!!");
         return;
     }
-//    int afterbytes = socketCV->bytesAvailable();
-
-//    str = "Bytes before reading "; str += QString::number(befbytes); GUI_Write_To_Log(value, str);
-
-//    str = "Bytes after reading  "; str += QString::number(afterbytes); GUI_Write_To_Log(value, str);
+    nextTcpdata = socketCV->readAll();
+    nextTcpdata = nextTcpdata.simplified();
 
 
-    GUI_Write_To_Log(value, "!!!!!!!!!!!!!!!!! There are some CONTROL data from SOCKET device !!!!!!!!!!!!!!!!!!!!");
-    GUI_Write_To_Log(value, nextTcpdata);
+//    GUI_Write_To_Log(value, "!!!!!!!!!!!!!!!!! There are some data from CV device !!!!!!!!!!!!!!!!!!!!");
+//    GUI_Write_To_Log(value, nextTcpdata);
+
+//    str = "Detected value BEFORE parcing is ";
+//    str +=  QVariant(DETECTED).toString();
+//    GUI_Write_To_Log(value, str);
 
     // Запускаю JSON-парсинг
     double cvdistance = parseJSON(nextTcpdata);
+//    str = "Bytes readed "; str += QString::number(nextTcpdata.length());
+//    GUI_Write_To_Log(value, str);
+
+    // Вот тут detected должно быть установлено !!!
+//    if (this->DETECTED != true){
+//        jsnStore->isAnyActionRunning = false;
+
+//        str = "There is NO DETECTION !!!";
+//        GUI_Write_To_Log(value, str);
+//        jsnActionAnswer["name"] =  "get_box"; //jsnStore->jsnActionGetBox.value("name");
+//        jsnActionAnswer["rc"] = jsnStore->AC_Launch_RC_FAILURE;
+//        jsnActionAnswer["info"] = jsnStore->DEV_ACTION_INFO_NODETECT;
+
+//        jsnDoc = QJsonDocument(jsnActionAnswer);
+//        str = jsnDoc.toJson(QJsonDocument::Compact);
+//        // Даем быстрый ответ
+//        QMetaObject::invokeMethod(this->ptrTcpClient, "Data_2_TcpClient_Slot",
+//                                  Qt::QueuedConnection,
+//                                  Q_ARG(QString, str),
+//                                  Q_ARG(qintptr, tcpSocketNumber));
+//        // А теперь следует задать значение "action_list": []
+//        // Меняем только "rc"
+//        jsnActionAnswer["rc"] = JsonInfo::AC_Launch_RC_DONE; // Чтобы экшен мог запуститься
+////        mainjsnObj["name"] = jsnStore->jsnActionGetBox.value("name").toString();
+////        mainjsnObj["info"] = str;
+////        mainjsnObj["state"] = jsnStore->DEV_ACTION_STATE_NODETECT;
+
+//        // if this causes dangling pointer, try signal|slot data transfer
+//        jsnStore->setActionData(jsnActionAnswer);
+//        // emit SetActionData_Signal(mainjsnObj);
+
+//        QJsonObject headStatus = {
+//            {"rc", RC_SUCCESS}, //RC_SUCCESS
+//            {"state", "Waiting"},
+//            {"info", "NO DETECTION"}
+//        };
+
+//        jsnStore->setJsnHeadStatus(headStatus);
+
+//        jsnActionAnswer = jsnStore->returnJsnActionGetBox();
+//        jsnDoc = QJsonDocument(jsnActionAnswer);
+//        str = jsnDoc.toJson(QJsonDocument::Compact);
+//        str.insert(0, "New value of get_box :\n");
+//        GUI_Write_To_Log(value,str);
+
+//        str = " The value of <jsnStore->isAnyActionRunning> is ";
+//        str  += QVariant(jsnStore->isAnyActionRunning).toString();
+//        GUI_Write_To_Log(value,str);
+
+//        str = " The value of <DETECTED> is ";
+//        str  += QVariant(this->DETECTED).toString();
+//        GUI_Write_To_Log(value,str);
+
+
+//        return;
+
+
+//    } // if (this->DETECTED != true)
+
     if (cvdistance < 1.0) { // Это когда нечитаемый ответ от CV, то в ответ приходит 0.0
-        return;
+//      str = "There is INCORRECT value of distance !!!";
+//      GUI_Write_To_Log(value, str);
+        jsnStore->isAnyActionRunning = false;
+
+      return;
 
     }
 
-   // Всё, что ниже - old scool :), все решает json-парсинг
-
-//    message = nextTcpdata;
-//    int sPosition, ePosition; // Индекс строки run в запросе.
-//    sPosition = message.indexOf("distance");
-//    if (sPosition <0) return; // Когда сообщение приходит  частями и в этой части нет слова distance, нам такакя часть неинтересна.
-
-//    sPosition += 11;
-//    ePosition = message.indexOf(",", sPosition);
-//    substr = message.mid(sPosition, (ePosition - sPosition));
-
-
-    // Теперь получили значение distance, оно осталось в локальной переменной cvdistance в функции parseJSON
-    // Парсинг JSON закончили, получили глобальную переменную  jsndataObj - это объект "data" : {}. Извлекаем из него данные.
-   // double cvdistance = jsndataObj.value("distance").toDouble();
-
-   // double cvdistance = substr.toDouble();
-
-//    str = "Got distance in local value as double : ";
-//    str += QString::number(cvdistance);
-
-//    GUI_Write_To_Log(value, str);
+//    cvdistance = 232.24; // Заглушка для тестов
 
     // Переводим double в int и округляем до ближайшего десятка
     int cvd = round(cvdistance);
-    // Получили значение с точностью до 1мм, а нам надо округлить до 10мм.
-
-    // Теперь сопоставляем значение cvd с числами в массиве
-//    str = "!!!!!!!!!!!!!!!!! The distance as int value : ";
+    // Получили значение с точностью до 1мм, а нам надо округлить до 10мм. т.к.
+    // позиции кубика подобраны с разницей в 1см==10мм
+//    str = "The int value of distance is ";
 //    substr =  QString::number(cvd);
 //    str += substr;
 //    GUI_Write_To_Log(value, str);
 
-    unsigned int rDistance = my_round(cvd);
-    str = "!!!!!!!!!!!!!!!!! The distance Is rounded to closest 10x int value : ";
-    substr =  QString::number(rDistance);
-    str += substr;
-    GUI_Write_To_Log(value, str);
 
-    if (rDistance < 110 || rDistance > 230) {
-        str = "!!!!!!!!!!!!!!!!! The FUCKING distance is out of range !!!!!!!!!! ";
+    unsigned int rDistance = my_round(cvd);
+//    str = "!!!!!!!!!!!!!!!!! The distance Is rounded to closest 10x int value : ";
+//    substr =  QString::number(rDistance);
+//    str += substr;
+//    GUI_Write_To_Log(value, str);
+
+    if (rDistance < 110 || rDistance > 270) {
+        jsnStore->isAnyActionRunning = false;
+        str = "!!!!!!!!!!!!!!!!! The distancCV_NEW_onReadyRead_Slote is out of range !!!!!!!!!! ";
         GUI_Write_To_Log(value, str);
         // Вот тут шлём rc==AC_FAILURE -   "экшен не запустился",
         // ОДнако значение rc ставим
         //Robot->getbox_Action.rc = RC_WAIT; // Ставим экшен RC в "waiting"
-        jsnActionAnswer["name"] =  jsnStore->jsnActionGetBox.value("name");
-        jsnActionAnswer["rc"] = jsnStore->AC_Launch_RC_FAILURE;
-        jsnActionAnswer["info"] = jsnStore->DEV_ACTION_INFO_TEST;
+        jsnActionAnswer["name"] = "get_box"; // jsnStore->jsnActionGetBox.value("name").toString();
+        jsnActionAnswer["rc"]   = jsnStore->AC_Launch_RC_FAILURE;
+        jsnActionAnswer["info"] = jsnStore->DEV_ACTION_INFO_OUT;
 
         jsnDoc = QJsonDocument(jsnActionAnswer);
-        //str = jsnDoc.toJson(QJsonDocument::Compact);
-        emit Write_2_TcpClient_Signal (jsnDoc.toJson(QJsonDocument::Compact), this->tcpSocketNumber);
+        str = jsnDoc.toJson(QJsonDocument::Compact);
+        //emit Write_2_TcpClient_Signal (jsnDoc.toJson(QJsonDocument::Compact), this->tcpSocketNumber);
+        QMetaObject::invokeMethod(this->newPtrTcpClient, "Data_2_TcpClient_Slot",
+                                  Qt::QueuedConnection,
+                                  Q_ARG(QString, str),
+                                  Q_ARG(qintptr, tcpSocketNumber));
 
         // А теперь следует задать значение "action_list": []
 
         mainjsnObj["rc"] = JsonInfo::AC_Launch_RC_DONE; // Чтобы экшен мог запуститься
-        mainjsnObj["name"] = jsnStore->jsnActionGetBox.value("name").toString();
+        //mainjsnObj["name"] = jsnStore->jsnActionGetBox.value("name").toString();
         mainjsnObj["info"] = str;
         mainjsnObj["state"] = jsnStore->DEV_ACTION_STATE_FAIL;
 
         // if this causes dangling pointer, try signal|slot data transfer
-        // jsnStore->setActionData(mainjsnObj);
-         emit SetActionData_Signal(mainjsnObj);
+        jsnStore->setActionData(mainjsnObj);
+
 
         return;
     }
@@ -1451,54 +1554,80 @@ void MainProcess::CV_NEW_onReadyRead_Slot()
     GUI_Write_To_Log(value, str);
 
 
-//    afterbytes = socketCV->bytesAvailable();
+//    str = "Current socket number value is ";
+//    str += QString::number(ptrTcpClient);
+//    GUI_Write_To_Log(value, str);
 
-//    str = "2nd !!! Bytes before reading "; str += QString::number(befbytes); GUI_Write_To_Log(value, str);
 
-//    str = "2nd !!! Bytes after reading  "; str += QString::number(afterbytes); GUI_Write_To_Log(value, str);
-
-    // Запускаем захват объекта.  Теперь это значение distance отправляем в ф-цию GetBox
-    this->GetBox(CVDistance);
-    //           //Команду манипулятору запустили. Задаем статус для ответа http-клиенту через структуру HiWonder::ActionState .
-
-               // А из структуры - в JSON-объект
-//    jsnActionAnswer.insert("name", QJsonValue(Robot->getbox_Action.name));
-//    jsnActionAnswer.insert("rc", QJsonValue(Robot->getbox_Action.rc));
-//    jsnActionAnswer.insert("info", QJsonValue(Robot->getbox_Action.info));
-
-    jsnActionAnswer["name"] =  jsnStore->jsnActionGetBox.value("name");
-    jsnActionAnswer["rc"] = jsnStore->AC_Launch_RC_RUNNING;
-    jsnActionAnswer["info"] = jsnStore->DEV_ACTION_STATE_RUN;
-
-    // И теперь вот этот jsnActionAnswer отправляем http-клиенту в ответ на команду "get_box"
-
-    jsnDoc = QJsonDocument(jsnActionAnswer);
-
-    // str = jsnDoc.toJson(QJsonDocument::Compact);
-
-// Отправляем tcp-клиенту ответ на запуск экшена
-    emit Write_2_TcpClient_Signal(jsnDoc.toJson(QJsonDocument::Compact), this->tcpSocketNumber);
-
-// А теперь меням значение
-
-    mainjsnObj["rc"] = JsonInfo::AC_Launch_RC_DONE; //
-    mainjsnObj["name"] = jsnStore->jsnActionGetBox.value("name").toString();
-    mainjsnObj["info"] = jsnStore->jsnActionGetBox.value("info").toString();
+    // Быстрый ответ если все нормально (наконец-то :)
+    jsnStore->isAnyActionRunning = true;
+    //QJsonObject theObj;
+    mainjsnObj["name"]  =  "get_box"; //jsnStore->jsnActionGetBox.value("name").toString();
+    mainjsnObj["rc"]    = jsnStore->AC_Launch_RC_RUNNING;
+    mainjsnObj["info"]  = "Get box by manipulator ARM";// jsnStore->DEV_ACTION_INFO_;
     mainjsnObj["state"] = jsnStore->DEV_ACTION_STATE_RUN;
 
-    // if this causes dangling pointer, try signal|slot data transfer
-    // jsnStore->setActionData(mainjsnObj);
-     emit SetActionData_Signal(mainjsnObj);
+    //Сравнить с SerialRobot, тут не всегда успевает.
+    // Возможно надо заменить глобальный mainjsnObj на локальный, например QJsonObject theObj
+    // Хотя изначально так и было...
+    jsnStore->setActionData(mainjsnObj);
 
 
-}
+//  Если приходит команда "get_box", и сразу за ней - другая/следующая, то здесь видим,
+//  что this->ptrTcpClient имеет значение уже как раз другой, т.е. следующей команды.
+//  А нужный нам адрес объекта, пославшего команду, как раз в this->newPtrTcpClient
+//  Вот ему, т.е. this->newPtrTcpClient, и отправляем ответ.
+
+//    QString mystr = "CV_NEW_onReadyRead_Slot Pointer to SENDER QObject is ";
+//    mystr += pointer_to_qstring(this->ptrTcpClient);
+//    GUI_Write_To_Log(value, mystr);
+
+//    mystr = "CV_NEW_onReadyRead_Slot COPY Pointer to SENDER QObject is ";
+//    mystr += pointer_to_qstring(this->newPtrTcpClient);
+//    GUI_Write_To_Log(value, mystr);
+
+    jsnDoc = QJsonDocument(mainjsnObj);
+    str = jsnDoc.toJson(QJsonDocument::Compact);
+    //emit Write_2_TcpClient_Signal (jsnDoc.toJson(QJsonDocument::Compact), this->tcpSocketNumber);
+    QMetaObject::invokeMethod(this->newPtrTcpClient, "Data_2_TcpClient_Slot",
+                              Qt::QueuedConnection,
+                              Q_ARG(QString, str),
+                              Q_ARG(qintptr, tcpSocketNumber));
+
+// jsnStore->setActionData(theObj); // Так работает на intel
+//    emit SetActionData_Signal(mainjsnObj);
+
+    // Запускаем захват объекта.  Теперь это значение distance отправляем в ф-цию GetBox
+
+//    qDebug() << "$$$$$$$$$$$$$$ CV_NEW_onReadyRead_Slot thread " << QThread::currentThread();
+//    qDebug() << "$$$$$$$$$$$$$$ CV_NEW_onReadyRead_Slot ptrSender " << this->ptrTcpClient;
+//    qDebug() << "$$$$$$$$$$$$$$ CV_NEW_onReadyRead_Slot newPtrSender " << this->newPtrTcpClient;
+
+   // this->GetBox(CVDistance);
+    this->GetBox(cvdistance);
+
+
+} // CV_NEW_onReadyRead_Slot
 //+++++++++++++++++++++++++++++++++++++++++
 // catch the cube
-void MainProcess::GetBox(unsigned int distance)
+void MainProcess::GetBox(double distance)
 {
     QString str;
     int value = 0xA9B9;
-    unsigned char *arrPtr = mob_parking_position;
+    unsigned char *arrPtr = mob_3_final_position;
+    unsigned char finPosition[4] = {FULL_OPENED,90,0,0};
+    double maxVal[2] = {0,0};
+    double minVal[2] = {0,0};
+    double N3_Delta, N4_Delta; // absolute difference among max and minimum values for servo 3,4
+    int S3, S4;
+    double distance_delta; // Расстояние в мм между соседними точками массива набора, точка - значение distance
+    double distance_delta_max; // Расстояние между точкой превышения и distance
+    double distance_delta_min; // Расстояние между точкой "недолёта" и distance
+    double delta;
+    double N3;
+    double N4;
+
+// Проверяем подключены ли приводы.
 
     str = "I'm in GetBox !!! Current distance is ";
     str += QString::number(distance);
@@ -1506,16 +1635,123 @@ void MainProcess::GetBox(unsigned int distance)
     // Пишем в лог Serial порта, чтобы не сливалось со статусами.
     Robot->Write_To_Log(value,str);
 
+
 //    str = "Inside GetBox the Current active command is ";
 //    str += Robot->active_command;
 //    GUI_Write_To_Log(value, str);
 
-// 1st - "unlock"
-    Servos[0]=0;
-    this->send_Data(NOT_LAST); //NOT_LAST LASTONE
+// 1st - "unlock" to be able to get box
+//    Servos[0]=0;
+//    this->send_Data(NOT_LAST); //NOT_LAST LASTONE
+
+
+    //this->CVDistance ;
+
+    // Разницу в дистанции конвертируем в разницу углов серво
+    for(int i=0; i<ROWS; i++){
+
+        if(mob_3_position[i][0] == round(distance)){
+            finPosition[2] = mob_3_position[i][1];
+            finPosition[3] = mob_3_position[i][2];
+            str = "Position matched the distance !!!";
+            Robot->Write_To_Log(value, str);
+            break;
+        }
+
+        if(round(distance) < mob_3_position[i][0])
+        {
+            if (i==0) {
+                str = "It's to close !!! Move back  little";
+
+                Robot->Write_To_Log(value, str);
+                break;
+            }
+           ;
+        } // идем дальше, ничео не делаем.
+
+        // Нашли в массиве mob_3_position соседние значения, между которыми находится фактическая  дистанция
+
+        if(mob_3_position[i][0] > distance) // Останавливаем итерацию, начинаем обработку.
+        {
+
+
+            maxVal[0] =  mob_3_position[i][1]; // servo 3 major value
+            maxVal[1] =  mob_3_position[i][2]; // servo 4 major value
+
+            minVal[0] =  mob_3_position[i-1][1]; // servo 3 minor value
+            minVal[1] =  mob_3_position[i-1][2]; // servo 4 minor value
+
+            // count the delta of servos 3,4  between max and previous
+            N3_Delta = maxVal[0] - minVal[0];
+            //Тут вычитаем наоборот, т.к. в 4 приводе идет уменьшение угла с увеличением дистанции
+            N4_Delta = minVal[1] - maxVal[1] ;
+
+            str = "N3 absolute delta <N3_Delta> is "; str += QString::number(N3_Delta); str += "; ";
+            str += "N4 absolute delta <N4_Delta> is "; str += QString::number(N4_Delta);
+            Robot->Write_To_Log(value, str);
+
+            distance_delta = mob_3_position[i][0] - mob_3_position[i-1][0];
+            distance_delta_max = mob_3_position[i][0] - distance;
+            distance_delta_min = distance - mob_3_position[i-1][0];
+            str = "Distance delta <distance_delta> is "; str += QString::number(distance_delta);
+            Robot->Write_To_Log(value, str);
+
+//         __________.minVal______________________________.distance____________.maxVal
+
+            // пляшем от точки "недолета", к её занчениям приводов добавляем, чтобы достать до предмета (в точку distance).
+            delta = distance_delta_min/distance_delta;
+            str = "Relation of distance delta_min to delta <delta> is "; str += QString::number(delta);
+            Robot->Write_To_Log(value, str);
+
+            N3 = N3_Delta*delta;
+            N4 = N4_Delta*delta;
+            str = "N3 servo delta <N3> is "; str += QString::number(N3); str += "; ";
+            str += "N4 servo delta <N4> is "; str += QString::number(N4);
+            Robot->Write_To_Log(value, str);
+
+
+            // Servo 3,4 values counted from "previous" position
+            N3 = mob_3_position[i-1][1] + N3_Delta*delta;
+            //Тут вычитаем, т.к. в 4 приводе идет уменьшение угла с увеличением дистанции
+            N4 = mob_3_position[i-1][2] - N4_Delta*delta;
+            str = "from <previous>  Servo 3 <N3> is "; str += QString::number(N3);  str += "; ";
+            str += "from <previous>  Servo 4 <N4 >is "; str += QString::number(N4);
+            //GUI_Write_To_Log(value, str);
+            Robot->Write_To_Log(value, str);
+
+
+            S3 = round(N3);
+            S4 = round(N4);
+            str = "from <previous>  Servo 3 as integer is "; str += QString::number(S3);  str += "; ";
+            str += "from <previous>  Servo 4 as integer is "; str += QString::number(S4);
+            Robot->Write_To_Log(value, str);
+
+            // Convert to unsigned char
+//            unsigned char* bytes = reinterpret_cast<unsigned char*>(&S3);
+//            *(mob_3_final_position +2)  = *bytes;
+            finPosition[2] = S3;
+//            bytes = reinterpret_cast<unsigned char*>(&S4);
+//            *(mob_3_final_position +3) = *bytes;
+            finPosition[3] = S4;
+            str = "Servo 3 as unsigned char is "; str += QString::number(finPosition[2]);  str += "; ";
+            str += "Servo 4 as as unsigned char is "; str += QString::number(finPosition[3]);
+            Robot->Write_To_Log(value, str);
+
+            break;
+
+        }
+
+
+    } //for(int i=0; i<ROWS; i++)
+
+
+
+
+
 
 
     // Выбираем массив углов через switch, потом попробуем через словарь, т.е. ключ - значение, где значением будет массив
+ /*
     switch (distance)
     {
    // unsigned char ptr;
@@ -1533,26 +1769,27 @@ void MainProcess::GetBox(unsigned int distance)
     case 190: arrPtr = mob_2_pos_19; break;
     case 200: arrPtr = mob_2_pos_20; break;
     case 210: arrPtr = mob_2_pos_21; break;
-    case 220: arrPtr = mob_2_pos_21; break;
-//    case 230: arrPtr = mob_2_pos_23; break;
-    //+++++++++++
-    case 250: arrPtr =  mob_3_pos_25; break;//247->250 35,90,135,72
-    case 240: arrPtr =  mob_3_pos_24; break;//244->240 35,90,132,72
-    case 230: arrPtr =  mob_3_pos_22; break;//220 35,90,125,80
+    //case 220: arrPtr = mob_2_pos_21; break;
+    //case 230: arrPtr = mob_2_pos_23; break;
+    //++++++++++++++++++++++++++++++++++++++
+    case 220: arrPtr = mob_3_pos_22; break;
+    case 230: arrPtr = mob_3_pos_22; break;
+    case 240: arrPtr = mob_3_pos_24; break;
+    case 250: arrPtr = mob_3_pos_25; break;
 
 
       default:
         GUI_Write_To_Log(value, "!!!!! Unrecognized position, Go to Parking !!!!");
         arrPtr = mob_parking_position; break;
         // Если позиция за рамками руки, значит что-то с распознаванием. Переводим в статус "waiting"
-        Robot->getbox_Action.rc = RC_WAIT; //"waiting"
+        //Robot->getbox_Action.rc = RC_WAIT; //"waiting"
       break;
 
     } //switch (distance)
-
+*/
     //+++++++++++++++++++++++ Опустить хват для взятия кубика
-     memcpy(Servos, arrPtr, DOF);
-     this->send_Data(NOT_LAST);  // Уже не LASTONE
+//     memcpy(Servos, finPosition, DOF); //arrPtr
+//     this->send_Data(LASTONE);  // Уже не  NOT_LAST
 /*
  Это мы только опустили захват в нужную точку.
  Далее нужно следующее :
@@ -1563,25 +1800,34 @@ void MainProcess::GetBox(unsigned int distance)
 */
 
      //++++++++++++++++++++++ Сжать захват
-    str = "BEFORE CATCH Servo[0] is ";
-    str += QString::number(Servos[0]);
-    GUI_Write_To_Log(value, str);
+//    str = "BEFORE CATCH Servo[0] is ";
+//    str += QString::number(Servos[0]);
+//    GUI_Write_To_Log(value, str);
 
 //     quint8 FULL_OPENED, FULL_CLOSED;
 //     FULL_CLOSED = 90;
 //     FULL_OPENED = 35;
-     Servos[0]=FULL_CLOSED;
-     this->send_Data(NOT_LAST);  // Уже не LASTONE
+//     Servos[0]=FULL_CLOSED;
+//     this->send_Data(LASTONE);  // Уже не LASTONE NOT_LAST
 
 
      //++++++++++++++++++++++ в позицию formoving, теперь последняя
-     memcpy(Servos, mob_moving_position, DOF);
-     this->send_Data(LASTONE);
+//    Servos[0]=FULL_OPENED;
+//    this->send_Data(NOT_LAST); //NOT_LAST LASTONE
 
-    str = "!!!!!!!!!!!!!!!! The command Action \"";
-    str += Robot->getbox_Action.name; str += "\"";
-    str += " has been sent to manipulator";
-    GUI_Write_To_Log(value, str);
+
+     memcpy(Servos, finPosition, DOF);
+     this->send_Data(NOT_LAST); //not last
+
+     Servos[0]=FULL_CLOSED;
+     this->send_Data(LASTONE); //NOT_LAST LASTONE
+
+
+
+//    str = "!!!!!!!!!!!!!!!! The command Action \"";
+//    str += Robot->getbox_Action.name; str += "\"";
+//    str += " has been sent to manipulator";
+//    GUI_Write_To_Log(value, str);
     // А теперь копируем структуру (Robot->getbox_Action) в json
 
 
@@ -1601,6 +1847,11 @@ void MainProcess::data_from_CVDevice_Slot(QString message)
 
 }
 //++++++++++++++++++++++++++++++++++++++
+void MainProcess::LogFile_Open(QString fname)
+{
+    mobWebLogFile.setFileName(fname);
+    mobWebLogFile.open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text);
+}// LogFile_Open
 
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -1610,6 +1861,63 @@ void MainProcess::update_Servos_from_position(unsigned char *pos)
     for (int i =0; i< DOF; i++) { Servos[i] = pos[i]; }
 
 }
+//+++++++++++++++++++++++++++++
+QString MainProcess::pointer_to_qstring(void *ptr)
+{
+    char temp[16];
+    sprintf(temp, "%8p", ptr);
+    return QString(static_cast<char *>(temp));
+}
+//++++++++++++++++++++++++++++++++++++++++++++++++++++
+void MainProcess::returnActionLaunch(QJsonObject &theObj, QObject* theSender)
+{
+    QString str;
+    int value = 0x3939;
+//    str = "I'm in returnActionLaunch";
+//    GUI_Write_To_Log(value, str);
 
+    if (!Robot->SerialIsOpened){
+       jsnStore->isAnyActionRunning = false;
+       theObj["rc"] = RC_FAIL;
+       theObj["info"] = str;
+       theObj["state"] = jsnStore->DEV_ACTION_STATE_FAIL;
+       jsnStore->setActionData(theObj);
+       str = "Serial port is UNAVAILABLE !!! CAN'T move the ARM !!! Action is FAILED !!!";
+       GUI_Write_To_Log(value, str);
+       return;
+   }
+
+
+
+
+    jsnStore->isAnyActionRunning = true;
+    theObj["rc"] = RC_SUCCESS;
+    theObj["rc"] = jsnStore->AC_Launch_RC_RUNNING;//RC_SUCCESS; // Now state "inprogress" //theObj
+    theObj["state"] = jsnStore->DEV_ACTION_STATE_RUN;
+
+    jsnStore->setActionData(theObj);
+
+
+    str = QJsonDocument(theObj).toJson(QJsonDocument::Indented);
+    QMetaObject::invokeMethod(theSender, "Data_2_TcpClient_Slot",
+                              Qt::QueuedConnection,
+                              Q_ARG(QString, str),
+                              Q_ARG(qintptr, tcpSocketNumber));
+
+    QJsonObject headStatus = {
+        {"rc", RC_SUCCESS}, //RC_SUCCESS
+        {"state", "Running"},
+        {"info", "Action performing"}
+    };
+
+    jsnStore->setJsnHeadStatus(headStatus);
+
+
+
+    // И вот тут проверяем подключены ли сервоприводы.
+    // Это время затратно.
+
+
+}
 
 

@@ -15,6 +15,8 @@
 #include <QJsonArray>
 #include <QJsonParseError>
 #include <QVariantMap>
+#include <QMetaObject>
+
 //#include <QSharedPointer>
 
 using ordered_json = nlohmann::ordered_json;
@@ -24,22 +26,23 @@ class JsonInfo : public QObject
 {
     Q_OBJECT
 public:
-    JsonInfo();
-     QJsonObject jsnObj1;
-     QJsonObject jsnObj2;
+    JsonInfo(QString deviceName);
+    QString DEV_NAME;
+    QJsonObject jsnObj1;
+    QJsonObject jsnObj2;
 
 //     QJsonParseError jsonError; // ОШибка, если полученные данные - не JSON-объект
 
 //     QString jsnData;
 //     QJsonArray actions_list;
 
-     std::string s1;
-     QVariantMap map;
+    std::string s1;
+    QVariantMap map;
 
 
     //++++++++++++++++++++++ JSON data +++++++++++++++++++++++++++++++++++++++++++++
 
-    #define DEV_NAME "HIWONDER"   // device name - mobile manipulator
+//    #define DEV_NAME "HIWONDER"   // device name - mobile manipulator
     #define RC_SUCCESS 0             // запрос выполнен успешно
     #define RC_WRONG_VALUE  -1     // неверные параметры
     #define RC_UNDEFINED    -2       // action с таким именем не найден
@@ -110,10 +113,17 @@ public:
      QJsonObject jsnActionGetBox;    // mobman
      QJsonObject jsnActionReady;     // mobman
      QJsonObject jsnActionForMoving; // mobman "formoving"
+     QJsonObject jsnActionDetach;    // mobman "detach"
+     QJsonObject jsnActionAttach;    // mobman "attach"
+     QJsonObject jsnActionSetservos; // mobman "setservos="
 
      QJsonObject jsnActionList;  // list for "action_list" key
      QJsonArray  jsnArray;       // list for action_list
      QJsonArray  jsnObjArray;    // array of objects
+
+     //++++++++++++++++++++ NEW Actions
+     QJsonObject jsnActionForMovingNEW; // mobman "formoving"
+
 
 
      QList<QJsonObject> actionListp;
@@ -125,14 +135,19 @@ public:
 
     const char* DEV_ACTION_INFO = "Action is already running";
     const char* DEV_ACTION_INFO_OUT = "The object distance is out of range";
-    const char* DEV_ACTION_INFO_TEST = "TEST TEST TEST";
+    const char* DEV_ACTION_INFO_NODETECT = "NO DETECTION";
+    const char* DEV_ACTION_INFO_INCORRECT = "INCORRECT distance";
 
     const char* DEV_ACTION_STATE_FAIL = "fail";
     const char* DEV_ACTION_STATE_RUN = "inprogress";
+    const char* DEV_ACTION_STATE_NODETECT = "NO DETECTION";
+    const char* DEV_ACTION_STATE_INCORRECT = "INCORRECT distance";
+
 
 
     void init_json();
     void init_actions();
+    void init_actions_new();
     void resetAllActions();
     QString merge_json(QJsonObject src, QJsonObject dst);
 
@@ -154,8 +169,12 @@ public:
     QJsonObject& returnJsnActionParking();
     QJsonObject& returnJsnActionReady();
     QJsonObject& returnJsnActionForMoving();
+    QJsonObject& returnJsnActionDetach();
+    QJsonObject& returnJsnActionAttach();
+    QJsonObject& returnJsnAcionSetservos();
 
-    QJsonObject returnAllActions();
+    QString returnAllActions();
+
 
     bool isAnyActionRunning; // флаг, что выополняется экшен
     void setActionDone(QJsonObject &theObj);  //Меняем rc of action upon device moving
@@ -165,10 +184,11 @@ public:
     bool eraseArray(QJsonArray &theArray); // Очистка массива
     void setHeadStatusFail(); // serial port problem
     void setActionStart2NoDetection();
-    void createActionList(); // Подготовить список активных (выполняемых в данный момент) экшенов
+    QString createActionList(); // Подготовить список активных (выполняемых в данный момент) экшенов
     void SetJsnActionCollapse(QJsonObject &theObj);
     void SetJsnActionStandUP(QJsonObject &theObj);
     void setActionData(QJsonObject &theObj); // Меняем данные экшенов на данные "снаружи", целевой экшен определяем по name
+
 
 
     // Структура хранит данные для json-ответа.
@@ -221,6 +241,7 @@ private:
     ordered_json jsnGetServicesAnswer; // Ответ на команду "/service?name=getservices"
     ordered_json jsnGetActionsAnswer; // Ответ на команду "/service?name=getactions"
     ordered_json jsnList; // JSON-объект Хранит JSON-список
+    ordered_json ordjsnHeadStatus;  // Шапка в ответе в формате nlohmann
 
 //    ordered_json jsnInfo;
     // List of actions
@@ -230,6 +251,14 @@ private:
     ordered_json jsnOB1;  // Объект для шапки, "заголовок"
     ordered_json jsnOB2;  // Объект для списка
     ordered_json jsnOB3;  // Объект результирующий.
+
+    ordered_json& QtJson_2_NlohmannJson(QJsonObject theObj);     //convert single QJsonObject action tosingle  ordered_json object
+    ordered_json& QtJson_2_NlohmannJson_Head(QJsonObject theObj);// convert header of each answer
+    ordered_json& getAllActionsOrderedJson(QJsonObject theObj);
+    ordered_json actStatuses; // Хранит статусы экшена. ключ — имя статуса, значение — описание данного статуса.
+    ordered_json actGetStatuses; // ТО же для команды "get_box", есть особые статусы
+    ordered_json actSetServoParams;
+
 
     // Порядок элементов должен совпадать с action_lst
     //QList<QJsonObject> actionList = {&jsnActionClamp, &jsnActionStart};

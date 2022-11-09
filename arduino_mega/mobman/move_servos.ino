@@ -205,7 +205,7 @@ byte get_max_delta_00 (byte *arr)
   int maxdelta, index;
   maxdelta=0;
   index=0;
-  for (int i=0; i<serv_number -1; i++)
+  for (int i=0; i<serv_number; i++)
   {
     if (arr[i] > maxdelta)
     {
