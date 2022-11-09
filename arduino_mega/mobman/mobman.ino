@@ -69,26 +69,18 @@ void setup() {
 // attach servos to correspondent pin
    for (int i=0; i< serv_number; i++)  { servos[i].attach(servoPins[i]); } //, 500, 2500;
   
-  servos[0].attach(2);
-  servos[1].attach(3);
-  servos[2].attach(4);
-  servos[3].attach(7);
+//  servos[0].attach(2);
+//  servos[1].attach(3);
+//  servos[2].attach(4);
+//  servos[3].attach(7);
   
-  //smoothStart();
-
-//  move_servo_together(hwr_Start_position, 1, 6);
   delay(1000);
 
-/// Это parking?
-
-//servos[0].write(35);
-//servos[1].write(1);
-//servos[2].write(45);
-//servos[3].write(90);
+// Это parking
 
 servos[0].write(45);
 servos[1].write(90);
-servos[2].write(45);
+servos[2].write(58);
 servos[3].write(180);
 
 
