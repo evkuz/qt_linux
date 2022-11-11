@@ -1615,7 +1615,7 @@ void MainProcess::GetBox(double distance)
     QString str;
     int value = 0xA9B9;
     unsigned char *arrPtr = mob_3_final_position;
-    unsigned char finPosition[4] = {FULL_OPENED,90,0,0};
+    unsigned char finPosition[4] = {FULL_OPENED,90,0,0}; // final, evaluated values for servos
     double maxVal[2] = {0,0};
     double minVal[2] = {0,0};
     double N3_Delta, N4_Delta; // absolute difference among max and minimum values for servo 3,4
@@ -1661,7 +1661,7 @@ void MainProcess::GetBox(double distance)
         if(round(distance) < mob_3_position[i][0])
         {
             if (i==0) {
-                str = "It's to close !!! Move back  little";
+                str = "It's too close !!! Move back a little";
 
                 Robot->Write_To_Log(value, str);
                 break;
@@ -1690,7 +1690,7 @@ void MainProcess::GetBox(double distance)
             str += "N4 absolute delta <N4_Delta> is "; str += QString::number(N4_Delta);
             Robot->Write_To_Log(value, str);
 
-            distance_delta = mob_3_position[i][0] - mob_3_position[i-1][0];
+            distance_delta = mob_3_position[i][0] - distance;// mob_3_position[i-1][0];
             distance_delta_max = mob_3_position[i][0] - distance;
             distance_delta_min = distance - mob_3_position[i-1][0];
             str = "Distance delta <distance_delta> is "; str += QString::number(distance_delta);
@@ -1744,91 +1744,17 @@ void MainProcess::GetBox(double distance)
 
     } //for(int i=0; i<ROWS; i++)
 
+//+++++++++++++++++++++++ Опустить хват для взятия кубика, хват открыт
+    memcpy(Servos, finPosition, DOF);
+    this->send_Data(NOT_LAST); //not last
 
+//++++++++++++++++++++++ Сжать захват
+    Servos[0]=FULL_CLOSED;
+    this->send_Data(NOT_LAST); //NOT_LAST LASTONE
 
-
-
-
-
-    // Выбираем массив углов через switch, потом попробуем через словарь, т.е. ключ - значение, где значением будет массив
- /*
-    switch (distance)
-    {
-   // unsigned char ptr;
-
-
-
-    case 110: arrPtr = mob_2_pos_11; break;
-    case 120: arrPtr = mob_2_pos_12; break;
-    case 130: arrPtr = mob_2_pos_13; break;
-    case 140: arrPtr = mob_2_pos_14; break;
-    case 150: arrPtr = mob_2_pos_15; break;
-    case 160: arrPtr = mob_2_pos_16; break;
-    case 170: arrPtr = mob_2_pos_17; break;
-    case 180: arrPtr = mob_2_pos_18; break;
-    case 190: arrPtr = mob_2_pos_19; break;
-    case 200: arrPtr = mob_2_pos_20; break;
-    case 210: arrPtr = mob_2_pos_21; break;
-    //case 220: arrPtr = mob_2_pos_21; break;
-    //case 230: arrPtr = mob_2_pos_23; break;
-    //++++++++++++++++++++++++++++++++++++++
-    case 220: arrPtr = mob_3_pos_22; break;
-    case 230: arrPtr = mob_3_pos_22; break;
-    case 240: arrPtr = mob_3_pos_24; break;
-    case 250: arrPtr = mob_3_pos_25; break;
-
-
-      default:
-        GUI_Write_To_Log(value, "!!!!! Unrecognized position, Go to Parking !!!!");
-        arrPtr = mob_parking_position; break;
-        // Если позиция за рамками руки, значит что-то с распознаванием. Переводим в статус "waiting"
-        //Robot->getbox_Action.rc = RC_WAIT; //"waiting"
-      break;
-
-    } //switch (distance)
-*/
-    //+++++++++++++++++++++++ Опустить хват для взятия кубика
-//     memcpy(Servos, finPosition, DOF); //arrPtr
-//     this->send_Data(LASTONE);  // Уже не  NOT_LAST
-/*
- Это мы только опустили захват в нужную точку.
- Далее нужно следующее :
-
- - Закрыть захват
- - Поднять в позицию "Have_Cube"
- - Жать дальнейший указаний от ЦУП
-*/
-
-     //++++++++++++++++++++++ Сжать захват
-//    str = "BEFORE CATCH Servo[0] is ";
-//    str += QString::number(Servos[0]);
-//    GUI_Write_To_Log(value, str);
-
-//     quint8 FULL_OPENED, FULL_CLOSED;
-//     FULL_CLOSED = 90;
-//     FULL_OPENED = 35;
-//     Servos[0]=FULL_CLOSED;
-//     this->send_Data(LASTONE);  // Уже не LASTONE NOT_LAST
-
-
-     //++++++++++++++++++++++ в позицию formoving, теперь последняя
-//    Servos[0]=FULL_OPENED;
-//    this->send_Data(NOT_LAST); //NOT_LAST LASTONE
-
-
-     memcpy(Servos, finPosition, DOF);
-     this->send_Data(NOT_LAST); //not last
-
-     Servos[0]=FULL_CLOSED;
-     this->send_Data(LASTONE); //NOT_LAST LASTONE
-
-
-
-//    str = "!!!!!!!!!!!!!!!! The command Action \"";
-//    str += Robot->getbox_Action.name; str += "\"";
-//    str += " has been sent to manipulator";
-//    GUI_Write_To_Log(value, str);
-    // А теперь копируем структуру (Robot->getbox_Action) в json
+//++++++++++++++++++++++ в позицию formoving, теперь последняя
+    memcpy(Servos, mob_2_moving_position, DOF);
+    this->send_Data(LASTONE); //NOT_LAST LASTONE
 
 
 
