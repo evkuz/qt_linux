@@ -169,7 +169,7 @@
 52:641 > 0xf001: Robot TOTALLY finished complex command
 
 
-
+mob_2_pos_xx
 29:249 > 0xa9b9: I'm in GetBox !!! Current distance is 192.053
 29:25 > 0xa9b9: N3 absolute delta <N3_Delta> is 10; N4 absolute delta <N4_Delta> is 4
 29:25 > 0xa9b9: Distance delta <distance_delta> is 7.94731

@@ -37,7 +37,7 @@ public:
     bool toBeClosed; // Поток для сокета закрываем, Сокет без данных закрываем.
     QString current_status;
     QThread *threadID;
-    //QFile iconFile; // file of icon
+    //QFile iconFile; // file of icon                        1                            3                                 5
     const QList<QString>  strcommand = { "/run?cmd=", "/service?name=", "/status", "/status?action=", "/action?name=", "/favicon"};
 #define ICON_FILE_PATH "../favicon.png" // Путь к файлу иконки
 
@@ -75,6 +75,9 @@ public slots:
 
     // slot for QAbstractSocket::errorOccurred() signal
     void displayError(QAbstractSocket::SocketError); //
+
+    // slot for signal void QObject::destroyed(QObject *obj = nullptr)
+    void onDestroyedThread(QObject *threadDestroyed);
 
 
 

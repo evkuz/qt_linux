@@ -1345,34 +1345,34 @@ str = "Bytes after reading  "; str += QString::number(afterbytes); GUI_Write_To_
         arrPtr = mob_parking_position;
 
         // Выбираем массив углов через switch, потом попробуем через словарь, т.е. ключ - значение, где значением будет массив
-        switch (rDistance)
-        {
-       // unsigned char ptr;
+//        switch (rDistance)
+//        {
+//       // unsigned char ptr;
 
-            case 110: arrPtr = mob_pos_11; break;
-            case 120: arrPtr = mob_pos_12; break;
-            case 130: arrPtr = mob_pos_13; break;
-            case 140: arrPtr = mob_pos_14; break;
-            case 150: arrPtr = mob_pos_15; break;
-            case 160: arrPtr = mob_pos_16; break;
-            case 170: arrPtr = mob_pos_17; break;
-            case 180: arrPtr = mob_pos_18; GUI_Write_To_Log(value, "!!!!! Matched Go to position !!!!");break;
-            case 190: arrPtr = mob_pos_19; break;
-            case 200: arrPtr = mob_pos_20; break;
-            case 210: arrPtr = mob_pos_21; break;
-            case 220: arrPtr = mob_pos_21; break;
-            case 230: arrPtr = mob_pos_23; break;
+//            case 110: arrPtr = mob_pos_11; break;
+//            case 120: arrPtr = mob_pos_12; break;
+//            case 130: arrPtr = mob_pos_13; break;
+//            case 140: arrPtr = mob_pos_14; break;
+//            case 150: arrPtr = mob_pos_15; break;
+//            case 160: arrPtr = mob_pos_16; break;
+//            case 170: arrPtr = mob_pos_17; break;
+//            case 180: arrPtr = mob_pos_18; GUI_Write_To_Log(value, "!!!!! Matched Go to position !!!!");break;
+//            case 190: arrPtr = mob_pos_19; break;
+//            case 200: arrPtr = mob_pos_20; break;
+//            case 210: arrPtr = mob_pos_21; break;
+//            case 220: arrPtr = mob_pos_21; break;
+//            case 230: arrPtr = mob_pos_23; break;
 
 
-          default:
-            substr =  QString::number(rDistance);
-            str = "!!!!! Unrecognized position, Go to Parking !!!! ";
-            str += substr;
-            GUI_Write_To_Log(value, str);
-            arrPtr = mob_parking_position;
-          break;
+//          default:
+//            substr =  QString::number(rDistance);
+//            str = "!!!!! Unrecognized position, Go to Parking !!!! ";
+//            str += substr;
+//            GUI_Write_To_Log(value, str);
+//            arrPtr = mob_parking_position;
+//          break;
 
-        }// switch (rDistance)
+//        }// switch (rDistance)
 
         memcpy(Servos, arrPtr, DOF);
         this->send_Data(LASTONE);
@@ -1517,7 +1517,7 @@ void MainProcess::CV_NEW_onReadyRead_Slot()
         jsnStore->isAnyActionRunning = false;
         str = "!!!!!!!!!!!!!!!!! The distancCV_NEW_onReadyRead_Slote is out of range !!!!!!!!!! ";
         GUI_Write_To_Log(value, str);
-        // Вот тут шлём rc==AC_FAILURE -   "экшен не запустился",
+        // Вот тут ставим статус rc==AC_FAILURE -   "экшен не запустился",
         // ОДнако значение rc ставим
         //Robot->getbox_Action.rc = RC_WAIT; // Ставим экшен RC в "waiting"
         jsnActionAnswer["name"] = "get_box"; // jsnStore->jsnActionGetBox.value("name").toString();
@@ -1527,10 +1527,10 @@ void MainProcess::CV_NEW_onReadyRead_Slot()
         jsnDoc = QJsonDocument(jsnActionAnswer);
         str = jsnDoc.toJson(QJsonDocument::Compact);
         //emit Write_2_TcpClient_Signal (jsnDoc.toJson(QJsonDocument::Compact), this->tcpSocketNumber);
-        QMetaObject::invokeMethod(this->newPtrTcpClient, "Data_2_TcpClient_Slot",
-                                  Qt::QueuedConnection,
-                                  Q_ARG(QString, str),
-                                  Q_ARG(qintptr, tcpSocketNumber));
+//        QMetaObject::invokeMethod(this->newPtrTcpClient, "Data_2_TcpClient_Slot",
+//                                  Qt::QueuedConnection,
+//                                  Q_ARG(QString, str),
+//                                  Q_ARG(qintptr, tcpSocketNumber));
 
         // А теперь следует задать значение "action_list": []
 
@@ -1586,13 +1586,14 @@ void MainProcess::CV_NEW_onReadyRead_Slot()
 //    mystr += pointer_to_qstring(this->newPtrTcpClient);
 //    GUI_Write_To_Log(value, mystr);
 
-    jsnDoc = QJsonDocument(mainjsnObj);
-    str = jsnDoc.toJson(QJsonDocument::Compact);
-    //emit Write_2_TcpClient_Signal (jsnDoc.toJson(QJsonDocument::Compact), this->tcpSocketNumber);
-    QMetaObject::invokeMethod(this->newPtrTcpClient, "Data_2_TcpClient_Slot",
-                              Qt::QueuedConnection,
-                              Q_ARG(QString, str),
-                              Q_ARG(qintptr, tcpSocketNumber));
+//11.11.2022 Ничего не отправляем, быстрый ответ был в tcpParcing.cpp
+//    jsnDoc = QJsonDocument(mainjsnObj);
+//    str = jsnDoc.toJson(QJsonDocument::Compact);
+//    //emit Write_2_TcpClient_Signal (jsnDoc.toJson(QJsonDocument::Compact), this->tcpSocketNumber);
+//    QMetaObject::invokeMethod(this->newPtrTcpClient, "Data_2_TcpClient_Slot",
+//                              Qt::QueuedConnection,
+//                              Q_ARG(QString, str),
+//                              Q_ARG(qintptr, tcpSocketNumber));
 
 // jsnStore->setActionData(theObj); // Так работает на intel
 //    emit SetActionData_Signal(mainjsnObj);
@@ -1795,6 +1796,8 @@ QString MainProcess::pointer_to_qstring(void *ptr)
     return QString(static_cast<char *>(temp));
 }
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Вообще, по названию - это должен быть быстрый ответ.
+// А по факту - подготовка списка состояний экшенов для запроса статуса.
 void MainProcess::returnActionLaunch(QJsonObject &theObj, QObject* theSender)
 {
     QString str;
@@ -1823,13 +1826,6 @@ void MainProcess::returnActionLaunch(QJsonObject &theObj, QObject* theSender)
 
     jsnStore->setActionData(theObj);
 
-
-    str = QJsonDocument(theObj).toJson(QJsonDocument::Indented);
-    QMetaObject::invokeMethod(theSender, "Data_2_TcpClient_Slot",
-                              Qt::QueuedConnection,
-                              Q_ARG(QString, str),
-                              Q_ARG(qintptr, tcpSocketNumber));
-
     QJsonObject headStatus = {
         {"rc", RC_SUCCESS}, //RC_SUCCESS
         {"state", "Running"},
@@ -1838,7 +1834,18 @@ void MainProcess::returnActionLaunch(QJsonObject &theObj, QObject* theSender)
 
     jsnStore->setJsnHeadStatus(headStatus);
 
+// Тут не нужно ничего отсылать в tcp-сокет.
+// Отправка в сокет случится, когда придет запрос статуса.
+/*
 
+    str = QJsonDocument(theObj).toJson(QJsonDocument::Indented);
+    QMetaObject::invokeMethod(theSender, "Data_2_TcpClient_Slot",
+                              Qt::QueuedConnection,
+                              Q_ARG(QString, str),
+                              Q_ARG(qintptr, tcpSocketNumber));
+
+
+*/
 
     // И вот тут проверяем подключены ли сервоприводы.
     // Это время затратно.

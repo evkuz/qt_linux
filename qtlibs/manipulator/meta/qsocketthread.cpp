@@ -109,17 +109,17 @@ void QSocketThread::favIconAnswer()
 
 
 
-    qDebug() << value << " Favicon Current socket " << this->socketDescriptor << " state is " << this->socket->state();
+    qDebug() << value << "Favicon Current socket " << this->socketDescriptor << " state is " << this->socket->state();
     qDebug() << "Going to SEND FAVICON FAVICON FAVICON data to socket with an desctiptor " << QString::number(this->socketDescriptor);
 
     int bytesWritten = socket->write(response.toUtf8());
 //    int bytesWritten = socket->write(ba);
     socket->disconnectFromHost();
-//    emit stopThread_signal();
-    this->deleteLater();
+    emit stopThread_signal();
+//    this->deleteLater();
     toBeClosed = true;
 
-    qDebug().noquote() << "The folowing " << bytesWritten << " bytes of data has been written to socket :\n" << response.toUtf8();
+    qDebug().noquote() << "The folowing " << bytesWritten << " bytes of data has been written to socket :\n" <<response.toUtf8();
 
     //    qDebug() << "From faviconAnswer" << returnIconChrome();
 }
@@ -175,7 +175,7 @@ void QSocketThread::process_TheSocket()
 
 }
 //+++++++++++++++++++++++++++++++++++++
-//Данные считываем, отправляем на парсинг, готовим ответ.
+//Данные от TCP-client считываем, отправляем на парсинг, готовим ответ.
 void QSocketThread::onReadyRead()
 {
  //   QList<QString>  strcommand = { "/run?cmd=", "/service?name=", "/status", "/status?action=", "/action?name=", "/favicon"};
@@ -187,20 +187,6 @@ void QSocketThread::onReadyRead()
    // int value = 0xfafa;
     QString nextTcpdata;
     nextTcpdata = "";
-//    int befbytes = socket->bytesAvailable();
-//    if (befbytes < 400) {
-//        qDebug() << "There are less than 400 bytes of available data !!!";
-//        nextTcpdata = socket->readAll();
-//        this->socket->abort();
-//        this->socket->close();
-//        this->toBeClosed = true;
-//        //this->socket->waitForDisconnected();
-//        //this->socket->disconnectFromHost();
-
-//        return;
-//    }
-//    nextTcpdata += socket->readAll();
-    // Output http-headers being received
 
     int befbytes = socket->bytesAvailable();
     if (befbytes < 20) {// HTTP/1.0 200 OK == 17 Пришла строка , обрабатывать не нужно, выходим.
@@ -209,52 +195,9 @@ void QSocketThread::onReadyRead()
     }
 
     QByteArray httpHeaders = socket->readAll();
-//    emit Command_4_Parsing_Signal(httpHeaders, socketNumber); // works !
-
-//    QString theData = QString(httpHeaders);
     int realbytes = httpHeaders.size();
 
     qDebug() << "######### onReadyRead thread ID " <<  QThread::currentThread() << "!!!!!!!!! Have got " << realbytes << " bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!!";//<< QString::number(socketNumber);
-//    qDebug() << QString::number(befbytes) << " bytes was available before reading";
-//    qDebug() << httpHeaders.size() << " bytes of data heas been read";
-//    qDebug() << theData.size() << " bytes of data as QString heas been read";
-
-//    qDebug() << httpHeaders;// nextTcpdata;  httpHeaders;
-
-
-//    QMap<QByteArray, QByteArray> headers;
-
-    // Discard the first line ... Why ?
-    //httpHeaders = httpHeaders.mid(httpHeaders.indexOf('\n') + 1).trimmed();
-//    foreach(QByteArray line, httpHeaders.split('\n')) {
-//        int colon = line.indexOf(':');
-//        QByteArray headerName = line.left(colon).trimmed();
-//        QByteArray headerValue = line.mid(colon + 1).trimmed();
-
-//        headers.insert(headerName, headerValue);
-//    }
-
-//    QMap<QByteArray, QByteArray>::const_iterator ii = headers.constBegin();
-//    while (ii != headers.constEnd()) {
-//        qDebug() << ii.key() << ": " << ii.value() << Qt::endl;
-//        ++ii;
-//    }
-
-
-//    int realbytes = nextTcpdata.size();
-//    int afterbytes = socket->bytesAvailable();
-
-//    qDebug() << "Bytes before reading from socket " << socketNumber << "available : " << QString::number(befbytes);
-//    str = QString::number(realbytes); str += " bytes has been readed";
-
-//    str = "Bytes after reading  "; str += QString::number(afterbytes);
-//    qDebug() << str;
-
-
-//    QByteArray qbmessage;
-//    qbmessage = socket->readAll();
-//    qDebug() << qbmessage;
-//    qDebug() << "!!!!!!!!!!!!!!!!!!!!! Get Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!!"<< QString::number(socketNumber);
 
 //    qDebug() << httpHeaders;// nextTcpdata;  httpHeaders;
     //Парсим команду.
@@ -269,12 +212,17 @@ void QSocketThread::onReadyRead()
     if (message.contains(wrong_mess))
         {
            qDebug() << "\r\nHave got favicon request !\r\n";
-           this->favIconAnswer();
+//           this->favIconAnswer();
+           socket->disconnectFromHost();
+           emit stopThread_signal();
+
            return;
        }
+    else
+    {
     bool matched = false;
     int i = 0; sPosition = 0;
-// Перебираем разные Виды команд - strcommand
+// Перебираем массив strcommand, определяем тип запроса (разные Виды команд)
     while (!matched and i< strcommand.size()){
         sPosition = message.indexOf(strcommand.at(i));
         if (sPosition != -1) {
@@ -306,6 +254,10 @@ void QSocketThread::onReadyRead()
 //        this->deleteLater();
 //        return;
 //    }
+
+    qDebug() << "Type of command is " << strcommand.at(i);
+    int commandType; // Тип зароса , статус, экшен, сервис ?
+    commandType = i;
 
     // вид определили, пишем в переменную
     searchstr = strcommand.at(i);
@@ -341,15 +293,80 @@ void QSocketThread::onReadyRead()
 //                                  Qt::QueuedConnection,
 //                                  Q_ARG(QString, substr));
 
-        QMetaObject::invokeMethod(_ptrMainThtread, "Data_From_TcpClient_Slot",
-                                  Qt::QueuedConnection,
-                                  Q_ARG(QString, substr),
-                                  Q_ARG(qintptr, socketNumber),
-                                  Q_ARG(QObject*, this));
+
+// Now choose the right method to invoke
+        switch (i){
+
+        case 0: //"/run?cmd="
+            // пока только для статуса, экшены и прочее в других типах
+            if (substr == "status")
+            {
+                QMetaObject::invokeMethod(this->_ptrMainThtread, "StatusRequest_From_TcpClient",
+                                          Qt::QueuedConnection,
+                                          Q_ARG(QObject*, this));
+             }
+
+            if (substr == "ready")
+            {
+                QMetaObject::invokeMethod(_ptrMainThtread, "ActionLaunch_From_TcpClient",
+                                          Qt::QueuedConnection,
+                                          Q_ARG(QObject*, this),
+                                          Q_ARG(QString, substr));
+             }
+
+            if (substr == "formoving")
+            {
+                QMetaObject::invokeMethod(_ptrMainThtread, "ActionLaunch_From_TcpClient",
+                                          Qt::QueuedConnection,
+                                          Q_ARG(QObject*, this),
+                                          Q_ARG(QString, substr));
+             }
+        break;
+
+        case 1: // "/service?name="
+
+            // Пока только getactions
+            QMetaObject::invokeMethod(_ptrMainThtread, "ServiceLaunch_From_TcpClient",
+                                      Qt::QueuedConnection,
+                                      Q_ARG(QObject*, this),
+                                      Q_ARG(QString, substr));
+
+
+            break;
+
+
+        case 2: // "/status"
+
+            QMetaObject::invokeMethod(_ptrMainThtread, "StatusRequest_From_TcpClient",
+                                      Qt::QueuedConnection,
+                                      Q_ARG(QObject*, this));
+
+
+            break;
+        case 4: // "/action?name="
+            QMetaObject::invokeMethod(_ptrMainThtread, "ActionLaunch_From_TcpClient",
+                                      Qt::QueuedConnection,
+                                      Q_ARG(QObject*, this),
+                                      Q_ARG(QString, substr));
+
+
+            break;
+
+        } //switch (i)
+
+
+//        QMetaObject::invokeMethod(_ptrMainThtread, "Data_From_TcpClient_Slot",
+//                                  Qt::QueuedConnection,
+//                                  Q_ARG(QString, substr),
+//                                  Q_ARG(qintptr, socketNumber),
+//                                  Q_ARG(QObject*, this));
 
 // И здесь же надо отправлять указатель this, чтобы из MainProcess вызвать Data_2_TcpClient_Slot
 
-  }
+  } // if (matched)
+
+ } //else
+// А если !matched, ...  закрываем сокет
 
 // Надо добавить ответ на запрос "/favicon.ico HTTP/1.1"
 
@@ -435,17 +452,55 @@ void QSocketThread::Data_2_TcpClient_Slot(QString data, qintptr socketNumber)
 //    response += data2Client;
 
     if (!socket->isValid() || this->socket->state() != QAbstractSocket::ConnectedState){
-       qDebug() << "!!!!!!!!!!!!!!!!!!!!! SOCKET IS NOT VALID";
+       qDebug() << "!!!!!!!!!!!!!!!!!!!!! SOCKET with number " << socketNumber <<  "IS NOT VALID";
        int state = socket->state();
-       qDebug() << "socket state value is " << state;
+       QString str;
 
-       //emit stopThread_signal();
-       toBeClosed = true;
-       //this->deleteLater();
+       QAbstractSocket::SocketState sockstate;
+       switch (sockstate){
+       case QAbstractSocket::UnconnectedState:
+           qDebug() << QThread::currentThread()  << "Socket destroyed from client" << "\n";
+           str = "<The socket is not connected>";
+           break;
 
-       return;
+      case QAbstractSocket::HostLookupState:
+           str = "<The socket is performing a host name lookup>";
+           break;
+      case QAbstractSocket::ConnectingState:
+           str = "<The socket has started establishing a connection>";
+           break;
+      case QAbstractSocket::ConnectedState: // ==3
+           str = "<A connection is established.>";
+           break;
+      case QAbstractSocket::BoundState: // ==4
+           str = "<The socket is bound to an address and port.>";
+           break;
+      case QAbstractSocket::ListeningState: // ==5
+           str = "<For internal use only.>";
+           break;
+      case QAbstractSocket::ClosingState: // ==6
+           str = "<The socket is about to close (data may still be waiting to be written).>";
+           break;
 
-    }
+      default:
+           str = "UNKNOWN SOCKET STATE !";
+      } //switch
+
+    qDebug() << "socket state value is " <<state << str << "\n";
+
+
+    //emit stopThread_signal();
+    toBeClosed = true;
+    //this->deleteLater();
+
+    this->socket->disconnectFromHost();
+    //socket->deleteLater();
+    emit stopThread_signal();
+    //      QThread::currentThread()->terminate();
+
+    return;
+
+    } //if (!socket->isValid()
 // Вот тут возникает разница между socketNumber и this->socketDescriptor, т.е. они разные.
 //
 
@@ -459,11 +514,11 @@ void QSocketThread::Data_2_TcpClient_Slot(QString data, qintptr socketNumber)
 
     //Отсоединение от удаленнного сокета
     this->socket->disconnectFromHost();
-    socket->deleteLater();
+    //socket->deleteLater();
 //    socketsCounter--;
 //    emit decSocketCounter_Signal();
 ////    qDebug() << QThread::currentThread()  << "The folowing data has been written to socket : \n" << qbData;
-    emit stopThread_signal();
+    // emit stopThread_signal();
 
     // Поток завершили. Объект QSocketThread удалили
     toBeClosed = true;
@@ -529,6 +584,17 @@ void QSocketThread::displayError(QAbstractSocket::SocketError socketError)
 
 
 } //nSocketDevState_Changed()
+//++++++++++++++++++++++++++
+// slot for signal void QObject::destroyed(QObject *obj = nullptr)
+// while *obj is the QThread object, i.e. thread pointer
+void QSocketThread::onDestroyedThread(QObject *threadDestroyed)
+{
+    QString str;
+    str = "Thread destroyed ! ";
+    str += QString("0x%1").arg((quintptr)threadDestroyed,
+                               QT_POINTER_SIZE * 2, 16, QChar('0'));
+    qDebug() << str ;
+} // onDestroyedThread
 //++++++++++++++++++++++++++
 
 //+++++++++++++++++++++++++++++++
