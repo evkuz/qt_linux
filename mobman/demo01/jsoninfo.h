@@ -96,37 +96,41 @@ public:
 
     ordered_json jsnInfo;
     QString jsnData;
-    QJsonObject jsnHeadStatus;  // Шапка в ответе
-    QJsonObject   jsnObj;
+    QJsonObject jsnHeadStatus;      // Шапка в ответе на запрос status
+//    QJsonObject jsnHeadServices;    // Шапка в ответе на запрос getservices
+    QJsonObject jsnObj;
 
-     QJsonObject jsnActionClamp;     // Объект экшена "clamp"
-     QJsonObject jsnActionStart;     // Объект экшена "strart"
-     QJsonObject jsnActionStandUP;   // "standup"
-     QJsonObject jsnActionPutbox;    // for "put_box"
-     QJsonObject jsnActionReset;     // for "reset"
-     QJsonObject jsnActionCollapse;  // for "collapse"
-     QJsonObject jsnActionUnKnown;   // for unknown action
-     QJsonObject jsnActionLock;      // for "lock"
-     QJsonObject jsnActionUnLock;    // for "unlock"
+    QJsonObject jsnActionClamp;     // Объект экшена "clamp"
+    QJsonObject jsnActionStart;     // Объект экшена "strart"
+    QJsonObject jsnActionStandUP;   // "standup"
+    QJsonObject jsnActionPutbox;    // for "put_box"
+    QJsonObject jsnActionReset;     // for "reset"
+    QJsonObject jsnActionCollapse;  // for "collapse"
+    QJsonObject jsnActionUnKnown;   // for unknown action
+    QJsonObject jsnActionLock;      // for "lock"
+    QJsonObject jsnActionUnLock;    // for "unlock"
 
-     QJsonObject jsnActionParking;   // mobman
-     QJsonObject jsnActionGetBox;    // mobman
-     QJsonObject jsnActionReady;     // mobman
-     QJsonObject jsnActionForMoving; // mobman "formoving"
-     QJsonObject jsnActionDetach;    // mobman "detach"
-     QJsonObject jsnActionAttach;    // mobman "attach"
-     QJsonObject jsnActionSetservos; // mobman "setservos="
+    QJsonObject jsnActionParking;   // mobman
+    QJsonObject jsnActionGetBox;    // mobman
+    QJsonObject jsnActionReady;     // mobman
+    QJsonObject jsnActionForMoving; // mobman "formoving"
+    QJsonObject jsnActionDetach;    // mobman "detach"
+    QJsonObject jsnActionAttach;    // mobman "attach"
+    QJsonObject jsnActionSetservos; // mobman "setservos="
 
-     QJsonObject jsnActionList;  // list for "action_list" key
-     QJsonArray  jsnArray;       // list for action_list
-     QJsonArray  jsnObjArray;    // array of objects
+    QJsonObject jsnActionList;      // list for "action_list" key
+//    QJsonArray  jsnArray;           // list for action_list
+    QJsonArray  jsnObjArray;        // array of objects
+    QJsonArray  jsnObjServiceArray; // array of services
 
+    QJsonObject  jsnServiceGetActions;  // mobman "/service?name=getactions"
+    QJsonObject  jsnServiceGetServices;  // mobman "/service?name=getservices"
      //++++++++++++++++++++ NEW Actions
-     QJsonObject jsnActionForMovingNEW; // mobman "formoving"
+    QJsonObject jsnActionForMovingNEW; // mobman "formoving"
 
 
 
-     QList<QJsonObject> actionListp;
+    QList<QJsonObject> actionListp;
 
     const int RC_NO_DETECTION = -5;      // Нет детекции объекта.
     const short INDEX_NODETECTION = 4;
@@ -145,8 +149,9 @@ public:
 
 
 
-    void init_json();
+//    void init_json();
     void init_actions();
+    void init_services();
     void init_actions_new();
     void resetAllActions();
     QString merge_json(QJsonObject src, QJsonObject dst);
@@ -174,6 +179,7 @@ public:
     QJsonObject& returnJsnAcionSetservos();
 
     QString returnAllActions();
+    QString returnAllServices(); // answer to "/service?name=getservices" request
 
 
     bool isAnyActionRunning; // флаг, что выополняется экшен
@@ -185,6 +191,8 @@ public:
     void setHeadStatusFail(); // serial port problem
     void setActionStart2NoDetection();
     QString createActionList(); // Подготовить список активных (выполняемых в данный момент) экшенов
+//    QString createServiceList(); // Подготовить список доступных сервисов
+
     void SetJsnActionCollapse(QJsonObject &theObj);
     void SetJsnActionStandUP(QJsonObject &theObj);
     void setActionData(QJsonObject &theObj); // Меняем данные экшенов на данные "снаружи", целевой экшен определяем по name

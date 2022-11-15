@@ -197,14 +197,21 @@ void parse_command ()
 //      Serial.print(buf);
 
 
-    if (ints[szParcel-3] == 0xFA){ //detach
 // detach servos from correspondent pin
+    if (ints[szParcel-3] == 0xFA){ //detach
       for (int i=0; i< serv_number; i++)  { servos[i].detach(); } //, 500, 2500;
+      message = "Robot movement finished the LAST"; 
+      strcpy(buf, message.c_str());
+      Serial.print(buf);
+
         
       }
     else if (ints[szParcel-3] == 0xFC){ // attach previously detached
       for (int i=0; i< serv_number; i++)  { servos[i].attach(servoPins[i]); } //, 500, 2500;
-    
+      message = "Robot movement finished the LAST"; 
+      strcpy(buf, message.c_str());
+      Serial.print(buf);
+
       }
     else { Go_To_Position(ints); } //else
 

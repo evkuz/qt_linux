@@ -47,7 +47,14 @@ QThread(0xb3a04630) Socket destroyed from client
 socket state value is  0 "<The socket is not connected>"
 
 Ведь поток QThread(0xb3a04630) уже Finished ...
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Будем разбираться с потоками.
+Наблюдаем явное дублирование завершения потока при создании коннектов сигнал/слот
 
+1.    connect(tcpthread, &QSocketThread::stopThread_signal, tcpthread, &QSocketThread::deleteLater);
+2. Закомментирован Вызов emit stopThread_signal(); - убрал
+3. Была попытка организовать собственный eventLoop для потока через ф-цию
+   QSocketThread::theLoop() <---> this->toBeClosed
 
  *
  */

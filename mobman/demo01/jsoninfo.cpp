@@ -7,324 +7,325 @@ JsonInfo::JsonInfo(QString deviceName)
     currentStatus = {DEV_NAME.toStdString(), RC_SUCCESS,  "OK", DEV_HEAD_STATE_WAIT}; // Инициализируем структуру
     action_command = "nothing";
 //    struc_2_json(jsnOB1, currentStatus); // Инициализируем  jsnOB1 данными из структуры выше
-    init_json(); // also initializing jsnData
+//    init_json(); // also initializing jsnData
     init_actions();
+    init_services();
     init_actions_new();
     isAnyActionRunning = false;
 }
 //+++++++++++++++++++++
 
 
-void JsonInfo::init_json()
-{
+//void JsonInfo::init_json()
+//{
 
-    jsnActionTST = {
-        {"action_clamp", {
-             {
-                 {"name", "clamp"},
-                 {"state", "inprogress | done | fail"},
-                 {"info", "Open/Close clamper"},
-                 {"rc", RC_SUCCESS} // "int - action return code"
-             }
-          }//list
-        }//action_clamp
-     };
-// nlohmann::json -> QString -> QJsonDocument -> QJsonObject
-    s1 = jsnActionTST.dump(3);
-    jsnData = QString::fromStdString(s1);
-    jsnDoc = QJsonDocument::fromJson(jsnData.toUtf8(), &jsonError);
-//    if(jsonError.error != QJsonParseError::NoError){
-//            str = "Error: "; str += jsonError.errorString();
-//            GUI_Write_To_Log(value, str);
-//     }       //return;
+//    jsnActionTST = {
+//        {"action_clamp", {
+//             {
+//                 {"name", "clamp"},
+//                 {"state", "inprogress | done | fail"},
+//                 {"info", "Open/Close clamper"},
+//                 {"rc", RC_SUCCESS} // "int - action return code"
+//             }
+//          }//list
+//        }//action_clamp
+//     };
+//// nlohmann::json -> QString -> QJsonDocument -> QJsonObject
+//    s1 = jsnActionTST.dump(3);
+//    jsnData = QString::fromStdString(s1);
+//    jsnDoc = QJsonDocument::fromJson(jsnData.toUtf8(), &jsonError);
+////    if(jsonError.error != QJsonParseError::NoError){
+////            str = "Error: "; str += jsonError.errorString();
+////            GUI_Write_To_Log(value, str);
+////     }       //return;
 
-    //Get the main JSON object and get the data in it
-    jsnObj2 = jsnDoc.object();
-//++++++++++++++++++++++++++++++++++++++++++++++
+//    //Get the main JSON object and get the data in it
+//    jsnObj2 = jsnDoc.object();
+////++++++++++++++++++++++++++++++++++++++++++++++
 
 
 
-// JSON-объект - это всегда пара "ключ" : "значение"
-// Здесь в качестве значения - объект, состоящий из списка объектов
-    jsnList = {
-        {"action_list", {
-         {
-             {"name", "clamp"},
-             {"state", "inprogress | done | fail"},
-             {"info", "Open/Close clamper"},
-             {"rc", "int - action return code"}
-         },
-         {
-             {"name", "lock"},
-             {"state", "inprogress | done | fail"},
-             {"info", "Close clamper"},
-             {"rc", "int - action return code"}
-         },
-         {
-             {"name", "unlock"},
-             {"state", "inprogress | done | fail"},
-             {"info", "Open clamper"},
-             {"rc", "int - action return code"}
-         },
-         {
-             {"name", "start"},
-             {"state", {"waiting","noDetection", "inprogress", "done", "fail"}},
-             {"info", "Get the box by clamper, asking CV about distance in advance"},
-             {"st_time", "int - timestamp of last start"},
-             {"fin_time", "int - timestamp of finish"},
-             {"result", "int - action return code"}
-         },
-         {
-             {"name", "reset"},
-             {"state", "succsess | fail"},
-             {"info", "Set device status as <Wait>"},
-             {"rc", "int - action return code"}
-         },
-         {
-             {"name", "sit"},
-             {"state", "inprogress | done | fail"},
-             {"info", "Sit position"},
-             {"rc", "int - action return code"}
-         },
-         {
-            {"name", "standup"},
-            {"state", "inprogress | done | fail"},
-            {"info", "Go to ZERO (home, initital) position"},
-            {"rc", "int - action return code"}
-         },
-         {
-            {"name", "put_box"},
-            {"state", "inprogress | done | fail"},
-            {"info", "put down the object for next actions"},
-            {"rc", "int - action return code"}
-         },
-         {
-            {"name", "close"},
-            {"state", "inprogress | done | fail"},
-            {"info", "Close serial port of the robot"},
-            {"rc", "int - action return code"}
-         },
-         {
-            {"name", "getservos"},
-            {"state", "inprogress | done | fail"},
-            {"info", "Return device' servos values"},
-            {"rc", "int - action return code"}
-         },
-         {
-            {"name", "info"},
-            {"state", "inprogress | done | fail"},
-            {"info", "Print this page"},
-            {"rc", "int - action return code"}
-         }
-             }// json-object
-       }//action_list
-     }; //list
+//// JSON-объект - это всегда пара "ключ" : "значение"
+//// Здесь в качестве значения - объект, состоящий из списка объектов
+//    jsnList = {
+//        {"action_list", {
+//         {
+//             {"name", "clamp"},
+//             {"state", "inprogress | done | fail"},
+//             {"info", "Open/Close clamper"},
+//             {"rc", "int - action return code"}
+//         },
+//         {
+//             {"name", "lock"},
+//             {"state", "inprogress | done | fail"},
+//             {"info", "Close clamper"},
+//             {"rc", "int - action return code"}
+//         },
+//         {
+//             {"name", "unlock"},
+//             {"state", "inprogress | done | fail"},
+//             {"info", "Open clamper"},
+//             {"rc", "int - action return code"}
+//         },
+//         {
+//             {"name", "start"},
+//             {"state", {"waiting","noDetection", "inprogress", "done", "fail"}},
+//             {"info", "Get the box by clamper, asking CV about distance in advance"},
+//             {"st_time", "int - timestamp of last start"},
+//             {"fin_time", "int - timestamp of finish"},
+//             {"result", "int - action return code"}
+//         },
+//         {
+//             {"name", "reset"},
+//             {"state", "succsess | fail"},
+//             {"info", "Set device status as <Wait>"},
+//             {"rc", "int - action return code"}
+//         },
+//         {
+//             {"name", "sit"},
+//             {"state", "inprogress | done | fail"},
+//             {"info", "Sit position"},
+//             {"rc", "int - action return code"}
+//         },
+//         {
+//            {"name", "standup"},
+//            {"state", "inprogress | done | fail"},
+//            {"info", "Go to ZERO (home, initital) position"},
+//            {"rc", "int - action return code"}
+//         },
+//         {
+//            {"name", "put_box"},
+//            {"state", "inprogress | done | fail"},
+//            {"info", "put down the object for next actions"},
+//            {"rc", "int - action return code"}
+//         },
+//         {
+//            {"name", "close"},
+//            {"state", "inprogress | done | fail"},
+//            {"info", "Close serial port of the robot"},
+//            {"rc", "int - action return code"}
+//         },
+//         {
+//            {"name", "getservos"},
+//            {"state", "inprogress | done | fail"},
+//            {"info", "Return device' servos values"},
+//            {"rc", "int - action return code"}
+//         },
+//         {
+//            {"name", "info"},
+//            {"state", "inprogress | done | fail"},
+//            {"info", "Print this page"},
+//            {"rc", "int - action return code"}
+//         }
+//             }// json-object
+//       }//action_list
+//     }; //list
 
-//  Ответ на команду Action в формате json
-    jsnStatus = {
-        {"name", DEV_NAME.toStdString()},
-        {"rc", RC_UNDEFINED}, //RC_SUCCESS
-        {"state", "Wait"},
-        {"info", "Request Accepted"}
-/*        {"action_list", {
-             {
-              {"name", "start"},
-              {"state", {"running","waiting","noDetection", "inprogress", "done", "fail"}},
-              {"info", "Get the box by clamper, asking CV about distance in advance"},
-              {"st_time", "int - timestamp of last start"},
-              {"fin_time", "int - timestamp of finish"},
-              {"result", "int - action return code"}
-             },
-              {
-               {"name", "reset"},
-               {"state", "succsess | fail"},
-               {"info", "Set device status as <Wait>"},
-               {"rc", "int - action return code"}
-              }
-         } //list
-       }//action_list-field
-*/
+////  Ответ на команду Action в формате json
+//    jsnStatus = {
+//        {"name", DEV_NAME.toStdString()},
+//        {"rc", RC_UNDEFINED}, //RC_SUCCESS
+//        {"state", "Wait"},
+//        {"info", "Request Accepted"}
+///*        {"action_list", {
+//             {
+//              {"name", "start"},
+//              {"state", {"running","waiting","noDetection", "inprogress", "done", "fail"}},
+//              {"info", "Get the box by clamper, asking CV about distance in advance"},
+//              {"st_time", "int - timestamp of last start"},
+//              {"fin_time", "int - timestamp of finish"},
+//              {"result", "int - action return code"}
+//             },
+//              {
+//               {"name", "reset"},
+//               {"state", "succsess | fail"},
+//               {"info", "Set device status as <Wait>"},
+//               {"rc", "int - action return code"}
+//              }
+//         } //list
+//       }//action_list-field
+//*/
 
-    }; //jsnStatus
+//    }; //jsnStatus
 
-// info -> description
-// state -> statuses
-// rc - убираем
-// parameters - добавляем.
+//// info -> description
+//// state -> statuses
+//// rc - убираем
+//// parameters - добавляем.
 
-    jsnInfo = {
-       {"name", DEV_NAME.toStdString()},
-       {"rc", RC_UNDEFINED}, //RC_SUCCESS
-       {"info", "Request Accepted"},
-       {"state", "Wait | Running | Fail"},
-       {"action_list", {
-          {
-           {"name", "clamp"},
-           {"state", "inprogress | done | fail"},
-           {"info", "Open/Close clamper"},
-           {"rc", "int - action return code"}
-          },
-          {
-            {"name", "lock"},
-            {"state", "inprogress | done | fail"},
-            {"info", "Close clamper"},
-            {"rc", "int - action return code"}
-          },
-          {
-            {"name", "unlock"},
-            {"state", "inprogress | done | fail"},
-            {"info", "Open clamper"},
-            {"rc", "int - action return code"}
-          },
-          {
-           {"name", "start"},
-           {"state", {"waiting","noDetection", "inprogress", "done", "fail"}},
-           {"info", "Get the box by clamper, asking CV about distance in advance"},
-           {"st_time", "int - timestamp of last start"},
-           {"fin_time", "int - timestamp of finish"},
-           {"result", "int - action return code"}
-          },
-           {
-            {"name", "reset"},
-            {"state", "succsess | fail"},
-            {"info", "Set device status as <Wait>"},
-            {"rc", "int - action return code"}
-           },
-           {
-            {"name", "sit"},
-            {"state", "inprogress | done | fail"},
-            {"info", "Sit position"},
-            {"rc", "int - action return code"}
-           },
-            {
-             {"name", "standup"},
-             {"state", "inprogress | done | fail"},
-             {"info", "Go to start (initital) position"},
-             {"rc", "int - action return code"}
-            },
-            {
-             {"name", "put_box"},
-             {"state", "inprogress | done | fail"},
-             {"info", "put down the object for next actions"},
-             {"rc", "int - action return code"}
-            },
-            {
-             {"name", "close"},
-             {"state", "inprogress | done | fail"},
-             {"info", "Close serial port of the robot"},
-             {"rc", "int - action return code"}
-            },
-            {
-             {"name", "getservos"},
-             {"state", "inprogress | done | fail"},
-             {"info", "Return device' servos values"},
-             {"rc", "int - action return code"}
-             },
-            {
-             {"name", "info"},
-             {"state", "inprogress | done | fail"},
-             {"info", "Print this page"},
-             {"rc", "int - action return code"}
-            }
+//    jsnInfo = {
+//       {"name", DEV_NAME.toStdString()},
+//       {"rc", RC_UNDEFINED}, //RC_SUCCESS
+//       {"info", "Request Accepted"},
+//       {"state", "Wait | Running | Fail"},
+//       {"action_list", {
+//          {
+//           {"name", "clamp"},
+//           {"state", "inprogress | done | fail"},
+//           {"info", "Open/Close clamper"},
+//           {"rc", "int - action return code"}
+//          },
+//          {
+//            {"name", "lock"},
+//            {"state", "inprogress | done | fail"},
+//            {"info", "Close clamper"},
+//            {"rc", "int - action return code"}
+//          },
+//          {
+//            {"name", "unlock"},
+//            {"state", "inprogress | done | fail"},
+//            {"info", "Open clamper"},
+//            {"rc", "int - action return code"}
+//          },
+//          {
+//           {"name", "start"},
+//           {"state", {"waiting","noDetection", "inprogress", "done", "fail"}},
+//           {"info", "Get the box by clamper, asking CV about distance in advance"},
+//           {"st_time", "int - timestamp of last start"},
+//           {"fin_time", "int - timestamp of finish"},
+//           {"result", "int - action return code"}
+//          },
+//           {
+//            {"name", "reset"},
+//            {"state", "succsess | fail"},
+//            {"info", "Set device status as <Wait>"},
+//            {"rc", "int - action return code"}
+//           },
+//           {
+//            {"name", "sit"},
+//            {"state", "inprogress | done | fail"},
+//            {"info", "Sit position"},
+//            {"rc", "int - action return code"}
+//           },
+//            {
+//             {"name", "standup"},
+//             {"state", "inprogress | done | fail"},
+//             {"info", "Go to start (initital) position"},
+//             {"rc", "int - action return code"}
+//            },
+//            {
+//             {"name", "put_box"},
+//             {"state", "inprogress | done | fail"},
+//             {"info", "put down the object for next actions"},
+//             {"rc", "int - action return code"}
+//            },
+//            {
+//             {"name", "close"},
+//             {"state", "inprogress | done | fail"},
+//             {"info", "Close serial port of the robot"},
+//             {"rc", "int - action return code"}
+//            },
+//            {
+//             {"name", "getservos"},
+//             {"state", "inprogress | done | fail"},
+//             {"info", "Return device' servos values"},
+//             {"rc", "int - action return code"}
+//             },
+//            {
+//             {"name", "info"},
+//             {"state", "inprogress | done | fail"},
+//             {"info", "Print this page"},
+//             {"rc", "int - action return code"}
+//            }
 
-          } //list
-        }//action_list-field
+//          } //list
+//        }//action_list-field
 
-    }; // jsnInfo
+//    }; // jsnInfo
 
-    // Это просто список без значений.
-/*
-    jsnGetActionsAnswer = {
-                            {"name" , "getactions"},
-                            {"rc", RC_UNDEFINED}, //RC_SUCCESS
-                            {"info" , "Request Accepted"},
-        {"data", {
-             {
-              {"name", "clamp"},
-              {"state", "inprogress | done | fail"},
-              {"info", "Open/Close clamper"},
-              {"rc", "int - action return code"}
-             },
-             {
-               {"name", "lock"},
-               {"state", "inprogress | done | fail"},
-               {"info", "Close clamper"},
-               {"rc", "int - action return code"}
-             },
-             {
-               {"name", "unlock"},
-               {"state", "inprogress | done | fail"},
-               {"info", "Open clamper"},
-               {"rc", "int - action return code"}
-             },
-             {
-              {"name", "start"},
-              {"state", {"waiting","noDetection", "inprogress", "done", "fail"}},
-              {"info", "Get the box by clamper, asking CV about distance in advance"},
-              {"st_time", "int - timestamp of last start"},
-              {"fin_time", "int - timestamp of finish"},
-              {"result", "int - action return code"}
-             },
-              {
-               {"name", "reset"},
-               {"state", "succsess | fail"},
-               {"info", "Set device status as <Wait>"},
-               {"rc", "int - action return code"}
-              },
-              {
-               {"name", "sit"},
-               {"state", "inprogress | done | fail"},
-               {"info", "Sit position"},
-               {"rc", "int - action return code"}
-              },
-               {
-                {"name", "standup"},
-                {"state", "inprogress | done | fail"},
-                {"info", "Go to start (initital) position"},
-                {"rc", "int - action return code"}
-               },
-               {
-                {"name", "put_box"},
-                {"state", "inprogress | done | fail"},
-                {"info", "put down the object for next actions"},
-                {"rc", "int - action return code"}
-               },
-               {
-                {"name", "close"},
-                {"state", "inprogress | done | fail"},
-                {"info", "Close serial port of the robot"},
-                {"rc", "int - action return code"}
-               },
-               {
-                {"name", "getservos"},
-                {"state", "inprogress | done | fail"},
-                {"info", "Return device' servos values. Can be viewed in Log file"},
-                {"rc", "int - action return code"}
-                },
-               {
-                {"name", "info"},
-                {"state", "inprogress | done | fail"},
-                {"info", "Print this page"},
-                {"rc", "int - action return code"}
-               },
-         }//list
-        }//data
-       };//jsnGetActionsAnswer
-*/
-   // jsnAction = jsnGetActionsAnswer;
-    int indent = 3;
-    std::string s2 = jsnOB1.dump(indent);
-    jsnData = QString::fromStdString(s2);
-    jsnDoc = QJsonDocument::fromJson(jsnData.toUtf8(), &jsonError);
-//    if(jsonError.error != QJsonParseError::NoError){
-//            str = "Error: "; str += jsonError.errorString();
-//            GUI_Write_To_Log(value, str);
-//     }       //return;
+//    // Это просто список без значений.
+///*
+//    jsnGetActionsAnswer = {
+//                            {"name" , "getactions"},
+//                            {"rc", RC_UNDEFINED}, //RC_SUCCESS
+//                            {"info" , "Request Accepted"},
+//        {"data", {
+//             {
+//              {"name", "clamp"},
+//              {"state", "inprogress | done | fail"},
+//              {"info", "Open/Close clamper"},
+//              {"rc", "int - action return code"}
+//             },
+//             {
+//               {"name", "lock"},
+//               {"state", "inprogress | done | fail"},
+//               {"info", "Close clamper"},
+//               {"rc", "int - action return code"}
+//             },
+//             {
+//               {"name", "unlock"},
+//               {"state", "inprogress | done | fail"},
+//               {"info", "Open clamper"},
+//               {"rc", "int - action return code"}
+//             },
+//             {
+//              {"name", "start"},
+//              {"state", {"waiting","noDetection", "inprogress", "done", "fail"}},
+//              {"info", "Get the box by clamper, asking CV about distance in advance"},
+//              {"st_time", "int - timestamp of last start"},
+//              {"fin_time", "int - timestamp of finish"},
+//              {"result", "int - action return code"}
+//             },
+//              {
+//               {"name", "reset"},
+//               {"state", "succsess | fail"},
+//               {"info", "Set device status as <Wait>"},
+//               {"rc", "int - action return code"}
+//              },
+//              {
+//               {"name", "sit"},
+//               {"state", "inprogress | done | fail"},
+//               {"info", "Sit position"},
+//               {"rc", "int - action return code"}
+//              },
+//               {
+//                {"name", "standup"},
+//                {"state", "inprogress | done | fail"},
+//                {"info", "Go to start (initital) position"},
+//                {"rc", "int - action return code"}
+//               },
+//               {
+//                {"name", "put_box"},
+//                {"state", "inprogress | done | fail"},
+//                {"info", "put down the object for next actions"},
+//                {"rc", "int - action return code"}
+//               },
+//               {
+//                {"name", "close"},
+//                {"state", "inprogress | done | fail"},
+//                {"info", "Close serial port of the robot"},
+//                {"rc", "int - action return code"}
+//               },
+//               {
+//                {"name", "getservos"},
+//                {"state", "inprogress | done | fail"},
+//                {"info", "Return device' servos values. Can be viewed in Log file"},
+//                {"rc", "int - action return code"}
+//                },
+//               {
+//                {"name", "info"},
+//                {"state", "inprogress | done | fail"},
+//                {"info", "Print this page"},
+//                {"rc", "int - action return code"}
+//               },
+//         }//list
+//        }//data
+//       };//jsnGetActionsAnswer
+//*/
+//   // jsnAction = jsnGetActionsAnswer;
+//    int indent = 3;
+//    std::string s2 = jsnOB1.dump(indent);
+//    jsnData = QString::fromStdString(s2);
+//    jsnDoc = QJsonDocument::fromJson(jsnData.toUtf8(), &jsonError);
+////    if(jsonError.error != QJsonParseError::NoError){
+////            str = "Error: "; str += jsonError.errorString();
+////            GUI_Write_To_Log(value, str);
+////     }       //return;
 
-    //Get the main JSON object and get the data in it
-    jsnObj = jsnDoc.object();
+//    //Get the main JSON object and get the data in it
+//    jsnObj = jsnDoc.object();
 
-} // init_json
+//} // init_json
 //++++++++++++++++++++++++++++++++
 
 void JsonInfo::init_actions()
@@ -445,7 +446,7 @@ void JsonInfo::init_actions()
 
     };
 
-//jsnActionClamp,
+// actions array
     jsnObjArray = {jsnActionParking, jsnActionReady,  jsnActionReset,     jsnActionGetBox, jsnActionPutbox, \
                    jsnActionUnKnown, jsnActionLock,   jsnActionUnLock, jsnActionForMoving, jsnActionDetach, \
                    jsnActionAttach,  jsnActionSetservos
@@ -458,14 +459,39 @@ void JsonInfo::init_actions()
         {"info", "Request Accepted"}
     };
 
-    jsnArray = {};
+    //jsnArray = {};
     jsnActionList = {
-        {"action_list", jsnObjArray} //jsnArray
+        {"action_list", jsnObjArray} //
     };
 
+}// init_actions
+//++++++++++++++++++++++++++++++++
 
+void JsonInfo::init_services()
+{
+    jsnServiceGetActions = {
+        {"name", "getactions"},
+        {"info", "Return list of actions available"},
+        {"rc", RC_UNDEFINED} // инициализация, в runtime будет переписываться
 
-} // init_actions
+    };
+
+    jsnServiceGetServices = {
+        {"name", "getservices"},
+        {"info", "Return list of services available"},
+        {"rc", RC_UNDEFINED} // инициализация, в runtime будет переписываться
+
+    };
+
+    jsnObjServiceArray = {jsnServiceGetActions, jsnServiceGetServices};
+//    jsnHeadServices = {
+//        {"name", DEV_NAME},
+//        {"rc", RC_UNDEFINED}, //RC_SUCCESS
+//        {"state", "Wait"},
+//        {"info", "Request Accepted"}
+//    };
+
+} // init_services
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //Обновленная версия экшенов
 void JsonInfo::init_actions_new()
@@ -529,7 +555,7 @@ void JsonInfo::resetAllActions()
     }
     isAnyActionRunning = false; // Нет активных экшенов
 
-}///init_json
+} //resetAllActions()
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // merge src and dst QJsonObjrcts and return QString representation of the result
 QString JsonInfo::merge_json(QJsonObject src, QJsonObject dst)
@@ -625,11 +651,13 @@ ordered_json& JsonInfo::QtJson_2_NlohmannJson(QJsonObject theObj)
     if (str1 == "get_box") { // Тут особые статусы есть, не как у остальных экшенов
          jsnAction["statuses"] = this->actGetStatuses;
     }
-
-    else {
+    // Результат вызова getservices аналогичен результату вызова getactions,
+    // за исключением отсутствующего поля statuses.
+    else if ((str1 != "getservices") && (str1 != "getactions")) {
         jsnAction["statuses"] = this->actStatuses;
 
     }
+
     return jsnAction;
 } //QtJson_2_NlohmannJson
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -789,6 +817,7 @@ QJsonObject &JsonInfo::returnJsnAcionSetservos()
     return this->jsnActionSetservos;
 }
 //+++++++++++++++++++++++++++++++++++++++++++
+// Формируем список всех доступных экшенов
 QString JsonInfo::returnAllActions()
 {
     QJsonValue myValue;
@@ -806,13 +835,40 @@ QString JsonInfo::returnAllActions()
     myArray = this->jsnObjArray;
     for (int i=0; i < myArray.size(); i++){
         myobj = myArray.at(i).toObject();
-        jsnAction = QtJson_2_NlohmannJson(myobj);
+        jsnAction = QtJson_2_NlohmannJson(myobj); // adding statuses if needed
         jsnGetActionsAnswer["data"] += jsnAction;
 
     } // for
 
     return QString::fromStdString(jsnGetActionsAnswer.dump(3)); // Изменено в merge_json
 
+
+} // returnAllActions()
+//++++++++++++++++++++++++++++++++++++++++
+// Формируем список всех доступных сервисов
+QString JsonInfo::returnAllServices()
+{
+    QJsonValue myValue;
+    QJsonArray myArray;
+    QJsonObject myobj;
+
+    jsnGetServicesAnswer.clear();
+
+    jsnGetServicesAnswer["name"] = "getservices";
+    jsnGetServicesAnswer["rc"] = RC_SUCCESS;
+    jsnGetServicesAnswer["info"] = "successful";
+    //jsnGetActionsAnswer["data"]
+
+
+    myArray = this->jsnObjServiceArray;
+    for (int i=0; i < myArray.size(); i++){
+        myobj = myArray.at(i).toObject();
+        jsnAction = QtJson_2_NlohmannJson(myobj); // adding statuses if needed
+        jsnGetServicesAnswer["data"] += jsnAction;
+
+    } // for
+
+    return QString::fromStdString(jsnGetServicesAnswer.dump(3)); // Изменено в merge_json
 
 }
 //+++++++++++++++++++++++++++++++++++++++++++
@@ -995,6 +1051,7 @@ void JsonInfo::SetJsnActionStandUP(QJsonObject &theObj)
     this->jsnActionStandUP = theObj;
 }
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Set actual data for the action - it means
 // repalce data in array jsnObjArray with the new data from theObj
 void JsonInfo::setActionData(QJsonObject &theObj)
 {

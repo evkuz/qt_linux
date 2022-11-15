@@ -122,7 +122,7 @@ void QSocketThread::favIconAnswer()
     qDebug().noquote() << "The folowing " << bytesWritten << " bytes of data has been written to socket :\n" <<response.toUtf8();
 
     //    qDebug() << "From faviconAnswer" << returnIconChrome();
-}
+} //favIconAnswer()
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
 // main loop of the QSocketThread
 void QSocketThread::theLoop()
@@ -139,7 +139,7 @@ void QSocketThread::theLoop()
         emit stopThread_signal();
 
 
-}//favIconAnswer()
+} // theLoop()
 //+++++++++++++++++++++++++++
 //++++++++++++++++++ главный event loop потока
 // Самого event loop пока не видно, а он нужен.
@@ -175,7 +175,13 @@ void QSocketThread::process_TheSocket()
 
 }
 //+++++++++++++++++++++++++++++++++++++
-//Данные от TCP-client считываем, отправляем на парсинг, готовим ответ.
+// Данные от TCP-client считываем, отправляем на парсинг, готовим ответ.
+// - Определяем тип запроса (статус, экшен, сервис)
+// - Парсим содержимое запроса.
+// - в Зависимости от типа запускаем соовтествующую ф-цию обработки (статус, экшен, сервис), передаем в эту ф-цию
+//   как аргумент - содержимое запроса.
+// - Запрос favicon игнорируем.
+
 void QSocketThread::onReadyRead()
 {
  //   QList<QString>  strcommand = { "/run?cmd=", "/service?name=", "/status", "/status?action=", "/action?name=", "/favicon"};
@@ -218,7 +224,7 @@ void QSocketThread::onReadyRead()
 
            return;
        }
-    else
+    else // so it's not favicon request
     {
     bool matched = false;
     int i = 0; sPosition = 0;
@@ -233,6 +239,8 @@ void QSocketThread::onReadyRead()
         ++i;
     }
     i--;
+
+    if (!matched) {return;} // Выходим, если нет правильных строк
 
 //    qDebug() << "Index value is" << i;
 //    qDebug() << "Matched command sPosition is " << sPosition;
@@ -285,13 +293,7 @@ void QSocketThread::onReadyRead()
         qDebug() << "!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET " << QString::number(this->socketDescriptor);
         qDebug() << "!!!!!!!!!!!!!!!!!!!!! QSocketThread::onReadyRead()" << QThread::currentThread() << substr;
 
-        //        qDebug() << "Socket descriptor " << QString::number(this->socketDescriptor);
-
-//        emit Command_4_Parsing_Signal(substr, socketNumber); // works !
-
-//        QMetaObject::invokeMethod(_ptrMainThtread, "Data_FromTcp_Slot",
-//                                  Qt::QueuedConnection,
-//                                  Q_ARG(QString, substr));
+//      qDebug() << "Socket descriptor " << QString::number(this->socketDescriptor);
 
 
 // Now choose the right method to invoke
@@ -355,17 +357,13 @@ void QSocketThread::onReadyRead()
         } //switch (i)
 
 
-//        QMetaObject::invokeMethod(_ptrMainThtread, "Data_From_TcpClient_Slot",
-//                                  Qt::QueuedConnection,
-//                                  Q_ARG(QString, substr),
-//                                  Q_ARG(qintptr, socketNumber),
-//                                  Q_ARG(QObject*, this));
 
 // И здесь же надо отправлять указатель this, чтобы из MainProcess вызвать Data_2_TcpClient_Slot
 
   } // if (matched)
 
- } //else
+ } //else // so it's not favicon request
+
 // А если !matched, ...  закрываем сокет
 
 // Надо добавить ответ на запрос "/favicon.ico HTTP/1.1"
@@ -490,7 +488,7 @@ void QSocketThread::Data_2_TcpClient_Slot(QString data, qintptr socketNumber)
 
 
     //emit stopThread_signal();
-    toBeClosed = true;
+//    toBeClosed = true; // eventLoop
     //this->deleteLater();
 
     this->socket->disconnectFromHost();
@@ -514,15 +512,9 @@ void QSocketThread::Data_2_TcpClient_Slot(QString data, qintptr socketNumber)
 
     //Отсоединение от удаленнного сокета
     this->socket->disconnectFromHost();
-    //socket->deleteLater();
-//    socketsCounter--;
-//    emit decSocketCounter_Signal();
-////    qDebug() << QThread::currentThread()  << "The folowing data has been written to socket : \n" << qbData;
-    // emit stopThread_signal();
-
+//    qDebug() << QThread::currentThread()  << "The folowing data has been written to socket : \n" << qbData;
+    emit stopThread_signal();
     // Поток завершили. Объект QSocketThread удалили
-    toBeClosed = true;
-
     qDebug() << QThread::currentThread()  << "Finished" << "\n";
 }
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++

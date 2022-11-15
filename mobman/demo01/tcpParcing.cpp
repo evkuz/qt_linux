@@ -504,6 +504,7 @@ void MainProcess::ActionLaunch_From_TcpClient(QObject *theSender, QString action
      substr = actionName;
 
     int comIndex = getIndexCommand(substr, tcpCommand);
+    QStringList list1; // Понадобится для setservos
     switch (comIndex) {
     case 1:  // reset
         jsnStore->resetAllActions(); // all actions to "done"
@@ -539,6 +540,22 @@ void MainProcess::ActionLaunch_From_TcpClient(QObject *theSender, QString action
 
         break;
 
+    case 8: // "setservos="
+        mainjsnObj = jsnStore->returnJsnAcionSetservos();
+        returnActionLaunch(mainjsnObj, theSender);
+
+        substr = substr.remove("setservos=");
+        list1 = substr.split(QLatin1Char(','));
+        for (int i=0; i<DOF; ++i)
+        {
+            Servos[i] = list1.at(i).toUInt();
+        }//for
+
+        this->send_Data(LASTONE);
+
+        break;
+
+
     case 11: // "formoving"
         mainjsnObj = jsnStore->returnJsnActionForMoving();
         returnActionLaunch(mainjsnObj, theSender);
@@ -549,6 +566,67 @@ void MainProcess::ActionLaunch_From_TcpClient(QObject *theSender, QString action
         this->send_Data(LASTONE);
 
        break;
+
+    case 12: // "put_box"
+        mainjsnObj = jsnStore->returnJsnActionPutbox();
+        returnActionLaunch(mainjsnObj, theSender); // Отправляем быстрый ответ
+
+        memcpy(Servos, mob_2_put_23, DOF);
+        this->send_Data(NOT_LAST);
+
+        // Открываем
+        Servos[0] = 45;
+        this->send_Data(NOT_LAST);
+
+        //Поднимаем крайний привод, чтобы снова не схватить кубик при движении обратно
+        Servos[3] = 65;
+        this->send_Data(NOT_LAST); // NOT_LAST
+
+
+        // в позицию "formoving", хват постепенно закрывается
+        memcpy(Servos, mob_2_moving_position, DOF);
+        this->send_Data(LASTONE);
+
+       break;
+
+    case 13: //lock
+        mainjsnObj = jsnStore->returnJsnActionLock();
+        returnActionLaunch(mainjsnObj, theSender);
+        Servos[0]=FULL_CLOSED;
+        this->send_Data(LASTONE); //NOT_LAST LASTONE
+
+       break;
+    case 14: //unlock
+        mainjsnObj = jsnStore->returnJsnActionUnLock();
+        returnActionLaunch(mainjsnObj, theSender);
+        Servos[0]=FULL_OPENED;
+        this->send_Data(LASTONE); //NOT_LAST LASTONE
+
+       break;
+    case 15: // "detach"
+        mainjsnObj = jsnStore->returnJsnActionDetach();
+        returnActionLaunch(mainjsnObj, theSender);
+        jsnStore->isAnyActionRunning = false;
+        for (int i=0; i<DOF; ++i)
+        {
+            Servos[i] = 250; //0xFA
+        }//for
+
+        this->send_Data(LASTONE); //NOT_LAST
+       break;
+
+    case 16: // "attach"
+        mainjsnObj = jsnStore->returnJsnActionAttach();
+        returnActionLaunch(mainjsnObj, theSender);
+        jsnStore->isAnyActionRunning = false;
+        for (int i=0; i<DOF; ++i)
+        {
+            Servos[i] = 252; //0xFC
+        }//for
+
+        this->send_Data(LASTONE); //NOT_LAST
+        break;
+
 
     default:
         str = "The Action with index ";
@@ -567,17 +645,28 @@ void MainProcess::ServiceLaunch_From_TcpClient(QObject *theSender, QString servi
     int value = 0xEEEE;
     QString str;
     jsnStore->isAnyActionRunning = false;
-    //tempObj = jsnStore->returnAllActions();
+    str = serviceName;
+    int comIndex = getIndexCommand(str, tcpCommand);
 
-    // Т.к. сервис пока всего 1, то просто запускаем jsnStore->returnAllActions()
-    // Делаем проверку на "getactions"
-    str = jsnStore->returnAllActions(); //jsnStore->jsnData;
+    switch (comIndex) {
+    case 6: //"getactions"
+        str = jsnStore->returnAllActions(); //jsnStore->jsnData;
+        break;
+
+    case 7: //"getservices"
+        str = jsnStore->returnAllServices();
+
+        break;
+
+    }//switch (comIndex)
+
+// Строку JSON сформировали, отправляем tcp-клиенту.
     QMetaObject::invokeMethod(theSender, "Data_2_TcpClient_Slot",
                               Qt::QueuedConnection,
                               Q_ARG(QString, str),
                               Q_ARG(qintptr, tcpSocketNumber));
 
-    str += str.insert(0, "Total action_list : \n");
+    str += str.insert(0, "Total service_list : \n");
 
     GUI_Write_To_Log(value, str);
 

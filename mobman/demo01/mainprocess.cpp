@@ -1797,7 +1797,7 @@ QString MainProcess::pointer_to_qstring(void *ptr)
 }
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
 // Вообще, по названию - это должен быть быстрый ответ.
-// А по факту - подготовка списка состояний экшенов для запроса статуса.
+// А по факту - установка новых значений для экшена в &theObj //подготовка списка состояний экшенов для запроса статуса.
 void MainProcess::returnActionLaunch(QJsonObject &theObj, QObject* theSender)
 {
     QString str;
@@ -1820,7 +1820,7 @@ void MainProcess::returnActionLaunch(QJsonObject &theObj, QObject* theSender)
 
 
     jsnStore->isAnyActionRunning = true;
-    theObj["rc"] = RC_SUCCESS;
+//    theObj["rc"] = RC_SUCCESS;
     theObj["rc"] = jsnStore->AC_Launch_RC_RUNNING;//RC_SUCCESS; // Now state "inprogress" //theObj
     theObj["state"] = jsnStore->DEV_ACTION_STATE_RUN;
 
