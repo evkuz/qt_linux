@@ -186,7 +186,7 @@ void QSocketThread::onReadyRead()
 {
  //   QList<QString>  strcommand = { "/run?cmd=", "/service?name=", "/status", "/status?action=", "/action?name=", "/favicon"};
     //Чтение информации из сокета и вывод в консоль
-    qintptr socketNumber = this->socketDescriptor;
+//    qintptr socketNumber = this->socketDescriptor;
 //    qDebug() << QThread::currentThread() << "$$$$$$$$$ I'm in ReadyRead_Slot for socket " << socketNumber;
 // вот тут запускаем таймер, чтобы дождаться favicon.
 
@@ -272,6 +272,7 @@ void QSocketThread::onReadyRead()
 
 
 // Вот тут надо решать с "/action?name="
+// Надо доработать...
     if (matched)
     {
         sPosition += searchstr.size();
@@ -296,7 +297,7 @@ void QSocketThread::onReadyRead()
 //      qDebug() << "Socket descriptor " << QString::number(this->socketDescriptor);
 
 
-// Now choose the right method to invoke
+// Now choose the right method to invoke, don't use socketNumber anymore
         switch (i){
 
         case 0: //"/run?cmd="
@@ -390,7 +391,7 @@ void QSocketThread::onDisconnected()
 // ПРишли данные от робота на отправку в сокет.
 // Данные отправляем, сокет закрываем
 // Тут важно попасть в свой поток...
-void QSocketThread::Data_2_TcpClient_Slot(QString data, qintptr socketNumber)
+void QSocketThread::Data_2_TcpClient_Slot(QString data)
 {
     // Готовим ответ.
     //socket->write(response.arg(QTime::currentTime().toString()).toLatin1());
@@ -450,12 +451,13 @@ void QSocketThread::Data_2_TcpClient_Slot(QString data, qintptr socketNumber)
 //    response += data2Client;
 
     if (!socket->isValid() || this->socket->state() != QAbstractSocket::ConnectedState){
-       qDebug() << "!!!!!!!!!!!!!!!!!!!!! SOCKET with number " << socketNumber <<  "IS NOT VALID";
+       qDebug() << "!!!!!!!!!!!!!!!!!!!!! SOCKET with descriptor " << this->socketDescriptor <<  "IS NOT VALID"; // socketNumber
        int state = socket->state();
        QString str;
 
-       QAbstractSocket::SocketState sockstate;
-       switch (sockstate){
+    //   QAbstractSocket::SocketState sockstate;
+
+       switch (state){
        case QAbstractSocket::UnconnectedState:
            qDebug() << QThread::currentThread()  << "Socket destroyed from client" << "\n";
            str = "<The socket is not connected>";
@@ -505,7 +507,8 @@ void QSocketThread::Data_2_TcpClient_Slot(QString data, qintptr socketNumber)
 //    qDebug() << QThread::currentThread()  << "Current socket " << socketNumber << " state is " << this->socket->state();
 //    qDebug() << QThread::currentThread()  << "Going to SEND SEND SEND data to socket with an desctiptor " << QString::number(this->socketDescriptor);
 
-    qint64 bufbytes = socket->write(qbData.constData());
+    //qint64 bufbytes = socket->write(qbData.constData());
+    socket->write(qbData.constData());
     socket->waitForBytesWritten();
     // socket->write(response.toUtf8());
     // ВОт тут (дождаться отправки) происходит отсоединение сокета

@@ -11,6 +11,8 @@
 #define FULL_CLOSED 87 //75
 #define FULL_OPENED 35
 
+#define CV_START_POINT 110
+#define CV_LAST_POPINT 270
 
 //+++++++++++++++ ЗАХВАТ РУЧНИКА ИМЕЕТ НОМЕР ПРИВОДА 0 - ИДЕТ 1-Й В СПИСКЕ.
 
@@ -23,8 +25,8 @@ unsigned char put_position [6] = {60, 93, 90, 40, 140, 30};
                             //      60, 93, 100, 35, 145, 35
 unsigned char after_put_position [6] = {0, 93, 90, 45, 135, 30};
 
-unsigned char mob_parking_position [4] = {70,90,90,160};//,45,45,49,222
-unsigned char mob_ready_position [4] = {35,90,135,165};
+unsigned char mob_parking_position [4] = {FULL_CLOSED,90,90,160};//,45,45,49,222
+unsigned char mob_ready_position [4] = {FULL_OPENED,90,135,165};
 unsigned char mob_moving_position [4] = {FULL_CLOSED,90,57,180}; // Для малого кубика 70-закрыто
 
 
@@ -45,7 +47,7 @@ unsigned char mob_pos_21 [4] = {35,90,145,50}; // 21 см. от края куб�
 unsigned char mob_pos_22 [4] = {35,90,168,35};
 unsigned char mob_pos_23 [4] = {35,90,172,35}; //35,90,175,32 - тоже подойдет
 */
-unsigned char mob_put_23 [4] = {70,90,172,35};
+unsigned char mob_put_23 [4] = {FULL_CLOSED,90,172,35};
 
 /*
 unsigned char mob_2_pos_11 [4] = {35,90,78,77};
@@ -63,7 +65,7 @@ unsigned char mob_2_pos_22 [4] = {35,90,168,35};
 unsigned char mob_2_pos_23 [4] = {35,90,177,30}; //35,90,175,32 - тоже подойдет
 */
 
-unsigned char mob_2_put_23 [4] = {80,90,172,35};
+//unsigned char mob_2_put_23 [4] = {FULL_CLOSED,90,172,35};
 
 unsigned char mob_2_moving_position [4] = {FULL_CLOSED,90,57,180};
 

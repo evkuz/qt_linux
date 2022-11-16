@@ -51,10 +51,10 @@ public:
      //    #define RC_NO_DETECTION -5      // Нет детекции объекта.
     #define DEV_RC_ERROR -5 // "Device Error" - какой-то из девайсов не работает.
 
-    #define DEV_HEAD_STATE_RUN  "Running"
-    #define DEV_HEAD_STATE_WAIT "Waiting"
-    #define DEV_HEAD_STATE_FAIL "Fail"
-    #define DEV_HEAD_STATE_DONE "Done"
+    const char* DEV_HEAD_STATE_RUN = "Running";
+    const char* DEV_HEAD_STATE_WAIT = "Waiting"; //init
+    const char* DEV_HEAD_STATE_FAIL = "Fail";
+    const char* DEV_HEAD_STATE_DONE = "Done";
 
 
     #define DEV_HEAD_INFO_NO_DET    "No detection"
@@ -90,7 +90,6 @@ public:
          AC_Launch_RC_DONE = -4          // Ожидание
 
      }ActionLaunchAnswer;
-
 
 
 
@@ -147,9 +146,12 @@ public:
     const char* DEV_ACTION_STATE_NODETECT = "NO DETECTION";
     const char* DEV_ACTION_STATE_INCORRECT = "INCORRECT distance";
 
+    // Global device status: init | run | fail
+    const char* DEV_GLOBAL_STATE_INIT = "init";
+    const char* DEV_GLOBAL_STATE_RUN  = "run";
+    const char* DEV_GLOBAL_STATE_FAIL = "fail";
 
 
-//    void init_json();
     void init_actions();
     void init_services();
     void init_actions_new();
@@ -260,8 +262,10 @@ private:
     ordered_json jsnOB2;  // Объект для списка
     ordered_json jsnOB3;  // Объект результирующий.
 
-    ordered_json& QtJson_2_NlohmannJson(QJsonObject theObj);     //convert single QJsonObject action tosingle  ordered_json object
+    ordered_json& QtJson_2_NlohmannJson(QJsonObject theObj);     //convert single QJsonObject action to single  ordered_json object
     ordered_json& QtJson_2_NlohmannJson_Head(QJsonObject theObj);// convert header of each answer
+    ordered_json& QtJson_2_NlohmannJson_Data(QJsonObject theObj);// convert data[] of each answer
+
     ordered_json& getAllActionsOrderedJson(QJsonObject theObj);
     ordered_json actStatuses; // Хранит статусы экшена. ключ — имя статуса, значение — описание данного статуса.
     ordered_json actGetStatuses; // ТО же для команды "get_box", есть особые статусы

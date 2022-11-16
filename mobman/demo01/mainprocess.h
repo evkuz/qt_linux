@@ -208,7 +208,7 @@ public:
 
     CV_Answer cvAnswer;
     QString pointer_to_qstring(void *ptr);
-    void returnActionLaunch(QJsonObject &theObj, QObject *theSender);
+    void returnActionLaunch(QJsonObject &theObj);
     Q_INVOKABLE void StatusRequest_From_TcpClient(QObject* theSender);
     Q_INVOKABLE void ActionLaunch_From_TcpClient(QObject* theSender, QString actionName);
     Q_INVOKABLE void ServiceLaunch_From_TcpClient(QObject *theSender, QString serviceName);

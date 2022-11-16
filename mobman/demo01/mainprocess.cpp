@@ -32,6 +32,7 @@ MainProcess::MainProcess(QObject *parent)
 
     cvAnswer.detected = false;
     cvAnswer.distance = 0.0;
+    currentCommandIndex = 0x5555;
 
     target_name = QFileInfo(QCoreApplication::applicationFilePath()).fileName();
     //QByteArray ba = target_name.toLocal8Bit();
@@ -125,13 +126,6 @@ MainProcess::MainProcess(QObject *parent)
 
     //make_json_answer();
 
-    //+++++++++ Проверяем, что работает QSerialPort
-//    QThread::sleep(1);
-//    emit on_clampButton_clicked();
-//    QThread::sleep(1);
-//    emit on_clampButton_clicked();
-//    QThread::sleep(1);
-//    emit on_clampButton_clicked();
 
 //    QString tcp_command="/run?cmd=servos=25,35,45,55,65,75,125,222&";
 //    http://192.168.1.201:8383/run?cmd=servos=45,90,45,165,0,0,125,222&
@@ -855,8 +849,8 @@ int MainProcess::my_round(int n)
 void MainProcess::traversJson(QJsonObject json_obj)
 {
     QString str;
-    bool isDetected;
-    int thevalue = 0x5555;
+//    bool isDetected;
+//    int thevalue = 0x5555;
     foreach(const QString& key, json_obj.keys()) {
         str = "";
         QJsonValue value = json_obj.value(key);
@@ -1108,7 +1102,7 @@ void MainProcess::newConnection_Slot()
 void MainProcess::Moving_Done_Slot()
 {
     QString str, myname;
-    int value = 0xFAAA;
+//    int value = 0xFAAA;
     QMutexLocker locker(&mutex02);
 
 //    GUI_Write_To_Log(value, "Demo cycle finished !!!");
@@ -1143,34 +1137,6 @@ void MainProcess::Moving_Done_Slot()
 
 
 
-//    QString str = "Current active command is ";
-//    str += Robot->active_command;
-
-//    GUI_Write_To_Log(value, str);
-
-    //Тут тоже надо через switch...
-    // Определяем индекс команды в списке MainProcess::tcpCommand
-    // Уже нет. Делаем через mainjsnObj
-//    int comIndex = getIndexCommand(Robot->active_command, tcpCommand);
-
-//    switch (comIndex) {
-
-//        case 1: //"get_box"  - это экшен (к вопросу о типе)
-//                // Меняем статус
-//                Robot->getbox_Action.rc = -4;
-//        break;
-
-//        }// switch (comIndex)
-
-
-
-
-
-//    if (Robot->active_command == "setservos=") {
-//        Robot->ready_Action.rc = -4; //"Ожидание"
-//        GUI_Write_To_Log(value, "The setservos= RC-value have changed");
-//        GUI_Write_To_Log(value, "setservos= operation is finished !");
-//    }
 
 
 
@@ -1513,7 +1479,7 @@ void MainProcess::CV_NEW_onReadyRead_Slot()
 //    str += substr;
 //    GUI_Write_To_Log(value, str);
 
-    if (rDistance < 110 || rDistance > 270) {
+    if (rDistance < CV_START_POINT || rDistance > CV_LAST_POPINT) {
         jsnStore->isAnyActionRunning = false;
         str = "!!!!!!!!!!!!!!!!! The distancCV_NEW_onReadyRead_Slote is out of range !!!!!!!!!! ";
         GUI_Write_To_Log(value, str);
@@ -1521,7 +1487,7 @@ void MainProcess::CV_NEW_onReadyRead_Slot()
         // ОДнако значение rc ставим
         //Robot->getbox_Action.rc = RC_WAIT; // Ставим экшен RC в "waiting"
         jsnActionAnswer["name"] = "get_box"; // jsnStore->jsnActionGetBox.value("name").toString();
-        jsnActionAnswer["rc"]   = jsnStore->AC_Launch_RC_FAILURE;
+        jsnActionAnswer["result"] = jsnStore->AC_Launch_RC_FAILURE;
         jsnActionAnswer["info"] = jsnStore->DEV_ACTION_INFO_OUT;
 
         jsnDoc = QJsonDocument(jsnActionAnswer);
@@ -1534,7 +1500,7 @@ void MainProcess::CV_NEW_onReadyRead_Slot()
 
         // А теперь следует задать значение "action_list": []
 
-        mainjsnObj["rc"] = JsonInfo::AC_Launch_RC_DONE; // Чтобы экшен мог запуститься
+        mainjsnObj["result"] = JsonInfo::AC_Launch_RC_DONE; // Чтобы экшен мог запуститься
         //mainjsnObj["name"] = jsnStore->jsnActionGetBox.value("name").toString();
         mainjsnObj["info"] = str;
         mainjsnObj["state"] = jsnStore->DEV_ACTION_STATE_FAIL;
@@ -1563,8 +1529,8 @@ void MainProcess::CV_NEW_onReadyRead_Slot()
     jsnStore->isAnyActionRunning = true;
     //QJsonObject theObj;
     mainjsnObj["name"]  =  "get_box"; //jsnStore->jsnActionGetBox.value("name").toString();
-    mainjsnObj["rc"]    = jsnStore->AC_Launch_RC_RUNNING;
-    mainjsnObj["info"]  = "Get box by manipulator ARM";// jsnStore->DEV_ACTION_INFO_;
+    mainjsnObj["result"]    = jsnStore->AC_Launch_RC_RUNNING;
+    mainjsnObj["info"]  = "Getting box by manipulator ARM";// jsnStore->DEV_ACTION_INFO_;
     mainjsnObj["state"] = jsnStore->DEV_ACTION_STATE_RUN;
 
     //Сравнить с SerialRobot, тут не всегда успевает.
@@ -1615,14 +1581,14 @@ void MainProcess::GetBox(double distance)
 {
     QString str;
     int value = 0xA9B9;
-    unsigned char *arrPtr = mob_3_final_position;
+//    unsigned char *arrPtr = mob_3_final_position;
     unsigned char finPosition[4] = {FULL_OPENED,90,0,0}; // final, evaluated values for servos
     double maxVal[2] = {0,0};
     double minVal[2] = {0,0};
     double N3_Delta, N4_Delta; // absolute difference among max and minimum values for servo 3,4
     int S3, S4;
     double distance_delta; // Расстояние в мм между соседними точками массива набора, точка - значение distance
-    double distance_delta_max; // Расстояние между точкой превышения и distance
+//    double distance_delta_max; // Расстояние между точкой превышения и distance
     double distance_delta_min; // Расстояние между точкой "недолёта" и distance
     double delta;
     double N3;
@@ -1692,7 +1658,7 @@ void MainProcess::GetBox(double distance)
             Robot->Write_To_Log(value, str);
 
             distance_delta = mob_3_position[i][0] - distance;// mob_3_position[i-1][0];
-            distance_delta_max = mob_3_position[i][0] - distance;
+//            distance_delta_max = mob_3_position[i][0] - distance;
             distance_delta_min = distance - mob_3_position[i-1][0];
             str = "Distance delta <distance_delta> is "; str += QString::number(distance_delta);
             Robot->Write_To_Log(value, str);
@@ -1797,8 +1763,10 @@ QString MainProcess::pointer_to_qstring(void *ptr)
 }
 //++++++++++++++++++++++++++++++++++++++++++++++++++++
 // Вообще, по названию - это должен быть быстрый ответ.
-// А по факту - установка новых значений для экшена в &theObj //подготовка списка состояний экшенов для запроса статуса.
-void MainProcess::returnActionLaunch(QJsonObject &theObj, QObject* theSender)
+// А по факту - установка новых значений для экшена в &theObj сразу после отправки
+// быстрого ответа.
+// подготовка списка состояний экшенов для запроса статуса.
+void MainProcess::returnActionLaunch(QJsonObject &theObj)
 {
     QString str;
     int value = 0x3939;
@@ -1807,7 +1775,7 @@ void MainProcess::returnActionLaunch(QJsonObject &theObj, QObject* theSender)
 
     if (!Robot->SerialIsOpened){
        jsnStore->isAnyActionRunning = false;
-       theObj["rc"] = RC_FAIL;
+       theObj["result"] = RC_FAIL;
        theObj["info"] = str;
        theObj["state"] = jsnStore->DEV_ACTION_STATE_FAIL;
        jsnStore->setActionData(theObj);
@@ -1821,21 +1789,22 @@ void MainProcess::returnActionLaunch(QJsonObject &theObj, QObject* theSender)
 
     jsnStore->isAnyActionRunning = true;
 //    theObj["rc"] = RC_SUCCESS;
-    theObj["rc"] = jsnStore->AC_Launch_RC_RUNNING;//RC_SUCCESS; // Now state "inprogress" //theObj
+    theObj["result"] = jsnStore->AC_Launch_RC_RUNNING;//RC_SUCCESS; // Now state "inprogress" //theObj
     theObj["state"] = jsnStore->DEV_ACTION_STATE_RUN;
 
     jsnStore->setActionData(theObj);
-
+// Формируем данные для зоголовка
     QJsonObject headStatus = {
         {"rc", RC_SUCCESS}, //RC_SUCCESS
-        {"state", "Running"},
-        {"info", "Action performing"}
+        {"state", jsnStore->DEV_GLOBAL_STATE_RUN},
+        {"info", "Action launched successfully"}
     };
-
+// Меняем содержимое заголовка (применяем новые данные)
     jsnStore->setJsnHeadStatus(headStatus);
 
 // Тут не нужно ничего отсылать в tcp-сокет.
 // Отправка в сокет случится, когда придет запрос статуса.
+// Поэтому не нужен параметр theSender
 /*
 
     str = QJsonDocument(theObj).toJson(QJsonDocument::Indented);

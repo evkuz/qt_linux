@@ -115,8 +115,7 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber, QO
         //emit Write_2_TcpClient_Signal(str, socketNumber);
         QMetaObject::invokeMethod(this->ptrTcpClient, "Data_2_TcpClient_Slot",
                                   Qt::QueuedConnection,
-                                  Q_ARG(QString, str),
-                                  Q_ARG(qintptr, tcpSocketNumber));
+                                  Q_ARG(QString, str));
 
 
         return;
@@ -137,8 +136,7 @@ if (comIndex > 1 && !jsnStore->isAnyActionRunning ){
     str = QJsonDocument(quickAnswerObj).toJson(QJsonDocument::Indented);
     QMetaObject::invokeMethod(this->ptrTcpClient, "Data_2_TcpClient_Slot",
                               Qt::QueuedConnection,
-                              Q_ARG(QString, str),
-                              Q_ARG(qintptr, tcpSocketNumber));
+                              Q_ARG(QString, str));
 
 } // if на быстрый ответ, если НЕ запрос статуса, И НЕТ активных экшенов.
 // Если в данный момент есть работающий экшен, то уже нельзя менять значение mainjsnObj...
@@ -179,8 +177,7 @@ QStringList list1;
 //        emit Write_2_TcpClient_Signal (str, this->tcpSocketNumber);
         QMetaObject::invokeMethod(this->ptrTcpClient, "Data_2_TcpClient_Slot",
                                   Qt::QueuedConnection,
-                                  Q_ARG(QString, str),
-                                  Q_ARG(qintptr, tcpSocketNumber));
+                                  Q_ARG(QString, str));
 
 
 
@@ -198,8 +195,7 @@ QStringList list1;
           GUI_Write_To_Log(value, str);
           QMetaObject::invokeMethod(this->ptrTcpClient, "Data_2_TcpClient_Slot",
                                   Qt::QueuedConnection,
-                                  Q_ARG(QString, str),
-                                  Q_ARG(qintptr, tcpSocketNumber));
+                                  Q_ARG(QString, str));
         }
         break;
 
@@ -220,8 +216,7 @@ QStringList list1;
         GUI_Write_To_Log(value, str);
         QMetaObject::invokeMethod(this->ptrTcpClient, "Data_2_TcpClient_Slot",
                                 Qt::QueuedConnection,
-                                Q_ARG(QString, str),
-                                Q_ARG(qintptr, tcpSocketNumber));
+                                Q_ARG(QString, str));
 
         break;
 
@@ -239,7 +234,7 @@ QStringList list1;
 
     case 4: // "parking"
         mainjsnObj = jsnStore->returnJsnActionParking();
-        returnActionLaunch(mainjsnObj, theSender); // Отправляем быстрый ответ
+        returnActionLaunch(mainjsnObj); // Отправляем быстрый ответ
 
         memcpy(Servos, mob_parking_position, DOF);
         this->send_Data(LASTONE);
@@ -247,7 +242,7 @@ QStringList list1;
         break;
     case 5: // "ready"
         mainjsnObj = jsnStore->returnJsnActionReady();
-        returnActionLaunch(mainjsnObj, theSender);
+        returnActionLaunch(mainjsnObj);
         memcpy(Servos, mob_ready_position, DOF);
         this->send_Data(LASTONE);
         break;
@@ -258,8 +253,7 @@ QStringList list1;
         str = jsnStore->returnAllActions(); //jsnStore->jsnData;
         QMetaObject::invokeMethod(this->ptrTcpClient, "Data_2_TcpClient_Slot",
                                   Qt::QueuedConnection,
-                                  Q_ARG(QString, str),
-                                  Q_ARG(qintptr, tcpSocketNumber));
+                                  Q_ARG(QString, str));
 
         str += str.insert(0, "Total action_list : \n");
 
@@ -273,7 +267,7 @@ QStringList list1;
         break;
     case 8: // "setservos="
         mainjsnObj = jsnStore->returnJsnAcionSetservos();
-        returnActionLaunch(mainjsnObj, theSender);
+        returnActionLaunch(mainjsnObj);
 
         substr = substr.remove("setservos=");
         list1 = substr.split(QLatin1Char(','));
@@ -288,7 +282,7 @@ QStringList list1;
 
     case 11: // "formoving"
         mainjsnObj = jsnStore->returnJsnActionForMoving();
-        returnActionLaunch(mainjsnObj, theSender);
+        returnActionLaunch(mainjsnObj);
         // Хват полностью сжат
         memcpy(Servos, mob_2_moving_position, DOF); // Для малого кубика
 
@@ -299,9 +293,9 @@ QStringList list1;
 
     case 12: // "put_box"
         mainjsnObj = jsnStore->returnJsnActionPutbox();
-        returnActionLaunch(mainjsnObj, theSender); // Отправляем быстрый ответ
+        returnActionLaunch(mainjsnObj); // Отправляем быстрый ответ
 
-        memcpy(Servos, mob_2_put_23, DOF);
+        memcpy(Servos, mob_put_23, DOF);
         this->send_Data(NOT_LAST);
 
         // Открываем
@@ -322,7 +316,7 @@ QStringList list1;
 
     case 13: //lock
         mainjsnObj = jsnStore->returnJsnActionLock();
-        returnActionLaunch(mainjsnObj, theSender);
+        returnActionLaunch(mainjsnObj);
         //GUI_Write_To_Log(value, "BEFORE lock ");
 //        Servos_To_Log("BEFORE lock ");
         Servos[0]=FULL_CLOSED;
@@ -331,7 +325,7 @@ QStringList list1;
        break;
     case 14: //unlock
         mainjsnObj = jsnStore->returnJsnActionUnLock();
-        returnActionLaunch(mainjsnObj, theSender);
+        returnActionLaunch(mainjsnObj);
         Servos[0]=FULL_OPENED;
         this->send_Data(LASTONE); //NOT_LAST LASTONE
 
@@ -464,11 +458,10 @@ void MainProcess::StatusRequest_From_TcpClient(QObject* theSender)
     str = jsnStore->createActionList(); // формируем список, записываем данные в jsnData, делаем merge (jsnActionList, jsnHeadStatus)
     GUI_Write_To_Log(value, str);
 
-    qintptr tcpSocketNumber = 0xCCCC;
+//    qintptr tcpSocketNumber = 0xCCCC;
     QMetaObject::invokeMethod(this->ptrTcpClient, "Data_2_TcpClient_Slot",
                               Qt::QueuedConnection,
-                              Q_ARG(QString, str),
-                              Q_ARG(qintptr, tcpSocketNumber)); //
+                              Q_ARG(QString, str)); //
 
 
 
@@ -482,6 +475,67 @@ void MainProcess::ActionLaunch_From_TcpClient(QObject *theSender, QString action
     QJsonObject tempObj;
 
     QObject *ptrTcpClient = theSender; // ? ... чтобы не переписалось из другого потока ?
+
+    substr = actionName;
+
+    int comIndex = getIndexCommand(substr, tcpCommand);
+            str = "Current active command index is ";
+            str += QString::number(currentCommandIndex);
+            str += " and isAnyActionRunning is ";
+            str += QVariant(jsnStore->isAnyActionRunning).toString();
+            Robot->Write_To_Log(value, str);
+
+    //        GUI_Write_To_Log(value, str);
+
+
+// Проверяем, есть ли запущенный экшен, и если ДА, то шлем быстрый ответ, выходим
+    if (jsnStore->isAnyActionRunning ){
+
+//        Robot->Write_To_Log(value,"I'm in action dobling check !");
+
+                     tempObj = {
+                         {"name", substr},
+                         {"info", "Another action is already running"},
+                         {"rc", RC_UNDEFINED}
+
+                     };
+
+        // ставим экшену статус -2... Если это отличный от текущего
+        if (comIndex != currentCommandIndex)
+        {
+//                {"state", "Not applied"},
+            tempObj["rc"] = jsnStore->AC_Launch_RC_FAILURE;
+         }
+        else        //if (comIndex == currentCommandIndex)
+        {
+            tempObj["info"] = "This action is STILL running";
+            tempObj["rc"] = jsnStore->AC_Launch_RC_ALREADY_HAVE; // Уже запущен
+
+        }
+        // set aimed action values to tempObj
+        // Here we are managed to not getting dangling pointer.
+        // Ничего не меняем в состояниях экшена, так проще
+//        jsnStore->setActionData(tempObj);
+        //launchActionAnswer = tempObj;
+        str = QJsonDocument(tempObj).toJson(QJsonDocument::Indented);
+        // отправляем ответ на запуск экшена
+        //emit Write_2_TcpClient_Signal(str, socketNumber);
+ //       qintptr socketNumber = 0xDDDD; // legacy issue
+        QMetaObject::invokeMethod(ptrTcpClient, "Data_2_TcpClient_Slot", //this->ptrTcpClient
+                                  Qt::QueuedConnection,
+                                  Q_ARG(QString, str));
+
+        // Пишем в лог Serial device, чтобы не затеряться в основном логе  среди перманентных
+        // запросов статуса
+        Robot->Write_To_Log(value,str);
+        return;
+    } //if (jsnStore->isAnyActionRunning )
+
+
+    jsnStore->isAnyActionRunning = true;
+    currentCommandIndex = comIndex;
+
+// Готовим быстрый ответ
     quickAnswerObj = {
         {"name", actionName},
         {"info", "Request accepted"},
@@ -494,16 +548,12 @@ void MainProcess::ActionLaunch_From_TcpClient(QObject *theSender, QString action
     // GUI_Write_To_Log(value, str);
     str = QJsonDocument(quickAnswerObj).toJson(QJsonDocument::Indented);
 
-    qintptr tcpSocketNumber = 0xDDDD; //this->ptrTcpClient
+// Отправляем быстрый ответ
     QMetaObject::invokeMethod(theSender, "Data_2_TcpClient_Slot", // правильно, закрываем сокет после быстрого ответа.
                             Qt::QueuedConnection,
-                            Q_ARG(QString, str),
-                            Q_ARG(qintptr, tcpSocketNumber));
+                            Q_ARG(QString, str));
 
     //А теперь запускаем экшен
-     substr = actionName;
-
-    int comIndex = getIndexCommand(substr, tcpCommand);
     QStringList list1; // Понадобится для setservos
     switch (comIndex) {
     case 1:  // reset
@@ -516,6 +566,7 @@ void MainProcess::ActionLaunch_From_TcpClient(QObject *theSender, QString action
         break;
     case 3: // "get_box"
         mainjsnObj = jsnStore->returnJsnActionGetBox();
+        returnActionLaunch(mainjsnObj); // Отправляем быстрый ответ
         request_CV();
 //      Тут нет returnActionLaunch(mainjsnObj); т.к.
 //      Может не быть детекции. Быстрый ответ отпрвляем из
@@ -524,7 +575,7 @@ void MainProcess::ActionLaunch_From_TcpClient(QObject *theSender, QString action
 
     case 4: // "parking"
         mainjsnObj = jsnStore->returnJsnActionParking();
-        returnActionLaunch(mainjsnObj, theSender); // Отправляем быстрый ответ
+        returnActionLaunch(mainjsnObj); // Отправляем быстрый ответ
 
 
         memcpy(Servos, mob_parking_position, DOF);
@@ -533,7 +584,7 @@ void MainProcess::ActionLaunch_From_TcpClient(QObject *theSender, QString action
 
     case 5: // "ready"
         mainjsnObj = jsnStore->returnJsnActionReady();
-        returnActionLaunch(mainjsnObj, theSender);
+        returnActionLaunch(mainjsnObj);
 
         memcpy(Servos, mob_ready_position, DOF);
         this->send_Data(LASTONE);
@@ -542,7 +593,7 @@ void MainProcess::ActionLaunch_From_TcpClient(QObject *theSender, QString action
 
     case 8: // "setservos="
         mainjsnObj = jsnStore->returnJsnAcionSetservos();
-        returnActionLaunch(mainjsnObj, theSender);
+        returnActionLaunch(mainjsnObj);
 
         substr = substr.remove("setservos=");
         list1 = substr.split(QLatin1Char(','));
@@ -558,7 +609,7 @@ void MainProcess::ActionLaunch_From_TcpClient(QObject *theSender, QString action
 
     case 11: // "formoving"
         mainjsnObj = jsnStore->returnJsnActionForMoving();
-        returnActionLaunch(mainjsnObj, theSender);
+        returnActionLaunch(mainjsnObj);
         // Хват полностью сжат
         memcpy(Servos, mob_2_moving_position, DOF); // Для малого кубика
 
@@ -569,16 +620,16 @@ void MainProcess::ActionLaunch_From_TcpClient(QObject *theSender, QString action
 
     case 12: // "put_box"
         mainjsnObj = jsnStore->returnJsnActionPutbox();
-        returnActionLaunch(mainjsnObj, theSender); // Отправляем быстрый ответ
+        returnActionLaunch(mainjsnObj); // Отправляем быстрый ответ
 
-        memcpy(Servos, mob_2_put_23, DOF);
+        memcpy(Servos, mob_put_23, DOF);
         this->send_Data(NOT_LAST);
 
         // Открываем
-        Servos[0] = 45;
+        Servos[0] = FULL_OPENED;
         this->send_Data(NOT_LAST);
 
-        //Поднимаем крайний привод, чтобы снова не схватить кубик при движении обратно
+        //Поднимаем крайний привод(подняв 3 привод), чтобы снова не схватить кубик при движении обратно
         Servos[3] = 65;
         this->send_Data(NOT_LAST); // NOT_LAST
 
@@ -591,21 +642,21 @@ void MainProcess::ActionLaunch_From_TcpClient(QObject *theSender, QString action
 
     case 13: //lock
         mainjsnObj = jsnStore->returnJsnActionLock();
-        returnActionLaunch(mainjsnObj, theSender);
+        returnActionLaunch(mainjsnObj);
         Servos[0]=FULL_CLOSED;
         this->send_Data(LASTONE); //NOT_LAST LASTONE
 
        break;
     case 14: //unlock
         mainjsnObj = jsnStore->returnJsnActionUnLock();
-        returnActionLaunch(mainjsnObj, theSender);
+        returnActionLaunch(mainjsnObj);
         Servos[0]=FULL_OPENED;
         this->send_Data(LASTONE); //NOT_LAST LASTONE
 
        break;
     case 15: // "detach"
         mainjsnObj = jsnStore->returnJsnActionDetach();
-        returnActionLaunch(mainjsnObj, theSender);
+        returnActionLaunch(mainjsnObj);
         jsnStore->isAnyActionRunning = false;
         for (int i=0; i<DOF; ++i)
         {
@@ -617,7 +668,7 @@ void MainProcess::ActionLaunch_From_TcpClient(QObject *theSender, QString action
 
     case 16: // "attach"
         mainjsnObj = jsnStore->returnJsnActionAttach();
-        returnActionLaunch(mainjsnObj, theSender);
+        returnActionLaunch(mainjsnObj);
         jsnStore->isAnyActionRunning = false;
         for (int i=0; i<DOF; ++i)
         {
@@ -629,6 +680,7 @@ void MainProcess::ActionLaunch_From_TcpClient(QObject *theSender, QString action
 
 
     default:
+        jsnStore->isAnyActionRunning = false;
         str = "The Action with index ";
         str += QString::number(comIndex);
         str += " is not found";
@@ -663,8 +715,7 @@ void MainProcess::ServiceLaunch_From_TcpClient(QObject *theSender, QString servi
 // Строку JSON сформировали, отправляем tcp-клиенту.
     QMetaObject::invokeMethod(theSender, "Data_2_TcpClient_Slot",
                               Qt::QueuedConnection,
-                              Q_ARG(QString, str),
-                              Q_ARG(qintptr, tcpSocketNumber));
+                              Q_ARG(QString, str));
 
     str += str.insert(0, "Total service_list : \n");
 
