@@ -694,7 +694,7 @@ void MainProcess::ActionLaunch_From_TcpClient(QObject *theSender, QString action
 
 void MainProcess::ServiceLaunch_From_TcpClient(QObject *theSender, QString serviceName)
 {
-    int value = 0xEEEE;
+    int value = 0xF03F;
     QString str;
     jsnStore->isAnyActionRunning = false;
     str = serviceName;
@@ -720,6 +720,23 @@ void MainProcess::ServiceLaunch_From_TcpClient(QObject *theSender, QString servi
     str += str.insert(0, "Total service_list : \n");
 
     GUI_Write_To_Log(value, str);
+
+}
+//+++++++++++++++++++++++++++++++++++++++++++++++++
+// Подготовка и отправка ответа на запрос "/status?action=<action name>"
+// через paramName передаем имя экшена
+void MainProcess::StatusParamRequest_From_TcpClient(QObject *theSender, QString paramName)
+{
+    QString str;
+//    int value = 0xf04f;
+
+    ptrTcpClient = theSender; // ? ... чтобы не переписалось из другого потока ?
+
+    str = jsnStore->createStatusParamList(paramName);
+    // Строку JSON сформировали, отправляем tcp-клиенту.
+        QMetaObject::invokeMethod(theSender, "Data_2_TcpClient_Slot",
+                                  Qt::QueuedConnection,
+                                  Q_ARG(QString, str));
 
 }
 //+++++++++++++++++++++++++++++++++++++++++++++

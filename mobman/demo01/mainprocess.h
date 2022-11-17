@@ -209,9 +209,14 @@ public:
     CV_Answer cvAnswer;
     QString pointer_to_qstring(void *ptr);
     void returnActionLaunch(QJsonObject &theObj);
+    // Подготовка и отправление ответа на запрос "/status"
     Q_INVOKABLE void StatusRequest_From_TcpClient(QObject* theSender);
+    // Подготовка и отправление ответа на запрос "/action?name=<action name>"
     Q_INVOKABLE void ActionLaunch_From_TcpClient(QObject* theSender, QString actionName);
+    // Подготовка и отправление ответа на запрос "service?name=<service name>"
     Q_INVOKABLE void ServiceLaunch_From_TcpClient(QObject *theSender, QString serviceName);
+    // Подготовка и отправление ответа на запрос "/status?action=<action name>"
+    Q_INVOKABLE void StatusParamRequest_From_TcpClient(QObject* theSender, QString paramName);
 
 private:
 //    SocketClient readSocket;

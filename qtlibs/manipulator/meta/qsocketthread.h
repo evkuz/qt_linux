@@ -18,6 +18,7 @@
 //#include <QMetaType>
 #include <QMetaObject>
 #include <QTimer>
+#include <QRegularExpression>
 
 
 //Пользовательский класс потока
@@ -47,6 +48,7 @@ public:
     void favIconAnswer();
     //mySocketError
     void theLoop(void);  // main loop of QSocketThread
+    void tcpParce(QString tcpData); // parcing tcp data with RegExp
     volatile int socketsCounter;
 
 signals:

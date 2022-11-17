@@ -139,6 +139,16 @@ void QSocketThread::theLoop()
         emit stopThread_signal();
 
 
+}
+//++++++++++++++++++++++++++++++++++++++++++++++++++++
+void QSocketThread::tcpParce(QString tcpData)
+{
+//    QRegularExpression("^asd$");
+    QRegularExpression regexStatusOnly("\\/status$");
+    QRegularExpression regexStatusParam("\\/status?.*$");
+
+
+
 } // theLoop()
 //+++++++++++++++++++++++++++
 //++++++++++++++++++ главный event loop потока
@@ -184,10 +194,12 @@ void QSocketThread::process_TheSocket()
 
 void QSocketThread::onReadyRead()
 {
- //   QList<QString>  strcommand = { "/run?cmd=", "/service?name=", "/status", "/status?action=", "/action?name=", "/favicon"};
-    //Чтение информации из сокета и вывод в консоль
+//   QList<QString>  strcommand = { "/run?cmd=", "/service?name=", "/status", "/status?action=", "/action?name=", "/favicon"};
+// - Чтение информации из сокета и вывод в консоль
+// - Парсинг полученной команды и вызов соответствующей ф-ции, для обработки.
 //    qintptr socketNumber = this->socketDescriptor;
 //    qDebug() << QThread::currentThread() << "$$$$$$$$$ I'm in ReadyRead_Slot for socket " << socketNumber;
+// ...
 // вот тут запускаем таймер, чтобы дождаться favicon.
 
    // int value = 0xfafa;
@@ -195,9 +207,11 @@ void QSocketThread::onReadyRead()
     nextTcpdata = "";
 
     int befbytes = socket->bytesAvailable();
-    if (befbytes < 20) {// HTTP/1.0 200 OK == 17 Пришла строка , обрабатывать не нужно, выходим.
+    if (befbytes < 20) {// "HTTP/1.0 200 OK" == 17 байт занимает такая строка , обрабатывать не нужно, выходим.
+                        // Так делает CV-камера. Шлёт ОК, и через 10мс остальное.
         qDebug() << "######### onReadyRead thread ID " <<  QThread::currentThread() << "!!!!!!!!! Too few bytes readed " << befbytes;
         return;
+        // Мы не считывали буфер сейчас, когда в сокет еще "нальют" данныех, тогда и считаем всё целиком.
     }
 
     QByteArray httpHeaders = socket->readAll();
@@ -205,15 +219,13 @@ void QSocketThread::onReadyRead()
 
     qDebug() << "######### onReadyRead thread ID " <<  QThread::currentThread() << "!!!!!!!!! Have got " << realbytes << " bytes of Data FROM TCP SOCKET !!!!!!!!!!!!!!!!!!!";//<< QString::number(socketNumber);
 
-//    qDebug() << httpHeaders;// nextTcpdata;  httpHeaders;
     //Парсим команду.
     QString message, substr, searchstr;
-    //message = QString(qbmessage);
-   // message = nextTcpdata;
-    message = QString(httpHeaders);// nextTcpdata;
+    message = QString(httpHeaders);
+
     int sPosition, ePosition; // Индекс строки run в запросе.
-    //sPosition = message.indexOf("/run?cmd=");
-    //   // Вот тут обходим запрос "GET /favicon.ico HTTP/1.1"
+
+//  Вот тут обходим запрос "GET /favicon.ico HTTP/1.1"
     QString  wrong_mess = "favicon.ico";//"Referer:";//"status";//"favicon.ico";
     if (message.contains(wrong_mess))
         {
@@ -224,23 +236,23 @@ void QSocketThread::onReadyRead()
 
            return;
        }
-    else // so it's not favicon request
-    {
-    bool matched = false;
-    int i = 0; sPosition = 0;
-// Перебираем массив strcommand, определяем тип запроса (разные Виды команд)
-    while (!matched and i< strcommand.size()){
-        sPosition = message.indexOf(strcommand.at(i));
-        if (sPosition != -1) {
-             matched = true;
-//             qDebug() << "Inside sPosition is " << sPosition;
-//             qDebug() << "Inside Index is " << i;
-        }
-        ++i;
-    }
-    i--;
+//     else // so it's not favicon request
+//     {
+        bool matched = false;
+        int i = 0; sPosition = 0;
+        // Перебираем массив strcommand, определяем тип запроса (разные Виды команд)
+        while (!matched and i< strcommand.size()){
+            sPosition = message.indexOf(strcommand.at(i));
+            if (sPosition != -1) {
+                 matched = true;
+    //             qDebug() << "Inside sPosition is " << sPosition;
+    //             qDebug() << "Inside Index is " << i;
+            }
+            ++i;
+        } // while
+        i--;
 
-    if (!matched) {return;} // Выходим, если нет правильных строк
+        if (!matched) {return;} // Выходим, если нет правильных строк
 
 //    qDebug() << "Index value is" << i;
 //    qDebug() << "Matched command sPosition is " << sPosition;
@@ -270,26 +282,17 @@ void QSocketThread::onReadyRead()
     // вид определили, пишем в переменную
     searchstr = strcommand.at(i);
 
-
-// Вот тут надо решать с "/action?name="
-// Надо доработать...
+    // Take the rest of the string, matched with strcommand list. I.e. parameters (for "setservos=")
+    // or action/service name
     if (matched)
     {
         sPosition += searchstr.size();
         // Это пробел, который идет перед "the HTTP version that defines the structure of the remaining message"
         // В нашем случае - "HTTP/1.1"
         ePosition = message.indexOf(" ", sPosition);
-        substr = message.mid(sPosition, (ePosition - sPosition));
-        if(substr == "") substr = searchstr;
+        substr = message.mid(sPosition, (ePosition - sPosition)); // Вся интересная нам часть tcp-данных,
+        if(substr == "") substr = searchstr;                      // это остаток get-запроса, того, что можно руками в браузере вбить
 
-        if ((substr == "start")){ // || (substr == "get_box") Долгая операция, ставим на паузу прием новых соединений
-            emit makePause_Signal(); // put on pause incomming connections
-            pauseTimer->start(50); // 20msec should be enough
-            //...
-            // when the 20ms is being elapsed the &QTimer::timeout signal will be emitted and the slot
-            // for this signal - &QSimpleServer::resumePause_Slot - will be invoked
-            qDebug() << "&&&&&&&&&&&&&&&&& Timer STARTED &&&&&&&&&&&&&&&&&&&&&&&";
-        }
         // Получили команду. Передаем её наверх
         qDebug() << "!!!!!!!!!!!!!!!!!!!!! Get COMMAND FROM QSocketThread::onReadyRead(), i.e. from TCP SOCKET " << QString::number(this->socketDescriptor);
         qDebug() << "!!!!!!!!!!!!!!!!!!!!! QSocketThread::onReadyRead()" << QThread::currentThread() << substr;
@@ -298,6 +301,7 @@ void QSocketThread::onReadyRead()
 
 
 // Now choose the right method to invoke, don't use socketNumber anymore
+        QString statParam; // prameter of "status" request, usualy == "action"
         switch (i){
 
         case 0: //"/run?cmd="
@@ -338,11 +342,34 @@ void QSocketThread::onReadyRead()
             break;
 
 
-        case 2: // "/status"
+        case 2: // "/status" or "/status?action="
+            if (substr == "/status"){
+                qDebug() << "onReadyRead() just ONLY status case 2";
 
-            QMetaObject::invokeMethod(_ptrMainThtread, "StatusRequest_From_TcpClient",
-                                      Qt::QueuedConnection,
-                                      Q_ARG(QObject*, this));
+                QMetaObject::invokeMethod(_ptrMainThtread, "StatusRequest_From_TcpClient",
+                                          Qt::QueuedConnection,
+                                          Q_ARG(QObject*, this));
+
+            }
+
+             //QRegularExpression regexStatusOnly("\\/status$");
+            if (substr.contains("?action=")){
+
+
+                // И дальше надо выцеплять имя экшена...
+//                sPosition = 8; //next after "/status?"
+//                sPosition = 15; //next after "/status?action="
+                sPosition = 8; //next after "?action="
+                statParam = substr.mid(sPosition); // from sPosition all characters available
+                qDebug() << "onReadyRead() status WITH PARAMS case 2" << "paramName is " << statParam;
+
+                QMetaObject::invokeMethod(_ptrMainThtread, "StatusParamRequest_From_TcpClient",
+                                          Qt::QueuedConnection,
+                                          Q_ARG(QObject*, this),
+                                          Q_ARG(QString, statParam));
+
+            }
+
 
 
             break;
@@ -363,7 +390,7 @@ void QSocketThread::onReadyRead()
 
   } // if (matched)
 
- } //else // so it's not favicon request
+// } //else // so it's not favicon request
 
 // А если !matched, ...  закрываем сокет
 

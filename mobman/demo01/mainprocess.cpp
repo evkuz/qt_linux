@@ -978,41 +978,43 @@ double MainProcess::parseJSON(QString jsnData)
 
       str = "There is NO DETECTION !!!";
       GUI_Write_To_Log(value, str);
-      jsnActionAnswer["name"] =  "get_box"; //jsnStore->jsnActionGetBox.value("name");
-      jsnActionAnswer["rc"] = jsnStore->AC_Launch_RC_FAILURE;
-      jsnActionAnswer["info"] = jsnStore->DEV_ACTION_INFO_NODETECT;
 
-      jsnDoc = QJsonDocument(jsnActionAnswer);
-      str = jsnDoc.toJson(QJsonDocument::Compact);
-      // Даем быстрый ответ
-      QMetaObject::invokeMethod(this->newPtrTcpClient, "Data_2_TcpClient_Slot",
-                                Qt::QueuedConnection,
-                                Q_ARG(QString, str),
-                                Q_ARG(qintptr, tcpSocketNumber));
-      // А теперь следует задать значение "action_list": []
-      // Меняем только "rc"
-      jsnActionAnswer["rc"] = JsonInfo::AC_Launch_RC_DONE; // Чтобы экшен мог запуститься
-//        mainjsnObj["name"] = jsnStore->jsnActionGetBox.value("name").toString();
-//        mainjsnObj["info"] = str;
-//        mainjsnObj["state"] = jsnStore->DEV_ACTION_STATE_NODETECT;
+//      jsnActionAnswer["name"] =  "get_box"; //jsnStore->jsnActionGetBox.value("name");
+//      jsnActionAnswer["rc"] = jsnStore->AC_Launch_RC_FAILURE;
+//      jsnActionAnswer["info"] = jsnStore->DEV_ACTION_INFO_NODETECT;
+
+//      jsnDoc = QJsonDocument(jsnActionAnswer);
+//      str = jsnDoc.toJson(QJsonDocument::Compact);
+//      // Даем быстрый ответ
+//      QMetaObject::invokeMethod(this->newPtrTcpClient, "Data_2_TcpClient_Slot",
+//                                Qt::QueuedConnection,
+//                                Q_ARG(QString, str),
+//                                Q_ARG(qintptr, tcpSocketNumber));
+//      // А теперь следует задать значение "action_list": []
+//      // Меняем только "rc"
+//      jsnActionAnswer["rc"] = JsonInfo::AC_Launch_RC_DONE; // Чтобы экшен мог запуститься
+        mainjsnObj["name"] = "get_box";//jsnStore->jsnActionGetBox.value("name").toString();
+        mainjsnObj["info"] = str;
+        mainjsnObj["state"] = jsnStore->DEV_ACTION_STATE_NODETECT;
+        mainjsnObj["result"] = JsonInfo::AC_RESULT_FAILURE;
 
       // if this causes dangling pointer, try signal|slot data transfer
-      jsnStore->setActionData(jsnActionAnswer);
+      jsnStore->setActionData(mainjsnObj);
       // emit SetActionData_Signal(mainjsnObj);
 
-      QJsonObject headStatus = {
-          {"rc", RC_SUCCESS}, //RC_SUCCESS
-          {"state", "Waiting"},
-          {"info", "NO DETECTION"}
-      };
+//      QJsonObject headStatus = {
+//          {"rc", RC_SUCCESS}, //RC_SUCCESS
+//          {"state", "Waiting"},
+//          {"info", "NO DETECTION"}
+//      };
 
-      jsnStore->setJsnHeadStatus(headStatus);
+//      jsnStore->setJsnHeadStatus(headStatus);
 
-      jsnActionAnswer = jsnStore->returnJsnActionGetBox();
-      jsnDoc = QJsonDocument(jsnActionAnswer);
-      str = jsnDoc.toJson(QJsonDocument::Compact);
-      str.insert(0, "New value of get_box :\n");
-      GUI_Write_To_Log(value,str);
+//      jsnActionAnswer = jsnStore->returnJsnActionGetBox();
+//      jsnDoc = QJsonDocument(jsnActionAnswer);
+//      str = jsnDoc.toJson(QJsonDocument::Compact);
+//      str.insert(0, "New value of get_box :\n");
+//      GUI_Write_To_Log(value,str);
 
       str = " The value of <jsnStore->isAnyActionRunning> is ";
       str  += QVariant(jsnStore->isAnyActionRunning).toString();
@@ -1384,8 +1386,8 @@ void MainProcess::CV_NEW_onReadyRead_Slot()
     nextTcpdata = nextTcpdata.simplified();
 
 
-//    GUI_Write_To_Log(value, "!!!!!!!!!!!!!!!!! There are some data from CV device !!!!!!!!!!!!!!!!!!!!");
-//    GUI_Write_To_Log(value, nextTcpdata);
+    GUI_Write_To_Log(value, "!!!!!!!!!!!!!!!!! There are some data from CV device !!!!!!!!!!!!!!!!!!!!");
+    GUI_Write_To_Log(value, nextTcpdata);
 
 //    str = "Detected value BEFORE parcing is ";
 //    str +=  QVariant(DETECTED).toString();
@@ -1453,8 +1455,8 @@ void MainProcess::CV_NEW_onReadyRead_Slot()
 //    } // if (this->DETECTED != true)
 
     if (cvdistance < 1.0) { // Это когда нечитаемый ответ от CV, то в ответ приходит 0.0
-//      str = "There is INCORRECT value of distance !!!";
-//      GUI_Write_To_Log(value, str);
+        str = "There is INCORRECT value of distance !!! or NO DETECTION !";
+        GUI_Write_To_Log(value, str);
         jsnStore->isAnyActionRunning = false;
 
       return;
@@ -1500,7 +1502,7 @@ void MainProcess::CV_NEW_onReadyRead_Slot()
 
         // А теперь следует задать значение "action_list": []
 
-        mainjsnObj["result"] = JsonInfo::AC_Launch_RC_DONE; // Чтобы экшен мог запуститься
+        mainjsnObj["result"] = JsonInfo::AC_RESULT_SUCCESS; // Чтобы экшен мог запуститься
         //mainjsnObj["name"] = jsnStore->jsnActionGetBox.value("name").toString();
         mainjsnObj["info"] = str;
         mainjsnObj["state"] = jsnStore->DEV_ACTION_STATE_FAIL;

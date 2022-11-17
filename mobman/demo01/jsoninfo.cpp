@@ -4,7 +4,7 @@ JsonInfo::JsonInfo(QString deviceName)
 {
 
     DEV_NAME = deviceName;
-    currentStatus = {DEV_NAME.toStdString(), RC_SUCCESS,  "OK", DEV_HEAD_STATE_WAIT}; // Инициализируем структуру
+    currentStatus = {DEV_NAME.toStdString(), RC_SUCCESS,  "OK", DEV_HEAD_STATE_WAIT}; // Инициализируем структуру name|rc|info|state
     action_command = "nothing";
     init_actions();
     init_services();
@@ -253,7 +253,8 @@ QString JsonInfo::merge_json(QJsonObject src, QJsonObject dst)
 
 }
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-void JsonInfo::struc_2_json(ordered_json &jsn, const Action &header)
+// Преобразуем структуру statusHeader в объект ordered_json
+void JsonInfo::struc_2_json(ordered_json &jsn, const statusHeader &header)
 {
     jsn = ordered_json{
                         {"name", header.name},
@@ -656,7 +657,7 @@ bool JsonInfo::eraseArray(QJsonArray &theArray)
     return OK;
 } // eraseArray()
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
+// Под вопросом. Соответствует ли протоколу ?
 void JsonInfo::setHeadStatusFail()
 {
     jsnHeadStatus["state"] = "Fail";
@@ -665,6 +666,8 @@ void JsonInfo::setHeadStatusFail()
 
 } //setHeadStatusFail()
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Решили, что не соотвествтует протоколу.
+// Данная информация будет в статусе экшена в action_list[], а не в заголовке jsnHeadStatus
 void JsonInfo::setActionStart2NoDetection()
 {
     jsnActionStart["state"] = DEV_ACTION_STATE_FAIL;
@@ -701,7 +704,7 @@ QString JsonInfo::createActionList()
     // Перебираем список  jsnObjArray, определяем у кого state == "inprogress"
     // формируем новый список
     // добавляем его в jsnData
-    QJsonValue myValue;
+//    QJsonValue myValue;
     QJsonObject myobj;
     QJsonArray myArray;
 
@@ -736,8 +739,9 @@ QString JsonInfo::createActionList()
     // Это самый верхний header
     ordered_json header = QtJson_2_NlohmannJson_Head(jsnHeadStatus);
 
-// Заголовок получили, теперь добавляем action_list, снова проходим массив
-// каждый элемент преобразуем QJsonObject -> ordered_json
+    // Заголовок получили, теперь добавляем action_list, снова проходим массив
+    // каждый элемент преобразуем QJsonObject -> ordered_json
+
 
     header["action_list"] =  ordered_json::array({});
     for (int i=0; i < myArray.size(); i++){
@@ -751,7 +755,39 @@ QString JsonInfo::createActionList()
 
     return jsnData;
 
-} //createActionList
+}//createActionList
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+QString JsonInfo::createStatusParamList(QString paramName)
+{
+    QJsonObject myobj;
+    QJsonArray myArray;
+
+
+    // Получаем заголовок ответа на запрос статуса
+    // Это самый верхний header
+    ordered_json header = QtJson_2_NlohmannJson_Head(jsnHeadStatus);
+
+    // Заголовок получили, теперь добавляем action_list, который формируем
+    // снова проходим массив
+    // каждый элемент преобразуем QJsonObject -> ordered_json
+
+    myArray = this->jsnObjArray;
+    header["action_list"] =  ordered_json::array({});
+
+    for (int i=0; i < jsnObjArray.size(); i++) {
+        if (jsnObjArray.at(i).toObject().value("name").toString() == paramName){
+            myobj = jsnObjArray.at(i).toObject();
+        }
+    }
+
+    ordered_json action = QtJson_2_NlohmannJson_Data(myobj);
+    header["action_list"] += action;
+    jsnData = QString::fromStdString(header.dump(3));
+
+
+    return jsnData;
+} // createStatusParamList
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 void JsonInfo::SetJsnActionCollapse(QJsonObject &theObj)
 {

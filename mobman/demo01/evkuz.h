@@ -47,8 +47,20 @@
  *
  * http://192.168.1.201:8383/run?cmd=status&
  *
+ * //+++++++++++++++++++++++++++++++++++++++++++++
+ * 17.11.2022
+ * Решаем задачи, поставленные вчера вечером.
+ * Делаем более детальный парсинг tcp-запроса от клиента с расчетом на команды с параметрами,
+ * типа
+ * /status[?param=value[&param2=value2]&]
+ *   где param=="action"
+ *   value==<action name>, например, "get_box"
  *
- *
+ * - Добавил ф-цию MainProcess::StatusParamRequest_From_TcpClient(QObject *theSender, QString paramName)
+ *   Подготовка и отправка ответа на запрос "/status?action=<action name>", через paramName передаем имя экшена
+ * - Соответственно, доработал QSocketThread::onReadyRead()
+ *   Тестим
+ *   ...
  *
  * //+++++++++++++++++++++++++++++++++++++++++++++
  * 16.11.2022
@@ -59,9 +71,9 @@
  * Не отправлялся параметр qintptr socketNumber, вообще не было такой переменной.
  *
  * Задача :[сделано]
- * - Переделать ф-цию QSocketThread::Data_2_TcpClient_Slot(QString data, qintptr socketNumber)
+ * - Переделать ф-цию QSocketThread::Data_2_TcpClient_Slot(QString data, qintptr socketNumber) где :
  *   Убрать параметр socketNumber, т.к. больше не требуется.
- *   Очень помог на этапе отладки работы потоков, помогает отлавливать несущесвующий (т.е. уже закрытый) сокет
+ *   Очень полезен вывод в консоль на этапе отладки работы потоков, помогает отлавливать несущесвующий (т.е. уже закрытый) сокет
  *   qDebug() << "!!!!!!!!!!!!!!!!!!!!! SOCKET with number " << socketNumber <<  "IS NOT VALID";
  *   ...
  *   Сообщение оставляем, а вывод socketNumber убираем.
