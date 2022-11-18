@@ -849,7 +849,7 @@ void JsonInfo::setActionData(QJsonObject &theObj)
 // Так работаем только с массивом.
     QString theName = theObj.value("name").toString();
     QString info;
-    QJsonObject temp;
+//    QJsonObject temp;
     // Проходим jsnObjArray, ищем совпадение по "name", меняем "rc" и "state", делаем replase
     // Сохраняем значение "info"
 
@@ -863,9 +863,9 @@ void JsonInfo::setActionData(QJsonObject &theObj)
             info = jsnObjArray.at(i).toObject().value("info").toString();
             theObj["info"] = info;
             jsnObjArray.replace(i, theObj);
-            temp = jsnObjArray.at(i).toObject();
-            temp["info"] = info;
-            jsnObjArray.replace(i, temp);
+//            temp = jsnObjArray.at(i).toObject();
+//            temp["info"] = info;
+//            jsnObjArray.replace(i, temp);
 
         }
     }
