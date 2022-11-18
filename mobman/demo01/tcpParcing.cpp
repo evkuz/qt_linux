@@ -123,6 +123,7 @@ void MainProcess::Data_From_TcpClient_Slot(QString message, int socketNumber, QO
 
 // А теперь быстрый ответ, если НЕ запрос статуса, НЕ reset, И НЕТ активных экшенов.
 
+    QJsonObject quickAnswerObj;
 if (comIndex > 1 && !jsnStore->isAnyActionRunning ){
     quickAnswerObj = {
         {"name", substr},
@@ -149,11 +150,6 @@ if (comIndex > 1 && !jsnStore->isAnyActionRunning ){
 
 //    GUI_Write_To_Log(value, str);
 
-   //QString S3;
-
-// Если убрали processAction, то ответ на запуск экшена, каждый раз, как ф-цию.
-
-//    QJsonObject tempObj;
 QStringList list1;
     switch (comIndex) {
     case 0: // status
@@ -161,25 +157,10 @@ QStringList list1;
         // Нужно добавлять активный экшен, либо пустой список
         str = jsnStore->createActionList(); // формируем список, записываем данные в jsnData, делаем merge (jsnActionList, jsnHeadStatus)
 
-        //str += QJsonDocument(jsnStore->jsnActionList).toJson(QJsonDocument::Indented);
-        //str = jsnStore->returnJsnData();
         GUI_Write_To_Log(value, str);
-        //        str = jsnStore->returnJsnData();
-        //        str = "{\n\t\"status\": \"testing\"\t\n}";
-        //        s2 = jsnStore->jsnInfo.dump(indent);
-        //        str = QString::fromStdString(s2);
-
-
-                //Robot->Write_To_Log(value, str);
-
-
-//        Robot->active_command = "status";
-//        emit Write_2_TcpClient_Signal (str, this->tcpSocketNumber);
         QMetaObject::invokeMethod(this->ptrTcpClient, "Data_2_TcpClient_Slot",
                                   Qt::QueuedConnection,
                                   Q_ARG(QString, str));
-
-
 
         break;
     case -1: // Unknown Action !!! or Error message
@@ -430,8 +411,8 @@ QStringList list1;
         // Вот тут делаем присвоение статуса.
         str = Robot->GetCurrentStatus();
         jsnStore->setCurrentAction(substr);
-
-        str = QJsonDocument(jsnStore->returnJsnInfo()).toJson(QJsonDocument::Indented);
+        str = "Old MacDonald Have a farm";
+//        str = QJsonDocument(jsnStore->returnJsnInfo()).toJson(QJsonDocument::Indented);
 
         GUI_Write_To_Log(value, "!!!!!!!!!!! Current INFO is ");
         GUI_Write_To_Log(value, str);
@@ -471,71 +452,31 @@ void MainProcess::StatusRequest_From_TcpClient(QObject* theSender)
 void MainProcess::ActionLaunch_From_TcpClient(QObject *theSender, QString actionName)
 {
     QString str, substr;
+    QString statParam;
     int value = 0xf02f;
+    int sPosition;
+    int distance;
+
+    QJsonObject quickAnswerObj; // Ответ на запуск экшена
+
     QJsonObject tempObj;
 
-    QObject *ptrTcpClient = theSender; // ? ... чтобы не переписалось из другого потока ?
 
     substr = actionName;
 
+    str = "From TCP Get new command : "; str += substr;
+    Robot->Write_To_Log(value, str);
+
+
     int comIndex = getIndexCommand(substr, tcpCommand);
-            str = "Current active command index is ";
-            str += QString::number(currentCommandIndex);
-            str += " and isAnyActionRunning is ";
-            str += QVariant(jsnStore->isAnyActionRunning).toString();
-            Robot->Write_To_Log(value, str);
+//            str = "Current active command index is ";
+//            str += QString::number(currentCommandIndex);
+//            str += " and isAnyActionRunning is ";
+//            str += QVariant(jsnStore->isAnyActionRunning).toString();
+//            Robot->Write_To_Log(value, str);
 
     //        GUI_Write_To_Log(value, str);
-
-
-// Проверяем, есть ли запущенный экшен, и если ДА, то шлем быстрый ответ, выходим
-    if (jsnStore->isAnyActionRunning ){
-
-//        Robot->Write_To_Log(value,"I'm in action dobling check !");
-
-                     tempObj = {
-                         {"name", substr},
-                         {"info", "Another action is already running"},
-                         {"rc", RC_UNDEFINED}
-
-                     };
-
-        // ставим экшену статус -2... Если это отличный от текущего
-        if (comIndex != currentCommandIndex)
-        {
-//                {"state", "Not applied"},
-            tempObj["rc"] = jsnStore->AC_Launch_RC_FAILURE;
-         }
-        else        //if (comIndex == currentCommandIndex)
-        {
-            tempObj["info"] = "This action is STILL running";
-            tempObj["rc"] = jsnStore->AC_Launch_RC_ALREADY_HAVE; // Уже запущен
-
-        }
-        // set aimed action values to tempObj
-        // Here we are managed to not getting dangling pointer.
-        // Ничего не меняем в состояниях экшена, так проще
-//        jsnStore->setActionData(tempObj);
-        //launchActionAnswer = tempObj;
-        str = QJsonDocument(tempObj).toJson(QJsonDocument::Indented);
-        // отправляем ответ на запуск экшена
-        //emit Write_2_TcpClient_Signal(str, socketNumber);
- //       qintptr socketNumber = 0xDDDD; // legacy issue
-        QMetaObject::invokeMethod(ptrTcpClient, "Data_2_TcpClient_Slot", //this->ptrTcpClient
-                                  Qt::QueuedConnection,
-                                  Q_ARG(QString, str));
-
-        // Пишем в лог Serial device, чтобы не затеряться в основном логе  среди перманентных
-        // запросов статуса
-        Robot->Write_To_Log(value,str);
-        return;
-    } //if (jsnStore->isAnyActionRunning )
-
-
-    jsnStore->isAnyActionRunning = true;
-    currentCommandIndex = comIndex;
-
-// Готовим быстрый ответ
+    // Готовим быстрый ответ
     quickAnswerObj = {
         {"name", actionName},
         {"info", "Request accepted"},
@@ -543,15 +484,60 @@ void MainProcess::ActionLaunch_From_TcpClient(QObject *theSender, QString action
 
     };
 
-    // Вот тут по-другому, быстрый ответ не нужен, его не должно быть.
-    // В лог не пишем, ибо быстро.
-    // GUI_Write_To_Log(value, str);
-    str = QJsonDocument(quickAnswerObj).toJson(QJsonDocument::Indented);
+    // Отправляем быстрый ответ. В лог не пишем, ибо нужно быстро ответить.
+//    str = QJsonDocument(quickAnswerObj).toJson(QJsonDocument::Indented);
+    str = jsnStore->returnActionLaunch(quickAnswerObj);
 
-// Отправляем быстрый ответ
     QMetaObject::invokeMethod(theSender, "Data_2_TcpClient_Slot", // правильно, закрываем сокет после быстрого ответа.
                             Qt::QueuedConnection,
                             Q_ARG(QString, str));
+
+
+
+// Проверяем, есть ли запущенный экшен, и если ДА, то НЕ ШЛЁМ быстрый ответ,
+// только меняем JSON-данные по запрошенному экшену.
+    if (jsnStore->isAnyActionRunning ){
+        tempObj = {
+         {"name", substr},
+
+        };
+
+        // ставим экшену статус [-2], Если это отличный от текущего,
+        // и [-3], если текущий, т.е. уже запущен.
+        if (comIndex != currentCommandIndex)
+        {
+            tempObj["state"] = "Another action is already running";
+            tempObj["result"] = jsnStore->AC_Launch_RC_FAILURE; // Экшен не запустился
+            // А теперь меняем JSON-объект экшена.
+         }
+        else        //if (comIndex == currentCommandIndex)
+        {
+            tempObj["state"] = "This action is STILL running";
+            tempObj["result"] = jsnStore->AC_Launch_RC_ALREADY_HAVE; // Уже запущен
+
+        }
+//      Получаем строку в формате JSON для отправки tcp-клиенту
+        str = QJsonDocument(tempObj).toJson(QJsonDocument::Indented);
+        // отправляем ответ на запуск экшена
+        QMetaObject::invokeMethod(theSender, "Data_2_TcpClient_Slot", //this->ptrTcpClient
+                                  Qt::QueuedConnection,
+                                  Q_ARG(QString, str));
+
+        // А теперь меняем данные у запрошенного экшена
+        jsnStore->setActionData(tempObj);
+        // Пишем в лог Serial device, чтобы не затеряться в основном логе  среди перманентных
+        // запросов статуса
+        str.insert(0, "tcpParcing.cpp QJSON data AFTER action LAUNCH REQUEST : \n");
+        Robot->Write_To_Log(value,str);
+
+
+        return;
+    } //if (jsnStore->isAnyActionRunning )
+
+
+    jsnStore->isAnyActionRunning = true;
+    currentCommandIndex = comIndex;
+
 
     //А теперь запускаем экшен
     QStringList list1; // Понадобится для setservos
@@ -567,7 +553,17 @@ void MainProcess::ActionLaunch_From_TcpClient(QObject *theSender, QString action
     case 3: // "get_box"
         mainjsnObj = jsnStore->returnJsnActionGetBox();
         returnActionLaunch(mainjsnObj); // Отправляем быстрый ответ
-        request_CV();
+        if (substr.contains("get_box&distance=")){
+            sPosition = 17; // next after get_box&distance=
+            statParam = substr.mid(sPosition);
+            distance = statParam.toInt();
+            str = "Distance from command is "; str += statParam;
+            Robot->Write_To_Log(value, str);
+            GetBox(distance);
+        }
+        else {
+            request_CV();
+        }
 //      Тут нет returnActionLaunch(mainjsnObj); т.к.
 //      Может не быть детекции. Быстрый ответ отпрвляем из
 //      MainProcess::CV_NEW_onReadyRead_Slot() если детекция есть.
@@ -729,14 +725,11 @@ void MainProcess::StatusParamRequest_From_TcpClient(QObject *theSender, QString 
 {
     QString str;
 //    int value = 0xf04f;
-
-    ptrTcpClient = theSender; // ? ... чтобы не переписалось из другого потока ?
-
     str = jsnStore->createStatusParamList(paramName);
     // Строку JSON сформировали, отправляем tcp-клиенту.
-        QMetaObject::invokeMethod(theSender, "Data_2_TcpClient_Slot",
-                                  Qt::QueuedConnection,
-                                  Q_ARG(QString, str));
+    QMetaObject::invokeMethod(theSender, "Data_2_TcpClient_Slot",
+                              Qt::QueuedConnection,
+                              Q_ARG(QString, str));
 
 }
 //+++++++++++++++++++++++++++++++++++++++++++++

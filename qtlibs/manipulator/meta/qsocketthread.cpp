@@ -252,7 +252,7 @@ void QSocketThread::onReadyRead()
         } // while
         i--;
 
-        if (!matched) {return;} // Выходим, если нет правильных строк
+        if (!matched) {return;} // Выходим, если нет правильных строк. Пока "молча", клиенту не отвечаем.
 
 //    qDebug() << "Index value is" << i;
 //    qDebug() << "Matched command sPosition is " << sPosition;

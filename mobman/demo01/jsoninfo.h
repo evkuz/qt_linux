@@ -28,8 +28,8 @@ class JsonInfo : public QObject
 public:
     JsonInfo(QString deviceName);
     QString DEV_NAME;
-    QJsonObject jsnObj1;
-    QJsonObject jsnObj2;
+//    QJsonObject jsnObj1;
+//    QJsonObject jsnObj2;
 
 //     QJsonParseError jsonError; // ОШибка, если полученные данные - не JSON-объект
 
@@ -98,7 +98,7 @@ public:
 
 
 
-    ordered_json jsnInfo;
+//    ordered_json jsnInfo;
     QString jsnData;
     QJsonObject jsnHeadStatus;      // Шапка в ответе на запрос status
 //    QJsonObject jsnHeadServices;    // Шапка в ответе на запрос getservices
@@ -163,9 +163,9 @@ public:
     void resetAllActions();
     QString merge_json(QJsonObject src, QJsonObject dst);
 
-    QJsonObject returnJsonObject();
-    QJsonObject returnJsnInfo();
-    QJsonObject returnJsnStatus();
+//    QJsonObject returnJsonObject();
+//    QJsonObject returnJsnInfo();
+//    QJsonObject returnJsnStatus();
     QString     returnJsnData();
     QJsonObject returnJsonObject2();
     QJsonObject& returnJsnActionStart();
@@ -191,7 +191,7 @@ public:
 
     bool isAnyActionRunning; // флаг, что выополняется экшен
     void setActionDone(QJsonObject &theObj);  //Меняем rc of action upon device moving
-    void setJsnStatus();
+//    void setJsnStatus();
     void setJsnHeadStatus(QJsonObject &theObj); // Меняем значения jsnHeadStatus на theObj
     void setCurrentAction(QString theAction);
     bool eraseArray(QJsonArray &theArray); // Очистка массива
@@ -203,6 +203,9 @@ public:
 
     void SetJsnActionCollapse(QJsonObject &theObj);
     void SetJsnActionStandUP(QJsonObject &theObj);
+
+    QString returnActionData(QString actionName);
+    QString returnActionLaunch(QJsonObject &theObj);
     void setActionData(QJsonObject &theObj); // Меняем данные экшенов на данные "снаружи", целевой экшен определяем по name
 
 
@@ -242,12 +245,12 @@ public:
      QList<QString> statuslst = { "wait", "init", "inprogress", "done", "NoDetection" };
 
 
-    void struc_2_json(ordered_json& jsn, const statusHeader& header);   // конвертируем структуру в nlohmann::json object
-    void struc_2_jsnObj();  // QJsonObject& jsn, const StatusAnswer& header конвертируем структуру в QJsonObject::jsn
+//    void struc_2_json(ordered_json& jsn, const statusHeader& header);   // конвертируем структуру в nlohmann::json object
+//    void struc_2_jsnObj();  // QJsonObject& jsn, const StatusAnswer& header конвертируем структуру в QJsonObject::jsn
 public slots:
 
 void makeJson_Answer_Slot();
-void SetActionData_Slot(QJsonObject &theOb);
+//void SetActionData_Slot(QJsonObject &theOb);
 
 protected:
 
@@ -270,6 +273,7 @@ private:
     ordered_json jsnOB3;  // Объект результирующий.
 
     ordered_json& QtJson_2_NlohmannJson(QJsonObject theObj);     //convert single QJsonObject action to single  ordered_json object
+    ordered_json& QtJson_2_NlohmannJson_QuickAnswer(QJsonObject theObj);// convert header of each answer
     ordered_json& QtJson_2_NlohmannJson_Head(QJsonObject theObj);// convert header of each answer
     ordered_json& QtJson_2_NlohmannJson_Data(QJsonObject theObj);// convert data[] of each answer
 

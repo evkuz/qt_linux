@@ -104,7 +104,7 @@ public:
     QJsonObject   jsnObj;    // ОБъект, хранящий весь JSON ответ от девайса
     QJsonObject   jsndataObj;// ОБъект, хранящий вложенный JSON-объект (вложенный внутри ответа jsnObj)
                              //   Тут как раз данные о distance
-    QJsonObject   jsnActionAnswer; // Ответ на команду Action в формате json
+//    QJsonObject   jsnActionAnswer; // Ответ на команду Action в формате json
     QJsonObject   jsnStatusActionAnswer; // Ответ на команду "status?action=getbox" в формате json
 
     //QJsonObject   jsnGetServicesAnswer; // Ответ на команду "/service?name=service_name"
@@ -118,7 +118,7 @@ public:
     QJsonObject mainjsnObj; // temporal Текущий экшен, нужно т.к. при большой скорости опроса это значение постоянно меняется
 
 
-    QJsonObject quickAnswerObj; // Ответ на запуск экшена
+//    QJsonObject quickAnswerObj; // Ответ на запуск экшена
 
  //   QSharedPointer<QJsonObject> pJsnObject; //
 
@@ -207,7 +207,7 @@ public:
     };
 
     CV_Answer cvAnswer;
-    QString pointer_to_qstring(void *ptr);
+    QString pointer_to_qstring(void *ptr);     // Return string representation of pointer value
     void returnActionLaunch(QJsonObject &theObj);
     // Подготовка и отправление ответа на запрос "/status"
     Q_INVOKABLE void StatusRequest_From_TcpClient(QObject* theSender);
@@ -285,7 +285,7 @@ signals:
     void Pass_XY_Signal(int x_pix, int y_pix); //Сигнал по нажатию кнопки "Get_XY"
     void FW_Kinemaic_Signal(int S3, int S4, int S5, int l1, int l2, int l3); // Углы приводов, длины соответствующих звеньев.
     void Write_2_TcpClient_Signal(QString, int); // Сигнал вебсерверу, - пересылка данных в сокет на отправку.
-    void SetActionData_Signal(QJsonObject &theObj);
+//    void SetActionData_Signal(QJsonObject &theObj);
     //    void StartTakeAndPutSignal();
 
 };

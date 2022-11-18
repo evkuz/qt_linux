@@ -254,33 +254,26 @@ QString JsonInfo::merge_json(QJsonObject src, QJsonObject dst)
 }
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // Преобразуем структуру statusHeader в объект ordered_json
-void JsonInfo::struc_2_json(ordered_json &jsn, const statusHeader &header)
-{
-    jsn = ordered_json{
-                        {"name", header.name},
-                        {"rc", header.rc},
-                        {"info", header.info},
-                        {"state", header.state}
-    };
+//void JsonInfo::struc_2_json(ordered_json &jsn, const statusHeader &header)
+//{
+//    jsn = ordered_json{
+//                        {"name", header.name},
+//                        {"rc", header.rc},
+//                        {"info", header.info},
+//                        {"state", header.state}
+//    };
 
-}//struc_2_json
+//}//struc_2_json
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // Копируем данные структуры в ordered_json jsnStatus
-void JsonInfo::struc_2_jsnObj()
-{
-    jsnStatus["name"] = currentStatus.name;
-    jsnStatus["rc"] = currentStatus.rc;
-    jsnStatus["info"] = currentStatus.info;
-    jsnStatus["state"] = currentStatus.state;
-//QJsonObject jsnaa
-//            {
-//                {"name", header.name},
-//                {"rc", header.rc},
-//                {"info", header.info},
-//                {"state", header.state}
-//             };
+//void JsonInfo::struc_2_jsnObj()
+//{
+//    jsnStatus["name"] = currentStatus.name;
+//    jsnStatus["rc"] = currentStatus.rc;
+//    jsnStatus["info"] = currentStatus.info;
+//    jsnStatus["state"] = currentStatus.state;
 
-}//
+//}//
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // Слот сигнала MainProcess::makeJson_Answer_Signal(QString theAction)
 // ГОтовим json-ответ - статус экшена
@@ -294,22 +287,22 @@ void JsonInfo::makeJson_Answer_Slot()
 }
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // слот сигнала MainProcess::SetActionData_Signal
-void JsonInfo::SetActionData_Slot(QJsonObject &theObj)
-{
-    // Ищем в jsnObjArray по "name" нужный action, меняем его на значения theobj
-    // Так работаем только с массивом.
-        QString theName = theObj.value("name").toString();
-        // Проходим jsnObjArray, ищем совпадение по "name", меняем "rc" и "state", делаем replase
+//void JsonInfo::SetActionData_Slot(QJsonObject &theObj)
+//{
+//    // Ищем в jsnObjArray по "name" нужный action, меняем его на значения theobj
+//    // Так работаем только с массивом.
+//        QString theName = theObj.value("name").toString();
+//        // Проходим jsnObjArray, ищем совпадение по "name", меняем "rc" и "state", делаем replase
 
-        for (int i=0; i < jsnObjArray.size(); i++) {
-            if (jsnObjArray.at(i).toObject().value("name").toString() == theName){
-                jsnObjArray.replace(i, theObj);
-            }
-        }
+//        for (int i=0; i < jsnObjArray.size(); i++) {
+//            if (jsnObjArray.at(i).toObject().value("name").toString() == theName){
+//                jsnObjArray.replace(i, theObj);
+//            }
+//        }
 
-}
+//}
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// Преобразуем список data[] в ОТВЕТЕ
+// Преобразуем список data[] в ОТВЕТЕ getactions
 ordered_json& JsonInfo::QtJson_2_NlohmannJson(QJsonObject theObj)
 {
    // QMap <QJs>
@@ -342,6 +335,26 @@ ordered_json& JsonInfo::QtJson_2_NlohmannJson(QJsonObject theObj)
 
     return jsnAction;
 } //QtJson_2_NlohmannJson
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Преобразуем быстрый ответ на запуск экшена в ordered_json
+ordered_json &JsonInfo::QtJson_2_NlohmannJson_QuickAnswer(QJsonObject theObj)
+{
+    jsnAction.empty(); // Очищиаем.
+    QString str1, str2;
+    int rc;
+
+    str1 = theObj.value("name").toString();
+    str2 = theObj.value("info").toString();
+    rc = theObj.value("rc").toInt();
+    jsnAction = {
+        {"name", str1.toStdString()},
+        {"rc", rc},
+        {"info", str2.toStdString()},
+     };
+
+    return jsnAction;
+
+}
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // преобразуем ЗАГОЛОВОК ОТВЕТА QJsonObject -> ordered_json
 // theobj - экшен
@@ -392,13 +405,13 @@ ordered_json &JsonInfo::QtJson_2_NlohmannJson_Data(QJsonObject theObj)
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-QJsonObject JsonInfo::returnJsonObject()
-{
-    // Передаем основной json-object на обработку/парсинг
-    return jsnObj;
-} // returnJsonObject
+//QJsonObject JsonInfo::returnJsonObject()
+//{
+//    // Передаем основной json-object на обработку/парсинг
+//    return jsnObj;
+//} // returnJsonObject
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
+/*
 QJsonObject JsonInfo::returnJsnInfo()
 {
 // Берем данные из ordered_json jsnInfo и передаем через QJsonObject
@@ -412,34 +425,35 @@ QJsonObject JsonInfo::returnJsnInfo()
 
     return jsnObj;
 } // returnJsnInfo()
+*/
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-QJsonObject JsonInfo::returnJsnStatus()
-{
-    // Берем данные из ordered_json jsnStatus и передаем через QJsonObject
-//        int indent = 3;
-//        std::string s2 = jsnStatus.dump(indent);
-//        jsnData = QString::fromStdString(s2);
-//        jsnDoc = QJsonDocument::fromJson(jsnData.toUtf8(), &jsonError);
+//QJsonObject JsonInfo::returnJsnStatus()
+//{
+//    // Берем данные из ordered_json jsnStatus и передаем через QJsonObject
+////        int indent = 3;
+////        std::string s2 = jsnStatus.dump(indent);
+////        jsnData = QString::fromStdString(s2);
+////        jsnDoc = QJsonDocument::fromJson(jsnData.toUtf8(), &jsonError);
 
-//        //Get the main JSON object and get the data in it
-//        jsnObj = jsnDoc.object();
+////        //Get the main JSON object and get the data in it
+////        jsnObj = jsnDoc.object();
 
-        return jsnHeadStatus;
+//        return jsnHeadStatus;
 
-}// returnJsnStatus()
+//}// returnJsnStatus()
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 QString JsonInfo::returnJsnData()
 {
-    // Делаем поиск активных экшенов и если их нет, то меняем jsndata
+    // Возвращаем текущее значение  jsndata
     return this->jsnData;
 }
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-QJsonObject JsonInfo::returnJsonObject2()
-{
-    return this->jsnObj2;
-}
+//QJsonObject JsonInfo::returnJsonObject2()
+//{
+//    return this->jsnObj2;
+//}
 //+++++++++++++++++++++++++++++++++++++++++++
 QJsonObject& JsonInfo::returnJsnActionStart()
 {
@@ -606,17 +620,17 @@ void JsonInfo::setActionDone(QJsonObject &theObj)
 }
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-void JsonInfo::setJsnStatus()
-{
-    // Берем данные из ordered_json jsnStatus и передаем через QJsonObject
-        int indent = 3;
-        std::string s2 = jsnStatus.dump(indent);
-        jsnData = QString::fromStdString(s2);
-        jsnDoc = QJsonDocument::fromJson(jsnData.toUtf8(), &jsonError);
+//void JsonInfo::setJsnStatus()
+//{
+//    // Берем данные из ordered_json jsnStatus и передаем через QJsonObject
+//        int indent = 3;
+//        std::string s2 = jsnStatus.dump(indent);
+//        jsnData = QString::fromStdString(s2);
+//        jsnDoc = QJsonDocument::fromJson(jsnData.toUtf8(), &jsonError);
 
-        //Get the main JSON object and get the data in it
-        jsnObj = jsnDoc.object();
-}
+//        //Get the main JSON object and get the data in it
+//        jsnObj = jsnDoc.object();
+//}
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 void JsonInfo::setJsnHeadStatus(QJsonObject &theObj)
@@ -799,6 +813,34 @@ void JsonInfo::SetJsnActionStandUP(QJsonObject &theObj)
     this->jsnActionStandUP = theObj;
 }
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// return current value of action stored as element of jsnObjArray
+QString JsonInfo::returnActionData(QString actionName)
+{
+//    QString theName = theObj.value("name").toString();
+    QString data;
+    QJsonObject temp;
+
+//    theName = theObj.value("name").toString();
+
+    for (int i=0; i < jsnObjArray.size(); i++) {
+        if (jsnObjArray.at(i).toObject().value("name").toString() == actionName){
+            temp = jsnObjArray.at(i).toObject();
+        }
+    }
+
+    data = QJsonDocument(temp).toJson(QJsonDocument::Indented);
+    return data;
+
+}
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// return quick answer for action lauch in ordered json
+QString JsonInfo::returnActionLaunch(QJsonObject &theObj)
+{
+    ordered_json header = QtJson_2_NlohmannJson_QuickAnswer(theObj);
+    return QString::fromStdString(header.dump(3));
+
+}
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // Set actual data for the action - it means
 // repalce data in array jsnObjArray with the new data from theObj
 void JsonInfo::setActionData(QJsonObject &theObj)
@@ -806,11 +848,25 @@ void JsonInfo::setActionData(QJsonObject &theObj)
 // Ищем в jsnObjArray по "name" нужный action, меняем его на значения theobj
 // Так работаем только с массивом.
     QString theName = theObj.value("name").toString();
+    QString info;
+    QJsonObject temp;
     // Проходим jsnObjArray, ищем совпадение по "name", меняем "rc" и "state", делаем replase
+    // Сохраняем значение "info"
 
+    // А еще пробуем
+    // QJsonArray::toVariantList() - Converts this object to a QVariantList. Returns the created map.
+    // QJsonArray::fromVariantList(const QVariantList &list) Converts the variant list list to a QJsonArray
+    //             The QVariant values in list will be converted to JSON values.
+    theName = theObj.value("name").toString();
     for (int i=0; i < jsnObjArray.size(); i++) {
         if (jsnObjArray.at(i).toObject().value("name").toString() == theName){
+            info = jsnObjArray.at(i).toObject().value("info").toString();
+            theObj["info"] = info;
             jsnObjArray.replace(i, theObj);
+            temp = jsnObjArray.at(i).toObject();
+            temp["info"] = info;
+            jsnObjArray.replace(i, temp);
+
         }
     }
 //    jsnActionList["action_list"] = jsnObjArray;

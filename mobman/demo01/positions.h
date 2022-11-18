@@ -12,7 +12,7 @@
 #define FULL_OPENED 35
 
 #define CV_START_POINT 110
-#define CV_LAST_POPINT 270
+#define CV_LAST_POPINT 230
 
 //+++++++++++++++ ЗАХВАТ РУЧНИКА ИМЕЕТ НОМЕР ПРИВОДА 0 - ИДЕТ 1-Й В СПИСКЕ.
 
@@ -97,7 +97,7 @@ unsigned int mob_3_position[13][3] = {
 // Кубик на полу, значения из массивов
 
 unsigned int mob_3_position[13][3] = {
-    {110,78,77},
+    {CV_START_POINT,78,77},
     {120,84,75},
     {130,90,73},
     {140,95,73},
@@ -109,7 +109,7 @@ unsigned int mob_3_position[13][3] = {
     {200,145,46},
     {210,149,44},
     {220,168,35},
-    {230,177,30},
+    {CV_LAST_POPINT,177,30},
 };
 
 /*
