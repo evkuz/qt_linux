@@ -80,9 +80,69 @@ void move_fwd (int fwd)
 //     chatter.publish( &str_msg );
 
 
-     currCommand = "stop";
+//     currCommand = "stop";
 
 
 
 
-  }
+  } //move_fwd
+//+++++++++++++++++++++++++++++++++++++
+// Уменьшаем скорость каждого двигателя на 20%
+// Нужно где-то взять текущее значение fwd
+void decSpeed(){
+//  str = "Current speed BEFORE SlowDown is ";
+//  
+//  str.concat("m1="); str.concat(m1Speed); str.concat(", ");
+//  str.concat("m2="); str.concat(m2Speed); 
+//  str_len = str.length() +1;
+//  char str_array[str_len];
+//  str.toCharArray(str_array, str_len);
+//  str_msg.data = str_array;
+//  chatter.publish( &str_msg );
+//  
+//  int newM1Speed = m1Speed*0.8;
+//  int newM2Speed = m2Speed*0.8;
+
+  m1Speed = m1Speed*0.8; //newM1Speed;
+  m2Speed = m2Speed*0.8; //newM2Speed;
+
+  str = "Current speed AFTER SlowDown is ";
+  str.concat("m1="); str.concat(m1Speed); str.concat(", ");
+  str.concat("m2="); str.concat(m2Speed); 
+  str_len = str.length() +1;
+  char str2_array[str_len];
+  str.toCharArray(str2_array, str_len);
+  str_msg.data = str2_array;
+  chatter.publish( &str_msg );
+ 
+  }// decSpeed  
+//+++++++++++++++++++++++++++++++++++++
+// Увеличиваем скорость каждого двигателя на 20%
+// Нужно где-то взять текущее значение fwd
+void incSpeed(){
+//  str = "Current speed BEFORE accelerate is ";
+//  
+//  str.concat("m1="); str.concat(m1Speed); str.concat(", ");
+//  str.concat("m2="); str.concat(m2Speed); 
+//  str_len = str.length() +1;
+//  char str_array[str_len];
+//  str.toCharArray(str_array, str_len);
+//  str_msg.data = str_array;
+//  chatter.publish( &str_msg );
+  
+//  int newM1Speed = m1Speed*1.2;
+//  int newM2Speed = m2Speed*1.2;
+
+  m1Speed = m1Speed*1.2; //newM1Speed;
+  m2Speed = m2Speed*1.2; //newM2Speed;
+
+  str = "Current speed AFTER accelerate is ";
+  str.concat("m1="); str.concat(m1Speed); str.concat(", ");
+  str.concat("m2="); str.concat(m2Speed); 
+  str_len = str.length() +1;
+  char str2_array[str_len];
+  str.toCharArray(str2_array, str_len);
+  str_msg.data = str2_array;
+  chatter.publish( &str_msg );
+ 
+  }// incSpeed    

@@ -32,7 +32,8 @@ volatile long intM2counter = 0;
 volatile long intM2Bcounter = 0;
 
 String str="";
-String currCommand = "";
+String currCommand = ""; // Текущая команда
+String prevCommand = ""; // Предыдущая команда.
 
 volatile long pause    = 50;  // Пауза для борьбы с дребезгом
 volatile long lastTurn = 0;   // Переменная для хранения времени последнего изменения
@@ -71,6 +72,7 @@ ros::Publisher chatter("encoders", &str_msg);
 void messageCb(std_msgs::String& mobplatCommand){
   
   digitalWrite(LED_BUILTIN, HIGH-digitalRead(LED_BUILTIN));   // blink the led
+  prevCommand = currCommand; // Сохраняем текущую команду, понадобится при изменении скорости.
   currCommand = mobplatCommand.data; // here we are getting currCommand from serial
   str = "The NEXT command is ";
   str.concat(currCommand);
@@ -145,13 +147,27 @@ void loop()
 //  }
 //
   if (currCommand == "start") {
-      forward(1);
+      //forward(1);
+      movingOn(1);
   }
   if (currCommand == "stop") {
       stop();
   }
   if (currCommand == "rear") {
-      forward(-1);
+     // forward(-1);
+      movingOn(-1);
+  }
+
+  if (currCommand == "right") {
+    m1Speed = 100;
+    m2Speed = 40;
+    forward(1);
+  }
+
+  if (currCommand == "left") {
+    m1Speed = 40;
+    m2Speed = 100;
+    forward(1);
   }
 
 
@@ -178,6 +194,16 @@ void loop()
       currCommand = "waiting";
 }
 
+if (currCommand == "slowdown") {
+  decSpeed();
+  currCommand = prevCommand; // Только скорость поменяли.
+  }
+  
+if (currCommand == "faster") {
+  incSpeed();
+  currCommand = prevCommand; // Только скорость поменяли.
+  }
+
 
 //  if (currCommand == "waiting") {
 //      write2chatter("waiting");
@@ -194,7 +220,7 @@ void loop()
 
 
           
-  delay(1);
+//  delay(1);
 
 } // loop
 //++++++++++++++++++++++++++++++++++++++++++++
@@ -255,9 +281,12 @@ void stop()
 
 }
 //++++++++++++++++++++++++++
+// Выводит значения энкодеров.
+// Запускает движки в направлении fwd на 2с. на скорости в глобальных переменных m1Speed, m2Speed
+// Останавливает движки
 void forward (int fwd)
 {
-//+++++++++++++++++++
+//+++++++++++++++++++ output encoder values ++++++++++++++
   str = "posAm1 ";
   str.concat(posAm1);
       // Serial.println(str);
@@ -311,8 +340,9 @@ void forward (int fwd)
 
   Serial.println(str);
 
+//+++++++++++++++++++ END OF output encoder values ++++++++++++++
 
-
+//+++++++++++++ Now start moving +++++++++++++++++++++++++
   md.setM1Speed(fwd*m1Speed);
   stopIfFault();
   md.setM2Speed(fwd*m2Speed);
@@ -327,7 +357,20 @@ void forward (int fwd)
 
   delay(2000);
 } //forward
-//++++++++++
+//+++++++++++++++++++++++++++++++++++++++++++++++++
+// fwd - direction
+// Запускает движки в направлении fwd.
+// Движение постоянное, пока не будет новой команды, изменяющей скорость в m1Speed, m2Speed
+
+void movingOn (int fwd){
+  
+  md.setM1Speed(fwd*m1Speed);
+  stopIfFault();
+  md.setM2Speed(fwd*m2Speed);
+  stopIfFault();
+  
+  } // movingOn
+
 void getValues()
 {
     //+++++++++++++++++++
@@ -400,75 +443,3 @@ void checkReset()
 }
 
 //+++++++++++++
-
-//for (int i = 0; i <= 400; i++)
-//{
-//  md.setM1Speed(i);
-//  stopIfFault();
-//  if (abs(i)%200 == 100)
-//  {
-//    Serial.print("M1 current [0;400]: ");
-//    Serial.println(md.getM1CurrentMilliamps());
-//  }
-//  delay(2);
-//}
-
-//for (int i = 400; i >= -400; i--)
-//{
-//  md.setM1Speed(i);
-//  stopIfFault();
-//  if (abs(i)%200 == 100)
-//  {
-//    Serial.print("M1 current [400; -400]: ");
-//    Serial.println(md.getM1CurrentMilliamps());
-//  }
-//  delay(2);
-//}
-
-//for (int i = -400; i <= 0; i++)
-//{
-//  md.setM1Speed(i);
-//  stopIfFault();
-//  if (abs(i)%200 == 100)
-//  {
-//    Serial.print("M1 current [-400; 0]: ");
-//    Serial.println(md.getM1CurrentMilliamps());
-//  }
-//  delay(2);
-//}
-
-//for (int i = 0; i <= 400; i++)
-//{
-//  md.setM2Speed(i);
-//  stopIfFault();
-//  if (abs(i)%200 == 100)
-//  {
-//    Serial.print("M2 current [0;400]: ");
-//    Serial.println(md.getM2CurrentMilliamps());
-//  }
-//  delay(2);
-//}
-
-//for (int i = 400; i >= -400; i--)
-//{
-//  md.setM2Speed(i);
-//  stopIfFault();
-//  if (abs(i)%200 == 100)
-//  {
-//    Serial.print("M2 current [400; -400]: ");
-//    Serial.println(md.getM2CurrentMilliamps());
-//  }
-//  delay(2);
-//}
-
-//for (int i = -400; i <= 0; i++)
-//{
-//  md.setM2Speed(i);
-//  stopIfFault();
-//  if (abs(i)%200 == 100)
-//  {
-//    Serial.print("M2 current [-400; 0]: ");
-//    Serial.println(md.getM2CurrentMilliamps());
-//  }
-//  delay(2);
-//}

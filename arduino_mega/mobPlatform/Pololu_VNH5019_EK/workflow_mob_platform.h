@@ -1,7 +1,7 @@
 #ifndef WORKFLOW_MOB_PLATFORM_H
 #define WORKFLOW_MOB_PLATFORM_H
 /*
- *
+ *  
  * 18.10.2022
  * Запускаем мобильную платформу.
  * Работаем с DC-двигателями (моторы) Pololu #4752
@@ -31,13 +31,66 @@
  * 1 rotation forward comes at i=68
  * 1 rotation backward comes at i=70
  * 
+ * 
+ * //+++++++++++++++++++++++++++++++++++++++++++++++
+ * 24.11.2022
+ * Имеем следующие команды управления
+ * - "start". "stop", "rear", "left", "right" - просто движение согласно команде, без пауз.
+ * - "moveit", "moveback" - 1 оборот колеса вперед, либо назад.
+ * 
+ * Наша программа должна принимать команду на движение и ждать следующие команды - замедление, поворот, остановка, задний ход.
+ * Добавляем ф-ции
+ * decSpeed, incSpeed - соответственно, уменьшение, увеличение скорости.
+ * Этим ф-циям соответствуют команды "slowdown", "faster"
+ * //+++++++++++++++++++++++++++++++++++++++++++++++
+ * 23.11.2022
+ * НА сегодня имеем
+ * 1. Запускаем пакет rplidar_ros, получаем карту местности в RVIZ
+ *    roslaunch rplidar_ros view_rplidar.launch
+ *    
+ * 2. Имеем каркас пакета 
+ *    rosrun robot_setup_tf tf_listener
+ *    rosrun robot_setup_tf tf_broadcaster
+ *    
+  *    
+ * 
+ * //+++++++++++++++++++++++++++++++++++
+ * 22.11.2022
+ * Go on with ros navigation tutorial
+ * http://wiki.ros.org/navigation/Tutorials
+ *
+ * Now make "Transform Configuration"
+ * http://wiki.ros.org/navigation/Tutorials/RobotSetup/TF
+ * $ cd %TOP_DIR_YOUR_CATKIN_WS%/src
+ * $ catkin_create_pkg robot_setup_tf roscpp tf geometry_msgs
+ * $ nano src/tf_broadcaster.cpp 
+ * 
+ * The next step is to replace the PointStamped we used for this example with sensor streams that come over ROS.
+ * http://wiki.ros.org/navigation/Tutorials/RobotSetup/Sensors
+ * 
+ * 
+ * //+++++++++++++++++++++++++++++++++++
+ * 09.11.2022
+ * В прокете РОС-пакета mobplatform  создал папку scripts/, а в ней скрипт movingPlatform.bash
+ * Который в качестве единственного аргумента принимает команду, которая идет в топик mobplatform в качестве аргумента
+ * Путь 
+ * ~/catkin_ws/src/mobplatform/script
+ * 
+ * Запуск
+ * ./movingPlatform.bash start|stop|rear|moveit|reset|moveback
+ * 
+ * Теперь задача - подклчюить лидар  A1M8-R5
+ * 
+ * RPLIDAR A2M6-R4 S/N: C4939AF2C1EA98D4BEEB9CF04B403517
+ * 
+ * 
  * //+++++++++++++++++++++++++++++++++++
  * 08.11.2022
  * Создал каркас для запуска платоформы как ROS пакета. Пакет называется mobplatform.
  * 
  * Запускается командой 
- * roslaunch mobplatform mobplatform.launch
- * launch/mobplatform.launch
+ * $ roslaunch mobplatform mobplatform.launch
+ * Соответствующий launch-файл: ~/catkin_ws/src/mobplatform/launch/mobplatform.launch
  * 
  * Пора сохранять в git папку  ~/catkin_ws/src/
  * Далее наращиваем функционал пакета mobplatform.
@@ -45,6 +98,7 @@
  * Нужно добавить запуск платформы по команде из tcp/ip
  * Создаем в python аналог QTcpServer 
  * 
+ * По 1-му скрипту на каждую команду ?
  * 
  * 
  * //+++++++++++++++++++++++++++++++++++
