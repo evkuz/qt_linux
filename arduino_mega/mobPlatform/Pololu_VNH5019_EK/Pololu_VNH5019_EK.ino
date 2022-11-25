@@ -122,10 +122,29 @@ void setup()
   attachInterrupt(digitalPinToInterrupt(pinAm2), Am2, RISING);  // Настраиваем обработчик прерываний по изменению сигнала CHANGE
   attachInterrupt(digitalPinToInterrupt(pinBm2), Bm2, RISING);  // Настраиваем обработчик прерываний по изменению сигнала
 
+//+++++++++++++++ set up timer 1
+    // инициализация Timer1
+    cli(); // отключить глобальные прерывания
+    TCCR1A = 0; // установить регистры в 0
+    TCCR1B = 0; 
+
+    OCR1A = 15624; // установка регистра совпадения
+    TCCR1B |= (1 << WGM12); // включение в CTC режим
+
+    // Установка битов CS10 и CS12 на коэффициент деления 1024
+    TCCR1B |= (1 << CS10);
+    TCCR1B |= (1 << CS12);
+
+    TIMSK1 |= (1 << OCIE1A);  // включение прерываний по совпадению
+    sei(); // включить глобальные прерывания
+
+  
+//+++++++++++++++++++++++++++++++
   
   Serial.begin(115200);
   Serial.println("Dual VNH5019 Motor Shield");
   md.init();
+  
 
   nh.initNode();
   nh.subscribe(sub);
@@ -220,10 +239,18 @@ if (currCommand == "faster") {
 
 
           
-//  delay(1);
+  delay(1);
 
 } // loop
 //++++++++++++++++++++++++++++++++++++++++++++
+ISR(TIMER1_COMPA_vect)
+{
+// Считываем значения энкодеров, выводим в serial port
+  getValue();
+   
+}
+//++++++++++++++++++++++++++++++++++++++++++++
+
 void parse_command ()
 {
     String substr, mSpeed;
@@ -374,7 +401,7 @@ void movingOn (int fwd){
 void getValues()
 {
     //+++++++++++++++++++
-    str = "posAm1 ";
+    str = "M1_A ";
     str.concat(posAm1);
         // Serial.println(str);
     str_len = str.length() +1;
@@ -385,7 +412,7 @@ void getValues()
     str_msg.data = char_AM1_array;
     chatter.publish( &str_msg );
 
-    str = "posBm1 ";
+    str = "M1_B ";
     str.concat(posBm1);
     str_len = str.length() +1;
     char char_BM1_array[str_len];
@@ -394,7 +421,7 @@ void getValues()
     str_msg.data = char_BM1_array;
     chatter.publish( &str_msg );
     //+++++++++++++++++++++
-    str = "posAm2 ";
+    str = "M2_A ";
     str.concat(posAm2);
     str_len = str.length() +1;
     char char_AM2_array[str_len];
@@ -404,7 +431,7 @@ void getValues()
     chatter.publish( &str_msg );
 
 
-    str = "posBm2 ";
+    str = "M2_B ";
     str.concat(posBm2);
     str_len = str.length() +1;
     char char_BM2_array[str_len];

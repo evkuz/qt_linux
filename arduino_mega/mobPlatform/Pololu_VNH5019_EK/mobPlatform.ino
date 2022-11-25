@@ -1,3 +1,6 @@
+// Platform basic control functions 
+
+
 
 // Initiate mpbPlatform parameters
  
@@ -146,3 +149,4 @@ void incSpeed(){
   chatter.publish( &str_msg );
  
   }// incSpeed    
+  //+++++++++++++++++++++++++++++++++++++
