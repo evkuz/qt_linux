@@ -47,7 +47,9 @@ unsigned char mob_pos_21 [4] = {35,90,145,50}; // 21 см. от края куб�
 unsigned char mob_pos_22 [4] = {35,90,168,35};
 unsigned char mob_pos_23 [4] = {35,90,172,35}; //35,90,175,32 - тоже подойдет
 */
-unsigned char mob_put_23 [4] = {FULL_CLOSED,90,172,35};
+
+//unsigned char mob_put_23 [4] = {FULL_CLOSED,90,172,35};
+unsigned char mob_put_23 [4] = {FULL_CLOSED,90,115,65};
 
 /*
 unsigned char mob_2_pos_11 [4] = {35,90,78,77};

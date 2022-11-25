@@ -556,12 +556,16 @@ void MainProcess::ActionLaunch_From_TcpClient(QObject *theSender, QString action
         if (substr.contains("get_box&distance=")){
             sPosition = 17; // next after get_box&distance=
             statParam = substr.mid(sPosition);
-            distance = statParam.toInt();
-            str = "Distance from command is "; str += statParam;
-            Robot->Write_To_Log(value, str);
+            distance = statParam.toDouble(); // Вот тут получается 0, если длинное значение
+            str = "The command is get_box&distance=";
+//            str += statParam;
+//            Robot->Write_To_Log(value, str);
             GetBox(distance);
         }
         else {
+            str = "Going to request CV  "; str += substr;
+            Robot->Write_To_Log(value, str);
+
             request_CV();
         }
 //      Тут нет returnActionLaunch(mainjsnObj); т.к.

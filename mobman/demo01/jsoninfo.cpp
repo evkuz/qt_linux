@@ -597,7 +597,7 @@ QString JsonInfo::returnAllServices()
 
 void JsonInfo::setActionDone(QJsonObject &theObj)
 {
-    theObj["result"] = -4;
+    theObj["result"] = JsonInfo::AC_RESULT_SUCCESS;
     theObj["state"] = "done"; //success
 
     QString theName = theObj.value("name").toString();
