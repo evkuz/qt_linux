@@ -31,6 +31,9 @@ volatile long intM1counter = 0;
 volatile long intM2counter = 0;
 volatile long intM2Bcounter = 0;
 
+volatile unsigned long startTime;
+volatile unsigned long finTime;
+
 String str="";
 String currCommand = ""; // Текущая команда
 String prevCommand = ""; // Предыдущая команда.
@@ -67,6 +70,7 @@ ros::NodeHandle  nh;
 std_msgs::String str_msg;
 ros::Publisher chatter("encoders", &str_msg);
 
+String commands[3] = {"start", "stop", "mkrotation"};
 
 //========== data from Serial port
 void messageCb(std_msgs::String& mobplatCommand){
@@ -77,11 +81,12 @@ void messageCb(std_msgs::String& mobplatCommand){
   str = "The NEXT command is ";
   str.concat(currCommand);
   write2chatter(str);
+  // Взять аргументы у команды
 }  
 
 ros::Subscriber<std_msgs::String> sub("mobplatform", &messageCb );
 
-
+int numRot; // Число оборотов колеса
 
 
 
@@ -104,6 +109,7 @@ volatile int m1A_count, m1B_Count, m2A_count, m2B_count;
 volatile double m1_count, m2_count;
 volatile int m1A_k, m1B_k, m2A_k, m2B_k;
 volatile int  smooth_speed;
+
 
 //+++++++++++++++++++++++++++++++
 
@@ -151,7 +157,9 @@ void setup()
   nh.advertise(chatter);
   mobPlatformInit();
 
-
+//  currCommand = "getvalues";
+  currCommand = "reset";
+  numRot=0;
   
 }
 //++++++++++++++++++++
@@ -168,6 +176,7 @@ void loop()
   if (currCommand == "start") {
       //forward(1);
       movingOn(1);
+      
   }
   if (currCommand == "stop") {
       stop();
@@ -223,6 +232,44 @@ if (currCommand == "faster") {
   currCommand = prevCommand; // Только скорость поменяли.
   }
 
+if (currCommand.startsWith("mkrotation")) { //make 5 rotations of any of 2 wheels
+  if (!resetDone){
+      //reset_All(); // reset to zero all counters
+      posAm1 = 0;
+      posBm1 = 0;
+      posAm2 = 0;
+      posBm2 = 0;
+      m1_count = 0.0;
+      m2_count = 0.0;
+
+      String numOfRotations = currCommand.substring(11);
+
+      resetDone = true;
+      startTime = millis();
+      
+      write2chatter(numOfRotations);
+      numRot = numOfRotations.toInt();
+
+      
+  }
+  
+  if (makeRotation(numRot) == 0){  // all counters should be reset to zero in advance (before going to function makeRotations)
+     resetDone = false;
+     currCommand = "getvalues"; // just output values and wait for rotations number has been reached
+     
+  }
+  // else currCommand = "mkrotation";
+}
+
+//+++++++++++++++++++++++++++++++++++++
+  if (currCommand.startsWith("setspeedM1")) {
+    String theSpeed = currCommand.substring(11);
+    md.setM1Speed(theSpeed.toInt());
+    write2chatter("M1 speed changed");
+  }
+
+//+++++++++++++++++++++++++++++++++++++
+
 
 //  if (currCommand == "waiting") {
 //      write2chatter("waiting");
@@ -246,7 +293,9 @@ if (currCommand == "faster") {
 ISR(TIMER1_COMPA_vect)
 {
 // Считываем значения энкодеров, выводим в serial port
-  getValue();
+  getValues();
+
+// А потом будем ПИД запускать
    
 }
 //++++++++++++++++++++++++++++++++++++++++++++
@@ -397,7 +446,9 @@ void movingOn (int fwd){
   stopIfFault();
   
   } // movingOn
-
+//+++++++++++++++++++++++++++++++++++++++++++++++++
+// У нас срабатывают прерывания от энкодеров A1, B1, A2, B2
+// Обработчик каждого из прерываний выдает значения соответствующего энкодера.
 void getValues()
 {
     //+++++++++++++++++++
