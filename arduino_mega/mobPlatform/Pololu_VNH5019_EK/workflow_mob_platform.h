@@ -51,7 +51,18 @@
  * Также помним, что у нас скорость после выравнивания остается по-прежнему выше (100-125)...
  * Это надо скорректировать
  *
+ * Вот такая засада
  *
+ *data: "diffAbsolute = -49, diffRealative = -51"
+---
+data: "Making speed regulation"
+---
+data: "Current mxA_k is 475"
+---
+data: "backlog value as double is -0.1032, speed delta value as double is -10.3158"
+---
+data: "newSpeed value as int is 90"
+
  * //+++++++++++++++++++++++++++++++++++++++++++++++
  * 29.11.2022
  * 

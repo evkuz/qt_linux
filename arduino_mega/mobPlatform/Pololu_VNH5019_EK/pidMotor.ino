@@ -29,7 +29,7 @@ int pidMspeed(int motorNumber)
   str.concat(mA_k);
   write2chatter(str);
   
-  backlog = (double)diffAbsolute/(double)mA_k;
+  backlog = (double)abs(diffAbsolute)/(double)mA_k;
   str = "backlog value as double is ";
   str += String(backlog,4); str.concat(", ");
   double delta = (double)mSpeed*backlog;
