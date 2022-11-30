@@ -25,10 +25,13 @@ int pidMspeed(int motorNumber)
 
 // Вычисляем "отставание" в единицах "оборот колеса". Помним, что таймер может меняться,
 // Соответственно это отставание происходит за время пока накапливается счетчик таймера. 
-  backlog = diffAbsolute/mA_k;
+  str = "Current mxA_k is ";
+  str.concat(mA_k);
+  write2chatter(str);
+  backlog = (double)diffAbsolute/(double)mA_k;
   str = "backlog value as double is ";
   str.concat(String(backlog,4)); str.concat(", ");
-  double delta = double)mSpeed*backlog;
+  double delta = (double)mSpeed*backlog;
   str += "speed delta value as double is ";
   str.concat(String(delta,4)); //str.concat(", ");
   write2chatter(str);
