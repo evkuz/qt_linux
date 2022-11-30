@@ -38,7 +38,7 @@ volatile unsigned long startTime;
 volatile unsigned long finTime;
 
 String str="";
-volatile String currCommand = ""; // Текущая команда
+String currCommand = ""; // Текущая команда
 String prevCommand = ""; // Предыдущая команда.
 
 volatile long pause    = 50;  // Пауза для борьбы с дребезгом
@@ -164,8 +164,9 @@ void setup()
   nh.advertise(chatter);
   mobPlatformInit();
 
-//  currCommand = "getvalues";
-  currCommand = "reset";
+  reset_All();
+//  currCommand = "getvalues"; // too fast with loop
+  currCommand = "waiting";
   numRot=0;
   
 }
@@ -226,7 +227,7 @@ void loop()
 
   if (currCommand == "getvalues"){
       getValues();
-      currCommand = "waiting";
+//      currCommand = "waiting";
 }
 
 if (currCommand == "slowdown") {
@@ -263,12 +264,16 @@ if (currCommand.startsWith("mkrotation")) { //make 5 rotations of any of 2 wheel
   
   if (makeRotation(numRot) == 0){  // all counters should be reset to zero in advance (before going to function makeRotations)
      resetDone = false;
-     currCommand = "getvalues"; // just output values and wait for rotations number has been reached
-     cli(); // отключить глобальные прерывания
-     TCCR1A = 0; // установить регистры в 0
-     TCCR1B = 0;
-     TIMSK1 |= (1 << OCIE1A);  // включение прерываний по совпадению
-     sei(); // включить глобальные прерывания
+//     write2chatter("Update timer...");
+//     cli(); // отключить глобальные прерывания
+//     TCCR1A = 0; // установить регистры в 0
+//     TCCR1B = 0;
+//     TIMSK1 |= (1 << OCIE1A);  // включение прерываний по совпадению
+//     sei(); // включить глобальные прерывания
+     currCommand = "waiting"; // just output values and wait for rotations number has been reached
+
+
+
 
   }
   // else currCommand = "mkrotation";
@@ -308,7 +313,7 @@ ISR(TIMER1_COMPA_vect)
 // Считываем значения энкодеров, выводим в serial port
 // Вычисляем разницу в данных энкодеров для дальнейшего принятия решения об
 // изменении скорости моторов
-//  getValues(); // итак выводится в loop
+  getValues(); // итак выводится в loop
 
 // А потом будем ПИД запускать
 if (currCommand.startsWith("mkrotation")){

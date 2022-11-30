@@ -28,15 +28,16 @@ int pidMspeed(int motorNumber)
   str = "Current mxA_k is ";
   str.concat(mA_k);
   write2chatter(str);
+  
   backlog = (double)diffAbsolute/(double)mA_k;
   str = "backlog value as double is ";
-  str.concat(String(backlog,4)); str.concat(", ");
+  str += String(backlog,4); str.concat(", ");
   double delta = (double)mSpeed*backlog;
   str += "speed delta value as double is ";
-  str.concat(String(delta,4)); //str.concat(", ");
+  str += String(delta,4); //str.concat(", ");
   write2chatter(str);
 // имеем оставание колеса на backlog оборотов, соответственно, надо увеличить скорость на величину backlog т.е.
-  newSpeed = mSpeed + (double)mSpeed*backlog;
+  newSpeed = round((double)mSpeed + (double)mSpeed*backlog);
   str = "newSpeed value as int is ";
   str.concat(newSpeed);
   write2chatter(str);
@@ -73,11 +74,11 @@ int makeRotation(int rotationNum)
   m2_count = (double)posAm2/(double)m2A_k;
 
   if(m1_count >= rotationNum){ // reached the qequired number of rotations
-    currCommand = "getvalues";
-    cli(); // отключить глобальные прерывания
-    TIMSK1 |= (0 << OCIE1A);  // вЫключение прерываний по совпадению
-    //TIMSK1 = (1 << TOIE1);   // По переполнению
-    sei(); // включить глобальные прерывания
+    currCommand = "waiting";
+//    cli(); // отключить глобальные прерывания
+//    TIMSK1 |= (0 << OCIE1A);  // вЫключение прерываний по совпадению
+//    //TIMSK1 = (1 << TOIE1);   // По переполнению
+//    sei(); // включить глобальные прерывания
 
     m1A = posAm1;
     m1B = posBm1;
@@ -87,10 +88,11 @@ int makeRotation(int rotationNum)
 
     finTime = millis() - startTime;
 
+
     md.setM1Speed(0);
-    stopIfFault();
+ //   stopIfFault();
     md.setM2Speed(0);
-    stopIfFault();
+//    stopIfFault();
 
 
     diffRelative = 0;
@@ -102,8 +104,8 @@ int makeRotation(int rotationNum)
     str += "M1_B ";  str.concat(posBm1); str += ", ";
     str += "M2_A ";  str.concat(posAm2); str += ", ";
     str += "M2_B ";  str.concat(posBm2); str += ", ";
-    str+= "finTime "; str.concat(finTime); str += ", ";
-    str+= "enc diff "; str.concat(diff); str += ", ";
+    str += "finTime "; str.concat(finTime); str += ", ";
+    str += "enc diff "; str.concat(diff); str += ", ";
 
     write2chatter(str);
     
