@@ -136,6 +136,7 @@ void setup()
 //+++++++++++++++ set up timer 1
     // инициализация Timer1
 
+    cli(); // отключить глобальные прерывания
     TCCR1A = 0; // установить регистры в 0
     TCCR1B = 0; 
 
@@ -264,6 +265,8 @@ if (currCommand.startsWith("mkrotation")) { //make 5 rotations of any of 2 wheel
      resetDone = false;
      currCommand = "getvalues"; // just output values and wait for rotations number has been reached
      cli(); // отключить глобальные прерывания
+     TCCR1A = 0; // установить регистры в 0
+     TCCR1B = 0;
      TIMSK1 |= (1 << OCIE1A);  // включение прерываний по совпадению
      sei(); // включить глобальные прерывания
 
@@ -305,7 +308,7 @@ ISR(TIMER1_COMPA_vect)
 // Считываем значения энкодеров, выводим в serial port
 // Вычисляем разницу в данных энкодеров для дальнейшего принятия решения об
 // изменении скорости моторов
-  getValues();
+//  getValues(); // итак выводится в loop
 
 // А потом будем ПИД запускать
 if (currCommand.startsWith("mkrotation")){

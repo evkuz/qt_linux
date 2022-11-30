@@ -76,6 +76,7 @@ int makeRotation(int rotationNum)
     currCommand = "getvalues";
     cli(); // отключить глобальные прерывания
     TIMSK1 |= (0 << OCIE1A);  // вЫключение прерываний по совпадению
+    //TIMSK1 = (1 << TOIE1);   // По переполнению
     sei(); // включить глобальные прерывания
 
     m1A = posAm1;
