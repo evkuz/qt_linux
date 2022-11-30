@@ -287,6 +287,13 @@ if (currCommand.startsWith("mkrotation")) { //make 5 rotations of any of 2 wheel
   }
 
 //+++++++++++++++++++++++++++++++++++++
+  if (currCommand.startsWith("setspeedM2")) {
+    String theSpeed = currCommand.substring(11);
+    md.setM2Speed(theSpeed.toInt());
+    write2chatter("M2 speed changed");
+  }
+
+//+++++++++++++++++++++++++++++++++++++
 
 
 //  if (currCommand == "waiting") {
