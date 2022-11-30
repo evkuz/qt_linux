@@ -319,7 +319,7 @@ ISR(TIMER1_COMPA_vect)
 if (currCommand.startsWith("mkrotation")){
   
 // Определяем величину отставания. Если больше порога - меняем скорости.
-  if (diffAbsolute > encodersGAP){
+  if (abs(diffAbsolute) > encodersGAP){
      write2chatter("Making speed regulation");
   
   
