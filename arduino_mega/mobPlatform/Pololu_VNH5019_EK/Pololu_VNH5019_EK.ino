@@ -31,6 +31,9 @@ volatile long intM1counter = 0;
 volatile long intM2counter = 0;
 volatile long intM2Bcounter = 0;
 
+volatile long diffAbsolute = 0;
+volatile long diffRelative = 0;
+
 volatile unsigned long startTime;
 volatile unsigned long finTime;
 
@@ -110,6 +113,8 @@ volatile double m1_count, m2_count;
 volatile int m1A_k, m1B_k, m2A_k, m2B_k;
 volatile int  smooth_speed;
 
+volatile int encodersGAP;  // Это порог разницы в показаниях энкодеров, при превышении - запускаем ПИД
+
 
 //+++++++++++++++++++++++++++++++
 
@@ -134,7 +139,7 @@ void setup()
     TCCR1A = 0; // установить регистры в 0
     TCCR1B = 0; 
 
-    OCR1A = 15624; // установка регистра совпадения
+    OCR1A = 7812; // 15624 - примерно 1 раз/сек. установка регистра совпадения
     TCCR1B |= (1 << WGM12); // включение в CTC режим
 
     // Установка битов CS10 и CS12 на коэффициент деления 1024
@@ -145,7 +150,8 @@ void setup()
     sei(); // включить глобальные прерывания
 
   
-//+++++++++++++++++++++++++++++++
+//+++++++++++++++++++++++++++++++ set up PID data
+  encodersGAP = 20;
   
   Serial.begin(115200);
   Serial.println("Dual VNH5019 Motor Shield");
@@ -293,9 +299,39 @@ if (currCommand.startsWith("mkrotation")) { //make 5 rotations of any of 2 wheel
 ISR(TIMER1_COMPA_vect)
 {
 // Считываем значения энкодеров, выводим в serial port
+// Вычисляем разницу в данных энкодеров для дальнейшего принятия решения об
+// изменении скорости моторов
   getValues();
 
 // А потом будем ПИД запускать
+if (currCommand.startsWith("mkrotation")){
+  
+// Определяем величину отставания. Если больше порога - меняем скорости.
+  if (diffAbsolute > encodersGAP){
+     write2chatter("Making speed regulation");
+  
+  
+  if (posAm1 < posAm2){ // M1 is lag behind so correct M1 speed
+    m1Speed = pidMspeed(1);
+    md.setM1Speed(m1Speed);
+    str = "correct M1 speed to ";
+    str.concat(String(m1Speed));
+    write2chatter(str);
+    }
+  if (posAm2 < posAm1) {// M2 is lag behind so correct M2 speed
+    m2Speed = pidMspeed(2);
+    md.setM2Speed(m2Speed);
+    
+    str = "correct M2 speed to ";
+    str.concat(String(m2Speed));
+    write2chatter(str);
+    }
+  }// if (diffAbsolute > encodersGAP)
+ 
+ } // if (currCommand.startsWith("mkrotation")){
+  
+//  write2chatter(str);
+
    
 }
 //++++++++++++++++++++++++++++++++++++++++++++
@@ -451,46 +487,37 @@ void movingOn (int fwd){
 // Обработчик каждого из прерываний выдает значения соответствующего энкодера.
 void getValues()
 {
-    //+++++++++++++++++++
-    str = "M1_A ";
-    str.concat(posAm1);
-        // Serial.println(str);
-    str_len = str.length() +1;
-    char char_AM1_array[str_len];
+  //+++++++++++++++++++
+  str = "M1_A ";
+  str.concat(posAm1);
+  write2chatter(str);
+  
+  str = "M1_B ";
+  str.concat(posBm1);
+  write2chatter(str);
+  //+++++++++++++++++++++
+  str = "M2_A ";
+  str.concat(posAm2);
+  write2chatter(str);
+  
+  str = "M2_B ";
+  str.concat(posBm2);
+  write2chatter(str);
+  //+++++++++++++++++++++
+  
+  diffAbsolute = posAm1 - posAm2;
+  diffRelative = diffAbsolute - diffRelative;
+  str = "diffAbsolute = "; 
+  str += String(diffAbsolute); str.concat(", ");
+  str += "diffRealative = "; 
+  str += String(diffRelative); //str.concat(", ");
+  
+  write2chatter(str);
+  diffRelative = diffAbsolute;
 
-    // Copy it over
-    str.toCharArray(char_AM1_array, str_len);
-    str_msg.data = char_AM1_array;
-    chatter.publish( &str_msg );
-
-    str = "M1_B ";
-    str.concat(posBm1);
-    str_len = str.length() +1;
-    char char_BM1_array[str_len];
-    // Copy it over
-    str.toCharArray(char_BM1_array, str_len);
-    str_msg.data = char_BM1_array;
-    chatter.publish( &str_msg );
-    //+++++++++++++++++++++
-    str = "M2_A ";
-    str.concat(posAm2);
-    str_len = str.length() +1;
-    char char_AM2_array[str_len];
-    // Copy it over
-    str.toCharArray(char_AM2_array, str_len);
-    str_msg.data = char_AM2_array;
-    chatter.publish( &str_msg );
-
-
-    str = "M2_B ";
-    str.concat(posBm2);
-    str_len = str.length() +1;
-    char char_BM2_array[str_len];
-    // Copy it over
-    str.toCharArray(char_BM2_array, str_len);
-    str_msg.data = char_BM2_array;
-    chatter.publish( &str_msg );
-
+  // Now pass  [diffRelative, diffAbsolute] values to correct motor speed with PID equation
+    
+    
 }
 //+++++++++++++++++++++++++++
 void write2chatter(String mystr)
