@@ -1,3 +1,5 @@
+// The next line is for treating the file as cpp file
+#include <Arduino.h>
 // Going to regulate motor speed with PID
 int pidMspeed(int motorNumber)
 {
@@ -23,11 +25,18 @@ int pidMspeed(int motorNumber)
 
 // Вычисляем "отставание" в единицах "оборот колеса". Помним, что таймер может меняться,
 // Соответственно это отставание происходит за время пока накапливается счетчик таймера. 
-backlog = diffAbsolute/mA_k;
-
+  backlog = diffAbsolute/mA_k;
+  str = "backlog value as double is ";
+  str.concat(String(backlog,4)); str.concat(", ");
+  double delta = double)mSpeed*backlog;
+  str += "speed delta value as double is ";
+  str.concat(String(delta,4)); //str.concat(", ");
+  write2chatter(str);
 // имеем оставание колеса на backlog оборотов, соответственно, надо увеличить скорость на величину backlog т.е.
   newSpeed = mSpeed + (double)mSpeed*backlog;
-
+  str = "newSpeed value as int is ";
+  str.concat(newSpeed);
+  write2chatter(str);
   return newSpeed;
 }
 //++++++++++++++++++++++++++++++++++++++++++++++
@@ -41,15 +50,13 @@ int makeRotation(int rotationNum)
 //  md.setM2Speed(smooth_speed);
 //  m1Speed = 100;
 //  m2Speed = 100;
+  if (rotationNum == 0) {return 0;}
 
-if (rotationNum <=0) {
-//  str = "reverse rotations";
-//   write2chatter(str);
-   m1Speed *= -1;
-   m2Speed *= -1;
-   rotationNum *= -1;
-//  return 0;
-}
+  if (rotationNum < 0) {
+     m1Speed *= -1;
+     m2Speed *= -1;
+     rotationNum *= -1;
+  }
 
   md.setM1Speed(m1Speed);
   md.setM2Speed(m2Speed);
@@ -80,11 +87,6 @@ if (rotationNum <=0) {
     str+= "enc diff "; str.concat(diff); str += ", ";
 
     write2chatter(str);
-//    str_len = str.length() + 1;
-//    char int2_array[str_len];
-//    str.toCharArray(int2_array, str_len);
-//    str_msg.data = int2_array;
-//    chatter.publish( &str_msg );
     
     
 

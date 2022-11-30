@@ -1,4 +1,7 @@
-// Platform basic control functions 
+// The next line is for treating the file as cpp file
+#include <Arduino.h>
+
+// Platform basic control functions
 
 
 

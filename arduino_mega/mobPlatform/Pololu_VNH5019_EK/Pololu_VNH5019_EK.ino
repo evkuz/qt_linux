@@ -247,7 +247,8 @@ if (currCommand.startsWith("mkrotation")) { //make 5 rotations of any of 2 wheel
       posBm2 = 0;
       m1_count = 0.0;
       m2_count = 0.0;
-
+//diffAbsolute = 75;
+//diffRealative = 9;
       String numOfRotations = currCommand.substring(11);
 
       resetDone = true;
