@@ -69,6 +69,11 @@ int makeRotation(int rotationNum)
   m2_count = (double)posAm2/(double)m2A_k;
 
   if(m1_count >= rotationNum){ // reached the qequired number of rotations
+    currCommand = "getvalues";
+    cli(); // отключить глобальные прерывания
+    TIMSK1 |= (0 << OCIE1A);  // вЫключение прерываний по совпадению
+    sei(); // включить глобальные прерывания
+
     m1A = posAm1;
     m1B = posBm1;
     m2A = posAm2;
@@ -76,7 +81,13 @@ int makeRotation(int rotationNum)
     diff = m1A-m2A;
 
     finTime = millis() - startTime;
-    stop();
+
+    md.setM1Speed(0);
+    stopIfFault();
+    md.setM2Speed(0);
+    stopIfFault();
+
+
     diffRelative = 0;
     str = "Reached rotation value on first of 2 wheels with value ";
     str.concat(String(m1_count,4));

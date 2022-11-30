@@ -38,7 +38,7 @@ volatile unsigned long startTime;
 volatile unsigned long finTime;
 
 String str="";
-String currCommand = ""; // Текущая команда
+volatile String currCommand = ""; // Текущая команда
 String prevCommand = ""; // Предыдущая команда.
 
 volatile long pause    = 50;  // Пауза для борьбы с дребезгом
@@ -135,7 +135,7 @@ void setup()
 
 //+++++++++++++++ set up timer 1
     // инициализация Timer1
-    cli(); // отключить глобальные прерывания
+
     TCCR1A = 0; // установить регистры в 0
     TCCR1B = 0; 
 
@@ -263,7 +263,10 @@ if (currCommand.startsWith("mkrotation")) { //make 5 rotations of any of 2 wheel
   if (makeRotation(numRot) == 0){  // all counters should be reset to zero in advance (before going to function makeRotations)
      resetDone = false;
      currCommand = "getvalues"; // just output values and wait for rotations number has been reached
-     
+     cli(); // отключить глобальные прерывания
+     TIMSK1 |= (1 << OCIE1A);  // включение прерываний по совпадению
+     sei(); // включить глобальные прерывания
+
   }
   // else currCommand = "mkrotation";
 }
