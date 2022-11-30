@@ -59,6 +59,10 @@ int makeRotation(int rotationNum)
      m1Speed *= -1;
      m2Speed *= -1;
      rotationNum *= -1;
+     str = "Reverse speed M1 = ";
+     str.concat(String(m1Speed)); str.concat(", ");
+     str += "M2 = ";
+     str.concat(String(m2Speed)); //str.concat(", ");
   }
 
   md.setM1Speed(m1Speed);
