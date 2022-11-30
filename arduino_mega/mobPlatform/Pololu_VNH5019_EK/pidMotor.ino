@@ -37,7 +37,9 @@ int pidMspeed(int motorNumber)
   str += String(delta,4); //str.concat(", ");
   write2chatter(str);
 // имеем оставание колеса на backlog оборотов, соответственно, надо увеличить скорость на величину backlog т.е.
+
   newSpeed = round((double)mSpeed + (double)mSpeed*backlog);
+
   str = "newSpeed value as int is ";
   str.concat(newSpeed);
   write2chatter(str);
@@ -50,6 +52,7 @@ int makeRotation(int rotationNum)
 {
   int m1A, m1B, m2A, m2B;
   int diff;
+  double m_count;
 //  md.setM1Speed(smooth_speed);
 //  md.setM2Speed(smooth_speed);
 //  m1Speed = 100;
@@ -73,7 +76,10 @@ int makeRotation(int rotationNum)
   m1_count = (double)posAm1/(double)m1A_k;
   m2_count = (double)posAm2/(double)m2A_k;
 
-  if(m1_count >= rotationNum){ // reached the qequired number of rotations
+  if (m1_count >= m2_count){m_count=m1_count}
+  else {m_count = m2_count }
+
+  if(m_count >= rotationNum){ // reached the qequired number of rotations
     currCommand = "waiting";
 //    cli(); // отключить глобальные прерывания
 //    TIMSK1 |= (0 << OCIE1A);  // вЫключение прерываний по совпадению
@@ -84,7 +90,8 @@ int makeRotation(int rotationNum)
     m1B = posBm1;
     m2A = posAm2;
     m2B = posBm2;
-    diff = m1A-m2A;
+    diff = abs(m1A-m2A);
+    diffAbsolute = diff;
 
     finTime = millis() - startTime;
 
@@ -108,6 +115,15 @@ int makeRotation(int rotationNum)
     str += "enc diff "; str.concat(diff); str += ", ";
 
     write2chatter(str);
+
+    if (diff <= encodersGAP) {
+        m1Speed = 100;
+        m2Speed = 100;
+
+        md.setM1Speed(m1Speed);
+        md.setM2Speed(m2Speed);
+
+    }
     
     
 
