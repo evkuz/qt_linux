@@ -29,7 +29,10 @@ int pidMspeed(int motorNumber)
   str.concat(mA_k);
   write2chatter(str);
   
-  backlog = (double)abs(diffAbsolute)/(double)mA_k;
+  // т.к. корректировку скорости делаем по таймеру, а он раз в пол-оборота,
+  // то и делить надо не на mA_k (целый), а на 0.5*mA_k
+  // т.к. иногда прям перекручивает
+  backlog = (double)abs(diffAbsolute)/(double)(mA_k*0.5);
   str = "backlog value as double is ";
   str += String(backlog,4); str.concat(", ");
   double delta = (double)mSpeed*backlog;
@@ -76,8 +79,8 @@ int makeRotation(int rotationNum)
   m1_count = (double)posAm1/(double)m1A_k;
   m2_count = (double)posAm2/(double)m2A_k;
 
-  if (m1_count >= m2_count){m_count=m1_count}
-  else {m_count = m2_count }
+  if (m1_count >= m2_count){m_count=m1_count;}
+  else {m_count = m2_count;}
 
   if(m_count >= rotationNum){ // reached the qequired number of rotations
     currCommand = "waiting";
