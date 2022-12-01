@@ -209,22 +209,25 @@ md.setM1Speed(m1Speed);
 md.setM2Speed(m2Speed);
 
 str = "backlog ";
-str += String(backlog,4); str.concat(", ");
+str.concat(String(backlog,4)); str.concat(", ");
 
-str += "timeLagMxA_k";
+str += "timeLagMxA_k ";
 str += String(*timeLagMxA_k); str.concat(", ");
-str += "advancedMxA_k";
+str += "advancedMxA_k ";
 str += String(*advancedMxA_k); str.concat(", ");
 
 
 str += "Derror ";
-str += String(Derror,4); str.concat(", ");
+str += String(Derror); str.concat(", ");
 
 str += "DprevError ";
-str += String(DprevError,4); str.concat(", ");
+str += String(DprevError); str.concat(", ");
 
 str += "D = ";
-str += String(D,4); str.concat(", ");
+str.concat(String(D,4)); str.concat(", ");
+
+str += "M1speed "; str.concat(m1Speed); str += ", ";
+str += "M2speed "; str.concat(m2Speed);// str += ", ";
 
 write2chatter(str);
 } // goToPID
