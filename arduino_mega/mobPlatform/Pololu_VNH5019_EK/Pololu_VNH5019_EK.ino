@@ -19,6 +19,10 @@ DualVNH5019MotorShield md; // Motor Driver
 
 const  byte pinAm1 = 19;
 const  byte pinBm1 = 18;
+
+const  defaultM1Speed = 100;
+const  defaultM2Speed = 100;
+
 volatile long posAm1 = 0;
 volatile long posBm1 = 0;
 
@@ -62,8 +66,8 @@ byte ints[sBufSize]; // Данные, полученные по serial, - ном
                      // Если скорость >0 - вращение в одну сторону, если скорость <0 - вращение в противоположную сторону.
 
 
-volatile int m1Speed = 100;
-volatile int m2Speed = 100;
+volatile int m1Speed = defaultM1Speed;
+volatile int m2Speed = defaultM2Speed;
 
 volatile bool resetDone = false;
 
@@ -195,14 +199,14 @@ void loop()
   }
 
   if (currCommand == "right") {
-    m1Speed = 100;
-    m2Speed = 40;
+    m1Speed = defaultM1Speed;
+    m2Speed = 0.4*defaultM2Speed;
     forward(1);
   }
 
   if (currCommand == "left") {
-    m1Speed = 40;
-    m2Speed = 100;
+    m1Speed = 0.4*defaultM1Speed;
+    m2Speed = defaultM2Speed;
     forward(1);
   }
 
@@ -249,8 +253,6 @@ if (currCommand.startsWith("mkrotation")) { //make 5 rotations of any of 2 wheel
       posBm2 = 0;
       m1_count = 0.0;
       m2_count = 0.0;
-//diffAbsolute = 75;
-//diffRealative = 9;
       String numOfRotations = currCommand.substring(11);
 
       resetDone = true;
@@ -264,12 +266,6 @@ if (currCommand.startsWith("mkrotation")) { //make 5 rotations of any of 2 wheel
   
   if (makeRotation(numRot) == 0){  // all counters should be reset to zero in advance (before going to function makeRotations)
      resetDone = false;
-//     write2chatter("Update timer...");
-//     cli(); // отключить глобальные прерывания
-//     TCCR1A = 0; // установить регистры в 0
-//     TCCR1B = 0;
-//     TIMSK1 |= (1 << OCIE1A);  // включение прерываний по совпадению
-//     sei(); // включить глобальные прерывания
      currCommand = "waiting"; // just output values and wait for rotations number has been reached
 
 
@@ -282,14 +278,16 @@ if (currCommand.startsWith("mkrotation")) { //make 5 rotations of any of 2 wheel
 //+++++++++++++++++++++++++++++++++++++
   if (currCommand.startsWith("setspeedM1")) {
     String theSpeed = currCommand.substring(11);
-    md.setM1Speed(theSpeed.toInt());
+    m1Speed = theSpeed.toInt();
+    md.setM1Speed(m1Speed);
     write2chatter("M1 speed changed");
   }
 
 //+++++++++++++++++++++++++++++++++++++
   if (currCommand.startsWith("setspeedM2")) {
     String theSpeed = currCommand.substring(11);
-    md.setM2Speed(theSpeed.toInt());
+    m2Speed = theSpeed.toInt();
+    md.setM2Speed(m1Speed);
     write2chatter("M2 speed changed");
   }
 
@@ -301,17 +299,8 @@ if (currCommand.startsWith("mkrotation")) { //make 5 rotations of any of 2 wheel
 //  }
 
 
-
-
-//  if (actualcount != count) {     // Чтобы не загружать ненужным выводом в Serial, выводим состояние
-//    actualcount = count;          // счетчика только в момент изменения
-//    Serial.println(actualcount);
-//  }
-
-
-
           
-  delay(1);
+//  delay(1);
 
 } // loop
 //++++++++++++++++++++++++++++++++++++++++++++

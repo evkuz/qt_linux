@@ -1,6 +1,8 @@
 // The next line is for treating the file as cpp file
 #include <Arduino.h>
 // Going to regulate motor speed with PID
+// Корректировку скорости вызываем, когда разница в энкодерах
+// превышает GAP
 int pidMspeed(int motorNumber)
 {
   int mSpeed, newSpeed;
@@ -116,12 +118,14 @@ int makeRotation(int rotationNum)
     str += "M2_B ";  str.concat(posBm2); str += ", ";
     str += "finTime "; str.concat(finTime); str += ", ";
     str += "enc diff "; str.concat(diff); str += ", ";
+    str += "M1speed "; str.concat(m1Speed); str += ", ";
+    str += "M2speed "; str.concat(m2Speed);// str += ", ";
 
     write2chatter(str);
-
+// Цикл вращений завершили, вовзращаем значения скорости в исходное.
     if (diff <= encodersGAP) {
-        m1Speed = 100;
-        m2Speed = 100;
+        m1Speed = defaultM1Speed;
+        m2Speed = defaultM2Speed;
 
         md.setM1Speed(m1Speed);
         md.setM2Speed(m2Speed);
