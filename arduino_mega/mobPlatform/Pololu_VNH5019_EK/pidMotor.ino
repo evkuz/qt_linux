@@ -146,6 +146,7 @@ void goToPID(){
   double Derror, DprevError;
 
     Kd = 1.0;
+    Kp = 1.0;
     int  newSpeedAdvanced, newSpeedTimeLag;
     int* advancedM; // Адрес скорости обгоняющего колеса
     int* advancedMxA_k;      // Адрес коэффициента MxA_k, x=[1,2]
@@ -185,22 +186,41 @@ str += "delitel ";
 str.concat(String(delitel,4)); str.concat(", ");
 
 write2chatter(str);
+// int target = encodersGAP;
 
-// Разница с "уставкой"
-Derror = abs(posAm1 - posAm2) - encodersGAP; // Если < 0 то, пора замедляться...
+// Разница с "уставкой", это и есть error. error = target - measured
+// Наш target - это encodersGAP
+//ОБычно новый error меньше прошлого, тем самым уменьшаем приращение скорости
+
+int E = abs(posAm1 - posAm2) - encodersGAP; // Если < 0 то, пора замедляться...
+
+// calculate dt
+long currentT = micros();
+float deltaT = ((float)(currentT - prevT))/1.0e6;
+prevT = currentT;
+
+float dedt = (E - Eprev)/deltaT;
+
+//D = (Derror - DprevError)/TRC; // 0.5c - примерное время таймера, это наше dt - интервал интегрирования
 // Предыдущая разница с "уставкой"
-DprevError = diffRelative - encodersGAP;
-//ОБычно новый Derror меньше прошлого, тем самым уменьшаем приращение скорости
-D = (Derror - DprevError)/TRC; // 0.5c - примерное время таймера, это наше dt - интервал интегрирования
+Eprev = E;
 
-newSpeedTimeLag = round((double)(*timeLagM)*(1+backlog)) + Kd*D;
-*timeLagM = newSpeedTimeLag;
 
+I = I + E*deltaT;
+
+// newSpeedTimeLag = round((double)(*timeLagM)*(1+backlog)) + Kd*D;
+newSpeedTimeLag = Kp*E + Ki*I + Kd*dedt; // Это типа deltaSpeed ? Управляеющее воздействие...
+// Увеличиваем для отстающего
+*timeLagM = *timeLagM + newSpeedTimeLag;
+
+// Это вообще убрать
 //++++++++++++++ Теперь опережающее замедляем.
-advanced = (double)(abs(diffAbsolute - encodersGAP)/(*advancedMxA_k*TRC));
-newSpeedAdvanced = round((double)*advancedM*(1-advanced)) + Kd*D;
-*advancedM = newSpeedAdvanced;
+// advanced = (double)(abs(diffAbsolute - encodersGAP)/(*advancedMxA_k*TRC));
+// newSpeedAdvanced = round((double)*advancedM*(1-advanced)) + Kd*D;
+// newSpeedAdvanced = Kp*E + Ki*I + Kd*dedt;
+// *advancedM = *advancedM - newSpeedAdvanced;
 
+// ОДно из колес не изменило скорость
 md.setM1Speed(m1Speed);
 md.setM2Speed(m2Speed);
 
