@@ -59,10 +59,7 @@ int makeRotation(int rotationNum)
   int m1A, m1B, m2A, m2B;
   int diff;
   double m_count;
-//  md.setM1Speed(smooth_speed);
-//  md.setM2Speed(smooth_speed);
-//  m1Speed = 100;
-//  m2Speed = 100;
+
   if (rotationNum == 0) {return 0;}
 
   if (rotationNum < 0) {
@@ -101,12 +98,10 @@ int makeRotation(int rotationNum)
 
     finTime = millis() - startTime;
 
-
     md.setM1Speed(0);
  //   stopIfFault();
     md.setM2Speed(0);
 //    stopIfFault();
-
 
     diffRelative = 0;
     str = "Reached rotation value on first of 2 wheels with value ";
@@ -130,9 +125,10 @@ int makeRotation(int rotationNum)
     
     m1Speed = defaultM1Speed;
     m2Speed = defaultM2Speed;
+    str += "M1speed updated on finish "; str.concat(m1Speed); str += ", ";
+    str += "M2speed updated on finish "; str.concat(m2Speed);// str += ", ";
 
-//    md.setM1Speed(m1Speed);
-//    md.setM2Speed(m2Speed);
+    write2chatter(str);
 
 
     return 0;
@@ -167,11 +163,6 @@ void goToPID(){
         advancedMxA_k = &m2A_k;       // коэфиициент MxA_k обгоняющего колеса.
 
 
-//      m1Speed = pidMspeed(1);
-//      md.setM1Speed(m1Speed);
-//      str = "correct M1 speed to ";
-//      str.concat(String(m1Speed));
-//      write2chatter(str);
     }
     if (posAm2 < posAm1) {// M2 is lag behind so correct M2 speed
 
@@ -181,12 +172,6 @@ void goToPID(){
         advancedM = &m1Speed; // М1 обгоняет
         advancedMxA_k = &m1A_k;
 
-//      m2Speed = pidMspeed(2);
-//      md.setM2Speed(m2Speed);
-
-//      str = "correct M2 speed to ";
-//      str.concat(String(m2Speed));
-//      write2chatter(str);
     }
 
 //++++++++++++++ Отстающее колесо ускоряем

@@ -270,15 +270,11 @@ if (currCommand.startsWith("mkrotation")) { //make 5 rotations of any of 2 wheel
       write2chatter(numOfRotations);
       numRot = numOfRotations.toInt();
 
-      
   }
   
   if (makeRotation(numRot) == 0){  // all counters should be reset to zero in advance (before going to function makeRotations)
      resetDone = false;
      currCommand = "waiting"; // just output values and wait for rotations number has been reached
-
-
-
 
   }
   // else currCommand = "mkrotation";
@@ -322,37 +318,12 @@ ISR(TIMER1_COMPA_vect)
 
 // А потом будем ПИД запускать
 if (currCommand.startsWith("mkrotation")){
-  
-// Определяем величину отставания. Если больше порога - меняем скорости.
-//  if (abs(diffAbsolute) > encodersGAP){
-//     write2chatter("Making speed regulation");
-  
-  
-//  if (posAm1 < posAm2){ // M1 is lag behind so correct M1 speed
-//    m1Speed = pidMspeed(1);
-//    md.setM1Speed(m1Speed);
-//    str = "correct M1 speed to ";
-//    str.concat(String(m1Speed));
-//    write2chatter(str);
-//    }
-//  if (posAm2 < posAm1) {// M2 is lag behind so correct M2 speed
-//    m2Speed = pidMspeed(2);
-//    md.setM2Speed(m2Speed);
-    
-//    str = "correct M2 speed to ";
-//    str.concat(String(m2Speed));
-//    write2chatter(str);
-//    }
 
-     goToPID();
-//  }// if (diffAbsolute > encodersGAP)
+    goToPID();
  
  } // if (currCommand.startsWith("mkrotation")){
-  
-//  write2chatter(str);
 
-   
-}
+} // ISR(TIMER1_COMPA_vect)
 //++++++++++++++++++++++++++++++++++++++++++++
 
 void parse_command ()
@@ -420,56 +391,35 @@ void forward (int fwd)
 //+++++++++++++++++++ output encoder values ++++++++++++++
   str = "posAm1 ";
   str.concat(posAm1);
-      // Serial.println(str);
-  str_len = str.length() +1;
-  char char_AM1_array[str_len];
+  write2chatter(str);
 
-// Copy it over 
-  str.toCharArray(char_AM1_array, str_len);
-  str_msg.data = char_AM1_array;
-  chatter.publish( &str_msg );
 
   str = "posBm1 ";
   str.concat(posBm1);
-  str_len = str.length() +1;
-  char char_BM1_array[str_len];
-// Copy it over 
-  str.toCharArray(char_BM1_array, str_len);
-  str_msg.data = char_BM1_array;
-  chatter.publish( &str_msg );
+  write2chatter(str);
+
 //+++++++++++++++++++++
   str = "posAm2 ";
   str.concat(posAm2);
-  str_len = str.length() +1;
-  char char_AM2_array[str_len];
-// Copy it over 
-  str.toCharArray(char_AM2_array, str_len);
-  str_msg.data = char_AM2_array;
-  chatter.publish( &str_msg );
-  
+  write2chatter(str);
+
 
   str = "posBm2 ";
   str.concat(posBm2);
-  str_len = str.length() +1;
-  char char_BM2_array[str_len];
-// Copy it over 
-  str.toCharArray(char_BM2_array, str_len);
-  str_msg.data = char_BM2_array;
-  chatter.publish( &str_msg );
+  write2chatter(str);
 //+++++++++++++++++++++
   str = "intM1counter ";
   str.concat(intM1counter);
-  Serial.println(str);
+  write2chatter(str);
+
 
   str = "intM2counter ";
   str.concat(intM2counter);
-
-  Serial.println(str);
+  write2chatter(str);
 
   str = "intM2Bcounter ";
   str.concat(intM2Bcounter);
-
-  Serial.println(str);
+  write2chatter(str);
 
 //+++++++++++++++++++ END OF output encoder values ++++++++++++++
 
