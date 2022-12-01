@@ -121,10 +121,10 @@ volatile int  smooth_speed;
 volatile int encodersGAP;  // Это порог разницы в показаниях энкодеров, при превышении - запускаем ПИД
 
 //+++++++++++++++++++++++++++++++++++++++++ PID variables +++++++++++++++++++
-double Kp, Ki, Kd;
-double P, I, D;
+volatile double Kp, Ki, Kd;
+volatile double P, I, D;
 const int timerPerRotation = 2; // Сколько раз срабатывает таймер за 1 оборот колеса
-double TRC = 1/timerPerRotation; // timer/rotation coefficient == dt т.к. таймер за 1 сек.
+volatile double TRC = (double)1/timerPerRotation; // timer/rotation coefficient == dt т.к. таймер за 1 сек.
 
 //+++++++++++++++++++++++++++++++
 
@@ -527,9 +527,9 @@ void getValues()
   diffAbsolute = posAm1 - posAm2;
   diffRelative = diffAbsolute - diffRelative;
   str = "diffAbsolute = "; 
-  str += String(diffAbsolute);
+  str += String(diffAbsolute); str.concat(", ");
   str += "diffRealative = "; 
-  str += String(diffRelative); //str.concat(", ");
+  str += String(diffRelative); //
   
   write2chatter(str);
   diffRelative = diffAbsolute;

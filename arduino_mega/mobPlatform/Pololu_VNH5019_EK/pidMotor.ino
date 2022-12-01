@@ -131,8 +131,8 @@ int makeRotation(int rotationNum)
     m1Speed = defaultM1Speed;
     m2Speed = defaultM2Speed;
 
-    md.setM1Speed(m1Speed);
-    md.setM2Speed(m2Speed);
+//    md.setM1Speed(m1Speed);
+//    md.setM2Speed(m2Speed);
 
 
     return 0;
@@ -156,6 +156,7 @@ void goToPID(){
 
     int *timeLagM;     // Адрес скорости отстающего колеса
     int *timeLagMxA_k; // Адрес коэффициента MxA_k, x=[1,2]
+    int mxA;
 
     if (posAm1 < posAm2){ // M1 is lag behind so correct M1 speed
 
@@ -178,7 +179,7 @@ void goToPID(){
         timeLagMxA_k = &m2A_k;
 
         advancedM = &m1Speed; // М1 обгоняет
-        advancedMxA_k = &m2A_k;
+        advancedMxA_k = &m1A_k;
 
 //      m2Speed = pidMspeed(2);
 //      md.setM2Speed(m2Speed);
@@ -189,7 +190,17 @@ void goToPID(){
     }
 
 //++++++++++++++ Отстающее колесо ускоряем
-backlog = (double)abs(diffAbsolute - encodersGAP)/(*timeLagMxA_k*TRC);
+//mxA = *timeLagMxA_k;
+double delitel = (double)*timeLagMxA_k*TRC;
+backlog = (double)(abs(diffAbsolute - encodersGAP))/delitel;
+
+str = "TRC ";
+str += String(TRC,4); str += ", ";
+str += "delitel ";
+str.concat(String(delitel,4)); str.concat(", ");
+
+write2chatter(str);
+
 // Разница с "уставкой"
 Derror = abs(posAm1 - posAm2) - encodersGAP; // Если < 0 то, пора замедляться...
 // Предыдущая разница с "уставкой"
@@ -201,13 +212,14 @@ newSpeedTimeLag = round((double)(*timeLagM)*(1+backlog)) + Kd*D;
 *timeLagM = newSpeedTimeLag;
 
 //++++++++++++++ Теперь опережающее замедляем.
-advanced = (double)abs(diffAbsolute - encodersGAP)/(*advancedMxA_k*TRC);
+advanced = (double)(abs(diffAbsolute - encodersGAP)/(*advancedMxA_k*TRC));
 newSpeedAdvanced = round((double)*advancedM*(1-advanced)) + Kd*D;
 *advancedM = newSpeedAdvanced;
 
 md.setM1Speed(m1Speed);
 md.setM2Speed(m2Speed);
 
+//backlog = 0.1234;
 str = "backlog ";
 str.concat(String(backlog,4)); str.concat(", ");
 
@@ -216,8 +228,9 @@ str += String(*timeLagMxA_k); str.concat(", ");
 str += "advancedMxA_k ";
 str += String(*advancedMxA_k); str.concat(", ");
 
+write2chatter(str);
 
-str += "Derror ";
+str = "Derror ";
 str += String(Derror); str.concat(", ");
 
 str += "DprevError ";
@@ -225,9 +238,16 @@ str += String(DprevError); str.concat(", ");
 
 str += "D = ";
 str.concat(String(D,4)); str.concat(", ");
+write2chatter(str);
 
-str += "M1speed "; str.concat(m1Speed); str += ", ";
+str = "M1speed "; str.concat(m1Speed); str += ", ";
 str += "M2speed "; str.concat(m2Speed);// str += ", ";
+
+write2chatter(str);
+
+str = "*timeLagM "; 
+str.concat(*timeLagM); str.concat(", ");
+str += "*advancedM "; str += String(*advancedM);
 
 write2chatter(str);
 } // goToPID
