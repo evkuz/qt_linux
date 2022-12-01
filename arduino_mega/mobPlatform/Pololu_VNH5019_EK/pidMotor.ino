@@ -34,8 +34,8 @@ int pidMspeed(int motorNumber)
   // т.к. корректировку скорости делаем по таймеру, а он раз в пол-оборота,
   // то и делить надо не на mA_k (целый), а на 0.5*mA_k
   // т.к. иногда прям перекручивает
-  relativeDiff = diffAbsolute/enodersGAP;
-  backlog = (double)abs(diffAbsolute - encoderGAP)/(double)(mA_k*TRC);
+  relativeDiff = diffAbsolute/encodersGAP;
+  backlog = (double)abs(diffAbsolute - encodersGAP)/(double)(mA_k*TRC);
   str = "backlog value as double is ";
   str += String(backlog,4); str.concat(", ");
   double delta = (double)mSpeed*backlog;
@@ -189,7 +189,7 @@ void goToPID(){
     }
 
 //++++++++++++++ Отстающее колесо ускоряем
-backlog = (double)abs(diffAbsolute - encoderGAP)/(double)(*timeLagMxA_k*TRC);
+backlog = (double)abs(diffAbsolute - encodersGAP)/(*timeLagMxA_k*TRC);
 // Разница с "уставкой"
 Derror = abs(posAm1 - posAm2) - encodersGAP; // Если < 0 то, пора замедляться...
 // Предыдущая разница с "уставкой"
@@ -201,8 +201,8 @@ newSpeedTimeLag = round((double)(*timeLagM)*(1+backlog)) + Kd*D;
 *timeLagM = newSpeedTimeLag;
 
 //++++++++++++++ Теперь опережающее замедляем.
-advanced = (double)abs(diffAbsolute - encoderGAP)/(double)(advancedMxA_k*TRC);
-newSpeedAdvanced = round((double)*advancedM*(1-advanced)) + Kd*D
+advanced = (double)abs(diffAbsolute - encodersGAP)/(*advancedMxA_k*TRC);
+newSpeedAdvanced = round((double)*advancedM*(1-advanced)) + Kd*D;
 *advancedM = newSpeedAdvanced;
 
 md.setM1Speed(m1Speed);
@@ -212,9 +212,9 @@ str = "backlog ";
 str += String(backlog,4); str.concat(", ");
 
 str += "timeLagMxA_k";
-str += String(timeLagMxA_k); str.concat(", ");
+str += String(*timeLagMxA_k); str.concat(", ");
 str += "advancedMxA_k";
-str += String(advancedMxA_k); str.concat(", ");
+str += String(*advancedMxA_k); str.concat(", ");
 
 
 str += "Derror ";

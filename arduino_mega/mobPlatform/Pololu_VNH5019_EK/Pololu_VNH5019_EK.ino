@@ -20,8 +20,8 @@ DualVNH5019MotorShield md; // Motor Driver
 const  byte pinAm1 = 19;
 const  byte pinBm1 = 18;
 
-const  defaultM1Speed = 100;
-const  defaultM2Speed = 100;
+const  int defaultM1Speed = 100;
+const  int defaultM2Speed = 100;
 
 volatile long posAm1 = 0;
 volatile long posBm1 = 0;
@@ -123,6 +123,9 @@ volatile int encodersGAP;  // Это порог разницы в показан
 //+++++++++++++++++++++++++++++++++++++++++ PID variables +++++++++++++++++++
 double Kp, Ki, Kd;
 double P, I, D;
+const int timerPerRotation = 2; // Сколько раз срабатывает таймер за 1 оборот колеса
+double TRC = 1/timerPerRotation; // timer/rotation coefficient == dt т.к. таймер за 1 сек.
+
 //+++++++++++++++++++++++++++++++
 
 void setup()
@@ -160,9 +163,6 @@ void setup()
 //+++++++++++++++++++++++++++++++ set up PID data
 
   encodersGAP = 20;
-  const timerPerRotation = 2; // Сколько раз срабатывает таймер за 1 оборот колеса
-
-  double TRC = 1/timerPerRotation; // timer/rotation coefficient == dt т.к. таймер за 1 сек.
 
 //+++++++++++++++++++++++++++++++ END of set up PID data
 
