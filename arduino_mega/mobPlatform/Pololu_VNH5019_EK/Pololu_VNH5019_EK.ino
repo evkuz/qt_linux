@@ -68,6 +68,7 @@ byte ints[sBufSize]; // Данные, полученные по serial, - ном
 
 volatile int m1Speed = defaultM1Speed;
 volatile int m2Speed = defaultM2Speed;
+bool advancingWheel_1; // Ведущее колесо, если true - ведущее 1-е колесо, иначе - 2е колесо.
 
 volatile bool resetDone = false;
 
@@ -119,7 +120,9 @@ volatile int  smooth_speed;
 
 volatile int encodersGAP;  // Это порог разницы в показаниях энкодеров, при превышении - запускаем ПИД
 
-
+//+++++++++++++++++++++++++++++++++++++++++ PID variables +++++++++++++++++++
+double Kp, Ki, Kd;
+double P, I, D;
 //+++++++++++++++++++++++++++++++
 
 void setup()
@@ -154,10 +157,16 @@ void setup()
     TIMSK1 |= (1 << OCIE1A);  // включение прерываний по совпадению
     sei(); // включить глобальные прерывания
 
-  
 //+++++++++++++++++++++++++++++++ set up PID data
+
   encodersGAP = 20;
-  
+  const timerPerRotation = 2; // Сколько раз срабатывает таймер за 1 оборот колеса
+
+  double TRC = 1/timerPerRotation; // timer/rotation coefficient == dt т.к. таймер за 1 сек.
+
+//+++++++++++++++++++++++++++++++ END of set up PID data
+
+
   Serial.begin(115200);
   Serial.println("Dual VNH5019 Motor Shield");
   md.init();
@@ -315,26 +324,28 @@ ISR(TIMER1_COMPA_vect)
 if (currCommand.startsWith("mkrotation")){
   
 // Определяем величину отставания. Если больше порога - меняем скорости.
-  if (abs(diffAbsolute) > encodersGAP){
-     write2chatter("Making speed regulation");
+//  if (abs(diffAbsolute) > encodersGAP){
+//     write2chatter("Making speed regulation");
   
   
-  if (posAm1 < posAm2){ // M1 is lag behind so correct M1 speed
-    m1Speed = pidMspeed(1);
-    md.setM1Speed(m1Speed);
-    str = "correct M1 speed to ";
-    str.concat(String(m1Speed));
-    write2chatter(str);
-    }
-  if (posAm2 < posAm1) {// M2 is lag behind so correct M2 speed
-    m2Speed = pidMspeed(2);
-    md.setM2Speed(m2Speed);
+//  if (posAm1 < posAm2){ // M1 is lag behind so correct M1 speed
+//    m1Speed = pidMspeed(1);
+//    md.setM1Speed(m1Speed);
+//    str = "correct M1 speed to ";
+//    str.concat(String(m1Speed));
+//    write2chatter(str);
+//    }
+//  if (posAm2 < posAm1) {// M2 is lag behind so correct M2 speed
+//    m2Speed = pidMspeed(2);
+//    md.setM2Speed(m2Speed);
     
-    str = "correct M2 speed to ";
-    str.concat(String(m2Speed));
-    write2chatter(str);
-    }
-  }// if (diffAbsolute > encodersGAP)
+//    str = "correct M2 speed to ";
+//    str.concat(String(m2Speed));
+//    write2chatter(str);
+//    }
+
+     goToPID();
+//  }// if (diffAbsolute > encodersGAP)
  
  } // if (currCommand.startsWith("mkrotation")){
   
@@ -516,7 +527,7 @@ void getValues()
   diffAbsolute = posAm1 - posAm2;
   diffRelative = diffAbsolute - diffRelative;
   str = "diffAbsolute = "; 
-  str += String(diffAbsolute); str.concat(", ");
+  str += String(diffAbsolute);
   str += "diffRealative = "; 
   str += String(diffRelative); //str.concat(", ");
   

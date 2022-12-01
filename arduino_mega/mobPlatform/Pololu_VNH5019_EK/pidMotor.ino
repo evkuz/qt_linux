@@ -9,7 +9,7 @@ int pidMspeed(int motorNumber)
   double Kp, Ki, Kd;
   double INT, DER;
   double backlog;
-  //diffAbsolute
+  double relativeDiff; // отншение diff/GAP
   int mA_k;
 
   if (motorNumber == 1){
@@ -27,14 +27,15 @@ int pidMspeed(int motorNumber)
 
 // Вычисляем "отставание" в единицах "оборот колеса". Помним, что таймер может меняться,
 // Соответственно это отставание происходит за время пока накапливается счетчик таймера. 
-  str = "Current mxA_k is ";
+  str = "Current MxA_k is ";
   str.concat(mA_k);
   write2chatter(str);
   
   // т.к. корректировку скорости делаем по таймеру, а он раз в пол-оборота,
   // то и делить надо не на mA_k (целый), а на 0.5*mA_k
   // т.к. иногда прям перекручивает
-  backlog = (double)abs(diffAbsolute)/(double)(mA_k*0.5);
+  relativeDiff = diffAbsolute/enodersGAP;
+  backlog = (double)abs(diffAbsolute - encoderGAP)/(double)(mA_k*TRC);
   str = "backlog value as double is ";
   str += String(backlog,4); str.concat(", ");
   double delta = (double)mSpeed*backlog;
@@ -123,16 +124,16 @@ int makeRotation(int rotationNum)
 
     write2chatter(str);
 // Цикл вращений завершили, вовзращаем значения скорости в исходное.
-    if (diff <= encodersGAP) {
-        m1Speed = defaultM1Speed;
-        m2Speed = defaultM2Speed;
+//    if (diff <= encodersGAP) {
 
-        md.setM1Speed(m1Speed);
-        md.setM2Speed(m2Speed);
+//    }
+    
+    m1Speed = defaultM1Speed;
+    m2Speed = defaultM2Speed;
 
-    }
-    
-    
+    md.setM1Speed(m1Speed);
+    md.setM2Speed(m2Speed);
+
 
     return 0;
     }
@@ -141,4 +142,89 @@ int makeRotation(int rotationNum)
   
   } // makeRotation
 //++++++++++++++++++++++++++++++++++++++++++++++
-  
+// Головная ф-ция PID
+// ОТстающее - ускоряем, обгоняющее - замедляем
+
+void goToPID(){
+  double backlog, advanced ;
+  double Derror, DprevError;
+
+    Kd = 1.0;
+    int  newSpeedAdvanced, newSpeedTimeLag;
+    int* advancedM; // Адрес скорости обгоняющего колеса
+    int* advancedMxA_k;      // Адрес коэффициента MxA_k, x=[1,2]
+
+    int *timeLagM;     // Адрес скорости отстающего колеса
+    int *timeLagMxA_k; // Адрес коэффициента MxA_k, x=[1,2]
+
+    if (posAm1 < posAm2){ // M1 is lag behind so correct M1 speed
+
+        timeLagM = &m1Speed;
+        timeLagMxA_k = &m1A_k;
+
+        advancedM = &m2Speed; // М2 обгоняет
+        advancedMxA_k = &m2A_k;       // коэфиициент MxA_k обгоняющего колеса.
+
+
+//      m1Speed = pidMspeed(1);
+//      md.setM1Speed(m1Speed);
+//      str = "correct M1 speed to ";
+//      str.concat(String(m1Speed));
+//      write2chatter(str);
+    }
+    if (posAm2 < posAm1) {// M2 is lag behind so correct M2 speed
+
+        timeLagM = &m2Speed;
+        timeLagMxA_k = &m2A_k;
+
+        advancedM = &m1Speed; // М1 обгоняет
+        advancedMxA_k = &m2A_k;
+
+//      m2Speed = pidMspeed(2);
+//      md.setM2Speed(m2Speed);
+
+//      str = "correct M2 speed to ";
+//      str.concat(String(m2Speed));
+//      write2chatter(str);
+    }
+
+//++++++++++++++ Отстающее колесо ускоряем
+backlog = (double)abs(diffAbsolute - encoderGAP)/(double)(*timeLagMxA_k*TRC);
+// Разница с "уставкой"
+Derror = abs(posAm1 - posAm2) - encodersGAP; // Если < 0 то, пора замедляться...
+// Предыдущая разница с "уставкой"
+DprevError = diffRelative - encodersGAP;
+//ОБычно новый Derror меньше прошлого, тем самым уменьшаем приращение скорости
+D = (Derror - DprevError)/TRC; // 0.5c - примерное время таймера, это наше dt - интервал интегрирования
+
+newSpeedTimeLag = round((double)(*timeLagM)*(1+backlog)) + Kd*D;
+*timeLagM = newSpeedTimeLag;
+
+//++++++++++++++ Теперь опережающее замедляем.
+advanced = (double)abs(diffAbsolute - encoderGAP)/(double)(advancedMxA_k*TRC);
+newSpeedAdvanced = round((double)*advancedM*(1-advanced)) + Kd*D
+*advancedM = newSpeedAdvanced;
+
+md.setM1Speed(m1Speed);
+md.setM2Speed(m2Speed);
+
+str = "backlog ";
+str += String(backlog,4); str.concat(", ");
+
+str += "timeLagMxA_k";
+str += String(timeLagMxA_k); str.concat(", ");
+str += "advancedMxA_k";
+str += String(advancedMxA_k); str.concat(", ");
+
+
+str += "Derror ";
+str += String(Derror,4); str.concat(", ");
+
+str += "DprevError ";
+str += String(DprevError,4); str.concat(", ");
+
+str += "D = ";
+str += String(D,4); str.concat(", ");
+
+write2chatter(str);
+} // goToPID
