@@ -72,9 +72,9 @@ int makeRotation(int rotationNum)
      str.concat(String(m2Speed)); //str.concat(", ");
   }
 
-  md.setM1Speed(m1Speed);
-  md.setM2Speed(m2Speed);
-
+//  md.setM1Speed(m1Speed);
+//  md.setM2Speed(m2Speed);
+//
 
   m1_count = (double)posAm1/(double)m1A_k;
   m2_count = (double)posAm2/(double)m2A_k;
@@ -115,17 +115,19 @@ int makeRotation(int rotationNum)
     str += "finTime "; str.concat(finTime); str += ", ";
     str += "enc diff "; str.concat(diff); str += ", ";
     str += "M1speed "; str.concat(m1Speed); str += ", ";
-    str += "M2speed "; str.concat(m2Speed);// str += ", ";
+    str += "M2speed "; str.concat(m2Speed); //str += ", ";
 
     write2chatter(str);
 // Цикл вращений завершили, вовзращаем значения скорости в исходное.
 //    if (diff <= encodersGAP) {
 
 //    }
+    Eprev = 0;
+    prevT = 0;
     
-    m1Speed = defaultM1Speed;
-    m2Speed = defaultM2Speed;
-    str += "M1speed updated on finish "; str.concat(m1Speed); str += ", ";
+    m1Speed = defaultMSpeed;
+    m2Speed = defaultMSpeed;
+    str = "M1speed updated on finish "; str.concat(m1Speed); str += ", ";
     str += "M2speed updated on finish "; str.concat(m2Speed);// str += ", ";
 
     write2chatter(str);
@@ -144,16 +146,19 @@ int makeRotation(int rotationNum)
 void goToPID(){
   double backlog, advanced ;
   double Derror, DprevError;
+  double Kp, Ki, Kd;
 
-    Kd = 1.0;
-    Kp = 1.0;
+    Kp = 1000.0;
+    Ki = 1.0;
+    Kd = 0.25;
+
     int  newSpeedAdvanced, newSpeedTimeLag;
     int* advancedM; // Адрес скорости обгоняющего колеса
     int* advancedMxA_k;      // Адрес коэффициента MxA_k, x=[1,2]
 
     int *timeLagM;     // Адрес скорости отстающего колеса
     int *timeLagMxA_k; // Адрес коэффициента MxA_k, x=[1,2]
-    int mxA;
+    int mxA, MxSpeed;  // encoder_A and speed
 
     if (posAm1 < posAm2){ // M1 is lag behind so correct M1 speed
 
@@ -176,42 +181,88 @@ void goToPID(){
     }
 
 //++++++++++++++ Отстающее колесо ускоряем
-//mxA = *timeLagMxA_k;
-double delitel = (double)*timeLagMxA_k*TRC;
-backlog = (double)(abs(diffAbsolute - encodersGAP))/delitel;
 
-str = "TRC ";
-str += String(TRC,4); str += ", ";
-str += "delitel ";
-str.concat(String(delitel,4)); str.concat(", ");
+//double delitel = (double)*timeLagMxA_k*TRC;
+//backlog = (double)(abs(diffAbsolute - encodersGAP))/delitel;
 
-write2chatter(str);
 // int target = encodersGAP;
 
 // Разница с "уставкой", это и есть error. error = target - measured
-// Наш target - это encodersGAP
-//ОБычно новый error меньше прошлого, тем самым уменьшаем приращение скорости
 
-int E = abs(posAm1 - posAm2) - encodersGAP; // Если < 0 то, пора замедляться...
+// Наш target - это encodersGAP
+// ...
+// encodersGAP набегает за 1 оборот колеса(примерно 1с) на скорости 100, сюда мы попадаем за время  deltaT
+
+
+ // Если < 0 то, пора замедляться...
+
+//  diffAbsolute = posAm1 - posAm2;
+//  diffRelative = diffAbsolute - diffRelative;
+
+if ((diffRelative <0) && !leaderIsChanged) { // slowdown the spped
+  leaderIsChanged = true;
+  m1Speed = defaultMSpeed;
+  m2Speed = defaultMSpeed;
+  
+  }
+if ((diffRelative > 0) && leaderIsChanged) {
+  leaderIsChanged = false;
+  m1Speed = defaultMSpeed;
+  m2Speed = defaultMSpeed;
+
+  }
+
 
 // calculate dt
 long currentT = micros();
-float deltaT = ((float)(currentT - prevT))/1.0e6;
+float deltaT = ((float)(currentT - prevT))/(1.0e6);
+mxA = *timeLagMxA_k;
+MxSpeed = *timeLagM;
+float  E = (float)abs(abs(posAm1 - posAm2) - encodersGAP)*(float)1/mxA*deltaT*((float)MxSpeed/(float)defaultMSpeed);
+
+str = "MxSpeed ";
+str += String(MxSpeed); str += ", ";
+str += "deltaT ";
+str += String(deltaT,4); str += ", ";
+str += "E ";
+str.concat(String(E,4)); str.concat(", ");
+
+write2chatter(str);
+//if (E < encodersGAP) {return;}
+
+
 prevT = currentT;
 
+// Derivative
 float dedt = (E - Eprev)/deltaT;
 
 //D = (Derror - DprevError)/TRC; // 0.5c - примерное время таймера, это наше dt - интервал интегрирования
 // Предыдущая разница с "уставкой"
 Eprev = E;
 
-
-I = I + E*deltaT;
+// Integral
+I = round(I + (float)E*deltaT);
 
 // newSpeedTimeLag = round((double)(*timeLagM)*(1+backlog)) + Kd*D;
-newSpeedTimeLag = Kp*E + Ki*I + Kd*dedt; // Это типа deltaSpeed ? Управляеющее воздействие...
+// mxA - число отсчетов энкодера за 1 оборот, а т.к. за время deltaT меньше 1 оборота (на скорости defaultMSpeed) 
+// То берм отношение 1с к deltaT, также скорость не всегда defaultMSpeed, поэтому берем отношение *timeLagM к defaultMSpeed
+
+//Kp = (double)(1/mxA)*deltaT*(double)(*timeLagM/defaultMSpeed);
+
+
+
+newSpeedTimeLag = round((float)Kp*E + (float)Ki*I + (float)Kd*dedt); // Это типа deltaSpeed ? Управляеющее воздействие...
 // Увеличиваем для отстающего
-*timeLagM = *timeLagM + newSpeedTimeLag;
+*timeLagM += newSpeedTimeLag;
+
+str = "*timeLagM "; 
+str.concat(*timeLagM); str.concat(", ");
+str += "*advancedM "; str += String(*advancedM); str.concat(", ");
+str += "dedt ";
+str.concat(String(dedt,4)); //str.concat(", ");
+
+write2chatter(str);
+
 
 // Это вообще убрать
 //++++++++++++++ Теперь опережающее замедляем.
@@ -225,8 +276,8 @@ md.setM1Speed(m1Speed);
 md.setM2Speed(m2Speed);
 
 //backlog = 0.1234;
-str = "backlog ";
-str.concat(String(backlog,4)); str.concat(", ");
+str = "dedt ";
+str.concat(String(dedt,4)); str.concat(", ");
 
 str += "timeLagMxA_k ";
 str += String(*timeLagMxA_k); str.concat(", ");
@@ -235,24 +286,19 @@ str += String(*advancedMxA_k); str.concat(", ");
 
 write2chatter(str);
 
-str = "Derror ";
-str += String(Derror); str.concat(", ");
-
-str += "DprevError ";
-str += String(DprevError); str.concat(", ");
-
-str += "D = ";
-str.concat(String(D,4)); str.concat(", ");
-write2chatter(str);
-
+//str = "Derror ";
+//str += String(Derror); str.concat(", ");
+//
+//str += "DprevError ";
+//str += String(DprevError); str.concat(", ");
+//
+//str += "D = ";
+//str.concat(String(D,4)); str.concat(", ");
+//write2chatter(str);
+//
 str = "M1speed "; str.concat(m1Speed); str += ", ";
 str += "M2speed "; str.concat(m2Speed);// str += ", ";
 
 write2chatter(str);
 
-str = "*timeLagM "; 
-str.concat(*timeLagM); str.concat(", ");
-str += "*advancedM "; str += String(*advancedM);
-
-write2chatter(str);
 } // goToPID

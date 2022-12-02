@@ -20,8 +20,8 @@ DualVNH5019MotorShield md; // Motor Driver
 const  byte pinAm1 = 19;
 const  byte pinBm1 = 18;
 
-const  int defaultM1Speed = 100;
-const  int defaultM2Speed = 100;
+const  int defaultMSpeed = 100;
+//const  int defaultM2Speed = 100;
 
 volatile long posAm1 = 0;
 volatile long posBm1 = 0;
@@ -66,8 +66,8 @@ byte ints[sBufSize]; // Данные, полученные по serial, - ном
                      // Если скорость >0 - вращение в одну сторону, если скорость <0 - вращение в противоположную сторону.
 
 
-volatile int m1Speed = defaultM1Speed;
-volatile int m2Speed = defaultM2Speed;
+volatile int m1Speed = defaultMSpeed;
+volatile int m2Speed = defaultMSpeed;
 bool advancingWheel_1; // Ведущее колесо, если true - ведущее 1-е колесо, иначе - 2е колесо.
 
 volatile bool resetDone = false;
@@ -121,10 +121,15 @@ volatile int  smooth_speed;
 volatile int encodersGAP;  // Это порог разницы в показаниях энкодеров, при превышении - запускаем ПИД
 
 //+++++++++++++++++++++++++++++++++++++++++ PID variables +++++++++++++++++++
-volatile double Kp, Ki, Kd;
+// volatile double Kp, Ki, Kd;
 volatile double P, I, D;
 const int timerPerRotation = 2; // Сколько раз срабатывает таймер за 1 оборот колеса
 volatile double TRC = (double)1/timerPerRotation; // timer/rotation coefficient == dt т.к. таймер за 1 сек.
+
+volatile long prevT; // for delta t counting
+volatile float Eprev; // for delta Error counting
+
+boolean leaderIsChanged; // Флаг смены отстающего колеса на ведущее. Если М1_А > M2_A leaderIsChanged == false
 
 //+++++++++++++++++++++++++++++++
 
@@ -163,6 +168,11 @@ void setup()
 //+++++++++++++++++++++++++++++++ set up PID data
 
   encodersGAP = 20;
+  prevT = 0;
+  Eprev = 0.0;
+  I = 0;
+  D = 0;
+  leaderIsChanged = false;
 
 //+++++++++++++++++++++++++++++++ END of set up PID data
 
@@ -208,14 +218,14 @@ void loop()
   }
 
   if (currCommand == "right") {
-    m1Speed = defaultM1Speed;
-    m2Speed = 0.4*defaultM2Speed;
+    m1Speed = defaultMSpeed;
+    m2Speed = 0.4*defaultMSpeed;
     forward(1);
   }
 
   if (currCommand == "left") {
-    m1Speed = 0.4*defaultM1Speed;
-    m2Speed = defaultM2Speed;
+    m1Speed = 0.4*defaultMSpeed;
+    m2Speed = defaultMSpeed;
     forward(1);
   }
 
@@ -255,6 +265,10 @@ if (currCommand == "faster") {
 
 if (currCommand.startsWith("mkrotation")) { //make 5 rotations of any of 2 wheels
   if (!resetDone){
+            // set prevT as current, strting time
+      prevT = micros();
+      Eprev = 0.0;
+
       //reset_All(); // reset to zero all counters
       posAm1 = 0;
       posBm1 = 0;
@@ -270,7 +284,14 @@ if (currCommand.startsWith("mkrotation")) { //make 5 rotations of any of 2 wheel
       write2chatter(numOfRotations);
       numRot = numOfRotations.toInt();
 
+      // Start motors
+      md.setM1Speed(m1Speed);
+      md.setM2Speed(m2Speed);
+
+
+
   }
+  
   
   if (makeRotation(numRot) == 0){  // all counters should be reset to zero in advance (before going to function makeRotations)
      resetDone = false;
