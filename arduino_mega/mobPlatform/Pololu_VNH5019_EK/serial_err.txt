@@ -1,0 +1,7 @@
+[serial_node-2] process has died [pid 9675, exit code 1, cmd /opt/ros/melodic/lib/rosserial_python/serial_node.py /dev/ttyACM0 __name:=serial_node __log:=/home/nvidia/.ros/log/a6e7a83a-7237-11ed-8e15-909a4a82c100/serial_node-2.log].
+log file: /home/nvidia/.ros/log/a6e7a83a-7237-11ed-8e15-909a4a82c100/serial_node-2*.log
+
+
+[serial_node-2] process has died [pid 9465, exit code 1, cmd /opt/ros/melodic/lib/rosserial_python/serial_node.py /dev/ttyACM0 __name:=serial_node __log:=/home/nvidia/.ros/log/9327b4c8-7239-11ed-88d7-909a4a82c100/serial_node-2.log].
+log file: /home/nvidia/.ros/log/9327b4c8-7239-11ed-88d7-909a4a82c100/serial_node-2*.log
+

@@ -1,0 +1,473 @@
+data: "M1_A 0"
+---
+data: "M1_B 0"
+---
+data: "M2_A 0"
+---
+data: "M2_B 0"
+---
+data: "diffAbsolute = 0, diffRealative = 0"
+---
+data: "M1_A 0"
+---
+data: "M1_B 0"
+---
+data: "M2_A 0"
+---
+data: "M2_B 0"
+---
+data: "diffAbsolute = 0, diffRealative = 0"
+---
+data: "M1_A 0"
+---
+data: "M1_B 0"
+---
+data: "M2_A 0"
+---
+data: "M2_B 0"
+---
+data: "diffAbsolute = 0, diffRealative = 0"
+---
+data: "M1_A 0"
+---
+data: "M1_B 0"
+---
+data: "M2_A 0"
+---
+data: "M2_B 0"
+---
+data: "diffAbsolute = 0, diffRealative = 0"
+---
+data: "M1_A 0"
+---
+data: "M1_B 0"
+---
+data: "M2_A 0"
+---
+data: "M2_B 0"
+---
+data: "diffAbsolute = 0, diffRealative = 0"
+---
+data: "M1_A 0"
+---
+data: "M1_B 0"
+---
+data: "M2_A 0"
+---
+data: "M2_B 0"
+---
+data: "diffAbsolute = 0, diffRealative = 0"
+---
+data: "M1_A 0"
+---
+data: "M1_B 0"
+---
+data: "M2_A 0"
+---
+data: "M2_B 0"
+---
+data: "diffAbsolute = 0, diffRealative = 0"
+---
+data: "M1_A 0"
+---
+data: "M1_B 0"
+---
+data: "M2_A 0"
+---
+data: "M2_B 0"
+---
+data: "diffAbsolute = 0, diffRealative = 0"
+---
+data: "M1_A 0"
+---
+data: "M1_B 0"
+---
+data: "M2_A 0"
+---
+data: "M2_B 0"
+---
+data: "diffAbsolute = 0, diffRealative = 0"
+---
+data: "M1_A 0"
+---
+data: "M1_B 0"
+---
+data: "M2_A 0"
+---
+data: "M2_B 0"
+---
+data: "diffAbsolute = 0, diffRealative = 0"
+---
+data: "M1_A 0"
+---
+data: "M1_B 0"
+---
+data: "M2_A 0"
+---
+data: "M2_B 0"
+---
+data: "diffAbsolute = 0, diffRealative = 0"
+---
+data: "M1_A 0"
+---
+data: "M1_B 0"
+---
+data: "M2_A 0"
+---
+data: "M2_B 0"
+---
+data: "diffAbsolute = 0, diffRealative = 0"
+---
+data: "M1_A 0"
+---
+data: "M1_B 0"
+---
+data: "M2_A 0"
+---
+data: "M2_B 0"
+---
+data: "diffAbsolute = 0, diffRealative = 0"
+---
+data: "M1_A 0"
+---
+data: "M1_B 0"
+---
+data: "M2_A 0"
+---
+data: "M2_B 0"
+---
+data: "diffAbsolute = 0, diffRealative = 0"
+---
+data: "M1_A 0"
+---
+data: "M1_B 0"
+---
+data: "M2_A 0"
+---
+data: "M2_B 0"
+---
+data: "diffAbsolute = 0, diffRealative = 0"
+---
+data: "M1_A 0"
+---
+data: "M1_B 0"
+---
+data: "M2_A 0"
+---
+data: "M2_B 0"
+---
+data: "diffAbsolute = 0, diffRealative = 0"
+---
+data: "M1_A 0"
+---
+data: "M1_B 0"
+---
+data: "M2_A 0"
+---
+data: "M2_B 0"
+---
+data: "diffAbsolute = 0, diffRealative = 0"
+---
+data: "M1_A 0"
+---
+data: "M1_B 0"
+---
+data: "M2_A 0"
+---
+data: "M2_B 0"
+---
+data: "diffAbsolute = 0, diffRealative = 0"
+---
+data: "M1_A 0"
+---
+data: "M1_B 0"
+---
+data: "M2_A 0"
+---
+data: "M2_B 0"
+---
+data: "diffAbsolute = 0, diffRealative = 0"
+---
+data: "M1_A 0"
+---
+data: "M1_B 0"
+---
+data: "M2_A 0"
+---
+data: "M2_B 0"
+---
+data: "diffAbsolute = 0, diffRealative = 0"
+---
+data: "M1_A 0"
+---
+data: "M1_B 0"
+---
+data: "M2_A 0"
+---
+data: "M2_B 0"
+---
+data: "diffAbsolute = 0, diffRealative = 0"
+---
+data: "M1_A 0"
+---
+data: "M1_B 0"
+---
+data: "M2_A 0"
+---
+data: "M2_B 0"
+---
+data: "diffAbsolute = 0, diffRealative = 0"
+---
+data: "M1_A 0"
+---
+data: "M1_B 0"
+---
+data: "M2_A 0"
+---
+data: "M2_B 0"
+---
+data: "diffAbsolute = 0, diffRealative = 0"
+---
+data: "M1_A 0"
+---
+data: "M1_B 0"
+---
+data: "M2_A 0"
+---
+data: "M2_B 0"
+---
+data: "diffAbsolute = 0, diffRealative = 0"
+---
+data: "M1_A 0"
+---
+data: "M1_B 0"
+---
+data: "M2_A 0"
+---
+data: "M2_B 0"
+---
+data: "diffAbsolute = 0, diffRealative = 0"
+---
+data: "M1_A 0"
+---
+data: "M1_B 0"
+---
+data: "M2_A 0"
+---
+data: "M2_B 0"
+---
+data: "diffAbsolute = 0, diffRealative = 0"
+---
+data: "M1_A 0"
+---
+data: "M1_B 0"
+---
+data: "M2_A 0"
+---
+data: "M2_B 0"
+---
+data: "diffAbsolute = 0, diffRealative = 0"
+---
+data: "M1_A 0"
+---
+data: "M1_B 0"
+---
+data: "M2_A 0"
+---
+data: "M2_B 0"
+---
+data: "diffAbsolute = 0, diffRealative = 0"
+---
+data: "M1_A 0"
+---
+data: "M1_B 0"
+---
+data: "M2_A 0"
+---
+data: "M2_B 0"
+---
+data: "diffAbsolute = 0, diffRealative = 0"
+---
+data: "M1_A 0"
+---
+data: "M1_B 0"
+---
+data: "M2_A 0"
+---
+data: "M2_B 0"
+---
+data: "diffAbsolute = 0, diffRealative = 0"
+---
+data: "M1_A 0"
+---
+data: "M1_B 0"
+---
+data: "M2_A 0"
+---
+data: "M2_B 0"
+---
+data: "diffAbsolute = 0, diffRealative = 0"
+---
+data: "M1_A 0"
+---
+data: "M1_B 0"
+---
+data: "M2_A 0"
+---
+data: "M2_B 0"
+---
+data: "diffAbsolute = 0, diffRealative = 0"
+---
+data: "M1_A 0"
+---
+data: "M1_B 0"
+---
+data: "M2_A 0"
+---
+data: "M2_B 0"
+---
+data: "diffAbsolute = 0, diffRealative = 0"
+---
+data: "M1_A 0"
+---
+data: "M1_B 0"
+---
+data: "M2_A 0"
+---
+data: "M2_B 0"
+---
+data: "diffAbsolute = 0, diffRealative = 0"
+---
+data: "M1_A 0"
+---
+data: "M1_B 0"
+---
+data: "M2_A 0"
+---
+data: "M2_B 0"
+---
+data: "diffAbsolute = 0, diffRealative = 0"
+---
+data: "The NEXT command is mkrotation 5"
+---
+data: "5"
+---
+data: "M1_A 26"
+---
+data: "M1_B 26"
+---
+data: "M2_A 23"
+---
+data: "M2_B 23"
+---
+data: "diffAbsolute = 3, diffRealative = 3"
+---
+data: "MxSpeed 100, deltaT 0.0822, E 0.0029, "
+---
+data: "*timeLagM 103, *advancedM 100, dedt 0.0347"
+---
+data: "dedt 0.0347, timeLagMxA_k 490, advancedMxA_k 475, "
+---
+data: "M1speed 100, M2speed 103"
+---
+data: "M1_A 616"
+---
+data: "M1_B 617"
+---
+data: "M2_A 594"
+---
+data: "M2_B 593"
+---
+data: "diffAbsolute = 22, diffRealative = 19"
+---
+data: "MxSpeed 103, deltaT 0.4561, E 0.0019, "
+---
+data: "*timeLagM 105, *advancedM 100, dedt -0.0020"
+---
+data: "dedt -0.0020, timeLagMxA_k 490, advancedMxA_k 475, "
+---
+data: "M1speed 100, M2speed 105"
+---
+data: "M1_A 1408"
+---
+data: "M1_B 1409"
+---
+data: "M2_A 1391"
+---
+data: "M2_B 1391"
+---
+data: "diffAbsolute = 17, diffRealative = -5"
+---
+data: "MxSpeed 105, deltaT 0.4537, E 0.0029, "
+---
+data: "*timeLagM 108, *advancedM 100, dedt 0.0022"
+---
+data: "dedt 0.0022, timeLagMxA_k 490, advancedMxA_k 475, "
+---
+data: "M1speed 100, M2speed 108"
+---
+data: "M1_A 2247"
+---
+data: "M1_B 2246"
+---
+data: "M2_A 2257"
+---
+data: "M2_B 2256"
+---
+data: "diffAbsolute = -10, diffRealative = -27"
+---
+data: "MxSpeed 100, deltaT 0.4523, E 0.0095, "
+---
+data: "*timeLagM 110, *advancedM 100, dedt 0.0146"
+---
+data: "dedt 0.0146, timeLagMxA_k 475, advancedMxA_k 490, "
+---
+data: "M1speed 110, M2speed 100"
+---
+data: "Reached rotation value on first of 2 wheels with value 5.0000"
+---
+data: "M1_A 2379, M1_B 2377, M2_A 2392, M2_B 2393, finTime 1512, enc diff 12, M1speed 110,\
+  \ M2speed 100"
+---
+data: "M1speed updated on finish 100, M2speed updated on finish 100"
+---
+data: "M1_A 2967"
+---
+data: "M1_B 2965"
+---
+data: "M2_A 3028"
+---
+data: "M2_B 3029"
+---
+data: "diffAbsolute = -61, diffRealative = -61"
+---
+data: "M1_A 3339"
+---
+data: "M1_B 3338"
+---
+data: "M2_A 3549"
+---
+data: "M2_B 3550"
+---
+data: "diffAbsolute = -210, diffRealative = -149"
+---
+data: "M1_A 3391"
+---
+data: "M1_B 3391"
+---
+data: "M2_A 3794"
+---
+data: "M2_B 3797"
+---
+data: "diffAbsolute = -403, diffRealative = -193"
+---
+data: "M1_A 3391"
+---
+data: "M1_B 3391"
+---
+data: "M2_A 3826"
+---
+data: "M2_B 3831"
+---
+data: "diffAbsolute = -435, diffRealative = -32"
+---
