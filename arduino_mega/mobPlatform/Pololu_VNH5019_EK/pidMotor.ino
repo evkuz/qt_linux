@@ -148,22 +148,22 @@ void goToPID(){
   double Derror, DprevError;
   double Kp, Ki, Kd;
 
-    Kp = 1000.0;
+    Kp = 1000.0; // В единицах скорости(сила тока)
     Ki = 1.0;
     Kd = 0.25;
 
-    int  newSpeedAdvanced, newSpeedTimeLag;
+    int  newSpeedAdvanced, newSpeedLag;
     int* advancedM; // Адрес скорости обгоняющего колеса
     int* advancedMxA_k;      // Адрес коэффициента MxA_k, x=[1,2]
 
-    int *timeLagM;     // Адрес скорости отстающего колеса
-    int *timeLagMxA_k; // Адрес коэффициента MxA_k, x=[1,2]
+    int *speedLagM;     // Адрес скорости отстающего колеса
+    int *speedLagMxA_k; // Адрес коэффициента MxA_k, x=[1,2]
     int mxA, MxSpeed;  // encoder_A and speed
 
     if (posAm1 < posAm2){ // M1 is lag behind so correct M1 speed
 
-        timeLagM = &m1Speed;
-        timeLagMxA_k = &m1A_k;
+        speedLagM = &m1Speed;
+        speedLagMxA_k = &m1A_k;
 
         advancedM = &m2Speed; // М2 обгоняет
         advancedMxA_k = &m2A_k;       // коэфиициент MxA_k обгоняющего колеса.
@@ -172,8 +172,8 @@ void goToPID(){
     }
     if (posAm2 < posAm1) {// M2 is lag behind so correct M2 speed
 
-        timeLagM = &m2Speed;
-        timeLagMxA_k = &m2A_k;
+        speedLagM = &m2Speed;
+        speedLagMxA_k = &m2A_k;
 
         advancedM = &m1Speed; // М1 обгоняет
         advancedMxA_k = &m1A_k;
@@ -182,7 +182,7 @@ void goToPID(){
 
 //++++++++++++++ Отстающее колесо ускоряем
 
-//double delitel = (double)*timeLagMxA_k*TRC;
+//double delitel = (double)*speedLagMxA_k*TRC;
 //backlog = (double)(abs(diffAbsolute - encodersGAP))/delitel;
 
 // int target = encodersGAP;
@@ -199,7 +199,7 @@ void goToPID(){
 //  diffAbsolute = posAm1 - posAm2;
 //  diffRelative = diffAbsolute - diffRelative;
 
-if ((diffRelative <0) && !leaderIsChanged) { // slowdown the spped
+if ((diffRelative <0) && !leaderIsChanged) { // slowdown the speed, make it equal to default value
   leaderIsChanged = true;
   m1Speed = defaultMSpeed;
   m2Speed = defaultMSpeed;
@@ -215,9 +215,12 @@ if ((diffRelative > 0) && leaderIsChanged) {
 
 // calculate dt
 long currentT = micros();
+// get microseconds
 float deltaT = ((float)(currentT - prevT))/(1.0e6);
-mxA = *timeLagMxA_k;
-MxSpeed = *timeLagM;
+mxA = *speedLagMxA_k; // Отстающее колесо, число отсчетов на 1 оборот
+MxSpeed = *speedLagM;
+
+// E - ошибка в разнице отсчетов для М1 и М2 
 float  E = (float)abs(abs(posAm1 - posAm2) - encodersGAP)*(float)1/mxA*deltaT*((float)MxSpeed/(float)defaultMSpeed);
 
 str = "MxSpeed ";
@@ -243,20 +246,20 @@ Eprev = E;
 // Integral
 I = round(I + (float)E*deltaT);
 
-// newSpeedTimeLag = round((double)(*timeLagM)*(1+backlog)) + Kd*D;
+// newSpeedspeedLag = round((double)(*speedLagM)*(1+backlog)) + Kd*D;
 // mxA - число отсчетов энкодера за 1 оборот, а т.к. за время deltaT меньше 1 оборота (на скорости defaultMSpeed) 
-// То берм отношение 1с к deltaT, также скорость не всегда defaultMSpeed, поэтому берем отношение *timeLagM к defaultMSpeed
+// То берм отношение 1с к deltaT, также скорость не всегда defaultMSpeed, поэтому берем отношение *speedLagM к defaultMSpeed
 
-//Kp = (double)(1/mxA)*deltaT*(double)(*timeLagM/defaultMSpeed);
+//Kp = (double)(1/mxA)*deltaT*(double)(*speedLagM/defaultMSpeed);
 
 
-
-newSpeedTimeLag = round((float)Kp*E + (float)Ki*I + (float)Kd*dedt); // Это типа deltaSpeed ? Управляеющее воздействие...
+// Get new speed value, corrected by PID
+newSpeedLag = round((float)Kp*E + (float)Ki*I + (float)Kd*dedt); // Это типа deltaSpeed ? Управляеющее воздействие...
 // Увеличиваем для отстающего
-*timeLagM += newSpeedTimeLag;
+*speedLagM += newSpeedLag;
 
-str = "*timeLagM "; 
-str.concat(*timeLagM); str.concat(", ");
+str = "*speedLagM "; 
+str.concat(*speedLagM); str.concat(", ");
 str += "*advancedM "; str += String(*advancedM); str.concat(", ");
 str += "dedt ";
 str.concat(String(dedt,4)); //str.concat(", ");
@@ -279,8 +282,8 @@ md.setM2Speed(m2Speed);
 str = "dedt ";
 str.concat(String(dedt,4)); str.concat(", ");
 
-str += "timeLagMxA_k ";
-str += String(*timeLagMxA_k); str.concat(", ");
+str += "speedLagMxA_k ";
+str += String(*speedLagMxA_k); str.concat(", ");
 str += "advancedMxA_k ";
 str += String(*advancedMxA_k); str.concat(", ");
 

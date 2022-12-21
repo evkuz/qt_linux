@@ -115,7 +115,7 @@ void stopIfFault()
 volatile int diameter; // 90mm
 volatile int m1A_count, m1B_Count, m2A_count, m2B_count;
 volatile double m1_count, m2_count;
-volatile int m1A_k, m1B_k, m2A_k, m2B_k;
+volatile int m1A_k, m1B_k, m2A_k, m2B_k; // число отсчетов энкодера на 1 оборот колеса. Здесь k - коэффициент
 volatile int  smooth_speed;
 
 volatile int encodersGAP;  // Это порог разницы в показаниях энкодеров, при превышении - запускаем ПИД
@@ -167,7 +167,7 @@ void setup()
 
 //+++++++++++++++++++++++++++++++ set up PID data
 
-  encodersGAP = 20;
+  encodersGAP = 20; // Порог разницы в показаниях энкодеров. Надо переделать в encodersGapEdge
   prevT = 0;
   Eprev = 0.0;
   I = 0;
