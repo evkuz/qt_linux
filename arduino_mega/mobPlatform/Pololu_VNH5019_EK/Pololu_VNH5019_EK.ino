@@ -92,7 +92,7 @@ void messageCb(std_msgs::String& mobplatCommand){
   // Взять аргументы у команды
 }  
 
-ros::Subscriber<std_msgs::String> sub("mobplatform", &messageCb );
+ros::Subscriber<std_msgs::String> sub("mobplatform", &messageCb);
 
 int numRot; // Число оборотов колеса
 
@@ -177,7 +177,7 @@ void setup()
 //+++++++++++++++++++++++++++++++ END of set up PID data
 
 
-  Serial.begin(115200);
+  Serial.begin(57600);
   Serial.println("Dual VNH5019 Motor Shield");
   md.init();
   
@@ -263,43 +263,46 @@ if (currCommand == "faster") {
   currCommand = prevCommand; // Только скорость поменяли.
   }
 
-if (currCommand.startsWith("mkrotation")) { //make 5 rotations of any of 2 wheels
-  if (!resetDone){
-            // set prevT as current, strting time
-      prevT = micros();
-      Eprev = 0.0;
-
-      //reset_All(); // reset to zero all counters
-      posAm1 = 0;
-      posBm1 = 0;
-      posAm2 = 0;
-      posBm2 = 0;
-      m1_count = 0.0;
-      m2_count = 0.0;
-      String numOfRotations = currCommand.substring(11);
-
-      resetDone = true;
-      startTime = millis();
-      
-      write2chatter(numOfRotations);
-      numRot = numOfRotations.toInt();
-
-      // Start motors
-      md.setM1Speed(m1Speed);
-      md.setM2Speed(m2Speed);
-
-
-
-  }
+//if (currCommand.startsWith("mkrotation")) { //make some rotations of any of 2 wheels
+//  if (!resetDone){
+//            // set prevT as current, strting time
+//      prevT = micros();
+//      Eprev = 0.0;
+//
+//      //reset_All(); // reset to zero all counters
+//      posAm1 = 0;
+//      posBm1 = 0;
+//      posAm2 = 0;
+//      posBm2 = 0;
+//      m1_count = 0.0;
+//      m2_count = 0.0;
+//      String numOfRotations = currCommand.substring(11);
+//
+//      resetDone = true;
+//      startTime = millis();
+//
+//      str = "Number of rotations is ";  str.concat(numOfRotations);
+//      
+//      //write2chatter(numOfRotations);
+//      write2chatter(str);
+//      numRot = numOfRotations.toInt();
+//
+//      // Start motors
+//      md.setM1Speed(m1Speed);
+//      md.setM2Speed(m2Speed);
+//
+//
+//
+//  }
   
   
-  if (makeRotation(numRot) == 0){  // all counters should be reset to zero in advance (before going to function makeRotations)
-     resetDone = false;
-     currCommand = "waiting"; // just output values and wait for rotations number has been reached
-
-  }
+//  if (makeRotation(numRot) == 0){  // all counters should be reset to zero in advance (before going to function makeRotations)
+//     resetDone = false;
+//     currCommand = "waiting"; // just output values and wait for rotations number has been reached
+//
+//  }
   // else currCommand = "mkrotation";
-}
+//}
 
 //+++++++++++++++++++++++++++++++++++++
   if (currCommand.startsWith("setspeedM1")) {
@@ -326,7 +329,7 @@ if (currCommand.startsWith("mkrotation")) { //make 5 rotations of any of 2 wheel
 
 
           
-//  delay(1);
+  delay(10);
 
 } // loop
 //++++++++++++++++++++++++++++++++++++++++++++
@@ -335,14 +338,57 @@ ISR(TIMER1_COMPA_vect)
 // Считываем значения энкодеров, выводим в serial port
 // Вычисляем разницу в данных энкодеров для дальнейшего принятия решения об
 // изменении скорости моторов
-  getValues(); // итак выводится в loop
+//  getValues(); // итак выводится в loop
 
 // А потом будем ПИД запускать
 if (currCommand.startsWith("mkrotation")){
+  str = "I'm in Timer ISR function";
+  write2chatter(str);
+  
+  if (!resetDone){
+            // set prevT as current, strting time
+      prevT = micros();
+      Eprev = 0.0;
 
-    goToPID();
+      //reset_All(); // reset to zero all counters
+      posAm1 = 0;
+      posBm1 = 0;
+      posAm2 = 0;
+      posBm2 = 0;
+      m1_count = 0.0;
+      m2_count = 0.0;
+      String numOfRotations = currCommand.substring(11);
+
+      resetDone = true;
+      startTime = millis();
+
+      str = "Number of rotations is ";  str.concat(numOfRotations);
+      
+      //write2chatter(numOfRotations);
+      write2chatter(str);
+      numRot = numOfRotations.toInt();
+
+      // Start motors
+      md.setM1Speed(m1Speed);
+      md.setM2Speed(m2Speed);
+  }
+
  
+  
+    if (makeRotation(numRot) == 0){  // all counters should be reset to zero in advance (before going to function makeRotations)
+     resetDone = false;
+     currCommand = "waiting"; // just output values and wait for rotations number has been reached
+
+    }
+    else {
+      goToPID();
+    } 
+    
  } // if (currCommand.startsWith("mkrotation")){
+
+  str = "Finish of Timer ISR function";
+  write2chatter(str);
+
 
 } // ISR(TIMER1_COMPA_vect)
 //++++++++++++++++++++++++++++++++++++++++++++
@@ -378,17 +424,16 @@ void parse_command_0 ()
       Serial.println(mSpeed);
       speedVal = mSpeed.toInt();
       
-      if (strData.charAt(1)=="1"){
-           md.setM1Speed(speedVal);
-           m1Speed = speedVal;
-           stopIfFault();
-      }
-
-      if (strData.charAt(1)=="2"){
-           md.setM2Speed(speedVal);
-           m2Speed = speedVal;
-           stopIfFault();
-      }
+//      if (strData.charAt(1)=="1"){
+//           md.setM1Speed(speedVal);
+//           m1Speed = speedVal;
+//      }
+//
+//      if (strData.charAt(1)=="2"){
+//           md.setM2Speed(speedVal);
+//           m2Speed = speedVal;
+//           stopIfFault();
+//      }
 
 
       //}

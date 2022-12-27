@@ -34,6 +34,37 @@
  * rostopic echo /encoders | tee encoders.txt
  * 
  * //+++++++++++++++++++++++++++++++++++++++++++++++
+ * 27.12.2022
+ * 
+ * Ф-ция mkrotation() и ф-ция goToPID() вместе мешают друг другу.
+ * mkrortaion(число_оборотов) вызывается в loop(), проверяет текушие значения энкодеров и по ним определяет, достигнуто ли нужное число оборотов.
+ * Если достигнуто - возвращает 0, если еще нет, то 1.
+ * 
+ * goToPID() вызывается по прерыванию таймера, сверяет разницу в показаниях энкодеров и через PID-регулировку меняет значения скоростей.
+ * И вот эти две ф-ции мешают жить друг другу :)
+ * 
+ * Убрал вызов mkrotation() из loop(), поместил их обе в ISR (Interrupt Service Routine)
+ * 
+ * Теперь вижу, что заходит в goToPID(), выполняет все действия, выходит из goToPID(), выходит из ISR и на этом связь по Serial Port отваливается.
+ * Как вариант разобраться с предупреждениями компилятора
+ * 
+ * /home/nvidia/Arduino/Pololu_VNH5019_EK/Pololu_VNH5019_EK.ino:95:63: warning: invalid conversion 
+ * from 'void (*)(std_msgs::String)' to 
+ * 'ros::Subscriber<std_msgs::String>::CallbackT {aka void (*)(const std_msgs::String&)}' [-fpermissive]
+ ros::Subscriber<std_msgs::String> sub("mobplatform", messageCb);
+                                                               ^
+In file included from /home/nvidia/Arduino/libraries/ros_lib/ros/node_handle.h:60:0,
+                 from /home/nvidia/Arduino/libraries/ros_lib/ros.h:38,
+                 from /home/nvidia/Arduino/Pololu_VNH5019_EK/Pololu_VNH5019_EK.ino:6:
+/home/nvidia/Arduino/libraries/ros_lib/ros/subscriber.h:107:3: note:   initializing argument 2 of 'ros::Subscriber<MsgT, void>::Subscriber(const char*, ros::Subscriber<MsgT, void>::CallbackT, int) [with MsgT = std_msgs::String; ros::Subscriber<MsgT, void>::CallbackT = void (*)(const std_msgs::String&)]'
+   Subscriber(const char * topic_name, CallbackT cb, int endpoint = rosserial_msgs::TopicInfo::ID_SUBSCRIBER) :
+   ^~~~~~~~~~
+
+   
+ * 
+ * nh.spinOnce(); ???
+ * 
+ * //+++++++++++++++++++++++++++++++++++++++++++++++
  * 21.12.2022
  *  Формула рассчета ошибки Е в числе оборотов колеса должна быть безразмерна, а у меня она получается размерностью 1/с, хотя может быть сверху
  *  стоит 1с - примерное время одного оборота колеса НА СКОРОСТИ ПО УМОЛЧАНИЮ, тогда все будет правильно, безразмерная величина.

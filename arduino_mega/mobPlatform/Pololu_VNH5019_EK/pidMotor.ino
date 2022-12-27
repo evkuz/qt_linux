@@ -60,6 +60,9 @@ int makeRotation(int rotationNum)
   int diff;
   double m_count;
 
+  str = "I'm in makeRotation() !";
+  write2chatter(str);
+
   if (rotationNum == 0) {return 0;}
 
   if (rotationNum < 0) {
@@ -118,19 +121,16 @@ int makeRotation(int rotationNum)
     str += "M2speed "; str.concat(m2Speed); //str += ", ";
 
     write2chatter(str);
-// Цикл вращений завершили, вовзращаем значения скорости в исходное.
-//    if (diff <= encodersGAP) {
 
-//    }
     Eprev = 0;
     prevT = 0;
     
-    m1Speed = defaultMSpeed;
-    m2Speed = defaultMSpeed;
-    str = "M1speed updated on finish "; str.concat(m1Speed); str += ", ";
-    str += "M2speed updated on finish "; str.concat(m2Speed);// str += ", ";
-
-    write2chatter(str);
+//    m1Speed = defaultMSpeed;
+//    m2Speed = defaultMSpeed;
+//    str = "M1speed updated on finish "; str.concat(m1Speed); str += ", ";
+//    str += "M2speed updated on finish "; str.concat(m2Speed);// str += ", ";
+//
+//    write2chatter(str);
 
 
     return 0;
@@ -144,39 +144,42 @@ int makeRotation(int rotationNum)
 // ОТстающее - ускоряем, обгоняющее - замедляем
 
 void goToPID(){
+  str = "I'm in PID-function !";
+  write2chatter(str);
   double backlog, advanced ;
   double Derror, DprevError;
   double Kp, Ki, Kd;
 
-    Kp = 1000.0; // В единицах скорости(сила тока)
+    Kp = 100.0; // В единицах скорости(сила тока)
     Ki = 1.0;
     Kd = 0.25;
 
-    int  newSpeedAdvanced, newSpeedLag;
+   int  newSpeedAdvanced, newSpeedLag;
+   
     int* advancedM; // Адрес скорости обгоняющего колеса
     int* advancedMxA_k;      // Адрес коэффициента MxA_k, x=[1,2]
 
-    int *speedLagM;     // Адрес скорости отстающего колеса
-    int *speedLagMxA_k; // Адрес коэффициента MxA_k, x=[1,2]
-    int mxA, MxSpeed;  // encoder_A and speed
+   volatile int *speedLagM;     // Адрес скорости отстающего колеса
+   volatile int *speedLagMxA_k; // Адрес коэффициента MxA_k, x=[1,2]
+   volatile int mxA, MxSpeed;  // encoder_A and speed
 
     if (posAm1 < posAm2){ // M1 is lag behind so correct M1 speed
 
-        speedLagM = &m1Speed;
-        speedLagMxA_k = &m1A_k;
+        *speedLagM = m1Speed;
+        *speedLagMxA_k = m1A_k;
 
-        advancedM = &m2Speed; // М2 обгоняет
-        advancedMxA_k = &m2A_k;       // коэфиициент MxA_k обгоняющего колеса.
+        *advancedM = m2Speed; // М2 обгоняет
+        *advancedMxA_k = m2A_k;       // коэфиициент MxA_k обгоняющего колеса.
 
 
     }
     if (posAm2 < posAm1) {// M2 is lag behind so correct M2 speed
 
-        speedLagM = &m2Speed;
-        speedLagMxA_k = &m2A_k;
+        *speedLagM = m2Speed;
+        *speedLagMxA_k = m2A_k;
 
-        advancedM = &m1Speed; // М1 обгоняет
-        advancedMxA_k = &m1A_k;
+        *advancedM = m1Speed; // М1 обгоняет
+        *advancedMxA_k = m1A_k;
 
     }
 
@@ -221,7 +224,10 @@ mxA = *speedLagMxA_k; // Отстающее колесо, число отсче�
 MxSpeed = *speedLagM;
 
 // E - ошибка в разнице отсчетов для М1 и М2 
-float  E = (float)abs(abs(posAm1 - posAm2) - encodersGAP)*(float)1/mxA*deltaT*((float)MxSpeed/(float)defaultMSpeed);
+// float  E = (float)abs(abs(posAm1 - posAm2) - encodersGAP)*(float)1/mxA*deltaT*((float)MxSpeed/(float)defaultMSpeed);
+
+// Немного упростим
+float  E = (float)abs(abs(posAm1 - posAm2) - encodersGAP)/(float)mxA;
 
 str = "MxSpeed ";
 str += String(MxSpeed); str += ", ";
@@ -253,18 +259,50 @@ I = round(I + (float)E*deltaT);
 //Kp = (double)(1/mxA)*deltaT*(double)(*speedLagM/defaultMSpeed);
 
 
-// Get new speed value, corrected by PID
+// Get new speed value, corrected by PID, as u(t)
+// Управляющее воздействие в нашем случае - скорость.
 newSpeedLag = round((float)Kp*E + (float)Ki*I + (float)Kd*dedt); // Это типа deltaSpeed ? Управляеющее воздействие...
-// Увеличиваем для отстающего
-*speedLagM += newSpeedLag;
 
-str = "*speedLagM "; 
-str.concat(*speedLagM); str.concat(", ");
-str += "*advancedM "; str += String(*advancedM); str.concat(", ");
-str += "dedt ";
-str.concat(String(dedt,4)); //str.concat(", ");
+str = "float Kp*E=";
+str += String((float)Kp*E,4); str+=", ";
+write2chatter(str);
+
+str = "float Ki*I=";
+str += String((float)Ki*I,4); str+=", ";
+write2chatter(str);
+
+
+str = "float Kd*dedt=";
+str += String((float)Kd*dedt,4) ;
 
 write2chatter(str);
+
+str = "newSpeedLag = ";
+str += String(newSpeedLag);
+write2chatter(str);
+
+int qqq = *speedLagM;
+// Увеличиваем для отстающего
+str = "*speedLagM before PID = ";
+str += String(qqq); //str+=", ";
+write2chatter(str);
+
+
+*speedLagM = MxSpeed + newSpeedLag;// и вот тут у нас НУЛЬ !
+qqq = *speedLagM;
+str = "*speedLagM AFTER PID = ";
+str += String(qqq); //str+=", ";
+write2chatter(str);
+
+//*speedLagM += newSpeedLag;// и вот тут у нас НУЛЬ !
+//
+//str = "Updated *speedLagM "; 
+//str += String(*speedLagM); str+=", ";
+//str += "*advancedM "; str += String(*advancedM); str.concat(", ");
+//str += "dedt ";
+//str.concat(String(dedt,4)); //str.concat(", ");
+//
+//write2chatter(str);
 
 
 // Это вообще убрать
@@ -299,9 +337,11 @@ write2chatter(str);
 //str.concat(String(D,4)); str.concat(", ");
 //write2chatter(str);
 //
-str = "M1speed "; str.concat(m1Speed); str += ", ";
-str += "M2speed "; str.concat(m2Speed);// str += ", ";
 
+//str = "M1speed "; str.concat(m1Speed); str += ", ";
+//str += "M2speed "; str.concat(m2Speed);// str += ", ";
+
+str = "END of goToPID()";
 write2chatter(str);
 
 } // goToPID
