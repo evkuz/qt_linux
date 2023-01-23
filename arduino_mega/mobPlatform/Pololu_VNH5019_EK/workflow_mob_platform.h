@@ -60,6 +60,9 @@ In file included from /home/nvidia/Arduino/libraries/ros_lib/ros/node_handle.h:6
    Subscriber(const char * topic_name, CallbackT cb, int endpoint = rosserial_msgs::TopicInfo::ID_SUBSCRIBER) :
    ^~~~~~~~~~
 
+Смотрим ros tutorial 
+http://wiki.ros.org/ROS/Tutorials/WritingPublisherSubscriber(c++)
+
    
  * 
  * nh.spinOnce(); ???
