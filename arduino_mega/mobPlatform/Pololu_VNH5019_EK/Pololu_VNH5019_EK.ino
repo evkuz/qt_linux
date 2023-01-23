@@ -177,7 +177,7 @@ void setup()
 //+++++++++++++++++++++++++++++++ END of set up PID data
 
 
-  Serial.begin(57600);
+  Serial.begin(57600); // Модуль в ROS запускается только на этой скорости
   Serial.println("Dual VNH5019 Motor Shield");
   md.init();
   
