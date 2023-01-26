@@ -131,7 +131,10 @@ volatile double TRC = (double)1/timerPerRotation; // timer/rotation coefficient 
 volatile long prevT; // for delta t counting
 volatile float Eprev; // for delta Error counting
 
-boolean leaderIsChanged; // Флаг смены отстающего колеса на ведущее. Если М1_А > M2_A leaderIsChanged == false
+boolean isSomeOneLeading; // Флаг смены отстающего колеса на ведущее. Если М1_А > M2_A isSomeOneLeading == false, т.к. обычно М1 крутится быстрее М2
+                         // Если отстающее колесо обгоняет ведущее, то значит меняем их статусы на противоположные.
+                         // При этом скорость колес будет нарастать.
+                         // Значит скорость сбрасываем, когда разница в показаниях меньше GAP
 
 //+++++++++++++++++++++++++++++++
 
@@ -176,7 +179,7 @@ void setup()
   Eprev = 0.0;
   I = 0;
   D = 0;
-  leaderIsChanged = false;
+  isSomeOneLeading = false;
 
 //+++++++++++++++++++++++++++++++ END of set up PID data
 
@@ -363,9 +366,10 @@ write2chatter(str);
 
 int currentDelta = abs(abs(posAm1 - posAm2) - encodersGAP);
 
-if (currentDelta > encodersGAPdelta){
+if (currentDelta > encodersGAPdelta){ // Отставание большое, включаем ПИД
+    isSomeOneLeading = true;
+    goToPID();
 
-  goToPID();
 }
 
 // А потом будем ПИД запускать

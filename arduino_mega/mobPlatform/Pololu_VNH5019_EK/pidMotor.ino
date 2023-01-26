@@ -154,7 +154,7 @@ void goToPID(){
   double Derror, DprevError;
   double Kp, Ki, Kd;
 
-    Kp = 20.0; // В единицах скорости(сила тока)
+    Kp = 10.0; // В единицах скорости(сила тока)
     Ki = 1.0;
     Kd = 0.25;
 
@@ -203,21 +203,18 @@ void goToPID(){
 
  // Если < 0 то, пора замедляться...
 
-  diffAbsolute = posAm1 - posAm2;
+  diffAbsolute = abs(posAm1 - posAm2);
   diffRelative = diffAbsolute - encodersGAP;
 
-if ((diffRelative <0) && !leaderIsChanged) { // slowdown the speed, make it equal to default value
-  leaderIsChanged = true;
+
+//
+if ((diffAbsolute < encodersGAP) && isSomeOneLeading) { // Уже догнали, slowdown the speed, make it equal to default value
+  isSomeOneLeading = false;
   m1Speed = defaultMSpeed;
   m2Speed = defaultMSpeed;
   
   }
-if ((diffRelative > 0) && leaderIsChanged) {
-  leaderIsChanged = false;
-  m1Speed = defaultMSpeed;
-  m2Speed = defaultMSpeed;
 
-  }
 
 
 // calculate dt
@@ -307,7 +304,7 @@ str += "m2Speed ";
 str += String(m2Speed); 
 write2chatter(str);
 
-if ((abs)(m1Speed - m2Speed) > 50){ 
+if ((abs)(m1Speed - m2Speed) > 100){
    m1Speed = defaultMSpeed;
    m2Speed = defaultMSpeed;
    str = "!!! Speed values aligned !!!";
