@@ -35,8 +35,8 @@ volatile long intM1counter = 0;
 volatile long intM2counter = 0;
 volatile long intM2Bcounter = 0;
 
-volatile long diffAbsolute = 0;
-volatile long diffRelative = 0;
+volatile long diffAbsolute = 0; // Абсолютная разница в энкодерах 1-го и 2го колеса 
+volatile long diffRelative = 0; // Относительная разница(относительно предыдущих показаний) в энкодерах 1-го и 2-го колеса.
 
 volatile unsigned long startTime;
 volatile unsigned long finTime;
@@ -71,10 +71,11 @@ volatile int m2Speed = defaultMSpeed;
 bool advancingWheel_1; // Ведущее колесо, если true - ведущее 1-е колесо, иначе - 2е колесо.
 
 volatile bool resetDone = false;
+bool startFlag = false;
 
 int str_len;
 
-ros::NodeHandle  nh;
+ros::NodeHandle_ <ArduinoHardware, 1, 1, 1024, 1024>  nh;
 std_msgs::String str_msg;
 ros::Publisher chatter("encoders", &str_msg);
 
@@ -119,6 +120,7 @@ volatile int m1A_k, m1B_k, m2A_k, m2B_k; // число отсчетов энко
 volatile int  smooth_speed;
 
 volatile int encodersGAP;  // Это порог разницы в показаниях энкодеров, при превышении - запускаем ПИД
+int encodersGAPdelta ; // Величина превышения порога
 
 //+++++++++++++++++++++++++++++++++++++++++ PID variables +++++++++++++++++++
 // volatile double Kp, Ki, Kd;
@@ -167,8 +169,10 @@ void setup()
 
 //+++++++++++++++++++++++++++++++ set up PID data
 
-  encodersGAP = 20; // Порог разницы в показаниях энкодеров. Надо переделать в encodersGapEdge
-  prevT = 0;
+  encodersGAP = 20; // Примерная разница в показаниях энкодеров на 1 оборот колеса. Надо переделать в encodersGapEdge
+  encodersGAPdelta = 50;  // Разница  в показаниях, после которой запускаем ПИД
+  
+  prevT = micros();
   Eprev = 0.0;
   I = 0;
   D = 0;
@@ -177,7 +181,7 @@ void setup()
 //+++++++++++++++++++++++++++++++ END of set up PID data
 
 
-  Serial.begin(57600);
+  Serial.begin(57600); // Serial Speed, default baud rate for rosserial_python
   Serial.println("Dual VNH5019 Motor Shield");
   md.init();
   
@@ -197,6 +201,7 @@ void setup()
 void loop()
 {
   nh.spinOnce();
+//  goToPID();
 
 //  checkReset();
   
@@ -206,6 +211,16 @@ void loop()
 //
   if (currCommand == "start") {
       //forward(1);
+      // But first reset all counters on first entrance
+      if (!startFlag) {
+      posAm1 = 0;
+      posBm1 = 0;
+      posAm2 = 0;
+      posBm2 = 0;
+
+      startFlag = true;
+      }
+
       movingOn(1);
       
   }
@@ -263,7 +278,7 @@ if (currCommand == "faster") {
   currCommand = prevCommand; // Только скорость поменяли.
   }
 
-//if (currCommand.startsWith("mkrotation")) { //make some rotations of any of 2 wheels
+// if (currCommand.startsWith("mkrotation")) { //make some rotations of any of 2 wheels
 //  if (!resetDone){
 //            // set prevT as current, strting time
 //      prevT = micros();
@@ -340,11 +355,22 @@ ISR(TIMER1_COMPA_vect)
 // изменении скорости моторов
 //  getValues(); // итак выводится в loop
 
+str = "posAm1=" ; 
+str += String(posAm1); str += ", ";
+str += "posAm2=" ; 
+str += String(posAm2); str += ", ";
+write2chatter(str);
+
+int currentDelta = abs(abs(posAm1 - posAm2) - encodersGAP);
+
+if (currentDelta > encodersGAPdelta){
+
+  goToPID();
+}
+
 // А потом будем ПИД запускать
-if (currCommand.startsWith("mkrotation")){
-  str = "I'm in Timer ISR function";
-  write2chatter(str);
-  
+if (currCommand.startsWith("start")){
+//  
   if (!resetDone){
             // set prevT as current, strting time
       prevT = micros();
@@ -357,37 +383,40 @@ if (currCommand.startsWith("mkrotation")){
       posBm2 = 0;
       m1_count = 0.0;
       m2_count = 0.0;
-      String numOfRotations = currCommand.substring(11);
+//      String numOfRotations = currCommand.substring(11);
 
       resetDone = true;
       startTime = millis();
 
-      str = "Number of rotations is ";  str.concat(numOfRotations);
+//      str = "Number of rotations is ";  str.concat(numOfRotations);
       
       //write2chatter(numOfRotations);
-      write2chatter(str);
-      numRot = numOfRotations.toInt();
+//      write2chatter(str);
+//      numRot = numOfRotations.toInt();
 
       // Start motors
       md.setM1Speed(m1Speed);
       md.setM2Speed(m2Speed);
-  }
+  } //if (!resetDone)
 
  
-  
-    if (makeRotation(numRot) == 0){  // all counters should be reset to zero in advance (before going to function makeRotations)
-     resetDone = false;
-     currCommand = "waiting"; // just output values and wait for rotations number has been reached
+  // Запускаем вращени колес на заданное количество оборотов
 
-    }
-    else {
-      goToPID();
-    } 
+//    if (makeRotation(numRot) == 0){  // all counters should be reset to zero in advance (before going to function makeRotations)
+//     resetDone = false;
+//     currCommand = "waiting"; // just output values and wait for rotations number has been reached
+//
+//    }
+//    else {
+      md.setM1Speed(m1Speed);
+      md.setM2Speed(m1Speed);
+ //     goToPID();
+//    } 
     
  } // if (currCommand.startsWith("mkrotation")){
 
-  str = "Finish of Timer ISR function";
-  write2chatter(str);
+//  str = "Finish of Timer ISR function";
+//  write2chatter(str);
 
 
 } // ISR(TIMER1_COMPA_vect)
@@ -515,6 +544,15 @@ void movingOn (int fwd){
   stopIfFault();
   md.setM2Speed(fwd*m2Speed);
   stopIfFault();
+
+//  str = "M1speed ";
+//  str += String(m1Speed);  str += " ";
+//  
+//  str += "M2speed ";
+//  str += String(m2Speed);  str += " ";
+//
+//  write2chatter(str);
+
   
   } // movingOn
 //+++++++++++++++++++++++++++++++++++++++++++++++++
