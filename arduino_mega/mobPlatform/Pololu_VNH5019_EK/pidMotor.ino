@@ -172,8 +172,8 @@ void goToPID(){
         speedLagM = &m1Speed;
         *speedLagMxA_k = m1A_k;
 
-        *advancedM = m2Speed; // М2 обгоняет
-        *advancedMxA_k = m2A_k;       // коэфиициент MxA_k обгоняющего колеса.
+//        *advancedM = m2Speed; // М2 обгоняет
+//        *advancedMxA_k = m2A_k;       // коэфиициент MxA_k обгоняющего колеса.
 
 
     }
@@ -182,8 +182,8 @@ void goToPID(){
         speedLagM = &m2Speed;
         *speedLagMxA_k = m2A_k;
 
-        *advancedM = m1Speed; // М1 обгоняет
-        *advancedMxA_k = m1A_k;
+//        *advancedM = m1Speed; // М1 обгоняет
+//        *advancedMxA_k = m1A_k;
 
     }
 
@@ -207,12 +207,13 @@ void goToPID(){
   diffRelative = diffAbsolute - encodersGAP;
 
 
-//
+// Разница в энкодерах незначительная, поэтому сбрасываем значения скоростей обоих колес до начального.
+// И выходим !!! Не нужно ПИД запускать.
 if ((diffAbsolute < encodersGAP) && isSomeOneLeading) { // Уже догнали, slowdown the speed, make it equal to default value
   isSomeOneLeading = false;
   m1Speed = defaultMSpeed;
   m2Speed = defaultMSpeed;
-  
+  return;
   }
 
 
@@ -220,7 +221,11 @@ if ((diffAbsolute < encodersGAP) && isSomeOneLeading) { // Уже догнали
 // calculate dt
 long currentT = micros();
 // get microseconds
+
+// Микросекунды делим на 1.0e6, получаем секунды.
+// Иногда значения получаются отрицательные... счетчик переполнился ? 
 float deltaT = ((float)(currentT - prevT))/(1.0e6);
+
 mxA = *speedLagMxA_k; // Отстающее колесо, число отсчетов на 1 оборот
 MxSpeed = *speedLagM;
 
@@ -230,17 +235,25 @@ MxSpeed = *speedLagM;
 // Немного упростим
 float  E = (float)abs(abs(posAm1 - posAm2) - encodersGAP)/(float)mxA;
 
-//str = "MxSpeed ";
-//str += String(MxSpeed); str += ", ";
-//str += "deltaT ";
-//str += String(deltaT,4); str += ", ";
+// I-составляющая
+I = round(I + (float)E*deltaT);
 
-//str = "E = ";
-//str += String(E,4);
-//str.concat(", ");
+str = "MxSpeed ";
+str += String(MxSpeed); str += ", ";
+
+str += "deltaT(us)=";
+str += String(deltaT,4); str += ", ";
+
+str += "E = ";
+str += String(E,4); str += ", ";
 //write2chatter(str);
 
 //if (E < encodersGAP) {return;}
+str += "I=";
+str += String(I); //str+=", ";
+
+write2chatter(str);
+
 
 
 prevT = currentT;
@@ -253,7 +266,7 @@ float dedt = (E - Eprev)/deltaT;
 Eprev = E;
 
 // Integral
-I = round(I + (float)E*deltaT);
+
 
 // newSpeedspeedLag = round((double)(*speedLagM)*(1+backlog)) + Kd*D;
 // mxA - число отсчетов энкодера за 1 оборот, а т.к. за время deltaT меньше 1 оборота (на скорости defaultMSpeed) 
@@ -268,8 +281,22 @@ I = round(I + (float)E*deltaT);
 newSpeedLag = round((float)Kp*E + (float)Ki*I + (float)Kd*dedt); // Это типа deltaSpeed ? Управляеющее воздействие...
 
 float aaa = (float)Kp*E;
-str = "float Kp*E=";
-str += String(aaa,4); str+=", ";
+//str = "Kp*E=";
+//str += String(aaa,4); str+=", ";
+//
+//aaa = (float)E*deltaT;
+//str += "E*deltaT=";
+//str += String(aaa,4); str+=", ";
+//
+//
+//aaa = (float)Kd*dedt;
+//str += "Kd*dedt=";
+//str += String(aaa,4); str+=", ";
+
+
+
+
+
 // write2chatter(str);
 
 //str = "float Ki*I=";
@@ -282,7 +309,7 @@ str += String(aaa,4); str+=", ";
 //
 //write2chatter(str);
 
-str += "PID(u)==newSpeedLag = ";
+str = "PID(u)==newSpeedLag = ";
 str += String(newSpeedLag);
 write2chatter(str);
 

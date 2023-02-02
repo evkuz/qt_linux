@@ -87,4 +87,7 @@ void reset_All()
   posBm2 = 0;
   m1_count = 0.0;
   m2_count = 0.0;
+  m1Speed = defaultMSpeed;
+  m2Speed = defaultMSpeed;
+
   }
