@@ -10,6 +10,8 @@
                                    "isAttached?"};
 //                                       17
 
+ // setservos=45,90,95,107
+
  /*
   *  Data races sources   *  MainProcess::Data_From_TcpClient_Slot()
   *
@@ -17,7 +19,12 @@
   *  Это объект QSocketThread
   *
   *
-  *
+  *     QJsonObject json = doc.object();
+        foreach(const QString& key, json.keys()) {
+        QJsonValue value = json.value(key);
+        qDebug() << "Key = " << key << ", Value = " << value.toString();
+    }
+
   *
   *
   *
@@ -110,6 +117,83 @@
 
             jsnStore->setJsnHeadStatus(headStatus);
 
+        N1=захват
+    distance, mm	Servos [N1, N2, N3, N4]
+    156	45,90,82,117
+    147	45,90,78,119
+    169	45,90,87,112
+    187	45,90,90,109
+    196	45,90,100,102
+    204	45,90,107,98
+    214	45,90,114,93
+    225	45,90,125,86
+    239	45,90,132,83
+    249	45,90,145,72
+
+    N1=45, N2=90
+    156,82,117
+    147,78,119
+    169,87,112
+    187,90,109
+    196,100,102
+    204,107,98
+    214,114,93
+    225,125,86
+    239,132,83
+    249,145,72
+
+// значения из массивов mob_pos_xx
+43:502 > 0xa9b9: I'm in GetBox !!! Current distance is 192.392
+43:502 > 0xa9b9: N3 absolute delta <N3_Delta> is 5; N4 absolute delta <N4_Delta> is 5
+43:502 > 0xa9b9: Distance delta <distance_delta> is 10
+43:502 > 0xa9b9: Relation of distance delta_min to delta <delta> is 0.239172
+43:502 > 0xa9b9: N3 servo delta <N3> is 1.19586; N4 servo delta <N4> is 1.19586
+43:503 > 0xa9b9: from <previous>  Servo 3 <N3> is 136.196; from <previous>  Servo 4 <N4 >is 53.8041
+43:503 > 0xa9b9: from <previous>  Servo 3 as integer is 136; from <previous>  Servo 4 as integer is 54
+43:503 > 0xa9b9: Servo 3 as unsigned char is 136; Servo 4 as as unsigned char is 54
+43:503 > 0xf002: To Robot: 35, 90, 136, 54, 49, 200,
+43:503 > 0xf002: To Robot: 87, 90, 136, 54, 49, 200,
+43:504 > 0xf002: To Robot: 87, 90, 57, 180, 49, 222,
+46:595 > 0xf001: There are 32 bytes from robot to read
+46:595 > 0xf001: From Robot : Robot' current movement is DONE!
+46:595 > 0xf001: Robot finished A STEP from queued commands
+48:132 > 0xf001: There are 32 bytes from robot to read
+48:132 > 0xf001: From Robot : Robot' current movement is DONE!
+48:132 > 0xf001: Robot finished A STEP from queued commands
+51:226 > 0xf001: There are 32 bytes from robot to read
+51:226 > 0xf001: From Robot : Robot movement finished the LAST
+51:227 > 0xf001: Robot TOTALLY finished complex command
+51:632 > 0xf002: To Robot: 87, 90, 57, 180, 49, 222,
+52:64 > 0xf001: There are 32 bytes from robot to read
+52:64 > 0xf001: From Robot : Robot movement finished the LAST
+52:641 > 0xf001: Robot TOTALLY finished complex command
+
+
+mob_2_pos_xx
+29:249 > 0xa9b9: I'm in GetBox !!! Current distance is 192.053
+29:25 > 0xa9b9: N3 absolute delta <N3_Delta> is 10; N4 absolute delta <N4_Delta> is 4
+29:25 > 0xa9b9: Distance delta <distance_delta> is 7.94731
+29:25 > 0xa9b9: Relation of distance delta_min to delta <delta> is 0.258287
+29:25 > 0xa9b9: N3 servo delta <N3> is 2.58287; N4 servo delta <N4> is 1.03315
+29:25 > 0xa9b9: from <previous>  Servo 3 <N3> is 137.583; from <previous>  Servo 4 <N4 >is 48.9669
+29:25 > 0xa9b9: from <previous>  Servo 3 as integer is 138; from <previous>  Servo 4 as integer is 49
+29:25 > 0xa9b9: Servo 3 as unsigned char is 138; Servo 4 as as unsigned char is 49
+29:25 > 0xf002: To Robot: 35, 90, 138, 49, 49, 200,
+29:251 > 0xf002: To Robot: 87, 90, 138, 49, 49, 200,
+29:251 > 0xf002: To Robot: 87, 90, 57, 180, 49, 222,
+32:411 > 0xf001: There are 32 bytes from robot to read
+32:411 > 0xf001: From Robot : Robot' current movement is DONE!
+32:412 > 0xf001: Robot finished A STEP from queued commands
+33:947 > 0xf001: There are 32 bytes from robot to read
+33:948 > 0xf001: From Robot : Robot' current movement is DONE!
+33:948 > 0xf001: Robot finished A STEP from queued commands
+37:113 > 0xf001: There are 32 bytes from robot to read
+37:114 > 0xf001: From Robot : Robot movement finished the LAST
+37:116 > 0xf001: Robot TOTALLY finished complex command
+37:504 > 0xf002: To Robot: 87, 90, 57, 180, 49, 222,
+38:51 > 0xf001: There are 32 bytes from robot to read
+38:51 > 0xf001: From Robot : Robot movement finished the LAST
+38:511 > 0xf001: Robot TOTALLY finished complex command
 
 */
 

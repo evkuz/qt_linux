@@ -28,8 +28,8 @@ class JsonInfo : public QObject
 public:
     JsonInfo(QString deviceName);
     QString DEV_NAME;
-    QJsonObject jsnObj1;
-    QJsonObject jsnObj2;
+//    QJsonObject jsnObj1;
+//    QJsonObject jsnObj2;
 
 //     QJsonParseError jsonError; // ОШибка, если полученные данные - не JSON-объект
 
@@ -51,10 +51,10 @@ public:
      //    #define RC_NO_DETECTION -5      // Нет детекции объекта.
     #define DEV_RC_ERROR -5 // "Device Error" - какой-то из девайсов не работает.
 
-    #define DEV_HEAD_STATE_RUN  "Running"
-    #define DEV_HEAD_STATE_WAIT "Waiting"
-    #define DEV_HEAD_STATE_FAIL "Fail"
-    #define DEV_HEAD_STATE_DONE "Done"
+    const char* DEV_HEAD_STATE_RUN = "Running";
+    const char* DEV_HEAD_STATE_WAIT = "Waiting"; //init
+    const char* DEV_HEAD_STATE_FAIL = "Fail";
+    const char* DEV_HEAD_STATE_DONE = "Done";
 
 
     #define DEV_HEAD_INFO_NO_DET    "No detection"
@@ -91,42 +91,50 @@ public:
 
      }ActionLaunchAnswer;
 
+    typedef enum ActionResult{
+        AC_RESULT_SUCCESS = 0,
+        AC_RESULT_FAILURE = -2
+    }ActionResult;
 
 
 
-    ordered_json jsnInfo;
+//    ordered_json jsnInfo;
     QString jsnData;
-    QJsonObject jsnHeadStatus;  // Шапка в ответе
-    QJsonObject   jsnObj;
+    QJsonObject jsnHeadStatus;      // Шапка в ответе на запрос status
+//    QJsonObject jsnHeadServices;    // Шапка в ответе на запрос getservices
+    QJsonObject jsnObj;
 
-     QJsonObject jsnActionClamp;     // Объект экшена "clamp"
-     QJsonObject jsnActionStart;     // Объект экшена "strart"
-     QJsonObject jsnActionStandUP;   // "standup"
-     QJsonObject jsnActionPutbox;    // for "put_box"
-     QJsonObject jsnActionReset;     // for "reset"
-     QJsonObject jsnActionCollapse;  // for "collapse"
-     QJsonObject jsnActionUnKnown;   // for unknown action
-     QJsonObject jsnActionLock;      // for "lock"
-     QJsonObject jsnActionUnLock;    // for "unlock"
+    QJsonObject jsnActionClamp;     // Объект экшена "clamp"
+    QJsonObject jsnActionStart;     // Объект экшена "strart"
+    QJsonObject jsnActionStandUP;   // "standup"
+    QJsonObject jsnActionPutbox;    // for "put_box"
+    QJsonObject jsnActionReset;     // for "reset"
+    QJsonObject jsnActionCollapse;  // for "collapse"
+    QJsonObject jsnActionUnKnown;   // for unknown action
+    QJsonObject jsnActionLock;      // for "lock"
+    QJsonObject jsnActionUnLock;    // for "unlock"
 
-     QJsonObject jsnActionParking;   // mobman
-     QJsonObject jsnActionGetBox;    // mobman
-     QJsonObject jsnActionReady;     // mobman
-     QJsonObject jsnActionForMoving; // mobman "formoving"
-     QJsonObject jsnActionDetach;    // mobman "detach"
-     QJsonObject jsnActionAttach;    // mobman "attach"
-     QJsonObject jsnActionSetservos; // mobman "setservos="
+    QJsonObject jsnActionParking;   // mobman
+    QJsonObject jsnActionGetBox;    // mobman
+    QJsonObject jsnActionReady;     // mobman
+    QJsonObject jsnActionForMoving; // mobman "formoving"
+    QJsonObject jsnActionDetach;    // mobman "detach"
+    QJsonObject jsnActionAttach;    // mobman "attach"
+    QJsonObject jsnActionSetservos; // mobman "setservos="
 
-     QJsonObject jsnActionList;  // list for "action_list" key
-     QJsonArray  jsnArray;       // list for action_list
-     QJsonArray  jsnObjArray;    // array of objects
+    QJsonObject jsnActionList;      // list for "action_list" key
+//    QJsonArray  jsnArray;           // list for action_list
+    QJsonArray  jsnObjArray;        // array of objects
+    QJsonArray  jsnObjServiceArray; // array of services
 
+    QJsonObject  jsnServiceGetActions;  // mobman "/service?name=getactions"
+    QJsonObject  jsnServiceGetServices;  // mobman "/service?name=getservices"
      //++++++++++++++++++++ NEW Actions
-     QJsonObject jsnActionForMovingNEW; // mobman "formoving"
+    QJsonObject jsnActionForMovingNEW; // mobman "formoving"
 
 
 
-     QList<QJsonObject> actionListp;
+    QList<QJsonObject> actionListp;
 
     const int RC_NO_DETECTION = -5;      // Нет детекции объекта.
     const short INDEX_NODETECTION = 4;
@@ -143,17 +151,21 @@ public:
     const char* DEV_ACTION_STATE_NODETECT = "NO DETECTION";
     const char* DEV_ACTION_STATE_INCORRECT = "INCORRECT distance";
 
+    // Global device status: init | run | fail
+    const char* DEV_GLOBAL_STATE_INIT = "init";
+    const char* DEV_GLOBAL_STATE_RUN  = "run";
+    const char* DEV_GLOBAL_STATE_FAIL = "fail";
 
 
-    void init_json();
     void init_actions();
+    void init_services();
     void init_actions_new();
     void resetAllActions();
     QString merge_json(QJsonObject src, QJsonObject dst);
 
-    QJsonObject returnJsonObject();
-    QJsonObject returnJsnInfo();
-    QJsonObject returnJsnStatus();
+//    QJsonObject returnJsonObject();
+//    QJsonObject returnJsnInfo();
+//    QJsonObject returnJsnStatus();
     QString     returnJsnData();
     QJsonObject returnJsonObject2();
     QJsonObject& returnJsnActionStart();
@@ -174,33 +186,41 @@ public:
     QJsonObject& returnJsnAcionSetservos();
 
     QString returnAllActions();
+    QString returnAllServices(); // answer to "/service?name=getservices" request
 
 
     bool isAnyActionRunning; // флаг, что выополняется экшен
     void setActionDone(QJsonObject &theObj);  //Меняем rc of action upon device moving
-    void setJsnStatus();
+//    void setJsnStatus();
     void setJsnHeadStatus(QJsonObject &theObj); // Меняем значения jsnHeadStatus на theObj
     void setCurrentAction(QString theAction);
     bool eraseArray(QJsonArray &theArray); // Очистка массива
     void setHeadStatusFail(); // serial port problem
     void setActionStart2NoDetection();
     QString createActionList(); // Подготовить список активных (выполняемых в данный момент) экшенов
+    QString createStatusParamList(QString paramName); // Ответ на запрос статуса с параметрами
+    //    QString createServiceList(); // Подготовить список доступных сервисов
+
     void SetJsnActionCollapse(QJsonObject &theObj);
     void SetJsnActionStandUP(QJsonObject &theObj);
+
+    QString returnActionData(QString actionName);
+    QString returnActionLaunch(QJsonObject &theObj);
     void setActionData(QJsonObject &theObj); // Меняем данные экшенов на данные "снаружи", целевой экшен определяем по name
 
 
 
-    // Структура хранит данные для json-ответа.
-    struct Action {
+    // Структура хранит данные для json-ответа на запрос статуса.
+    struct statusHeader {
         std::string name;
         int     rc;    // "int - request result code",
         std::string  info;  // text interpretation of return code
         std::string  state; // "str - global device status: init | run | fail",
 //        QString action_list; // Список активных на данных моментэкшенов. И вот тут вопрос :
                              // Или как jsnDocument или как nlohmann::ordered_json;
-}; //Action
+}; //statusHeader
 
+    // Быстрый ответ на запуск экшена
     struct LaunchActionState {
         std::string name;
         int     rc;    // "int - request result code",
@@ -216,8 +236,8 @@ public:
 
 
 
-    Action currentStatus;
-    LaunchActionState currentActionState;
+    statusHeader currentStatus;
+    LaunchActionState currentActionState; // НЕ используется...
     QString action_command; // команда, которая сейчас исполняется
     //                                             1                     3                         5                7
     const QList<QString> action_lst = {"clamp", "start"}; //, "put_box", "getactions", "getservices","reset", "lock", "unlock", "info"};
@@ -225,12 +245,12 @@ public:
      QList<QString> statuslst = { "wait", "init", "inprogress", "done", "NoDetection" };
 
 
-    void struc_2_json(ordered_json& jsn, const Action& header);   // конвертируем структуру в nlohmann::json object
-    void struc_2_jsnObj();  // QJsonObject& jsn, const StatusAnswer& header конвертируем структуру в QJsonObject::jsn
+//    void struc_2_json(ordered_json& jsn, const statusHeader& header);   // конвертируем структуру в nlohmann::json object
+//    void struc_2_jsnObj();  // QJsonObject& jsn, const StatusAnswer& header конвертируем структуру в QJsonObject::jsn
 public slots:
 
 void makeJson_Answer_Slot();
-void SetActionData_Slot(QJsonObject &theOb);
+//void SetActionData_Slot(QJsonObject &theOb);
 
 protected:
 
@@ -252,8 +272,11 @@ private:
     ordered_json jsnOB2;  // Объект для списка
     ordered_json jsnOB3;  // Объект результирующий.
 
-    ordered_json& QtJson_2_NlohmannJson(QJsonObject theObj);     //convert single QJsonObject action tosingle  ordered_json object
+    ordered_json& QtJson_2_NlohmannJson(QJsonObject theObj);     //convert single QJsonObject action to single  ordered_json object
+    ordered_json& QtJson_2_NlohmannJson_QuickAnswer(QJsonObject theObj);// convert header of each answer
     ordered_json& QtJson_2_NlohmannJson_Head(QJsonObject theObj);// convert header of each answer
+    ordered_json& QtJson_2_NlohmannJson_Data(QJsonObject theObj);// convert data[] of each answer
+
     ordered_json& getAllActionsOrderedJson(QJsonObject theObj);
     ordered_json actStatuses; // Хранит статусы экшена. ключ — имя статуса, значение — описание данного статуса.
     ordered_json actGetStatuses; // ТО же для команды "get_box", есть особые статусы
@@ -263,8 +286,8 @@ private:
     // Порядок элементов должен совпадать с action_lst
     //QList<QJsonObject> actionList = {&jsnActionClamp, &jsnActionStart};
 //    QList<QJsonObject> actionListp;
-    Action clampAction, lockAction;
-    QList<Action> structActionList = {clampAction, lockAction};
+//    Action clampAction, lockAction;
+//    QList<Action> structActionList = {clampAction, lockAction};
 
     QJsonObject qjsnAnswer;
 

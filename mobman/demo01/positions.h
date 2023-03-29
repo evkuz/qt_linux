@@ -8,6 +8,12 @@
 
 //#include <QtCore>
 
+#define FULL_CLOSED 87 //75
+#define FULL_OPENED 35
+
+#define CV_START_POINT 110
+#define CV_LAST_POPINT 230
+
 //+++++++++++++++ ЗАХВАТ РУЧНИКА ИМЕЕТ НОМЕР ПРИВОДА 0 - ИДЕТ 1-Й В СПИСКЕ.
 
 unsigned char hwr_Start_position [6] = {93, 93, 93, 93, 93, 93}; // servo1,,,servo6
@@ -19,12 +25,13 @@ unsigned char put_position [6] = {60, 93, 90, 40, 140, 30};
                             //      60, 93, 100, 35, 145, 35
 unsigned char after_put_position [6] = {0, 93, 90, 45, 135, 30};
 
-unsigned char mob_parking_position [4] = {70,90,90,160};//,45,45,49,222
-unsigned char mob_ready_position [4] = {35,90,135,165};
-unsigned char mob_moving_position [4] = {90,90,45,180}; // Для малого кубика 70-закрыто
+unsigned char mob_parking_position [4] = {FULL_CLOSED,90,90,160};//,45,45,49,222
+unsigned char mob_ready_position [4] = {FULL_OPENED,90,135,165};
+unsigned char mob_moving_position [4] = {FULL_CLOSED,90,57,180}; // Для малого кубика 70-закрыто
 
 
 //unsigned char mob_pos_10 [4] = {35,90,120,60};
+/*
 unsigned char mob_pos_11 [4] = {35,90,105,70};
 unsigned char mob_pos_12 [4] = {35,90,105,70};
 
@@ -39,12 +46,14 @@ unsigned char mob_pos_20 [4] = {35,90,140,50};
 unsigned char mob_pos_21 [4] = {35,90,145,50}; // 21 см. от края кубика до камеры. Центр кубика при этом на 23см.
 unsigned char mob_pos_22 [4] = {35,90,168,35};
 unsigned char mob_pos_23 [4] = {35,90,172,35}; //35,90,175,32 - тоже подойдет
-unsigned char mob_put_23 [4] = {70,90,172,35};
+*/
 
+//unsigned char mob_put_23 [4] = {FULL_CLOSED,90,172,35};
+unsigned char mob_put_23 [4] = {FULL_CLOSED,90,115,65};
 
+/*
 unsigned char mob_2_pos_11 [4] = {35,90,78,77};
 unsigned char mob_2_pos_12 [4] = {35,90,84,75};
-
 unsigned char mob_2_pos_13 [4] = {35,90,90,73};
 unsigned char mob_2_pos_14 [4] = {35,90,95,73};
 unsigned char mob_2_pos_15 [4] = {35,90,103,67};
@@ -56,16 +65,76 @@ unsigned char mob_2_pos_20 [4] = {35,90,145,46}; //   35,90,140,50
 unsigned char mob_2_pos_21 [4] = {35,90,149,44}; // 21 см. от края кубика до камеры. Центр кубика при этом на 23см.
 unsigned char mob_2_pos_22 [4] = {35,90,168,35};
 unsigned char mob_2_pos_23 [4] = {35,90,177,30}; //35,90,175,32 - тоже подойдет
-unsigned char mob_2_put_23 [4] = {80,90,172,35};
+*/
 
-unsigned char mob_2_moving_position [4] = {80,90,45,180};
+//unsigned char mob_2_put_23 [4] = {FULL_CLOSED,90,172,35};
+
+unsigned char mob_2_moving_position [4] = {FULL_CLOSED,90,57,180};
 
 unsigned char mob_3_pos_25[4] = {35,90,135,72}; //247->250 35,90,135,72
 unsigned char mob_3_pos_24[4] = {35,90,132,72}; //244->240 35,90,132,72
 
 unsigned char mob_3_pos_22[4] = {35,90,125,80}; //220 35,90,125,80
 
+// Кубик на полу, значения из массивов mob_pos_xx
+/*
+unsigned int mob_3_position[13][3] = {
+    {110,105,70},
+    {120,105,70},
+    {130,86,75},
+    {140,100,70},
+    {150,105,70},
+    {160,112,65},
+    {170,120,60},
+    {180,125,60},
+    {190,135,55},
+    {200,140,50},
+    {210,145,50},
+    {220,168,35},
+    {230,172,35}
+};
+*/
 
+
+// Кубик на полу, значения из массивов
+
+unsigned int mob_3_position[13][3] = {
+    {CV_START_POINT,78,77},
+    {120,84,75},
+    {130,90,73},
+    {140,95,73},
+    {150,103,67},
+    {160,107,67},
+    {170,115,62},
+    {180,125,57},
+    {190,135,50},
+    {200,145,46},
+    {210,149,44},
+    {220,168,35},
+    {CV_LAST_POPINT,177,30},
+};
+
+/*
+ * Кубик на вису
+unsigned int mob_3_position[11][3] = {
+                          { 147,78,119 },
+                          { 156,82,117 },
+                          { 169,87,112 },
+                          { 187,90,109 },
+                          { 196,100,102 },
+                          { 204,107,98 },
+                          { 214,114,93 },
+                          { 225,125,86 },
+                          { 239,132,83 },
+                          { 249,145,72 },
+                          { 271,150,70 }
+
+};
+*/
+unsigned char mob_3_final_position [4] = {40,90,0,0};
+const char ROWS = 13;
+const char COLMNS = 3;
+const char RANGE [2] = {110, 230}; // Диапазон расстояний, где робот может взять кубик
 
 //72,90,125,80
 

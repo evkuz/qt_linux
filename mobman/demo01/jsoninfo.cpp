@@ -4,343 +4,24 @@ JsonInfo::JsonInfo(QString deviceName)
 {
 
     DEV_NAME = deviceName;
-    currentStatus = {DEV_NAME.toStdString(), RC_SUCCESS,  "OK", DEV_HEAD_STATE_WAIT}; // Инициализируем структуру
+    currentStatus = {DEV_NAME.toStdString(), RC_SUCCESS,  "OK", DEV_HEAD_STATE_WAIT}; // Инициализируем структуру name|rc|info|state
     action_command = "nothing";
-//    struc_2_json(jsnOB1, currentStatus); // Инициализируем  jsnOB1 данными из структуры выше
-    init_json(); // also initializing jsnData
     init_actions();
+    init_services();
     init_actions_new();
     isAnyActionRunning = false;
 }
 //+++++++++++++++++++++
-
-
-void JsonInfo::init_json()
-{
-
-    jsnActionTST = {
-        {"action_clamp", {
-             {
-                 {"name", "clamp"},
-                 {"state", "inprogress | done | fail"},
-                 {"info", "Open/Close clamper"},
-                 {"rc", RC_SUCCESS} // "int - action return code"
-             }
-          }//list
-        }//action_clamp
-     };
-// nlohmann::json -> QString -> QJsonDocument -> QJsonObject
-    s1 = jsnActionTST.dump(3);
-    jsnData = QString::fromStdString(s1);
-    jsnDoc = QJsonDocument::fromJson(jsnData.toUtf8(), &jsonError);
-//    if(jsonError.error != QJsonParseError::NoError){
-//            str = "Error: "; str += jsonError.errorString();
-//            GUI_Write_To_Log(value, str);
-//     }       //return;
-
-    //Get the main JSON object and get the data in it
-    jsnObj2 = jsnDoc.object();
-//++++++++++++++++++++++++++++++++++++++++++++++
-
-
-
-// JSON-объект - это всегда пара "ключ" : "значение"
-// Здесь в качестве значения - объект, состоящий из списка объектов
-    jsnList = {
-        {"action_list", {
-         {
-             {"name", "clamp"},
-             {"state", "inprogress | done | fail"},
-             {"info", "Open/Close clamper"},
-             {"rc", "int - action return code"}
-         },
-         {
-             {"name", "lock"},
-             {"state", "inprogress | done | fail"},
-             {"info", "Close clamper"},
-             {"rc", "int - action return code"}
-         },
-         {
-             {"name", "unlock"},
-             {"state", "inprogress | done | fail"},
-             {"info", "Open clamper"},
-             {"rc", "int - action return code"}
-         },
-         {
-             {"name", "start"},
-             {"state", {"waiting","noDetection", "inprogress", "done", "fail"}},
-             {"info", "Get the box by clamper, asking CV about distance in advance"},
-             {"st_time", "int - timestamp of last start"},
-             {"fin_time", "int - timestamp of finish"},
-             {"result", "int - action return code"}
-         },
-         {
-             {"name", "reset"},
-             {"state", "succsess | fail"},
-             {"info", "Set device status as <Wait>"},
-             {"rc", "int - action return code"}
-         },
-         {
-             {"name", "sit"},
-             {"state", "inprogress | done | fail"},
-             {"info", "Sit position"},
-             {"rc", "int - action return code"}
-         },
-         {
-            {"name", "standup"},
-            {"state", "inprogress | done | fail"},
-            {"info", "Go to ZERO (home, initital) position"},
-            {"rc", "int - action return code"}
-         },
-         {
-            {"name", "put_box"},
-            {"state", "inprogress | done | fail"},
-            {"info", "put down the object for next actions"},
-            {"rc", "int - action return code"}
-         },
-         {
-            {"name", "close"},
-            {"state", "inprogress | done | fail"},
-            {"info", "Close serial port of the robot"},
-            {"rc", "int - action return code"}
-         },
-         {
-            {"name", "getservos"},
-            {"state", "inprogress | done | fail"},
-            {"info", "Return device' servos values"},
-            {"rc", "int - action return code"}
-         },
-         {
-            {"name", "info"},
-            {"state", "inprogress | done | fail"},
-            {"info", "Print this page"},
-            {"rc", "int - action return code"}
-         }
-             }// json-object
-       }//action_list
-     }; //list
-
-//  Ответ на команду Action в формате json
-    jsnStatus = {
-        {"name", DEV_NAME.toStdString()},
-        {"rc", RC_UNDEFINED}, //RC_SUCCESS
-        {"state", "Wait"},
-        {"info", "Request Accepted"}
-/*        {"action_list", {
-             {
-              {"name", "start"},
-              {"state", {"running","waiting","noDetection", "inprogress", "done", "fail"}},
-              {"info", "Get the box by clamper, asking CV about distance in advance"},
-              {"st_time", "int - timestamp of last start"},
-              {"fin_time", "int - timestamp of finish"},
-              {"result", "int - action return code"}
-             },
-              {
-               {"name", "reset"},
-               {"state", "succsess | fail"},
-               {"info", "Set device status as <Wait>"},
-               {"rc", "int - action return code"}
-              }
-         } //list
-       }//action_list-field
-*/
-
-    }; //jsnStatus
-
-// info -> description
-// state -> statuses
-// rc - убираем
-// parameters - добавляем.
-
-    jsnInfo = {
-       {"name", DEV_NAME.toStdString()},
-       {"rc", RC_UNDEFINED}, //RC_SUCCESS
-       {"info", "Request Accepted"},
-       {"state", "Wait | Running | Fail"},
-       {"action_list", {
-          {
-           {"name", "clamp"},
-           {"state", "inprogress | done | fail"},
-           {"info", "Open/Close clamper"},
-           {"rc", "int - action return code"}
-          },
-          {
-            {"name", "lock"},
-            {"state", "inprogress | done | fail"},
-            {"info", "Close clamper"},
-            {"rc", "int - action return code"}
-          },
-          {
-            {"name", "unlock"},
-            {"state", "inprogress | done | fail"},
-            {"info", "Open clamper"},
-            {"rc", "int - action return code"}
-          },
-          {
-           {"name", "start"},
-           {"state", {"waiting","noDetection", "inprogress", "done", "fail"}},
-           {"info", "Get the box by clamper, asking CV about distance in advance"},
-           {"st_time", "int - timestamp of last start"},
-           {"fin_time", "int - timestamp of finish"},
-           {"result", "int - action return code"}
-          },
-           {
-            {"name", "reset"},
-            {"state", "succsess | fail"},
-            {"info", "Set device status as <Wait>"},
-            {"rc", "int - action return code"}
-           },
-           {
-            {"name", "sit"},
-            {"state", "inprogress | done | fail"},
-            {"info", "Sit position"},
-            {"rc", "int - action return code"}
-           },
-            {
-             {"name", "standup"},
-             {"state", "inprogress | done | fail"},
-             {"info", "Go to start (initital) position"},
-             {"rc", "int - action return code"}
-            },
-            {
-             {"name", "put_box"},
-             {"state", "inprogress | done | fail"},
-             {"info", "put down the object for next actions"},
-             {"rc", "int - action return code"}
-            },
-            {
-             {"name", "close"},
-             {"state", "inprogress | done | fail"},
-             {"info", "Close serial port of the robot"},
-             {"rc", "int - action return code"}
-            },
-            {
-             {"name", "getservos"},
-             {"state", "inprogress | done | fail"},
-             {"info", "Return device' servos values"},
-             {"rc", "int - action return code"}
-             },
-            {
-             {"name", "info"},
-             {"state", "inprogress | done | fail"},
-             {"info", "Print this page"},
-             {"rc", "int - action return code"}
-            }
-
-          } //list
-        }//action_list-field
-
-    }; // jsnInfo
-
-    // Это просто список без значений.
-/*
-    jsnGetActionsAnswer = {
-                            {"name" , "getactions"},
-                            {"rc", RC_UNDEFINED}, //RC_SUCCESS
-                            {"info" , "Request Accepted"},
-        {"data", {
-             {
-              {"name", "clamp"},
-              {"state", "inprogress | done | fail"},
-              {"info", "Open/Close clamper"},
-              {"rc", "int - action return code"}
-             },
-             {
-               {"name", "lock"},
-               {"state", "inprogress | done | fail"},
-               {"info", "Close clamper"},
-               {"rc", "int - action return code"}
-             },
-             {
-               {"name", "unlock"},
-               {"state", "inprogress | done | fail"},
-               {"info", "Open clamper"},
-               {"rc", "int - action return code"}
-             },
-             {
-              {"name", "start"},
-              {"state", {"waiting","noDetection", "inprogress", "done", "fail"}},
-              {"info", "Get the box by clamper, asking CV about distance in advance"},
-              {"st_time", "int - timestamp of last start"},
-              {"fin_time", "int - timestamp of finish"},
-              {"result", "int - action return code"}
-             },
-              {
-               {"name", "reset"},
-               {"state", "succsess | fail"},
-               {"info", "Set device status as <Wait>"},
-               {"rc", "int - action return code"}
-              },
-              {
-               {"name", "sit"},
-               {"state", "inprogress | done | fail"},
-               {"info", "Sit position"},
-               {"rc", "int - action return code"}
-              },
-               {
-                {"name", "standup"},
-                {"state", "inprogress | done | fail"},
-                {"info", "Go to start (initital) position"},
-                {"rc", "int - action return code"}
-               },
-               {
-                {"name", "put_box"},
-                {"state", "inprogress | done | fail"},
-                {"info", "put down the object for next actions"},
-                {"rc", "int - action return code"}
-               },
-               {
-                {"name", "close"},
-                {"state", "inprogress | done | fail"},
-                {"info", "Close serial port of the robot"},
-                {"rc", "int - action return code"}
-               },
-               {
-                {"name", "getservos"},
-                {"state", "inprogress | done | fail"},
-                {"info", "Return device' servos values. Can be viewed in Log file"},
-                {"rc", "int - action return code"}
-                },
-               {
-                {"name", "info"},
-                {"state", "inprogress | done | fail"},
-                {"info", "Print this page"},
-                {"rc", "int - action return code"}
-               },
-         }//list
-        }//data
-       };//jsnGetActionsAnswer
-*/
-   // jsnAction = jsnGetActionsAnswer;
-    int indent = 3;
-    std::string s2 = jsnOB1.dump(indent);
-    jsnData = QString::fromStdString(s2);
-    jsnDoc = QJsonDocument::fromJson(jsnData.toUtf8(), &jsonError);
-//    if(jsonError.error != QJsonParseError::NoError){
-//            str = "Error: "; str += jsonError.errorString();
-//            GUI_Write_To_Log(value, str);
-//     }       //return;
-
-    //Get the main JSON object and get the data in it
-    jsnObj = jsnDoc.object();
-
-} // init_json
 //++++++++++++++++++++++++++++++++
 
 void JsonInfo::init_actions()
 {
     //+++++++++++++++++++++++++++++++++++++++++++++++++
-//    jsnActionClamp = {
-//        {"name", "clamp"},
-//        {"state", "waiting"},
-//        {"info", "Open/Close clamper"},
-//        {"rc", RC_WAIT} // "int - action return code"
-//     };
     jsnActionStart = {
         {"name", "start"},
         {"state", "waiting"},
         {"info", "Get the box by clamper, asking CV about distance in advance"},
-        {"rc", RC_WAIT}
+        {"result", RC_WAIT}
       };
 
 
@@ -348,67 +29,67 @@ void JsonInfo::init_actions()
         {"name", "get_box"},
         {"state", "waiting"},
         {"info", "Get the box by clamper, asking CV about distance in advance"},
-        {"rc", RC_WAIT}
+        {"result", RC_WAIT}
       };
 
     jsnActionPutbox = {
         {"name", "put_box"},
         {"state", DEV_ACTION_STATE_DONE},
         {"info", "put down the object for next actions"},
-        {"rc", this->AC_Launch_RC_DONE}
+        {"result", this->AC_Launch_RC_DONE}
        };
 
     jsnActionReset = {
         {"name", "reset"},
         {"state", DEV_ACTION_STATE_DONE},
         {"info", "Set device status as <Wait> in main Header"},
-        {"rc",  RC_WAIT}
+        {"result",  RC_WAIT}
     };
 
     jsnActionCollapse = {
         {"name", "collapse"},
         {"state", DEV_ACTION_STATE_WAIT},
         {"info", "make long time opeartion for test"},
-        {"rc",  RC_WAIT}
+        {"result",  RC_WAIT}
     };
 
     jsnActionStandUP = {
         {"name", "standup"},
         {"state", DEV_ACTION_STATE_WAIT},
         {"info", "Go to start (initital) position"},
-        {"rc", RC_WAIT}
+        {"result", RC_WAIT}
     };
 
     jsnActionUnKnown = {
         {"name", "UnKnown"},
         {"state", DEV_ACTION_STATE_FAIL},
         {"info", "There is now action with such a name"},
-        {"rc", AC_WRONG_VALUE}
+        {"result", AC_WRONG_VALUE}
     };
     jsnActionLock = {
         {"name", "lock"},
         {"state", DEV_ACTION_STATE_WAIT},
         {"info", "lock the gripper of manipulator"},
-        {"rc",  this->AC_Launch_RC_DONE}
+        {"result",  this->AC_Launch_RC_DONE}
     };
     jsnActionUnLock = {
         {"name", "unlock"},
         {"state", DEV_ACTION_STATE_WAIT},
         {"info", "unlock the gripper of manipulator"},
-        {"rc",  this->AC_Launch_RC_DONE}
+        {"result",  this->AC_Launch_RC_DONE}
     };
     jsnActionParking = {
         {"name", "parking"},
         {"state", DEV_ACTION_STATE_WAIT},
         {"info", "Go to start (initital) position"}, //"Set device's clamper in transporting position"
-        {"rc", RC_WAIT}
+        {"result", RC_WAIT}
     };
 
     jsnActionReady = {
         {"name", "ready"},
         {"state", DEV_ACTION_STATE_WAIT},
         {"info", "TEST position"}, //"Set device's clamper in transporting position"
-        {"rc", RC_WAIT}
+        {"result", RC_WAIT}
 
     };
 
@@ -416,7 +97,7 @@ void JsonInfo::init_actions()
         {"name", "formoving"},
         {"state", DEV_ACTION_STATE_WAIT},
         {"info", "Going to target position"}, //"Set device's clamper in transporting position"
-        {"rc", RC_WAIT}
+        {"result", RC_WAIT}
 
 
     };
@@ -425,14 +106,14 @@ void JsonInfo::init_actions()
         {"name", "detach"},
         {"state", DEV_ACTION_STATE_WAIT},
         {"info", "Detach servos FROM arduino pins"},
-        {"rc", RC_WAIT}
+        {"result", RC_WAIT}
     };
 
     jsnActionAttach = {
         {"name", "attach"},
         {"state", DEV_ACTION_STATE_WAIT},
         {"info", "Attach servos TO arduino pins"},
-        {"rc", RC_WAIT}
+        {"result", RC_WAIT}
 
     };
 
@@ -440,49 +121,75 @@ void JsonInfo::init_actions()
         {"name", "setservos="},
         {"state", DEV_ACTION_STATE_WAIT},
         {"info", "Move servos to values supplied, as parameters"},
-        {"rc", RC_WAIT}
+        {"result", RC_WAIT}
 
 
     };
 
-//jsnActionClamp,
+// actions array
     jsnObjArray = {jsnActionParking, jsnActionReady,  jsnActionReset,     jsnActionGetBox, jsnActionPutbox, \
                    jsnActionUnKnown, jsnActionLock,   jsnActionUnLock, jsnActionForMoving, jsnActionDetach, \
                    jsnActionAttach,  jsnActionSetservos
     }; // jsnObjArray
 
+    // Поле "name" задается 1 раз и больше не меняется.
     jsnHeadStatus = {
         {"name", DEV_NAME},
         {"rc", RC_UNDEFINED}, //RC_SUCCESS
-        {"state", "Wait"},
-        {"info", "Request Accepted"}
+        {"info", "Request Accepted"},
+        {"state", DEV_HEAD_STATE_WAIT}
     };
 
-    jsnArray = {};
+    //jsnArray = {};
     jsnActionList = {
-        {"action_list", jsnObjArray} //jsnArray
+        {"action_list", jsnObjArray} //
     };
 
+}// init_actions
+//++++++++++++++++++++++++++++++++
 
+void JsonInfo::init_services()
+{
+    jsnServiceGetActions = {
+        {"name", "getactions"},
+        {"info", "Return list of actions available"},
+        {"rc", RC_UNDEFINED} // инициализация, в runtime будет переписываться
 
-} // init_actions
+    };
+
+    jsnServiceGetServices = {
+        {"name", "getservices"},
+        {"info", "Return list of services available"},
+        {"rc", RC_UNDEFINED} // инициализация, в runtime будет переписываться
+
+    };
+
+    jsnObjServiceArray = {jsnServiceGetActions, jsnServiceGetServices};
+//    jsnHeadServices = {
+//        {"name", DEV_NAME},
+//        {"rc", RC_UNDEFINED}, //RC_SUCCESS
+//        {"state", "Wait"},
+//        {"info", "Request Accepted"}
+//    };
+
+} // init_services
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //Обновленная версия экшенов
 void JsonInfo::init_actions_new()
 {
-    jsnActionForMovingNEW = {
-        {"name", "formoving"},
-        {"rc", RC_WAIT},
-        {"info", "Going to target position"}, //"Set device's clamper in transporting position"
-        {"state", DEV_ACTION_STATE_WAIT}
-    };
+//    jsnActionForMovingNEW = {
+//        {"name", "formoving"},
+//        {"rc", RC_WAIT},
+//        {"info", "Going to target position"}, //"Set device's clamper in transporting position"
+//        {"state", DEV_ACTION_STATE_WAIT}
+//    };
 
-    ordjsnHeadStatus = {
-        {"name", DEV_NAME.toStdString()},
-        {"rc", RC_UNDEFINED}, //RC_SUCCESS
-        {"info", "Request Accepted"},
-        {"state", RC_WAIT}
-    };
+//    ordjsnHeadStatus = {
+//        {"name", DEV_NAME.toStdString()},
+//        {"rc", RC_UNDEFINED}, //RC_SUCCESS
+//        {"info", "Request Accepted"},
+//        {"state", RC_WAIT}
+//    };
 
     actStatuses = {
         {"Running", "Action is running"},
@@ -529,7 +236,7 @@ void JsonInfo::resetAllActions()
     }
     isAnyActionRunning = false; // Нет активных экшенов
 
-}///init_json
+} //resetAllActions()
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // merge src and dst QJsonObjrcts and return QString representation of the result
 QString JsonInfo::merge_json(QJsonObject src, QJsonObject dst)
@@ -546,33 +253,27 @@ QString JsonInfo::merge_json(QJsonObject src, QJsonObject dst)
 
 }
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-void JsonInfo::struc_2_json(ordered_json &jsn, const Action &header)
-{
-    jsn = ordered_json{
-                        {"name", header.name},
-                        {"rc", header.rc},
-                        {"info", header.info},
-                        {"state", header.state}
-    };
+// Преобразуем структуру statusHeader в объект ordered_json
+//void JsonInfo::struc_2_json(ordered_json &jsn, const statusHeader &header)
+//{
+//    jsn = ordered_json{
+//                        {"name", header.name},
+//                        {"rc", header.rc},
+//                        {"info", header.info},
+//                        {"state", header.state}
+//    };
 
-}//struc_2_json
+//}//struc_2_json
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // Копируем данные структуры в ordered_json jsnStatus
-void JsonInfo::struc_2_jsnObj()
-{
-    jsnStatus["name"] = currentStatus.name;
-    jsnStatus["rc"] = currentStatus.rc;
-    jsnStatus["info"] = currentStatus.info;
-    jsnStatus["state"] = currentStatus.state;
-//QJsonObject jsnaa
-//            {
-//                {"name", header.name},
-//                {"rc", header.rc},
-//                {"info", header.info},
-//                {"state", header.state}
-//             };
+//void JsonInfo::struc_2_jsnObj()
+//{
+//    jsnStatus["name"] = currentStatus.name;
+//    jsnStatus["rc"] = currentStatus.rc;
+//    jsnStatus["info"] = currentStatus.info;
+//    jsnStatus["state"] = currentStatus.state;
 
-}//
+//}//
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // Слот сигнала MainProcess::makeJson_Answer_Signal(QString theAction)
 // ГОтовим json-ответ - статус экшена
@@ -586,22 +287,22 @@ void JsonInfo::makeJson_Answer_Slot()
 }
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // слот сигнала MainProcess::SetActionData_Signal
-void JsonInfo::SetActionData_Slot(QJsonObject &theObj)
-{
-    // Ищем в jsnObjArray по "name" нужный action, меняем его на значения theobj
-    // Так работаем только с массивом.
-        QString theName = theObj.value("name").toString();
-        // Проходим jsnObjArray, ищем совпадение по "name", меняем "rc" и "state", делаем replase
+//void JsonInfo::SetActionData_Slot(QJsonObject &theObj)
+//{
+//    // Ищем в jsnObjArray по "name" нужный action, меняем его на значения theobj
+//    // Так работаем только с массивом.
+//        QString theName = theObj.value("name").toString();
+//        // Проходим jsnObjArray, ищем совпадение по "name", меняем "rc" и "state", делаем replase
 
-        for (int i=0; i < jsnObjArray.size(); i++) {
-            if (jsnObjArray.at(i).toObject().value("name").toString() == theName){
-                jsnObjArray.replace(i, theObj);
-            }
-        }
+//        for (int i=0; i < jsnObjArray.size(); i++) {
+//            if (jsnObjArray.at(i).toObject().value("name").toString() == theName){
+//                jsnObjArray.replace(i, theObj);
+//            }
+//        }
 
-}
+//}
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
+// Преобразуем список data[] в ОТВЕТЕ getactions
 ordered_json& JsonInfo::QtJson_2_NlohmannJson(QJsonObject theObj)
 {
    // QMap <QJs>
@@ -625,15 +326,38 @@ ordered_json& JsonInfo::QtJson_2_NlohmannJson(QJsonObject theObj)
     if (str1 == "get_box") { // Тут особые статусы есть, не как у остальных экшенов
          jsnAction["statuses"] = this->actGetStatuses;
     }
-
-    else {
+    // Результат вызова getservices аналогичен результату вызова getactions,
+    // за исключением отсутствующего поля statuses.
+    else if ((str1 != "getservices") && (str1 != "getactions")) {
         jsnAction["statuses"] = this->actStatuses;
 
     }
+
     return jsnAction;
 } //QtJson_2_NlohmannJson
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// преобразуем QJsonObject -> ordered_json
+// Преобразуем быстрый ответ на запуск экшена в ordered_json
+ordered_json &JsonInfo::QtJson_2_NlohmannJson_QuickAnswer(QJsonObject theObj)
+{
+    jsnAction.empty(); // Очищиаем.
+    QString str1, str2;
+    int rc;
+
+    str1 = theObj.value("name").toString();
+    str2 = theObj.value("info").toString();
+    rc = theObj.value("rc").toInt();
+    jsnAction = {
+        {"name", str1.toStdString()},
+        {"rc", rc},
+        {"info", str2.toStdString()},
+     };
+
+    return jsnAction;
+
+}
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// преобразуем ЗАГОЛОВОК ОТВЕТА QJsonObject -> ordered_json
+// theobj - экшен
 ordered_json &JsonInfo::QtJson_2_NlohmannJson_Head(QJsonObject theObj)
 {
     jsnAction.empty(); // Очищиаем.
@@ -654,15 +378,40 @@ ordered_json &JsonInfo::QtJson_2_NlohmannJson_Head(QJsonObject theObj)
     return jsnAction;
 
 
-}// QtJson_2_NlohmannJson_Head
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-QJsonObject JsonInfo::returnJsonObject()
+} // QtJson_2_NlohmannJson_Head
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Преобразуем список data[] в ОТВЕТЕ
+ordered_json &JsonInfo::QtJson_2_NlohmannJson_Data(QJsonObject theObj)
 {
-    // Передаем основной json-object на обработку/парсинг
-    return jsnObj;
-} // returnJsonObject
+    jsnAction.empty(); // Очищиаем.
+    QString str1, str2, str3, str4;
+    int result;
+
+    str1 = theObj.value("name").toString();
+    str2 = theObj.value("info").toString();
+    result = theObj.value("result").toInt();
+    str3 = theObj.value("state").toString();
+    jsnAction = {
+        {"name", str1.toStdString()},
+        {"state", str3.toStdString()},
+        {"info", str2.toStdString()},
+        {"result", result}
+    };
+
+    return jsnAction;
+
+} // QtJson_2_NlohmannJson_Data
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+//QJsonObject JsonInfo::returnJsonObject()
+//{
+//    // Передаем основной json-object на обработку/парсинг
+//    return jsnObj;
+//} // returnJsonObject
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+/*
 QJsonObject JsonInfo::returnJsnInfo()
 {
 // Берем данные из ordered_json jsnInfo и передаем через QJsonObject
@@ -676,34 +425,35 @@ QJsonObject JsonInfo::returnJsnInfo()
 
     return jsnObj;
 } // returnJsnInfo()
+*/
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-QJsonObject JsonInfo::returnJsnStatus()
-{
-    // Берем данные из ordered_json jsnStatus и передаем через QJsonObject
-//        int indent = 3;
-//        std::string s2 = jsnStatus.dump(indent);
-//        jsnData = QString::fromStdString(s2);
-//        jsnDoc = QJsonDocument::fromJson(jsnData.toUtf8(), &jsonError);
+//QJsonObject JsonInfo::returnJsnStatus()
+//{
+//    // Берем данные из ordered_json jsnStatus и передаем через QJsonObject
+////        int indent = 3;
+////        std::string s2 = jsnStatus.dump(indent);
+////        jsnData = QString::fromStdString(s2);
+////        jsnDoc = QJsonDocument::fromJson(jsnData.toUtf8(), &jsonError);
 
-//        //Get the main JSON object and get the data in it
-//        jsnObj = jsnDoc.object();
+////        //Get the main JSON object and get the data in it
+////        jsnObj = jsnDoc.object();
 
-        return jsnHeadStatus;
+//        return jsnHeadStatus;
 
-}// returnJsnStatus()
+//}// returnJsnStatus()
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 QString JsonInfo::returnJsnData()
 {
-    // Делаем поиск активных экшенов и если их нет, то меняем jsndata
+    // Возвращаем текущее значение  jsndata
     return this->jsnData;
 }
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-QJsonObject JsonInfo::returnJsonObject2()
-{
-    return this->jsnObj2;
-}
+//QJsonObject JsonInfo::returnJsonObject2()
+//{
+//    return this->jsnObj2;
+//}
 //+++++++++++++++++++++++++++++++++++++++++++
 QJsonObject& JsonInfo::returnJsnActionStart()
 {
@@ -789,6 +539,7 @@ QJsonObject &JsonInfo::returnJsnAcionSetservos()
     return this->jsnActionSetservos;
 }
 //+++++++++++++++++++++++++++++++++++++++++++
+// Формируем список всех доступных экшенов
 QString JsonInfo::returnAllActions()
 {
     QJsonValue myValue;
@@ -806,7 +557,7 @@ QString JsonInfo::returnAllActions()
     myArray = this->jsnObjArray;
     for (int i=0; i < myArray.size(); i++){
         myobj = myArray.at(i).toObject();
-        jsnAction = QtJson_2_NlohmannJson(myobj);
+        jsnAction = QtJson_2_NlohmannJson(myobj); // adding statuses if needed
         jsnGetActionsAnswer["data"] += jsnAction;
 
     } // for
@@ -814,13 +565,40 @@ QString JsonInfo::returnAllActions()
     return QString::fromStdString(jsnGetActionsAnswer.dump(3)); // Изменено в merge_json
 
 
+} // returnAllActions()
+//++++++++++++++++++++++++++++++++++++++++
+// Формируем список всех доступных сервисов
+QString JsonInfo::returnAllServices()
+{
+    QJsonValue myValue;
+    QJsonArray myArray;
+    QJsonObject myobj;
+
+    jsnGetServicesAnswer.clear();
+
+    jsnGetServicesAnswer["name"] = "getservices";
+    jsnGetServicesAnswer["rc"] = RC_SUCCESS;
+    jsnGetServicesAnswer["info"] = "successful";
+    //jsnGetActionsAnswer["data"]
+
+
+    myArray = this->jsnObjServiceArray;
+    for (int i=0; i < myArray.size(); i++){
+        myobj = myArray.at(i).toObject();
+        jsnAction = QtJson_2_NlohmannJson(myobj); // adding statuses if needed
+        jsnGetServicesAnswer["data"] += jsnAction;
+
+    } // for
+
+    return QString::fromStdString(jsnGetServicesAnswer.dump(3)); // Изменено в merge_json
+
 }
 //+++++++++++++++++++++++++++++++++++++++++++
 
 void JsonInfo::setActionDone(QJsonObject &theObj)
 {
-    theObj["rc"] = -4;
-    theObj["state"] = "done";
+    theObj["result"] = JsonInfo::AC_RESULT_SUCCESS;
+    theObj["state"] = "done"; //success
 
     QString theName = theObj.value("name").toString();
 
@@ -842,17 +620,17 @@ void JsonInfo::setActionDone(QJsonObject &theObj)
 }
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-void JsonInfo::setJsnStatus()
-{
-    // Берем данные из ordered_json jsnStatus и передаем через QJsonObject
-        int indent = 3;
-        std::string s2 = jsnStatus.dump(indent);
-        jsnData = QString::fromStdString(s2);
-        jsnDoc = QJsonDocument::fromJson(jsnData.toUtf8(), &jsonError);
+//void JsonInfo::setJsnStatus()
+//{
+//    // Берем данные из ordered_json jsnStatus и передаем через QJsonObject
+//        int indent = 3;
+//        std::string s2 = jsnStatus.dump(indent);
+//        jsnData = QString::fromStdString(s2);
+//        jsnDoc = QJsonDocument::fromJson(jsnData.toUtf8(), &jsonError);
 
-        //Get the main JSON object and get the data in it
-        jsnObj = jsnDoc.object();
-}
+//        //Get the main JSON object and get the data in it
+//        jsnObj = jsnDoc.object();
+//}
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 void JsonInfo::setJsnHeadStatus(QJsonObject &theObj)
@@ -893,7 +671,7 @@ bool JsonInfo::eraseArray(QJsonArray &theArray)
     return OK;
 } // eraseArray()
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
+// Под вопросом. Соответствует ли протоколу ?
 void JsonInfo::setHeadStatusFail()
 {
     jsnHeadStatus["state"] = "Fail";
@@ -902,6 +680,8 @@ void JsonInfo::setHeadStatusFail()
 
 } //setHeadStatusFail()
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Решили, что не соотвествтует протоколу.
+// Данная информация будет в статусе экшена в action_list[], а не в заголовке jsnHeadStatus
 void JsonInfo::setActionStart2NoDetection()
 {
     jsnActionStart["state"] = DEV_ACTION_STATE_FAIL;
@@ -932,18 +712,19 @@ this->jsnData = QJsonDocument(jsnActionStart).toJson(QJsonDocument::Indented);
 } // setActionStart2NoDetection
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // fills Up the jsnActionList["action_list"] with active actions only
+// required for answer to status request
 QString JsonInfo::createActionList()
 {
     // Перебираем список  jsnObjArray, определяем у кого state == "inprogress"
     // формируем новый список
     // добавляем его в jsnData
-    QJsonValue myValue;
+//    QJsonValue myValue;
     QJsonObject myobj;
     QJsonArray myArray;
 
 
 
-   myArray = this->jsnObjArray;
+   myArray = this->jsnObjArray; // Это копирование всех данных. массив jsnObjArray не меняется
    //myArray.swap(jsnObjArray);
    //jsnObjArray.swap(myArray);
    QString str;
@@ -965,16 +746,21 @@ QString JsonInfo::createActionList()
 //    this->jsnData = merge_json(jsnActionList, jsnHeadStatus);
 
 
-    // Так вывод фиксированный. А меняться должен через jsnHeadStatus и
+    // Так вывод фиксированный. А меняться должен через jsnHeadStatus
+    // А jsnHeadStatus был изменен в MainProcess::returnActionLaunch
+
+    // Получаем заголовок ответа на запрос статуса
+    // Это самый верхний header
     ordered_json header = QtJson_2_NlohmannJson_Head(jsnHeadStatus);
 
-// Заголовок получили, теперь добавляем action_list, снова проходим массив
-// каждый элемент преобразуем QJsonObject -> ordered_json
+    // Заголовок получили, теперь добавляем action_list, снова проходим массив
+    // каждый элемент преобразуем QJsonObject -> ordered_json
+
 
     header["action_list"] =  ordered_json::array({});
     for (int i=0; i < myArray.size(); i++){
         myobj = myArray.at(i).toObject();
-        ordered_json actlst = QtJson_2_NlohmannJson_Head(myobj);
+        ordered_json actlst = QtJson_2_NlohmannJson_Data(myobj);
         header["action_list"] +=  actlst;
     }
 
@@ -983,7 +769,39 @@ QString JsonInfo::createActionList()
 
     return jsnData;
 
-} //createActionList
+}//createActionList
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+QString JsonInfo::createStatusParamList(QString paramName)
+{
+    QJsonObject myobj;
+    QJsonArray myArray;
+
+
+    // Получаем заголовок ответа на запрос статуса
+    // Это самый верхний header
+    ordered_json header = QtJson_2_NlohmannJson_Head(jsnHeadStatus);
+
+    // Заголовок получили, теперь добавляем action_list, который формируем
+    // снова проходим массив
+    // каждый элемент преобразуем QJsonObject -> ordered_json
+
+    myArray = this->jsnObjArray;
+    header["action_list"] =  ordered_json::array({});
+
+    for (int i=0; i < jsnObjArray.size(); i++) {
+        if (jsnObjArray.at(i).toObject().value("name").toString() == paramName){
+            myobj = jsnObjArray.at(i).toObject();
+        }
+    }
+
+    ordered_json action = QtJson_2_NlohmannJson_Data(myobj);
+    header["action_list"] += action;
+    jsnData = QString::fromStdString(header.dump(3));
+
+
+    return jsnData;
+} // createStatusParamList
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 void JsonInfo::SetJsnActionCollapse(QJsonObject &theObj)
 {
@@ -995,17 +813,60 @@ void JsonInfo::SetJsnActionStandUP(QJsonObject &theObj)
     this->jsnActionStandUP = theObj;
 }
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// return current value of action stored as element of jsnObjArray
+QString JsonInfo::returnActionData(QString actionName)
+{
+//    QString theName = theObj.value("name").toString();
+    QString data;
+    QJsonObject temp;
+
+//    theName = theObj.value("name").toString();
+
+    for (int i=0; i < jsnObjArray.size(); i++) {
+        if (jsnObjArray.at(i).toObject().value("name").toString() == actionName){
+            temp = jsnObjArray.at(i).toObject();
+        }
+    }
+
+    data = QJsonDocument(temp).toJson(QJsonDocument::Indented);
+    return data;
+
+}
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// return quick answer for action lauch in ordered json
+QString JsonInfo::returnActionLaunch(QJsonObject &theObj)
+{
+    ordered_json header = QtJson_2_NlohmannJson_QuickAnswer(theObj);
+    return QString::fromStdString(header.dump(3));
+
+}
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// Set actual data for the action - it means
 // repalce data in array jsnObjArray with the new data from theObj
 void JsonInfo::setActionData(QJsonObject &theObj)
 {
 // Ищем в jsnObjArray по "name" нужный action, меняем его на значения theobj
 // Так работаем только с массивом.
     QString theName = theObj.value("name").toString();
+    QString info;
+//    QJsonObject temp;
     // Проходим jsnObjArray, ищем совпадение по "name", меняем "rc" и "state", делаем replase
+    // Сохраняем значение "info"
 
+    // А еще пробуем
+    // QJsonArray::toVariantList() - Converts this object to a QVariantList. Returns the created map.
+    // QJsonArray::fromVariantList(const QVariantList &list) Converts the variant list list to a QJsonArray
+    //             The QVariant values in list will be converted to JSON values.
+    theName = theObj.value("name").toString();
     for (int i=0; i < jsnObjArray.size(); i++) {
         if (jsnObjArray.at(i).toObject().value("name").toString() == theName){
+            info = jsnObjArray.at(i).toObject().value("info").toString();
+            theObj["info"] = info;
             jsnObjArray.replace(i, theObj);
+//            temp = jsnObjArray.at(i).toObject();
+//            temp["info"] = info;
+//            jsnObjArray.replace(i, temp);
+
         }
     }
 //    jsnActionList["action_list"] = jsnObjArray;

@@ -70,7 +70,7 @@ void QSimpleServer::incomingConnection(qintptr sDescriptor)
     connect(tcpthread, &QSocketThread::stopThread_signal, tcpthread, &QSocketThread::deleteLater);
     connect(thread_A, &QThread::started, tcpthread, &QSocketThread::process_TheSocket, Qt::QueuedConnection); //, Qt::QueuedConnection)
     connect(thread_A, &QThread::finished, thread_A,  &QThread::deleteLater);
-
+    connect(thread_A, &QThread::destroyed, tcpthread, &QSocketThread::onDestroyedThread);
 //    connect(tcpthread, &QSocketThread::makePause_Signal, this, &QSimpleServer::makePause_Slot, Qt::QueuedConnection);
 //    connect(tcpthread->pauseTimer, &QTimer::timeout, this, &QSimpleServer::resumePause_Slot, Qt::QueuedConnection);
 

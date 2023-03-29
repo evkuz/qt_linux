@@ -104,7 +104,7 @@ public:
     QJsonObject   jsnObj;    // ОБъект, хранящий весь JSON ответ от девайса
     QJsonObject   jsndataObj;// ОБъект, хранящий вложенный JSON-объект (вложенный внутри ответа jsnObj)
                              //   Тут как раз данные о distance
-    QJsonObject   jsnActionAnswer; // Ответ на команду Action в формате json
+//    QJsonObject   jsnActionAnswer; // Ответ на команду Action в формате json
     QJsonObject   jsnStatusActionAnswer; // Ответ на команду "status?action=getbox" в формате json
 
     //QJsonObject   jsnGetServicesAnswer; // Ответ на команду "/service?name=service_name"
@@ -117,13 +117,14 @@ public:
     // ЗА этим следит переменная JsonInfo::isAnyActionRunning
     QJsonObject mainjsnObj; // temporal Текущий экшен, нужно т.к. при большой скорости опроса это значение постоянно меняется
 
-    QJsonObject launchActionAnswer;  // Ответ на запуск экшена
+
+//    QJsonObject quickAnswerObj; // Ответ на запуск экшена
 
  //   QSharedPointer<QJsonObject> pJsnObject; //
 
 //#define
 // Актуально для разных размеров кубика
-#define FULL_CLOSED 75
+#define FULL_CLOSED 87 //75
 #define FULL_OPENED 35
 
 // Диапазон рабочих дистанций, в котором манипулятор может работать с объектом.
@@ -170,7 +171,7 @@ public:
     bool DETECTED; // Флаг, показывающий, сработал ли захват изображения.
 
     int parcel_size ;
-    unsigned char Servos [DOF] = {70,90,45,180};//==formoving position //{93,93,93,93};
+    unsigned char Servos [DOF] = {FULL_OPENED,90,57,180};//==formoving position //{93,93,93,93};
     QMutex mutex, mutex02;
     //QRecursiveMutex mutex, mutex02;
     int tcpSocketNumber; //Номер сокета, от которого пришёл запрос, и которому потом отправим ответ
@@ -208,8 +209,17 @@ public:
     };
 
     CV_Answer cvAnswer;
-    QString pointer_to_qstring(void *ptr);
-    void returnActionLaunch(QJsonObject &theObj, QObject *theSender);
+    QString pointer_to_qstring(void *ptr);     // Return string representation of pointer value
+    void returnActionLaunch(QJsonObject &theObj);
+    // Подготовка и отправление ответа на запрос "/status"
+    Q_INVOKABLE void StatusRequest_From_TcpClient(QObject* theSender);
+    // Подготовка и отправление ответа на запрос "/action?name=<action name>"
+    Q_INVOKABLE void ActionLaunch_From_TcpClient(QObject* theSender, QString actionName);
+    // Подготовка и отправление ответа на запрос "service?name=<service name>"
+    Q_INVOKABLE void ServiceLaunch_From_TcpClient(QObject *theSender, QString serviceName);
+    // Подготовка и отправление ответа на запрос "/status?action=<action name>"
+    Q_INVOKABLE void StatusParamRequest_From_TcpClient(QObject* theSender, QString paramName);
+
 private:
 //    SocketClient readSocket;
     QObject *ptrTcpClient;   // Указатель на объект, приславший команду от Tcp-клиента
@@ -228,7 +238,8 @@ public slots:
     void CV_onReadyRead_Slot();    // Слот обработка сигнала readyRead()
     void CV_onDisconnected();      // Слот обработки сигнала
     void CV_NEW_onReadyRead_Slot();    // Слот обработка сигнала readyRead() включая парсинг JSON
-    void GetBox(unsigned int distance); // Запускаем захват кубика по значению расстояния до него от камеры.
+//    void GetBox(unsigned int distance); // Запускаем захват кубика по значению расстояния до него от камеры.
+    void GetBox(double distance); // Запускаем захват кубика по значению расстояния до него от камеры.
 
 
 void data_from_CVDevice_Slot(QString); // class CVDevice - слот обработки сигнала data_from_CVDevice_Signal(QString);

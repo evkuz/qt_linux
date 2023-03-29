@@ -188,7 +188,7 @@ void MainProcess::ProcessAction(int indexOfCommand, QJsonObject &theObj)
                 // 1. хват в позицию mob_put_23
                 // 2. открыть хват 3. Поднять привод [3] 4. в позицию "formoving"
 
-                memcpy(Servos, mob_2_put_23, DOF);
+                memcpy(Servos, mob_put_23, DOF);
                 this->send_Data(NOT_LAST);
 
                 // Открываем
