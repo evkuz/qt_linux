@@ -66,10 +66,11 @@ public slots:
     void process_TheSocket();
     //Слот обмена данными с сокетом
     void onReadyRead();
-    //Слот закрытия сокета
-    void onDisconnected();
+    //Слот закрытия сокета. 29.03.2023 НЕ используется
+    //void onDisconnected();
     //Слот принятия данных на отправку в сокет.
     Q_INVOKABLE void Data_2_TcpClient_Slot(QString data, qintptr socketNumber);
+    Q_INVOKABLE void Data_2_TcpClient_Slot(QString data);
     // Слот сигнала изменения состояния сокета
     void onSocketDevState_Changed();
 

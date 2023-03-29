@@ -126,6 +126,9 @@ public:
 #define FULL_CLOSED 75
 #define FULL_OPENED 35
 
+// Диапазон рабочих дистанций, в котором манипулятор может работать с объектом.
+#define MIN_DISTANCE 110
+#define MAX_DISTANCE 270
 
 
 #define FORWARD     0X31 //049
@@ -211,6 +214,7 @@ private:
 //    SocketClient readSocket;
     QObject *ptrTcpClient;   // Указатель на объект, приславший команду от Tcp-клиента
     QObject *newPtrTcpClient;
+
 public slots:
     void Data_From_Web_SLot(QString message);
     Q_INVOKABLE void Data_From_TcpClient_Slot(QString message, int socketNumber, QObject* theSender);
@@ -230,7 +234,6 @@ public slots:
 void data_from_CVDevice_Slot(QString); // class CVDevice - слот обработки сигнала data_from_CVDevice_Signal(QString);
 
 private slots:
-    //void on_openButton_clicked();
 
     void on_sitButton_clicked();
 
@@ -241,9 +244,6 @@ private slots:
 
     void on_set_posButton_clicked();
 
-
-//    void on_socketButton_clicked();
-
     void on_clampButton_clicked();
 
 
@@ -253,20 +253,9 @@ private slots:
     void Return_FW_Kinematic_XYZ_Slot(int X, int Y, int Z, float EL);
     void Pass_String_Slot(QString str);
 
-//    void on_submitButton_clicked();
-
     void on_trainButton_clicked();
     void Moving_Done_Slot(); // ОБработка сигнала окончания движения
 
-
-    //void TakeAndPutSlot();
-
-
-//    void on_getBackButton_clicked();
-
-//    void on_fixButton_clicked();
-
-//    void on_PUTButton_clicked();
 
 signals:
     void Open_Port_Signal(QString portname); // Сигнал даем по нажатию кнопки "OPEN"
@@ -274,7 +263,6 @@ signals:
     void FW_Kinemaic_Signal(int S3, int S4, int S5, int l1, int l2, int l3); // Углы приводов, длины соответствующих звеньев.
     void Write_2_TcpClient_Signal(QString, int); // Сигнал вебсерверу, - пересылка данных в сокет на отправку.
     void SetActionData_Signal(QJsonObject &theObj);
-    //    void StartTakeAndPutSignal();
 
 };
 

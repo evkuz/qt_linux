@@ -14,7 +14,7 @@
 SerialRobot::SerialRobot()
 {
     // Инициализируем буфер данными QByteArray
-    memset(byInputBuffer, 0xEE, robot_buffer_SIZE); //sizeof(byInputBuffer)
+    memset(byInputBuffer, 0xEE, sizeof(byInputBuffer)); // robot_buffer_SIZE
     MOVEMENT_DONE = true;
     SerialIsOpened = false;
     qbuf.resize (robot_buffer_SIZE);

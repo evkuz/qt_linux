@@ -359,17 +359,17 @@ void QSocketThread::onReadyRead()
 // Слот сигнала &QAbstractSocket::disconnected
 // Дождались отправки всех данных.
 // Закрваем сокет, завершаем поток.
-void QSocketThread::onDisconnected()
-{
+//void QSocketThread::onDisconnected()
+//{
     //Закрытие сокета
   //  socket->deleteLater();
     //Завершение потока
 //    emit this->finished();
- ;
+// ;
     //this->deleteLater();
 
    //this->quit();
-}
+//}
 //+++++++++++++++++
 // this is Q_INVOKABLE
 // ПРишли данные от робота на отправку в сокет.
@@ -377,99 +377,68 @@ void QSocketThread::onDisconnected()
 // Тут важно попасть в свой поток...
 void QSocketThread::Data_2_TcpClient_Slot(QString data, qintptr socketNumber)
 {
+    qDebug() << data;
+//    qDebug() << socketNumber;
+    // Готовим ответ.
+    int sockNumber = this->socketDescriptor;
+    if (sockNumber != socketNumber) {
+        qDebug()<< "thread ID" << QThread::currentThread() << "Current this->socketDescriptor is" << sockNumber << "and it's state is " << socket->state();
+        qDebug()<< "thread ID" << QThread::currentThread() << "Also socket->socketDescriptor() is " << socket->socketDescriptor();
+        qDebug()<< "thread ID" << QThread::currentThread() << "But socketNumber from MainProcess is " << socketNumber;
+
+        this->socket->readAll();
+        this->socket->abort();
+        return;
+    }
+
+}
+//+++++++++++++++++++++++++++
+// this is Q_INVOKABLE
+// ПРишли данные от робота на отправку в сокет.
+// Данные отправляем, сокет закрываем
+// Тут важно попасть в свой поток...
+
+void QSocketThread::Data_2_TcpClient_Slot(QString data)
+{
+
+
     // Готовим ответ.
     //socket->write(response.arg(QTime::currentTime().toString()).toLatin1());
-//    int sockNumber = this->socketDescriptor;
-//    if (sockNumber != socketNumber) {
-//        qDebug()<< "thread ID" << QThread::currentThread() << "Current this->socketDescriptor is" << sockNumber << "and it's state is " << socket->state();
-//        qDebug()<< "thread ID" << QThread::currentThread() << "Also socket->socketDescriptor() is " << socket->socketDescriptor();
-//        qDebug()<< "thread ID" << QThread::currentThread() << "But socketNumber from MainProcess is " << socketNumber;
-//        this->socket->readAll();
-//        this->socket->abort();
-//        return;
-//    }
     qDebug() << "%%%%%%%%%%%%%%%% Data for TCP-CLIENT %%%%%%%%%%%%%";
-//    qDebug() << "%%%%%%%%%%%%%%%% QByteArray          %%%%%%%%%%%%%";
-    //data2Client.resize(data.size());
-
-//    data2Client = data.toUtf8(); // have got data from MainProcess as QByteArray
-//    QString response = "HTTP/1.1 200 OK\r\n";
-
 //++++++++++++++++++++++++++ FAVICON ++++++++++++++++++++++++++++++++++++
-//    response += "content-type: application/json\r\n"; //text/html
-//    response += "Access-Control-Allow-Origin: *\r\n";
-//    response += "connection : close\r\n";
-//    response += "\r\n";
 
 // Добавляем данные "сверху" к шапке из конструктора
     response += data;
-//        response += "<html>";
-//        response += "<head>";
-
-//        response += "<title>MEGATESTING!!!!</title>";
-//        response += "<link rel=\"icon\" href=\"data:,\">";
-//        response += "\r\n";
-
-//        response += "</head>";
-    //    //response += "{\n\t\"status\":\"";
-//        response += "<body>";
-//        response += "IT'S HTML DATA !";
 
     qbData = response.toUtf8();
-//    qbData.resize(300);
-//    qbData += data2Client;
-//    data2Client += response.toUtf8();
-//    qDebug() << qbData;
     qDebug() << "The packet size in bytes is " << QString::number(qbData.size());
 
-//        response += "</body>";
-//        response += "</html>";
 //++++++++++++++++++++++++++ END OF FAVICON ++++++++++++++++++++++++++++++++++++
-
-
-
-//    response += "content-type: application/json\r\n";
-//    response += "Access-Control-Allow-Origin: *\r\n";
-//    response += "\r\n";
-
-//    response += data2Client;
-
     if (!socket->isValid() || this->socket->state() != QAbstractSocket::ConnectedState){
        qDebug() << "!!!!!!!!!!!!!!!!!!!!! SOCKET IS NOT VALID";
        int state = socket->state();
        qDebug() << "socket state value is " << state;
 
-       //emit stopThread_signal();
        toBeClosed = true;
-       //this->deleteLater();
 
        return;
 
     }
-// Вот тут возникает разница между socketNumber и this->socketDescriptor, т.е. они разные.
-//
 
-//    qDebug() << QThread::currentThread()  << "Current socket " << socketNumber << " state is " << this->socket->state();
-//    qDebug() << QThread::currentThread()  << "Going to SEND SEND SEND data to socket with an desctiptor " << QString::number(this->socketDescriptor);
-
-    qint64 bufbytes = socket->write(qbData.constData());
+    socket->write(qbData.constData());
     socket->waitForBytesWritten();
-    // socket->write(response.toUtf8());
-    // ВОт тут (дождаться отправки) происходит отсоединение сокета
 
     //Отсоединение от удаленнного сокета
     this->socket->disconnectFromHost();
     socket->deleteLater();
-//    socketsCounter--;
-//    emit decSocketCounter_Signal();
-////    qDebug() << QThread::currentThread()  << "The folowing data has been written to socket : \n" << qbData;
     emit stopThread_signal();
 
     // Поток завершили. Объект QSocketThread удалили
     toBeClosed = true;
 
     qDebug() << QThread::currentThread()  << "Finished" << "\n";
-}
+
+} // Data_2_TcpClient_Slot
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++
 void QSocketThread::onSocketDevState_Changed()
 {
@@ -520,15 +489,8 @@ void QSocketThread::displayError(QAbstractSocket::SocketError socketError)
         str = "The following error occurred: \n";
         str += socket->errorString();
     }
-// от
     qDebug() << "Socket ERROR !!! " << str ;
-//  Делаем запись в лог через Q_INVOKABLE
-//  emit Command_4_Parsing_Signal(str, socketDescriptor);
-
-    //QMetaObject::invokeMethod()
 
 
 } //nSocketDevState_Changed()
 //++++++++++++++++++++++++++
-
-//+++++++++++++++++++++++++++++++
