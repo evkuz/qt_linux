@@ -1,0 +1,26 @@
+posA1= 1429, posA2= 1469, E= -40, Eprev= -35, m1Speed= 38, m2Speed= 38, ptr_m1Speed = 0x220, ptr_m2Speed = 0x21e, ptr_LAGSpeed = 0x220, ptr_FWDSpeed = 0x21e, *ptr_LAGSpeed = 38, *ptr_FWDSpeed = 38
+diff_posAm1= 1429, diff_posAm2= 1469, millis = 10289, delta_T = 0.12455599755048752, de/dt = -40.14258575439453, P = -2.5, py_dedt = -40.1425872565735, I = -0.004982239902019501, D = -2.007129362828675, u = 2
+posA1= 1513, posA2= 1557, E= -44, Eprev= -40, m1Speed= 38, m2Speed= 38, ptr_m1Speed = 0x220, ptr_m2Speed = 0x21e, ptr_LAGSpeed = 0x220, ptr_FWDSpeed = 0x21e, *ptr_LAGSpeed = 38, *ptr_FWDSpeed = 38
+diff_posAm1= 84, diff_posAm2= 88, millis = 10414, delta_T = 0.12505599856376648, de/dt = -31.98567008972168, P = -2.0, py_dedt = -31.985670786998565, I = -0.010484703838825226, D = -1.5992835393499283, u = 2
+posA1= 1597, posA2= 1646, E= -49, Eprev= -44, m1Speed= 38, m2Speed= 38, ptr_m1Speed = 0x220, ptr_m2Speed = 0x21e, ptr_LAGSpeed = 0x220, ptr_FWDSpeed = 0x21e, *ptr_LAGSpeed = 38, *ptr_FWDSpeed = 38
+diff_posAm1= 84, diff_posAm2= 89, millis = 10539, delta_T = 0.12505599856376648, de/dt = -39.98208999633789, P = -2.5, py_dedt = -39.98208848374821, I = -0.016612447768449785, D = -1.9991044241874105, u = 2
+posA1= 1681, posA2= 1735, E= -54, Eprev= -49, m1Speed= 38, m2Speed= 38, ptr_m1Speed = 0x220, ptr_m2Speed = 0x21e, ptr_LAGSpeed = 0x220, ptr_FWDSpeed = 0x21e, *ptr_LAGSpeed = 38, *ptr_FWDSpeed = 38
+diff_posAm1= 84, diff_posAm2= 89, millis = 10663, delta_T = 0.12505599856376648, de/dt = -39.98208999633789, P = -2.5, py_dedt = -39.98208848374821, I = -0.023365471690893175, D = -1.9991044241874105, u = 2
+posA1= 1764, posA2= 1824, E= -60, Eprev= -54, m1Speed= 38, m2Speed= 38, ptr_m1Speed = 0x220, ptr_m2Speed = 0x21e, ptr_LAGSpeed = 0x220, ptr_FWDSpeed = 0x21e, *ptr_LAGSpeed = 38, *ptr_FWDSpeed = 38
+diff_posAm1= 83, diff_posAm2= 89, millis = 10788, delta_T = 0.12505599856376648, de/dt = -47.97850799560547, P = -3.0, py_dedt = -47.978506180497845, I = -0.030868831604719163, D = -2.3989253090248925, u = 3
+posA1= 1848, posA2= 1913, E= -65, Eprev= -60, m1Speed= 38, m2Speed= 38, ptr_m1Speed = 0x220, ptr_m2Speed = 0x21e, ptr_LAGSpeed = 0x220, ptr_FWDSpeed = 0x21e, *ptr_LAGSpeed = 38, *ptr_FWDSpeed = 38
+diff_posAm1= 84, diff_posAm2= 89, millis = 10913, delta_T = 0.12505599856376648, de/dt = -39.98208999633789, P = -2.5, py_dedt = -39.98208848374821, I = -0.038997471511363985, D = -1.9991044241874105, u = 2
+posA1= 1932, posA2= 2002, E= -70, Eprev= -65, m1Speed= 38, m2Speed= 38, ptr_m1Speed = 0x220, ptr_m2Speed = 0x21e, ptr_LAGSpeed = 0x220, ptr_FWDSpeed = 0x21e, *ptr_LAGSpeed = 38, *ptr_FWDSpeed = 38
+diff_posAm1= 84, diff_posAm2= 89, millis = 11039, delta_T = 0.12505599856376648, de/dt = -39.98208999633789, P = -2.5, py_dedt = -39.98208848374821, I = -0.04775139141082764, D = -1.9991044241874105, u = 2
+posA1= 2016, posA2= 2091, E= -75, Eprev= -70, m1Speed= 38, m2Speed= 38, ptr_m1Speed = 0x220, ptr_m2Speed = 0x21e, ptr_LAGSpeed = 0x220, ptr_FWDSpeed = 0x21e, *ptr_LAGSpeed = 38, *ptr_FWDSpeed = 38
+diff_posAm1= 84, diff_posAm2= 89, millis = 11164, delta_T = 0.12505599856376648, de/dt = -39.98208999633789, P = -2.5, py_dedt = -39.98208848374821, I = -0.05713059130311012, D = -1.9991044241874105, u = 2
+posA1= 2099, posA2= 2181, E= -82, Eprev= -75, m1Speed= 38, m2Speed= 38, ptr_m1Speed = 0x220, ptr_m2Speed = 0x21e, ptr_LAGSpeed = 0x220, ptr_FWDSpeed = 0x21e, *ptr_LAGSpeed = 38, *ptr_FWDSpeed = 38
+diff_posAm1= 83, diff_posAm2= 90, millis = 11289, delta_T = 0.12505599856376648, de/dt = -55.97492218017578, P = -3.5, py_dedt = -55.97492387724749, I = -0.06738518318533898, D = -2.7987461938623746, u = 3
+posA1= 2182, posA2= 2270, E= -88, Eprev= -82, m1Speed= 38, m2Speed= 38, ptr_m1Speed = 0x220, ptr_m2Speed = 0x21e, ptr_LAGSpeed = 0x220, ptr_FWDSpeed = 0x21e, *ptr_LAGSpeed = 38, *ptr_FWDSpeed = 38
+diff_posAm1= 83, diff_posAm2= 89, millis = 11414, delta_T = 0.12505599856376648, de/dt = -47.97850799560547, P = -3.0, py_dedt = -47.978506180497845, I = -0.07839011105895043, D = -2.3989253090248925, u = 3
+posA1= 2266, posA2= 2359, E= -93, Eprev= -88, m1Speed= 38, m2Speed= 38, ptr_m1Speed = 0x220, ptr_m2Speed = 0x21e, ptr_LAGSpeed = 0x220, ptr_FWDSpeed = 0x21e, *ptr_LAGSpeed = 38, *ptr_FWDSpeed = 38
+diff_posAm1= 84, diff_posAm2= 89, millis = 11539, delta_T = 0.12505599856376648, de/dt = -39.98208999633789, P = -2.5, py_dedt = -39.98208848374821, I = -0.0900203189253807, D = -1.9991044241874105, u = 2
+posA1= 2349, posA2= 2447, E= -98, Eprev= -93, m1Speed= 38, m2Speed= 38, ptr_m1Speed = 0x220, ptr_m2Speed = 0x21e, ptr_LAGSpeed = 0x220, ptr_FWDSpeed = 0x21e, *ptr_LAGSpeed = 38, *ptr_FWDSpeed = 38
+diff_posAm1= 83, diff_posAm2= 88, millis = 11664, delta_T = 0.12505599856376648, de/dt = -39.98208999633789, P = -2.5, py_dedt = -39.98208848374821, I = -0.10227580678462983, D = -1.9991044241874105, u = 2
+posA1= 2433, posA2= 2536, E= -103, Eprev= -98, m1Speed= 38, m2Speed= 38, ptr_m1Speed = 0x220, ptr_m2Speed = 0x21e, ptr_LAGSpeed = 0x220, ptr_FWDSpeed = 0x21e, *ptr_LAGSpeed = 38, *ptr_FWDSpeed = 38
+diff_posAm1= 84, diff_posAm2= 89, millis = 11789, delta_T = 0.12505599856376648, de/dt = -39.98208999633789, P = -2.5, py_dedt = -39.98208848374821, I = -0.11515657463669778, D = -1.9991044241874105, u = 2

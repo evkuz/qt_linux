@@ -1,0 +1,110 @@
+posA1= 124, posA2= 143, diff= 19, dt_diff= 19, m1Sped= 75, m2Sped= 75
+diff_posAm1= 124, diff_posAm2= 143
+posA1= 144, posA2= 161, diff= 17, dt_diff= -2, m1Sped= 75, m2Sped= 75
+diff_posAm1= 20, diff_posAm2= 18
+posA1= 166, posA2= 181, diff= 15, dt_diff= -2, m1Sped= 75, m2Sped= 75
+diff_posAm1= 22, diff_posAm2= 20
+posA1= 197, posA2= 211, diff= 14, dt_diff= -1, m1Sped= 75, m2Sped= 75
+diff_posAm1= 31, diff_posAm2= 30
+posA1= 240, posA2= 251, diff= 11, dt_diff= -3, m1Sped= 75, m2Sped= 75
+diff_posAm1= 43, diff_posAm2= 40
+posA1= 286, posA2= 295, diff= 9, dt_diff= -2, m1Sped= 75, m2Sped= 75
+diff_posAm1= 46, diff_posAm2= 44
+posA1= 344, posA2= 352, diff= 8, dt_diff= -1, m1Sped= 75, m2Sped= 75
+diff_posAm1= 58, diff_posAm2= 57
+posA1= 413, posA2= 419, diff= 6, dt_diff= -2, m1Sped= 75, m2Sped= 75
+diff_posAm1= 69, diff_posAm2= 67
+posA1= 482, posA2= 487, diff= 5, dt_diff= -1, m1Sped= 75, m2Sped= 75
+diff_posAm1= 69, diff_posAm2= 68
+posA1= 538, posA2= 541, diff= 3, dt_diff= -2, m1Sped= 75, m2Sped= 75
+diff_posAm1= 56, diff_posAm2= 54
+posA1= 588, posA2= 587, diff= 1, dt_diff= -2, m1Sped= 75, m2Sped= 75
+diff_posAm1= 50, diff_posAm2= 46
+posA1= 647, posA2= 642, diff= 5, dt_diff= 4, m1Sped= 75, m2Sped= 75
+diff_posAm1= 59, diff_posAm2= 55
+posA1= 711, posA2= 703, diff= 8, dt_diff= 3, m1Sped= 75, m2Sped= 75
+diff_posAm1= 64, diff_posAm2= 61
+posA1= 784, posA2= 773, diff= 11, dt_diff= 3, m1Sped= 75, m2Sped= 75
+diff_posAm1= 73, diff_posAm2= 70
+posA1= 862, posA2= 848, diff= 14, dt_diff= 3, m1Sped= 75, m2Sped= 75
+diff_posAm1= 78, diff_posAm2= 75
+posA1= 932, posA2= 920, diff= 12, dt_diff= -2, m1Sped= 75, m2Sped= 75
+diff_posAm1= 70, diff_posAm2= 72
+posA1= 994, posA2= 981, diff= 13, dt_diff= 1, m1Sped= 75, m2Sped= 75
+diff_posAm1= 62, diff_posAm2= 61
+posA1= 1062, posA2= 1049, diff= 13, dt_diff= 0, m1Sped= 75, m2Sped= 75
+diff_posAm1= 68, diff_posAm2= 68
+posA1= 1135, posA2= 1119, diff= 16, dt_diff= 3, m1Sped= 75, m2Sped= 75
+diff_posAm1= 73, diff_posAm2= 70
+posA1= 1210, posA2= 1192, diff= 18, dt_diff= 2, m1Sped= 75, m2Sped= 75
+diff_posAm1= 75, diff_posAm2= 73
+posA1= 1286, posA2= 1268, diff= 18, dt_diff= 0, m1Sped= 75, m2Sped= 75
+diff_posAm1= 76, diff_posAm2= 76
+posA1= 1361, posA2= 1345, diff= 16, dt_diff= -2, m1Sped= 75, m2Sped= 75
+diff_posAm1= 75, diff_posAm2= 77
+posA1= 1433, posA2= 1417, diff= 16, dt_diff= 0, m1Sped= 75, m2Sped= 75
+diff_posAm1= 72, diff_posAm2= 72
+posA1= 1507, posA2= 1490, diff= 17, dt_diff= 1, m1Sped= 75, m2Sped= 75
+diff_posAm1= 74, diff_posAm2= 73
+posA1= 1580, posA2= 1564, diff= 16, dt_diff= -1, m1Sped= 75, m2Sped= 75
+diff_posAm1= 73, diff_posAm2= 74
+posA1= 1652, posA2= 1634, diff= 18, dt_diff= 2, m1Sped= 75, m2Sped= 75
+diff_posAm1= 72, diff_posAm2= 70
+posA1= 1720, posA2= 1702, diff= 18, dt_diff= 0, m1Sped= 75, m2Sped= 75
+diff_posAm1= 68, diff_posAm2= 68
+posA1= 1796, posA2= 1775, diff= 21, dt_diff= 3, m1Sped= 75, m2Sped= 75
+diff_posAm1= 76, diff_posAm2= 73
+posA1= 1877, posA2= 1853, diff= 24, dt_diff= 3, m1Sped= 75, m2Sped= 75
+diff_posAm1= 81, diff_posAm2= 78
+posA1= 1957, posA2= 1931, diff= 26, dt_diff= 2, m1Sped= 75, m2Sped= 75
+diff_posAm1= 80, diff_posAm2= 78
+posA1= 2035, posA2= 2006, diff= 29, dt_diff= 3, m1Sped= 75, m2Sped= 75
+diff_posAm1= 78, diff_posAm2= 75
+posA1= 2120, posA2= 2087, diff= 33, dt_diff= 4, m1Sped= 75, m2Sped= 75
+diff_posAm1= 85, diff_posAm2= 81
+posA1= 2205, posA2= 2168, diff= 37, dt_diff= 4, m1Sped= 75, m2Sped= 75
+diff_posAm1= 85, diff_posAm2= 81
+posA1= 2293, posA2= 2254, diff= 39, dt_diff= 2, m1Sped= 75, m2Sped= 75
+diff_posAm1= 88, diff_posAm2= 86
+posA1= 2375, posA2= 2334, diff= 41, dt_diff= 2, m1Sped= 75, m2Sped= 75
+diff_posAm1= 82, diff_posAm2= 80
+posA1= 2460, posA2= 2417, diff= 43, dt_diff= 2, m1Sped= 75, m2Sped= 75
+diff_posAm1= 85, diff_posAm2= 83
+posA1= 2544, posA2= 2498, diff= 46, dt_diff= 3, m1Sped= 75, m2Sped= 75
+diff_posAm1= 84, diff_posAm2= 81
+posA1= 2624, posA2= 2574, diff= 50, dt_diff= 4, m1Sped= 75, m2Sped= 75
+diff_posAm1= 80, diff_posAm2= 76
+posA1= 2702, posA2= 2649, diff= 53, dt_diff= 3, m1Sped= 75, m2Sped= 75
+diff_posAm1= 78, diff_posAm2= 75
+posA1= 2781, posA2= 2726, diff= 55, dt_diff= 2, m1Sped= 75, m2Sped= 75
+diff_posAm1= 79, diff_posAm2= 77
+posA1= 2862, posA2= 2805, diff= 57, dt_diff= 2, m1Sped= 75, m2Sped= 75
+diff_posAm1= 81, diff_posAm2= 79
+posA1= 2942, posA2= 2881, diff= 61, dt_diff= 4, m1Sped= 75, m2Sped= 75
+diff_posAm1= 80, diff_posAm2= 76
+posA1= 3024, posA2= 2956, diff= 68, dt_diff= 7, m1Sped= 75, m2Sped= 75
+diff_posAm1= 82, diff_posAm2= 75
+posA1= 3106, posA2= 3029, diff= 77, dt_diff= 9, m1Sped= 75, m2Sped= 75
+diff_posAm1= 82, diff_posAm2= 73
+posA1= 3188, posA2= 3103, diff= 85, dt_diff= 8, m1Sped= 75, m2Sped= 75
+diff_posAm1= 82, diff_posAm2= 74
+posA1= 3278, posA2= 3185, diff= 93, dt_diff= 8, m1Sped= 75, m2Sped= 75
+diff_posAm1= 90, diff_posAm2= 82
+posA1= 3365, posA2= 3268, diff= 97, dt_diff= 4, m1Sped= 75, m2Sped= 75
+diff_posAm1= 87, diff_posAm2= 83
+posA1= 3446, posA2= 3344, diff= 102, dt_diff= 5, m1Sped= 75, m2Sped= 75
+diff_posAm1= 81, diff_posAm2= 76
+posA1= 3522, posA2= 3416, diff= 106, dt_diff= 4, m1Sped= 75, m2Sped= 75
+diff_posAm1= 76, diff_posAm2= 72
+posA1= 3602, posA2= 3490, diff= 112, dt_diff= 6, m1Sped= 75, m2Sped= 75
+diff_posAm1= 80, diff_posAm2= 74
+posA1= 3688, posA2= 3573, diff= 115, dt_diff= 3, m1Sped= 75, m2Sped= 75
+diff_posAm1= 86, diff_posAm2= 83
+posA1= 3777, posA2= 3664, diff= 113, dt_diff= -2, m1Sped= 75, m2Sped= 75
+diff_posAm1= 89, diff_posAm2= 91
+posA1= 3866, posA2= 3753, diff= 113, dt_diff= 0, m1Sped= 75, m2Sped= 75
+diff_posAm1= 89, diff_posAm2= 89
+posA1= 3951, posA2= 3831, diff= 120, dt_diff= 7, m1Sped= 75, m2Sped= 75
+diff_posAm1= 85, diff_posAm2= 78
+posA1= 4029, posA2= 3899, diff= 130, dt_diff= 10, m1Sped= 75, m2Sped= 75
+diff_posAm1= 78, diff_posAm2= 68
