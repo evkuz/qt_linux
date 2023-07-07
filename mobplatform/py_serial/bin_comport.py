@@ -3,7 +3,7 @@
 # rsync -av /home/ubuntu/pyprojects/mobplatform/py_serial/bin_comport.py nvidia@192.168.1.176:/home/nvidia/pyprojects/mobplatform/py_serial/
 #
 # mobplat => PC
-# rsync -av nvidia@192.168.1.176:/home/nvidia/pyprojects/mobplatform/py_serial/graph.txt /home/ubuntu/pyprojects/mobplatform/py_serial/
+# rsync -av nvidia@192.168.1.176:/home/nvidia/pyprojects/mobplatform/py_serial/Et.txt /home/ubuntu/pyprojects/mobplatform/py_serial/plotting
 # Данные из компорта получаем в hex-виде 10 байт за посылку
 # struct
 # Enc {
@@ -28,6 +28,7 @@ import serial.tools.list_ports
 from threading import Event
 import time
 import struct
+import math
 
 
 def write_serial():
@@ -99,7 +100,7 @@ def read_serial():
         m2Speed += data[10]
 
         long_millis = data[12:16]
-        millis, = struct.unpack('<l', long_millis)
+        millis, = struct.unpack('<L', long_millis)
 
         deltaT = data[16:20]
         f_deltaT, = struct.unpack('<f', deltaT)
@@ -113,7 +114,7 @@ def read_serial():
         Epr = data[26:28]
         Eprev, = struct.unpack('<h', Epr)
 
-        diff = abs(posA1 - posA2)
+        diff = posA1 - posA2
         diff_posAm1 = posA1 - posAm1_prev
         diff_popsAm2 = posA2 - posAm2_prev
 
@@ -146,11 +147,15 @@ def read_serial():
         ptrM2 = data[34:36]
         ptrA2, = struct.unpack('<h', ptrM2)
 
-        lgdata = data[36:38]
-        lagData, = struct.unpack('<h', lgdata)
+        # lgdata = data[36:38]
+        # lagData, = struct.unpack('<h', lgdata)
+        #
+        # fwdata = data[38:40]
+        # fwdData, = struct.unpack('<h', fwdata)
 
-        fwdata = data[38:40]
-        fwdData, = struct.unpack('<h', fwdata)
+        Integral = data[36:40]
+        fIntegral, = struct.unpack('<f', Integral)
+        strData += "Eintegral = " + str(fIntegral) + ", "
 
         # strData += "ptr_m1Speed = " + hex(ptrA1) + ", "
         # strData += "ptr_m2Speed = " + hex(ptrA2) + ", "
@@ -179,12 +184,12 @@ def read_serial():
         py_dedt = deltaE/f_deltaT
         strData += "py_dedt = " + str(py_dedt) + ", "
 
-        Eintegral = Eintegral + (E * f_deltaT)
-        if (diff <40):
+        #   Eintegral = Eintegral + (E * f_deltaT)
+        if abs(diff) < encodersGAP:
             I = 0.0
             Eintegral = 0.0
         else:
-            I = Ki*Eintegral
+            I = Ki*fIntegral
         strData += "I = " + str(I) + ", "
 
         D = Kd*py_dedt
@@ -192,7 +197,10 @@ def read_serial():
 
         u = abs(P + I + D)
         #u = u/2
-        u = round(u)
+        if math.isnan(u):
+            u = 0.0
+        else:
+            u = round(u)
         strData += "u = " + str(u) + "\n"
 
         f.write(strData)
@@ -228,10 +236,11 @@ if __name__ == "__main__":
     diff_popsAm2 = 0
     posAm2_prev = 0
 
+    encodersGAP = 10
     Eintegral = 0
-    Kp = 0.15
-    Kd = 0.05
-    Ki = 0.001
+    Kp = 0.35
+    Kd = 0.1
+    Ki = 0.013
 
     print([comport.device for comport in serial.tools.list_ports.comports()])
     ser = serial.Serial('/dev/ttyACM0', 115200, timeout=None)  # open serial port
@@ -244,7 +253,7 @@ if __name__ == "__main__":
     ser.flushOutput()
 
     f = open("demofile.txt", "wt")
-    gr = open("e(t).txt", "wt")  # open("graph.txt", "wt")
+    gr = open("Et.txt", "wt")  # open("graph.txt", "wt")
 
     myStr = "Please enter a command for serial"
     print(myStr)
@@ -261,6 +270,8 @@ if __name__ == "__main__":
         t1.join()
         t2.join()
         if event.is_set():
+            f.close()
+            gr.close()
             break
         pass
     print("Bye...")

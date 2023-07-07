@@ -154,19 +154,26 @@ void setup()
 
 //+++++++++++++++ set up timer 1
     // инициализация Timer1
+    // BYTE &= ~(1 << BIT); - установка бита "BIT" в 0
+    // 16 000 000 / 1024 = 15625 (ГЦ - частота тактов счетчика Т1), соответственно за 1с у нас 15625 импульсов, пишем это число в регистр OCR1A
+    // (target time) = (timer resolution) * (# timer counts + 1)
 
     cli(); // отключить глобальные прерывания
     TCCR1A = 0; // установить регистры в 0
-    TCCR1B = 0; 
+    TCCR1B = 0; // Timer/Counter остановлен
+
+
+
 
     OCR1A = 7812; // 15624 - примерно 1 раз/сек. установка регистра совпадения
-    TCCR1B |= (1 << WGM12); // включение в CTC режим
+    TCCR1B |= (1 << WGM12); // включение в CTC режим - "Clear Timer in Compare Match - CTC Mode"
+                            // WGM12 - бит WGM2 для таймера 1 ставим в "1" - режим 4(СТС)
 
     // Установка битов CS10 и CS12 на коэффициент деления 1024
     TCCR1B |= (1 << CS10);
     TCCR1B |= (1 << CS12);
 
-    TIMSK1 |= (1 << OCIE1A);  // включение прерываний по совпадению
+    TIMSK1 |= (1 << OCIE1A);  // включение прерываний по совпадению или "сброс по совпадению", бит OCIE1A - Timer/Counter1, Output Compare A Match Interrupt Enable
     sei(); // включить глобальные прерывания
 
 //+++++++++++++++++++++++++++++++ set up PID data
@@ -367,6 +374,9 @@ str += String(posAm2); str += ", ";
 write2chatter(str);
 
 if ((posAm1 == 0) && (posAm2==0)) {return;}
+
+// Насколько одно колесо опережает другое
+// Поскольку переменная будет модифицироваться внутри ISR она должна быть декларирована как volatile.
 int currentDelta = abs(posAm1 - posAm2);
 
 if (currentDelta > encodersGAP){ // Отставание большое, включаем ПИД encodersGAPdelta

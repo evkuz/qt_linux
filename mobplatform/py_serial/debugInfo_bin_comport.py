@@ -34,6 +34,7 @@ def write_serial():
     global event
     command = input()
     if command == "close":
+        read_serial()
         f.close()
         ser.flushInput()
         ser.flushOutput()
@@ -58,12 +59,13 @@ def read_serial():
     global posAm1_prev
     global posAm2_prev
 
-
     data = []
     while ser.in_waiting:
         # data = ser.read(10)
         # print(bytes.fromhex(data).decode('utf-8'))
+
         strData = str(ser.readline().strip())
+
         #   strData = "Абырвалг\n"
         # data = ser.read(24)
         # encA1 = data[0:2]
@@ -114,23 +116,23 @@ def read_serial():
         #
         # strData += "delta_T = " + str(f_deltaT) + ", "
         # strData += "de/dt = " + str(f_dedt) + '\n'
-
-        f.write(strData + '\n')
-        strData = "TEST"  # str(posA1) + "," + str(posA2) + "," + str(millis) + str(diff) + '\n'
-        gr.write(strData)
+        strData += '\n'
+        f.write(strData)
+        #   f.write("Super Puper !!!")
+        # strData = "TEST"  # str(posA1) + "," + str(posA2) + "," + str(millis) + str(diff) + '\n'
+        # gr.write(strData)
 
 
 def perform_transactions():
-
-    t1 = threading.Thread(target=write_serial)
     t2 = threading.Thread(target=read_serial)
+    t1 = threading.Thread(target=write_serial)
 
     # start threads
-    t1.start()
     t2.start()
+    t1.start()
     # wait until threads finish their job
-    t1.join()
     t2.join()
+    t1.join()
 
 
 if __name__ == "__main__":
@@ -154,7 +156,8 @@ if __name__ == "__main__":
     ser.flushOutput()
 
     f = open("demofile.txt", "wt")
-    gr = open("graph.txt", "wt")
+    # f.write("Test DATA")
+    # gr = open("graph.txt", "wt")
     myStr = "Please enter a command for serial"
     print(myStr)
     event = Event()
@@ -170,6 +173,7 @@ if __name__ == "__main__":
         t1.join()
         t2.join()
         if event.is_set():
+            f.close()
             break
         pass
     print("Bye...")
