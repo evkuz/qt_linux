@@ -115,6 +115,35 @@ void reset_All()
   startFlag = false;
   pidFlag = false;
 
+  Eintegral = 0;
+  prevT = 0;
+  Eprev = 0;
+
+  }
+//++++++++++++++++++++++++++++++++
+// Инициализация структуры
+void struct_init(){
+  
+  data.A1_Enc = 0;
+  data.A2_Enc = 0;
+
+  data.M1_Speed = 0;
+  data.M2_Speed = 0;
+  data.time_ms = 0;
+  data.deltaT = 0.0; // 1234.5678; 
+  data.dedt = 0.0; //3.5689;  
+  data.E = 0;
+  data.Eprev = 0;
+  
+  data.lagSpeed_ptr = &m1Speed;
+  data.fwdSpeed_ptr = &m2Speed;
+  data.M1Speed_ptr = &m1Speed;
+  data.M2Speed_ptr = &m2Speed;
+
+  data.Integral = 0.0;
+  //str = "stopped ";
+  currCommand.toCharArray(data.mystatus, sizeof(data.mystatus));
+
   }
 //++++++++++++++++++++++++++++++++
 void pid()
@@ -128,13 +157,12 @@ void pid()
   
   
   */
-cli();
+//cli();
 // u(t) = round((float)Kp*E(t) + (float)Ki*I + (float)Kd*dedt); // Управляеющее воздействие...  
 
-  float Kp = 0.15;
-  float Kd = 0.05;
-  float Ki = 0.001;
-
+  float Kp = 0.06;
+  float Kd = 0.009;
+  float Ki = 0.015;
   float u;
 
   int E; // Ошибка - отличие фактического от целевого.
@@ -148,17 +176,6 @@ cli();
   int delta, delta0;  // Разница между энкодерами
   int delta_A1, delta_A2; // разница с прошлым значением
    
-//  if (posAm1 < posAm2) {lagmSpeed = &m1Speed; fwdmSpeed = &m2Speed;}
-//  if (posAm1 > posAm2) {lagmSpeed = &m2Speed; fwdmSpeed = &m1Speed;}
-  // Так не работает
-  //delta = abs(abs(posAm1 - posAm2) - encodersGAP);
-
-  //MoveIfStopped();
-  
-//  delta_A1 = posAm1 - posAm1_prev;
-//  delta_A2 = posAm2 - posAm2_prev;
-
-  mxA = 480;
   E = posAm1 - posAm2;
 
   int speedA1 = m1Speed;
@@ -168,7 +185,7 @@ cli();
   if (E > 0) {lagmSpeed = &m2Speed; fwdmSpeed = &m1Speed;}
 
   delta0 = abs(E);
-  delta = abs(delta0 - encodersGAP);
+//  delta = abs(delta0 - encodersGAP);
 
   
 
@@ -177,25 +194,24 @@ cli();
 
 // newSpeedLag = round((float)Kp*E + (float)Ki*I + (float)Kd*dedt); // Это типа deltaSpeed ? Управляеющее воздействие...
 
-
 // calculate dt
-long currentT = micros();
+unsigned long currentT = micros();
 
 // Микросекунды делим на 1.0e6, получаем секунды.
 // Иногда значения получаются отрицательные... счетчик переполнился ? 
 float deltaT = ((float)(currentT - prevT))/(1.0e6);
 
+if (deltaT == 0) {deltaT = 0.005;}
+
 
 
 prevT = currentT;
+int eprev = Eprev;
 
-
-long eprev = Eprev;
 // Derivative
 int gradE = E - Eprev; // Наблюдаем изменение ошибки
 
-float deltaE = (float)abs(gradE);
-float dedt = float((E - Eprev)/deltaT);
+float dedt = float((gradE)/deltaT);
 
 // Integral 
 Eintegral = Eintegral + E*deltaT;
@@ -207,26 +223,35 @@ float I = (float)Ki*Eintegral;
 float D = Kd*dedt;
 
 
-u = abs((float)Kp*E + (float)Ki*Eintegral + Kd*dedt);
+u = abs(Kp*E + I + Kd*dedt);
 float calcU = u;
 
 //u = u/2; // Т.к. "в воздухе", то скорость в 2 раза ниже реальной, поэтому и u сделаем меньше в 2 раза. т.к. на оба колеса, то еще уполовиним.
 
-if (u<1) {u=0;}
 
 
-*lagmSpeed = *lagmSpeed + round(u);
+if (0<u<1) {u=1.0;}
+if (-1<u<0) {u = -1.0;}
+
+
+
+*lagmSpeed = *lagmSpeed + round(u/2);
 *fwdmSpeed = *fwdmSpeed - round(u);
 
-if (abs(*lagmSpeed) > 140 || abs(*fwdmSpeed) > 140) {
-  m1Speed = defaultMSpeed;
-  m2Speed = defaultMSpeed;
-  currCommand = "stop";
-  getValues(deltaT, dedt);
-  }
+*lagmSpeed = constrain(*lagmSpeed, speedBottomLimit, speedTopLimit);
+*fwdmSpeed = constrain(*fwdmSpeed, speedBottomLimit, speedTopLimit); 
 
-  md.setM1Speed(m1Speed);
-  md.setM2Speed(m2Speed);
+//  if (abs(*lagmSpeed) > speedTopLimit || abs(*fwdmSpeed) > speedTopLimit) {
+//  m1Speed = defaultMSpeed;
+//  m2Speed = defaultMSpeed;
+//  currCommand = "pid";
+//  //getValues(deltaT, dedt);
+//  }
+//
+//if (m1Speed < speedBottomLimit) {m1Speed = speedBottomLimit; } //m2Speed = 0.8*m2Speed;
+//if (m2Speed < speedBottomLimit) {m2Speed = speedBottomLimit; } //m1Speed = 0.8*m1Speed;  
+md.setM1Speed(m1Speed);
+md.setM2Speed(m2Speed);
 
 
 //  str = "posAm1="; 
@@ -307,19 +332,28 @@ if (abs(*lagmSpeed) > 140 || abs(*fwdmSpeed) > 140) {
   data.E = E;
   data.Eprev = eprev;
 
-  data.lagSpeed_ptr = lagmSpeed;
-  data.fwdSpeed_ptr = fwdmSpeed;
+  data.lagSpeed_ptr = m1Speed; // Значение после ПИД
+  data.fwdSpeed_ptr = m2Speed; // Значение после ПИД
   data.M1Speed_ptr = &m1Speed;
   data.M2Speed_ptr = &m2Speed;
 
-  data.lagSpeed_data = *lagmSpeed;
-  data.fwdSpeed_data = *fwdmSpeed;
+  data.Integral = I;
+  
+  currCommand = "pid";
+  
+  currCommand.toCharArray(data.mystatus, sizeof(data.mystatus));
+  data.timestamp = movingTime;
 
-  sei();
+//  Serial.println("PID !!!");
+//  Serial.flush();
+
+
+ 
   Serial.write((byte*)&data, sizeof(data));
   Serial.flush();
-
-  currCommand = "pid";
+//  sei();
+  
+  
   
 
  }//pid()
