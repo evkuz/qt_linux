@@ -14,6 +14,7 @@ import string_utils
 import string
 
 
+# Смешиваем символы внутри строки случайным образом
 def mixChars(theText):
     stLength = len(theText)
     #result = " ".join(theText.split())
@@ -26,6 +27,7 @@ def mixChars(theText):
     return result
 
 
+# Вставить пробел в случаную позицию строки
 def insert_space(theText):
     r = random.randint(1, len(theText)-1)
     return theText[:r] + ' ' + theText[r:]
@@ -46,91 +48,82 @@ def fitnessFunc(theText, theSource):
                 maxMatched = nOfMatching
         else:
             matchedString = ""
-    result = maxMatched
-    # Возвращаем словарь, где ключ - число максимальных совпаденй, а значение - сама строка
-
-    return result
+    # Возвращаем словарь, где ключ - число максимальных совпадений, а значение - сама строка
+    return maxMatched
 
 
 def genRandomString(strLen):
-    sample_string = 'абвгдеёжзиклмнопрстуфхцчшщъыьэюя '
+    global sample_string
     res = ''.join((random.choice(sample_string)) for x in range(strLen)) #      + string.whitespace
-
-    # print result
-    print(str(res)) #   "The generated random string : " +
+    return res
 
 
+#  Меняем 1 раз случайный символ строки на случайный символ
 def strModification(theText):
-    # Меняем символ в строке со случайным индексом на другой случайный символ
-    sample_string = 'абвгдеёжзиклмнопрстуфхцчшщъыьэюя '
+    global  sample_string
     strLen = len(theText)
     sampleLen = len(sample_string)
     randIndex = random.randint(0, strLen-1)
     randChar = sample_string[random.randint(0, sampleLen-1)]
-    result = theText
-    #result.replace(result[randIndex], randChar, 1)
-    result = result[:randIndex] + randChar + result[randIndex + 1:]
-    print("randIndex", " ", randIndex, ", ", "randChar ", randChar)
-    print(result)
-    return result
+    modifiedStr = theText[:randIndex] + randChar + theText[randIndex + 1:]
+    return modifiedStr
 
 
-def genOffSprings(theText):
+# 10 раз вызываем модификацию строки, анализируем результат на совпадение с исходной строкой
+# Меняем только 1 символ за модификацию
+# Если хотя бы 1 символ совпадает, добавляем потомка в список, где каждый элемент это словарь
+# {"число совпадений": "строка-потомок"}
+# Ф-ция возвращает словарь {"число совпадений": "строка-потомок"}
+# Параметр theText - строка-предок
+# Параметр numOfMatched - число совпадений в строке-предок
+def genOffSprings(theText, numOfMatched):
     maxMatched = 0
     myDict = {}
     for i in range(10):
         #   mixedStr = string_utils.shuffle(randomString)
-        mixedStr = strModification(randomString)
-        numOfMatched = fitnessFunc(mixedStr, myText)
-        if numOfMatched > 0:
-            myDict.update({numOfMatched: mixedStr})
-        if numOfMatched > maxMatched:
-            maxMatched = numOfMatched
+        mixedStr = strModification(theText)
+        numMatch = fitnessFunc(mixedStr, originalString)
+        if numMatch > numOfMatched:
+            myDict.update({numMatch: mixedStr})
+            # Вот тут уже можно выходить из ф-ции, даже если i < 10
             # Вот тут добавляем строку в словарь где ключ- число совпадений, а значение - строка !
-            # Потом из этого словаря всех заберем.
-        print(mixedStr, numOfMatched)
-
     return myDict    # maxMatched
 
 
 if __name__ == "__main__":
-    myText = "каждый охотник желает знать где сидит фазан"
-    print(myText, " ", len(myText))
-    #   genRandomString(len(myText))
-    #   print(len(myText))
-    randomString = "щьтбшхшжкёшъъчсы глфцлопчруыихзяшщручяастбс"
+    sample_string = 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя '
+    originalString = "каждый охотник желает знать где сидит фазан"
+    print(originalString, " ", len(originalString))
+    # randomString = "щьтбшхшжкёшъъчсы глфцлопчруыихзяшщручяастбс"  # Начальная популяция.
+    randomString = str(genRandomString(len(originalString)))
+    #   print(len(originalString))
+    #   Получили начачльную популяцию, надо проверить её "сходимость" с исходной строкой, чтобы отобрать лучших
     print(randomString)
-    # myLength = mixChars(randomString)
-    # print(myLength)
-    # maxMatched = 0
-    #
-    # for i in range(10):
-    #     #   mixedStr = string_utils.shuffle(randomString)
-    #     mixedStr = strModification(randomString)
-    #     numOfMatched = fitnessFunc(mixedStr, myText)
-    #     if numOfMatched > maxMatched:
-    #         maxMatched = numOfMatched
-    #         # Вот тут добавляем строку в словарь где ключ- число совпадений, а значение - строка !
-    #         # Потом из этого словаря всех заберем.
-    #     print(mixedStr, numOfMatched)
-    # #     spacedText = insert_space(mixedStr)
-    numMatched = 0
-    #matching = {}
-    n = 0
-    while numMatched < 1:
-        #   numMatched = genOffSprings(randomString)
-        matching = genOffSprings(randomString)
-        theList = matching.keys()
-        if theList:
-            numMatched += 1
+    initialMatch = fitnessFunc(randomString, originalString)
+    print("Начальная популяция, число совпадений ", str(initialMatch))
+    matching = []
+    result = {}
+    numOfMutation = 0
+    totalMatch = initialMatch
+    resultString = randomString
+    while totalMatch < len(originalString):
+        result = genOffSprings(resultString, totalMatch)  # Получили словарь совпадений, состоящий из 1 пары ключ-значение
+        # Вот тут анализируем поколения, выбираем лучшее - это 1 строка.
+        # Если несколько одинаковых по совпадениям строк - берм последнюю, более "молодую"
+        theList = result.keys()
+        if theList: # Если список не пустой, значит есть потомки, более подходящие, чем предок
+            totalMatch += 1
+            keysList = result.keys()
+            theKey = max(keysList)
+            resultString = result.get(theKey)
+            matching.append(result)
+        numOfMutation += 1
+    # Пишем в файл полученный список
+    with open("matchList.txt", "wt") as data:
+        for item in matching:
+            data.write("%s\n" % item)
 
-    print(numMatched)
-    print(matching)
-
-    # Вот теперь это надо зациклить :)
-
-    #   Всего 1 совпадение из всех - это мало.
-    #   Меняем randomString
-    example_string = "test"
-    print(example_string.replace(example_string[0], "b",1))
-
+    # example_string = "test"
+    # print(example_string.replace(example_string[0], "b",1))
+    print("...")
+    print("Число мутаций ", numOfMutation)
