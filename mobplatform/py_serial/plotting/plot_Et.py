@@ -5,7 +5,7 @@ from matplotlib import style
 
 str = '330,342,3994\n'
 x = str.split(",")
-print(x)
+# print(x)
 y = []
 #  y2 = []
 x = []
@@ -16,8 +16,8 @@ with open("Et.txt", 'r', encoding='UTF-8') as file:
         x.append(int(myline[0]))    # millis
         y.append(int(myline[1].rstrip()))    # E
 
-        print(line.rstrip())
-print('\n')
+        # print(line.rstrip())
+# print('\n')
 #print("x = [" + ', '.join(x1) + "]")
 
 # print("blue = " + ', '.join(y1))

@@ -110,8 +110,8 @@ void reset_All()
   posBm2 = 0;
   posAm1_prev = 0;
   posAm2_prev = 0;
-  m1Speed = defaultMSpeed;
-  m2Speed = defaultMSpeed;
+  m1Speed = speedBottomLimit; //defaultMSpeed;
+  m2Speed = speedBottomLimit; //defaultMSpeed;
   startFlag = false;
   pidFlag = false;
 
@@ -126,12 +126,15 @@ void struct_init(){
   
   data.A1_Enc = 0;
   data.A2_Enc = 0;
+  data.diff = 0;          // 2 bytes
+  data.diff_vector = 0;   // 2 bytes
+
 
   data.M1_Speed = 0;
   data.M2_Speed = 0;
   data.time_ms = 0;
-  data.deltaT = 0.0; // 1234.5678; 
-  data.dedt = 0.0; //3.5689;  
+  data.deltaT = 1.0; // 1234.5678; 
+  data.dedt = 1.0; //3.5689;  
   data.E = 0;
   data.Eprev = 0;
   
@@ -140,9 +143,14 @@ void struct_init(){
   data.M1Speed_ptr = &m1Speed;
   data.M2Speed_ptr = &m2Speed;
 
-  data.Integral = 0.0;
+  data.Integral = 555.0;
   //str = "stopped ";
   currCommand.toCharArray(data.mystatus, sizeof(data.mystatus));
+  data.timestamp = millis();
+ 
+  data.Proportional = Kp;
+  data.Integral_k = Ki;
+  data.Derivative = Kd;
 
   }
 //++++++++++++++++++++++++++++++++
@@ -160,9 +168,9 @@ void pid()
 //cli();
 // u(t) = round((float)Kp*E(t) + (float)Ki*I + (float)Kd*dedt); // Управляеющее воздействие...  
 
-  float Kp = 0.06;
-  float Kd = 0.009;
-  float Ki = 0.015;
+//  float Kp = 0.0235;
+//  float Kd = 0.0275;
+//  float Ki = 0.01;
   float u;
 
   int E; // Ошибка - отличие фактического от целевого.
@@ -201,7 +209,7 @@ unsigned long currentT = micros();
 // Иногда значения получаются отрицательные... счетчик переполнился ? 
 float deltaT = ((float)(currentT - prevT))/(1.0e6);
 
-if (deltaT == 0) {deltaT = 0.005;}
+if (deltaT == 0) {deltaT = 1.0;}
 
 
 
@@ -235,7 +243,7 @@ if (-1<u<0) {u = -1.0;}
 
 
 
-*lagmSpeed = *lagmSpeed + round(u/2);
+*lagmSpeed = *lagmSpeed + round(u);
 *fwdmSpeed = *fwdmSpeed - round(u);
 
 *lagmSpeed = constrain(*lagmSpeed, speedBottomLimit, speedTopLimit);
