@@ -1,4 +1,10 @@
-# Строку "каждый охотник желает знать где сидит фазан" преобразуем в набор символов, составляюищх эту строку.
+# Пример решения задачи с помощью ГА.
+# Имеем исходную строку "каждый охотник желает знать где сидит фазан".
+# 1. Генерим строку со случайным набором символов, но равной по длине исходной строке. Это начальная популяция.
+# 2. Меняем случайным образом в строке-популяции по 1 символу, отбираем наиболее подходящий вариант (потомок).
+#    Наиболее подходящий - это максимальное число совпадений у потомка с целевой строкой.
+# 3. Потомок становится предком, идем в п.2. повторяем, пока не получем точное совпадение.
+#
 # there is no sadder story in the world than the story of romeo and juliet
 # Добавляем пробел в случайную позицию
 # Далее, через ГА восстанавливаем строку.
@@ -15,6 +21,7 @@ import string
 
 
 # Смешиваем символы внутри строки случайным образом
+# Наиболее удачным оказался shuffle.
 def mixChars(theText):
     stLength = len(theText)
     #result = " ".join(theText.split())
@@ -27,38 +34,41 @@ def mixChars(theText):
     return result
 
 
-# Вставить пробел в случаную позицию строки
+# Вставить пробел в случайную позицию строки
+# На деле это не нужно, т.к. пробел включен в список(набор) символов из которого делается выборка.
 def insert_space(theText):
     r = random.randint(1, len(theText)-1)
     return theText[:r] + ' ' + theText[r:]
 
 
+#   Ф-ция пригодности.
+#   Это сердце ГА. Принимает на вход потомка и целевую строку, на выходе дает число совпадений,
+#   т.е ОБЩЕЕ число совпавших символах в этих строках, даже если символы идут не подряд.
 def fitnessFunc(theText, theSource):
     matchedString = ""
-    nOfMatching = 0     # Количество совпавших символов подряд
+    nOfMatching = 0     # Количество совпадений
     maxMatched = 0
-    totalMatching = 0       # Всего совпадений в этой строке, т.е. сколько всего символов совпадает
-
     for element in range(0, len(theText)):
         if theText[element] == theSource[element]:
             matchedString += theText[element]   # ДОбавляем совпавшй символ к имеющейся строке
             nOfMatching += 1
-            totalMatching += 1
             if nOfMatching > maxMatched:
                 maxMatched = nOfMatching
-        else:
+        else:   # Когда строки совпадают кусками из разных частей. При этом сохраняется maxMatched
             matchedString = ""
     # Возвращаем словарь, где ключ - число максимальных совпадений, а значение - сама строка
     return maxMatched
 
 
+#   Генерим случайную строку длиной strLen
 def genRandomString(strLen):
     global sample_string
-    res = ''.join((random.choice(sample_string)) for x in range(strLen)) #      + string.whitespace
+    res = ''.join((random.choice(sample_string)) for x in range(strLen))
     return res
 
 
-#  Меняем 1 раз случайный символ строки на случайный символ
+#   Операция мутации в терминах ГА.
+#   Меняем 1 раз случайный символ строки на случайный символ алфавита кириллицы, - это строка sample_string
 def strModification(theText):
     global  sample_string
     strLen = len(theText)
@@ -69,7 +79,9 @@ def strModification(theText):
     return modifiedStr
 
 
-# 10 раз вызываем модификацию строки, анализируем результат на совпадение с исходной строкой
+# Генерация потомков с последующим отбором.
+# Отбираем тех, у кого число совпадений превышает таковое у предка.
+# 10 раз вызываем модификацию строки (мутация), анализируем результат на совпадение с исходной строкой - Селекция.
 # Меняем только 1 символ за модификацию
 # Если хотя бы 1 символ совпадает, добавляем потомка в список, где каждый элемент это словарь
 # {"число совпадений": "строка-потомок"}
@@ -94,16 +106,17 @@ if __name__ == "__main__":
     sample_string = 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя '
     originalString = "каждый охотник желает знать где сидит фазан"
     print(originalString, " ", len(originalString))
-    # randomString = "щьтбшхшжкёшъъчсы глфцлопчруыихзяшщручяастбс"  # Начальная популяция.
+    # randomString = "щьтбшхшжкёшъъчсы глфцлопчруыихзяшщручяастбс"
+    # Начальная популяция.
     randomString = str(genRandomString(len(originalString)))
     #   print(len(originalString))
-    #   Получили начачльную популяцию, надо проверить её "сходимость" с исходной строкой, чтобы отобрать лучших
+    #   Получили начачльную популяцию, проверяем её "сходимость" с исходной строкой
     print(randomString)
     initialMatch = fitnessFunc(randomString, originalString)
     print("Начальная популяция, число совпадений ", str(initialMatch))
-    matching = []
-    result = {}
-    numOfMutation = 0
+    matching = []   # Список, где каждый элемент это словарь {"число совпадений" : "Строка"}
+    result = {}     # словарь совпадений
+    numOfMutation = 0   # Число мутаций, понадобившееся для полного совпадения строк. Для наглядности.
     totalMatch = initialMatch
     resultString = randomString
     while totalMatch < len(originalString):
