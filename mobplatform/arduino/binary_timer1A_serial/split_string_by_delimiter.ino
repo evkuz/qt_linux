@@ -12,9 +12,9 @@ separate (
 
     strcpy (s, str.c_str ());
 
-    *p++ = strtok (s, " ");
-    for (n = 1; NULL != (*p++ = strtok (NULL, " ")); n++)
-        if (size == n)
+    *p++ = strtok (s, " "); //вот тут n == 0
+    for (n = 1; (*p++ = strtok (NULL, " ")) != NULL; n++)
+        if (n == size)
             break;
 
     return n;

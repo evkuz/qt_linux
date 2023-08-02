@@ -2,10 +2,11 @@
 # Тут пишем данные в файл в текстовом виде, НО посылка приходит в двоичном.
 # Нужно соответствующая прошивка Ардуино
 # PC => mobPlat
-# rsync -av /home/ubuntu/pyprojects/mobplatform/py_serial/bin_comport.py nvidia@192.168.1.176:/home/nvidia/pyprojects/mobplatform/py_serial/
+# rsync -av /home/ubuntu/pyprojects/mobplatform/py_serial/ga_bin_comport.py nvidia@192.168.1.176:/home/nvidia/pyprojects/mobplatform/py_serial/
 #
 # mobplat => PC
-# rsync -av nvidia@192.168.1.176:/home/nvidia/pyprojects/mobplatform/py_serial/graph.txt /home/ubuntu/pyprojects/mobplatform/py_serial/
+# rsync -av nvidia@192.168.1.176:/home/nvidia/pyprojects/mobplatform/py_serial/Et.txt /home/ubuntu/pyprojects/mobplatform/py_serial/plotting
+# rsync -av nvidia@192.168.1.176:/home/nvidia/pyprojects/mobplatform/py_serial/data.csv /home/ubuntu/pyprojects/mobplatform/py_serial
 # Данные из компорта получаем в hex-виде 10 байт за посылку
 # struct
 # Enc {
@@ -57,12 +58,14 @@ def parseData(data):
     global status
     global counter
 
+    print("I'm in parseData")
     mycsvData = []
     strData = ''
 
     encA1 = data[0:2]
     posA1, = struct.unpack('<h', encA1)
     mycsvData.append(posA1)
+    print()
 
     encA2 = data[2:4]
     posA2, = struct.unpack('<h', encA2)
@@ -128,7 +131,7 @@ def parseData(data):
     myStatus = data[40:48]
     lstatus, = struct.unpack('<8s', myStatus)
     print(lstatus)
-    if (lstatus.startswith(b'stop')) or (status == "stop") or (lstatus.startswith(b'Got')):
+    if (lstatus.startswith(b'stop')) or (status == "stop") or (lstatus.startswith(b'Got')): # После установки ПИД-коэффициентов в ответ приходит "Got-PId"
         counter += 1
         status = "stop"
         print(counter)
@@ -145,15 +148,23 @@ def parseData(data):
 
     myProp = data[52:56]  # Kp
     fProp, = struct.unpack('<f', myProp)
+    fProp = "%.4f" % fProp
     mycsvData.append(fProp)
 
     myIntegral = data[56:60]
     fIntegral, = struct.unpack('<f', myIntegral)
+    fIntegral = "%.4f" % fIntegral
     mycsvData.append(fIntegral)
 
     myDeriv = data[60:64]  # Kd
     fDeriv, = struct.unpack('<f', myDeriv)
+    fDeriv = "%.4f" % fDeriv
     mycsvData.append(fDeriv)
+    #   print("Float value Kd " + str(fDeriv))
+
+    myText = data[64:107]  # Kd
+    myString, = struct.unpack('<43s', myText)
+    mycsvData.append(myString)
 
     csvData.writerow(mycsvData)
     mycsvData.clear()
@@ -170,7 +181,7 @@ def write_serial():
 
     if status == "stop":
         status = "moving"
-        task = "moveon" #    input()
+        task = "start" # "moveon"   input()
         ser.write(task.encode())
 
     if status == "setPID":
@@ -213,6 +224,7 @@ def read_serial():
 
     while ser.in_waiting:
         data = ser.read(parcelSize)
+        #   time.sleep(1)
         parseData(data)
 
 
@@ -244,14 +256,14 @@ if __name__ == "__main__":
     Ki = 0.0123
     Kd = 0.0275
 
-    Num = 2     #   Количество циклов запуска платформы
+    Num = 0     #   Количество циклов запуска платформы, отсчет с 0
     Tfull = 6000    # Время работы 1 цикла запуска платформы.
     Tpid = 200  #   Время работы PID в мс. Это интервал, в течение которого действуют текущие ПИД-коэффициенты.
 
-    counter = -1 # счетчик запусков тележки, встаёт в 0 после отправки ПИД-коэффициентов
-
+   # counter = -1 # счетчик запусков тележки, встаёт в 0 после отправки ПИД-коэффициентов
+    counter = -1
     status = "stop" # running
-    parcelSize = 64 # Количество байт в посылке Ардуино->ПК
+    parcelSize = 107 # Количество байт в посылке Ардуино->ПК
 
     print([comport.device for comport in serial.tools.list_ports.comports()])
     ser = serial.Serial('/dev/ttyACM0', 115200, timeout=None)  # open serial port
@@ -268,7 +280,7 @@ if __name__ == "__main__":
 
     myStr = "setPID "
     status = "setPID"
-    myStr += str(Kp) # f'{Kp:.4f}' *10000
+    myStr += str(Kp)     # f'{Kp:.4f}' *10000
     myStr += " "
 
     myStr += str(Ki)
@@ -292,7 +304,7 @@ if __name__ == "__main__":
     mydata = []
     time.sleep(1)
     # data = ser.read(parcelSize)
-    mydata = ser.read(64)
+    mydata = ser.read(parcelSize)
     print("Got some data from serial !")
     print(str(mydata))
 
@@ -307,13 +319,14 @@ if __name__ == "__main__":
     # print(str(data))
 
 #    print("Go on !")
-    f = open("demofile.txt", "wt")
+    f = open("Et.txt", "wt")
+    # gr = open("Et.txt", "wt")
     # f.write("Test DATA")
     # gr = open("graph.txt", "wt")
     encdata = open('data.csv', 'w', encoding='UTF8', newline='')
     csvData = csv.writer(encdata)   #   ,delimiter= ',', quotechar= '|', quoting=csv.QUOTE_MINIMAL)
     header = ['posA1', 'posA2', 'E', 'Eprev', 'millis', 'movingTime', 'm1Speed', 'm2Speed', 'dltE', 'deltaT', 'de/dt',\
-              'SPD1', 'SPD2', 'P', 'I', 'D', 'u', 'Status', 'Kp', 'Ki', 'Kd']
+              'SPD1', 'SPD2', 'P', 'I', 'D', 'u', 'Status', 'Kp', 'Ki', 'Kd', 'debugInfo']
     #   mystr = [487, 478, 9, 0, 23544, 54, 54, 9, 0.2479, -40.4897, 5.9499, -1.2529, -3.2391]
     csvData.writerow(header)
 
@@ -335,15 +348,17 @@ if __name__ == "__main__":
     event = Event()
     notFinished = True
     #   while notFinished:
-    while counter > 2:
+    while counter < Num:
         t1 = threading.Thread(target=write_serial)
         t2 = threading.Thread(target=read_serial)
         # start threads
         t1.start()
+        #   time.sleep(1)
         t2.start()
         # wait until threads finish their job
         t1.join()
         t2.join()
+
 
     #if event.is_set():
     f.close()

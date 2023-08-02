@@ -2,7 +2,7 @@
 # Тут пишем данные в файл в отладочном виде
 # Нужно соответствующая прошивка Ардуино
 # PC => mobPlat
-# rsync -av /home/ubuntu/pyprojects/mobplatform/py_serial/bin_comport.py nvidia@192.168.1.176:/home/nvidia/pyprojects/mobplatform/py_serial/
+# rsync -av /home/ubuntu/pyprojects/mobplatform/py_serial/debugInfo_bin_comport.py nvidia@192.168.1.176:/home/nvidia/pyprojects/mobplatform/py_serial/
 #
 # mobplat => PC
 # rsync -av nvidia@192.168.1.176:/home/nvidia/pyprojects/mobplatform/py_serial/graph.txt /home/ubuntu/pyprojects/mobplatform/py_serial/
@@ -21,6 +21,7 @@
 #     float dedt;   // 32 bits
 
 # }; 24 bytes total size
+import sys
 import serial
 import threading
 import serial.tools.list_ports
@@ -118,6 +119,8 @@ def read_serial():
         # strData += "de/dt = " + str(f_dedt) + '\n'
         strData += '\n'
         f.write(strData)
+        print(strData)
+        sys.stdout.flush()
         #   f.write("Super Puper !!!")
         # strData = "TEST"  # str(posA1) + "," + str(posA2) + "," + str(millis) + str(diff) + '\n'
         # gr.write(strData)

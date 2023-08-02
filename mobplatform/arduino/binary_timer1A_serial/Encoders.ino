@@ -110,8 +110,10 @@ void reset_All()
   posBm2 = 0;
   posAm1_prev = 0;
   posAm2_prev = 0;
-  m1Speed = speedBottomLimit; //defaultMSpeed;
-  m2Speed = speedBottomLimit; //defaultMSpeed;
+
+  // Скорость не  меняем. Нужно для настройки равномерного вращения колес.
+//  m1Speed = speedBottomLimit; //defaultMSpeed;
+//  m2Speed = speedBottomLimit; //defaultMSpeed;
   startFlag = false;
   pidFlag = false;
 
@@ -140,10 +142,10 @@ void struct_init(){
   
   data.lagSpeed_ptr = &m1Speed;
   data.fwdSpeed_ptr = &m2Speed;
-  data.M1Speed_ptr = &m1Speed;
-  data.M2Speed_ptr = &m2Speed;
+  data.M1Speed_start = &m1Speed;
+  data.M2Speed_start = &m2Speed;
 
-  data.Integral = 555.0;
+  data.Integral = 0.0;
   //str = "stopped ";
   currCommand.toCharArray(data.mystatus, sizeof(data.mystatus));
   data.timestamp = millis();
@@ -151,6 +153,10 @@ void struct_init(){
   data.Proportional = Kp;
   data.Integral_k = Ki;
   data.Derivative = Kd;
+
+  str = "каждый охотник желает знать где сидит фазан";
+  str.toCharArray(data.mytext, sizeof(data.mytext));
+  
 
   }
 //++++++++++++++++++++++++++++++++
@@ -209,7 +215,7 @@ unsigned long currentT = micros();
 // Иногда значения получаются отрицательные... счетчик переполнился ? 
 float deltaT = ((float)(currentT - prevT))/(1.0e6);
 
-if (deltaT == 0) {deltaT = 1.0;}
+if (deltaT == 0) {deltaT = 1.9999;}
 
 
 
@@ -219,10 +225,18 @@ int eprev = Eprev;
 // Derivative
 int gradE = E - Eprev; // Наблюдаем изменение ошибки
 
+// Вот тут можно добавить, что если gradE < encodersGAP, это значит, что ошибка совсем мала... Но если так, то мы сюда вообще не должны попадать.
+// А вот и нет. Это не сама ошибка, а РАЗНИЦА  с прошлой ошибкой
+
+if (gradE < encodersGAP){
+  gradE = 0;
+  }
+
 float dedt = float((gradE)/deltaT);
 
+if (deltaT == 1.9999){}
 // Integral 
-Eintegral = Eintegral + E*deltaT;
+Eintegral = Eintegral + E*deltaT; // Тут время в мкс. Может имеет смысл x1000 ?
 
 Eprev = E;
 
@@ -342,8 +356,8 @@ md.setM2Speed(m2Speed);
 
   data.lagSpeed_ptr = m1Speed; // Значение после ПИД
   data.fwdSpeed_ptr = m2Speed; // Значение после ПИД
-  data.M1Speed_ptr = &m1Speed;
-  data.M2Speed_ptr = &m2Speed;
+  data.M1Speed_start = &m1Speed;
+  data.M2Speed_start = &m2Speed;
 
   data.Integral = I;
   
@@ -352,6 +366,10 @@ md.setM2Speed(m2Speed);
   currCommand.toCharArray(data.mystatus, sizeof(data.mystatus));
   data.timestamp = movingTime;
 
+  str = "u = ";
+  str += String(u,4); str += "                              "; 
+  str.toCharArray(data.mytext, sizeof(data.mytext));
+  
 //  Serial.println("PID !!!");
 //  Serial.flush();
 
@@ -405,5 +423,73 @@ void MoveIfStopped()
   
 }//MoveIfStopped()
 //++++++++++++++++++++++++++++++++++++++++++++++
+//+++ определение скорости "отрыва от земли" - сила тока, при которой каждое из колес начинает вращаться в положении "на вису".
+//++++ Данная ф-ция используется при отладке/пусконаладке для определения скорости. Далее, в режиме "на земле", эти значения 
+//++++ присваиваются переменным m[12]LightSpeed
 
+void findStartCurrent(){
+  reset_All();
+  int posA1;
+  int posA2;
+
+  currCommand = "calibration";
+
+  //startM[12]Speed - какие-то прошлые значения. Могут быть как больше, так и меньше актуальных на данный момент.
+  m1Speed=startM1Speed - 75; // На земле (-40)
+  m2Speed=startM2Speed - 75; 
+
+       
+  md.setM1Speed(m1Speed); //defaultMSpeed
+  md.setM2Speed(m2Speed);
+  delay(200);
+  
+  float f1Speed = 0.0;
+  float f2Speed = 0.0; // вещественное значение Скорости
+  posA1 = posAm1;
+  posA2 = posAm2;
+        
+  bool m1Started = false;
+  bool m2Started = false;
+  
+  while (!m1Started || !m2Started) 
+  //((posA1 < 200) || (posA2 < 200))
+  {
+    delay(5);
+   // Если не сдвинулся, то увеличиваем скорость
+    f1Speed += 0.1; // 1.1*m1Speed;
+    f2Speed += 0.1; // 1.1*m2Speed;
+  
+    m1Speed += round(f1Speed);
+    m2Speed += round(f2Speed);
+    
+    md.setM1Speed(m1Speed);
+    md.setM2Speed(m2Speed);
+              
+    delay(400);
+    if (posAm1 > 200) {m1Started = true; Serial.println("M1 Started");}
+    if (posAm2 > 200) {m2Started = true; Serial.println("M2 Started");}
+    posA1 = posAm1;
+    posA2 = posAm2;
+  
+  }
+  // Задаем значений *prev для последующей фиксации остановки.
+    posAm1_prev = posA1;
+    posAm2_prev = posA2;
+
+    startM1Speed = m1Speed;
+    startM2Speed = m2Speed;
+      // Скорости, на которых тронулись
+    str = "m1Speed="; 
+    str += String(m1Speed);  str += ", ";
+    
+    str += "m2Speed="; 
+    str += String(m2Speed); str += "\r\n";
+
+    currCommand = "movingNow";
+    
+    Serial.println(str);
+    Serial.flush();
+
+
+  } // findStartCurrent()
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++
