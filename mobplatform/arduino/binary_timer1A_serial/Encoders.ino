@@ -367,7 +367,7 @@ md.setM2Speed(m2Speed);
   data.timestamp = movingTime;
 
   str = "u = ";
-  str += String(u,4); str += "                              "; 
+  str += String(u,4); str += "          inside pid()"; 
   str.toCharArray(data.mytext, sizeof(data.mytext));
   
 //  Serial.println("PID !!!");

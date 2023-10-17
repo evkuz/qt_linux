@@ -139,13 +139,13 @@ const int cruiseMSpeed = 50/2;
 const int speedBottomLimit = 28; 
 const int speedTopLimit = 150;
 
-volatile int m1Speed = defaultMSpeed;
-volatile int m2Speed = defaultMSpeed;
+volatile int m1Speed = defaultMSpeed; // Левое колесо
+volatile int m2Speed = defaultMSpeed; // Правое колесо
 
 //++++++++++++++++++++++++ Начало вращения колеса в режиме "на вису"
 int m1LightSpeed = 27;
 int m2LightSpeed = 24;
-//++++++++++++++++++++++++
+//++++++++++++++++++++++++ Начало вращения колеса в режиме "на земле"
 volatile int startM1Speed = m1LightSpeed + 50; //92;//102; //121; //82;  // Порог старта движения для М1
 volatile int startM2Speed = m2LightSpeed + 50; //89; //108; //67;  // ... для М2 
 
@@ -204,7 +204,7 @@ volatile unsigned int pidTime = 200; // Интервал в мс между ко
 
 volatile float Eintegral = 0;
 
-volatile byte encodersGAP = 60;                               // То включаем ПИД
+volatile byte encodersGAP = 50;                               // То включаем ПИД
 
 bool pidFlag = false; // Флаг запуска ПИД    
 
@@ -511,6 +511,12 @@ void loop()
       data.Integral = 333.0;
       data.time_ms = millis();
       currCommand.toCharArray(data.mystatus, sizeof(data.mystatus));
+
+      str = "  currCommand == finish--  and stopped NOW "; 
+      str.toCharArray(data.mytext, sizeof(data.mytext));
+
+
+      
       Serial.write((byte*)&data, sizeof(data));
       Serial.flush();
       reset_All();
@@ -527,6 +533,11 @@ void loop()
       data.Integral = 999.0;
       data.time_ms = millis();
       currCommand.toCharArray(data.mystatus, sizeof(data.mystatus));
+      
+      str = "  Not stopped yet, finishing   "; 
+      str.toCharArray(data.mytext, sizeof(data.mytext));
+
+      
       Serial.write((byte*)&data, sizeof(data));
       Serial.flush();
 
@@ -665,8 +676,8 @@ void startPlatform(){
 
   currCommand = "starting";
   // 24 & 27
-  m1Speed=startM1Speed - 32; // m1LightSpeed + K1
-  m2Speed=startM2Speed - 40; // m2LightSpeed + K2
+  m1Speed=m1LightSpeed + 30; startM1Speed - 32; // m1LightSpeed + K1
+  m2Speed=m2LightSpeed + 25; startM2Speed - 40; // m2LightSpeed + K2
 
        
   md.setM1Speed(m1Speed); //defaultMSpeed
@@ -736,9 +747,9 @@ void startPlatform(){
       
       // (+12/+5) - это запас на преодоление неровностей. Для разных пов-тей будет свой. И "умный" робот должен его сам менять.
       if (m1Speed > startM1Speed +10) {m1Speed -= 1; md.setM1Speed(m1Speed);}
-      if (m2Speed > startM2Speed +) {m2Speed -= 1; md.setM2Speed(m2Speed);}
+      if (m2Speed > startM2Speed +5) {m2Speed -= 1; md.setM2Speed(m2Speed);}
   
-      if ((m1Speed <= startM1Speed + 12) && (m2Speed <= startM2Speed +5)) {finished = true;}
+      if ((m1Speed <= startM1Speed + 10) && (m2Speed <= startM2Speed +5)) {finished = true;}
       delay(200);
       posAm1_prev = posAm1;
       posAm2_prev = posAm2;
@@ -895,12 +906,16 @@ void parse_command ()
 
       if (message == "start") // Разрешаем прерывания таймера 1
       {
+        message = "";
         currCommand = "start";
         reset_All();
 
         startPlatform();
         currCommand = "moving";
         movingTime = millis();    // Фиксируем время начала движения
+        prevT = movingTime;     // Чтобы ПИД
+        Eintegral = 0;            // Чтобы ПИД
+        Eprev = E;
         lastPidTime = movingTime; // Фиксируем время последнего срабатывания PID
 
         data.A1_Enc = posAm1;
@@ -1039,7 +1054,7 @@ void parse_command ()
 //
       K = sPtr[5];
       Num = K.toInt();
-      pidTime = Num;    // Время движения с постояннмыи ПИД-настройками, 
+      pidTime = Num;    // Время движения с постояннмыи ПИД-настройками, 400 - это время действия ПИД в мс.
 //      str = "Tpid = "; 
 //      str += String(Num);
 //      Serial.println (str); 
@@ -1423,8 +1438,8 @@ int diff = posAm1 - posAm2 ;
         stopCounter = 0;
       // Значит ли, что мы стоим ?
       // Не факт, т.к. значения *_prev только что могли обновиться в loop.
-      // Тогда нужно, чтобы оно сработало ПОДРЯЛ раза 3.
-      //Это срабатывает, когда в pid() видим, что скорость слишком большая, тогда currCommand == "stop"
+      // Тогда нужно, чтобы оно сработало ПОДРЯД раза 3.
+      // Это срабатывает, когда в pid() видим, что скорость слишком большая, тогда currCommand == "stop"
       // А если0( currCommand == "start"), то ничего не делаем, ф-ция startPlatform(); уже запущена
 //      Serial.println("START Platform !!!");
       //startPlatform();

@@ -7,7 +7,11 @@
 # mobplat => PC
 # rsync -av nvidia@192.168.1.176:/home/nvidia/pyprojects/mobplatform/py_serial/Et.txt /home/ubuntu/pyprojects/mobplatform/py_serial/plotting
 # rsync -av nvidia@192.168.1.176:/home/nvidia/pyprojects/mobplatform/py_serial/data.csv /home/ubuntu/pyprojects/mobplatform/py_serial
-# Данные из компорта получаем в hex-виде 10 байт за посылку
+#
+# Ищем файлы новее 01.07.2023
+# sudo find /home/ubuntu -type f -newermt 2023-07-01 -iname "*.png" >> Bg2079.JUL
+#
+# Данные из компорта получаем в hex-виде 107 байт за посылку
 # struct
 # Enc {
 #     word A1_Enc; 2 байта
@@ -33,7 +37,7 @@
 #     float Integral_k; // 4 bytes
 #     float Derivative; // 4 bytes
 
-#     }; // 64 bytes total
+#     }; // 107 bytes total
 
 import serial
 import threading
