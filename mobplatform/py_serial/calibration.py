@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# Запускаем последовательно разные команды.
 # Тут пишем данные в файл в текстовом виде, НО посылка приходит в двоичном.
 # Нужно соответствующая прошивка Ардуино
 # PC => mobPlat
@@ -10,6 +11,12 @@
 #
 # Ищем файлы новее 01.07.2023
 # sudo find /home/ubuntu -type f -newermt 2023-07-01 -iname "*.png" >> Bg2079.JUL
+#
+#   В режиме "на полу" коэффициенты :
+#   Kp = 0.0235
+#   Ki = 0.0123
+#   Kd = 0.0275
+
 #
 # Данные из компорта получаем в hex-виде 107 байт за посылку
 # struct
@@ -48,6 +55,7 @@ import struct
 import math
 import csv
 
+#  String commandList[9] = {"blink","start", "stop", "moveon", "setPID", "reset", "getValues" ,"samplingTime", "calibration"};
 
 def parseData(data):
     global diff
@@ -61,6 +69,13 @@ def parseData(data):
     global csvData
     global status
     global counter
+    global M1Speed
+    global M2Speed
+    global E_FinList
+    global Etotal
+    global M1Stat
+    global M2Stat
+    global Estat
 
     print("I'm in parseData")
     mycsvData = []
@@ -69,17 +84,17 @@ def parseData(data):
     encA1 = data[0:2]
     posA1, = struct.unpack('<h', encA1)
     mycsvData.append(posA1)
-    print()
+    print() # Делаем пустую строку вывода
 
     encA2 = data[2:4]
     posA2, = struct.unpack('<h', encA2)
     mycsvData.append(posA2)
 
     diff = data[4:6]
-
-    Er = data[24:26]
-    E, = struct.unpack('<h', Er)
+    #   Er = data[24:26]
+    E, = struct.unpack('<h', diff)
     mycsvData.append(E)
+
 
     Epr = data[26:28]
     Eprev, = struct.unpack('<h', Epr)
@@ -96,11 +111,13 @@ def parseData(data):
     sp1 = data[8:10]
     m1Speed, = struct.unpack('<h', sp1)
     mycsvData.append(m1Speed)
+    # M1Speed.append(m1Speed)
 
     m2Speed = data[11]
     m2Speed <<= 8
     m2Speed += data[10]
     mycsvData.append(m2Speed)
+    # M2Speed.append(m2Speed)
 
     deltaE = E - Eprev
     mycsvData.append(deltaE)
@@ -113,19 +130,29 @@ def parseData(data):
     f_dedt, = struct.unpack('<f', dedt)
     mycsvData.append(f_dedt)
 
-    sp1 = data[28:30]
+    sp1 = data[28:30] # lagSpeed_ptr
     SPD1, = struct.unpack('<h', sp1)
     mycsvData.append(SPD1)
 
-    sp2 = data[30:32]
+    sp2 = data[30:32]   #   fwdSpeed_ptr
     SPD2, = struct.unpack('<h', sp2)
     mycsvData.append(SPD2)
+
+    lagSpeed = data[32:34] # "M1Speed_start" но мы здесь поставим адрес указателя lagmSpeed
+    lgSpeed, = struct.unpack('<h', lagSpeed)
+    mycsvData.append(lgSpeed)
+
+    fwdSpeed = data[34:36]
+    fdSpeed, = struct.unpack('<h', fwdSpeed)
+    mycsvData.append(fdSpeed)
 
     P = Kp * E
     mycsvData.append(P)
 
     Integral = data[36:40]
     fIntegral, = struct.unpack('<f', Integral)
+    #   Eintegral = Eintegral + E*f_deltaT
+    #   fIntegral = Ki * Eintegral
     mycsvData.append(fIntegral)
 
     py_dedt = deltaE / f_deltaT
@@ -137,8 +164,52 @@ def parseData(data):
     print(lstatus)
     if (lstatus.startswith(b'stop')) or (status == "stop") or (lstatus.startswith(b'Got')): # После установки ПИД-коэффициентов в ответ приходит "Got-PId"
         counter += 1
+        if status == "moving":
+            print("!!!!!!!!!!!!!!!!!!!!! IAM IN STATISTICS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!1")
+            from statistics import mean
+            print("M1Speed [min, max, average] :", min(M1Speed), max(M1Speed), round(mean(M1Speed)))
+            print("M2Speed [min, max, average] :", min(M2Speed), max(M2Speed), round(mean(M2Speed)))
+            print("M1Speed ", M1Speed)
+            print("M2Speed ", M2Speed)
+            print("Etotal ", Etotal)
+
+            M1List = []
+            M1List.append(min(M1Speed))
+            M1List.append(max(M1Speed))
+            M1List.append(round(mean(M1Speed)))
+            M1Stat.append(M1List)
+            M1Speed.clear()
+
+            M2List = []
+            M2List.append(min(M2Speed))
+            M2List.append(max(M2Speed))
+            M2List.append(round(mean(M2Speed)))
+            M2Stat.append(M2List)
+            M2Speed.clear()
+
+            Elist = []
+            Elist.append(min(Etotal))
+            Elist.append(max(Etotal))
+            Elist.append(round(mean(Etotal)))
+            Estat.append(Elist)
+            Etotal.clear()
+
         status = "stop"
+        E_FinList.append(E)
         print(counter)
+        print("Final E on finish is ", str(E))
+
+    # if lstatus.startswith(b'stop') and status == "stop":
+    #       # M1Stat.append(M1List)
+
+    if lstatus.startswith(b'calibra') or lstatus.startswith(b'started') or lstatus.startswith(b'pid'):
+        M1Speed.append(m1Speed)
+        M2Speed.append(m2Speed)
+        Etotal.append(E)
+
+    if lstatus.startswith(b'done'):
+        status = "done"
+        print("Now ststus is \"done\"")
 
     I = fIntegral
 
@@ -155,10 +226,10 @@ def parseData(data):
     fProp = "%.4f" % fProp
     mycsvData.append(fProp)
 
-    myIntegral = data[56:60]
-    fIntegral, = struct.unpack('<f', myIntegral)
-    fIntegral = "%.4f" % fIntegral
-    mycsvData.append(fIntegral)
+    kIntegral = data[56:60] #  Ki
+    kkIntegral, = struct.unpack('<f', kIntegral)
+    kkIntegral = "%.4f" % kkIntegral
+    mycsvData.append(kkIntegral)
 
     myDeriv = data[60:64]  # Kd
     fDeriv, = struct.unpack('<f', myDeriv)
@@ -166,11 +237,12 @@ def parseData(data):
     mycsvData.append(fDeriv)
     #   print("Float value Kd " + str(fDeriv))
 
-    myText = data[64:107]  # Kd
+    myText = data[64:107]  # mytext
     myString, = struct.unpack('<43s', myText)
     mycsvData.append(myString)
 
     print(myString)
+    print("status value is", status)
 
     csvData.writerow(mycsvData)
     mycsvData.clear()
@@ -184,6 +256,8 @@ def write_serial():
     global event
     global counter
     global status
+    global m1_light
+    global m2_light
 
     if status == "stop":
         status = "moving"
@@ -196,6 +270,29 @@ def write_serial():
         # ser.flushInput()
         # ser.flushOutput()
         status = "stop"
+
+    if status == "calibrating":
+        print("send calibrating")
+        task = "calibration"
+        ser.write(task.encode())
+        status = "calculate" # Главное, что не stop и не moving. Начинаем считать среднее значение скорости.
+        print("Calibrating is  Sent")
+
+    if status == "setSpeedInit":
+        print("send setSpeedInit")
+        #   Вот тут добавляем ранее вычисленные средние значения.
+        task = "setSpeedInit "
+        task += str(m1_light)
+        task += " "
+        task += str(m2_light)
+        ser.write(task.encode())
+        status = "waiting"
+        # По завершении команды setSpeedInit В ардуино меняется статус "waiting" --> "done".
+
+    if status == "moveon":
+        task = "moveon"
+        ser.write(task.encode())
+        status = "waiting"
 
     if status == "close":
         read_serial(parcelSize)
@@ -224,6 +321,7 @@ def read_serial():
     global csvData
     global status
     global counter
+#    global E_FinList
 
     data = []
     strData = ''
@@ -248,6 +346,8 @@ def perform_transactions():
 
 if __name__ == "__main__":
     # print(serial.__version__)
+    # Список используемых статусов. Чтобы в них не запутаться.
+    lstatus = ["stop", "setPID", "moving", "calibrating", "calculate", "done", "waiting", "moveon"]
     diff = 0
     diff_prev = 0   # Значение diff на предыдущем проходе потока
     diff_posAm1 = 0
@@ -260,10 +360,10 @@ if __name__ == "__main__":
     Eintegral = 0
     Kp = 0.0235
     Ki = 0.0123
-    Kd = 0.0275
+    Kd = 0.0375
 
-    Num = 2     #   Количество циклов запуска платформы, отсчет с 0
-    Tfull = 6000    # Время работы 1 цикла запуска платформы.
+    Num = 3     #   Количество циклов запуска платформы, отсчет с 0
+    Tfull = 6000    # Время работы в мс 1 цикла запуска платформы.
     Tpid = 200  #   Время работы PID в мс. Это интервал, в течение которого действуют текущие ПИД-коэффициенты.
 
    # counter = -1 # счетчик запусков тележки, встаёт в 0 после отправки ПИД-коэффициентов
@@ -302,6 +402,7 @@ if __name__ == "__main__":
     myStr += " "
 
     myStr += str(Tpid)
+    myStr += " "
 
     print(myStr)
     # myStr = "moveon"
@@ -332,10 +433,12 @@ if __name__ == "__main__":
     encdata = open('data.csv', 'w', encoding='UTF8', newline='')
     csvData = csv.writer(encdata)   #   ,delimiter= ',', quotechar= '|', quoting=csv.QUOTE_MINIMAL)
     header = ['posA1', 'posA2', 'E', 'Eprev', 'millis', 'movingTime', 'm1Speed', 'm2Speed', 'dltE', 'deltaT', 'de/dt',\
-              'SPD1', 'SPD2', 'P', 'I', 'D', 'u', 'Status', 'Kp', 'Ki', 'Kd', 'debugInfo']
+              'SPD1', 'SPD2', 'lagSpeed', 'fwdSpeed', 'P', 'I', 'D', 'u', 'Status', 'Kp', 'Ki', 'Kd', 'debugInfo']
     #   mystr = [487, 478, 9, 0, 23544, 54, 54, 9, 0.2479, -40.4897, 5.9499, -1.2529, -3.2391]
     csvData.writerow(header)
 
+    E_FinList = []
+    Etotal = []
     parseData(mydata)
 
     myStr = "Please enter a command for serial"
@@ -354,7 +457,24 @@ if __name__ == "__main__":
     event = Event()
     notFinished = True
     #   while notFinished:
+    # while counter < Num:
+    #     t1 = threading.Thread(target=write_serial)
+    #     t2 = threading.Thread(target=read_serial)
+    #     # start threads
+    #     t1.start()
+    #     #   time.sleep(1)
+    #     t2.start()
+    #     # wait until threads finish their job
+    #     t1.join()
+    #     t2.join()
+########################################### калибровка
+    M1Speed = []
+    M2Speed = []
+
+    status = "calibrating"
+    counter = 0
     while counter < Num:
+
         t1 = threading.Thread(target=write_serial)
         t2 = threading.Thread(target=read_serial)
         # start threads
@@ -364,9 +484,64 @@ if __name__ == "__main__":
         # wait until threads finish their job
         t1.join()
         t2.join()
+        if status == "stop":
+            status = "calibrating"
 
+    print(M1Speed)
+    print(M2Speed)
+    from statistics import mean
+    m1_avg = mean(M1Speed)
+    m2_avg = mean(M2Speed)
+    print("Average value of the M1, M2 Speed with precision up to 3 decimal value:")
+    print(round(m1_avg, 3), ", ", round(m2_avg, 3))
+    m1_light  = round(m1_avg)
+    m2_light = round(m2_avg)
 
-    #if event.is_set():
+    print("Init values for speed are ", m1_light, ", ", m2_light )
+###########################################  Отправка вычисленных начальных значений скоростей
+    status = "setSpeedInit"
+    while status != "done":
+        perform_transactions()
+
+    print("Initial values for wheels speed are settled")
+##########################################  запускаем робота, пид включается по необходимости.
+    M1Speed = []
+    M2Speed = []
+    Etotal = []
+    M1Stat = []
+    M2Stat = []
+    Estat = []
+    status = "stop" # По этому статусу запускается "start"
+    #   status = "moveon"
+    counter = 0
+    Num = 3
+    while counter < Num:
+        perform_transactions()
+        # if status == "stop":
+        #     status = "moveon"
+
+    print("Banch of Start cycles is finished")
+    E_FinList = E_FinList[-Num:]
+    print(E_FinList)
+    # abs_func = lambda x: abs(x)
+    # resE = list(map(abs_func, E_FinList))
+    # Берем абсолютную величину ошибки, чтобы среднее не портилось из-за знака.
+    resE = list(map(abs, E_FinList))
+    print(resE)
+
+    resE_avg = mean(resE)
+    print("Average of the absolute values E with precision up to 3 decimal value:")
+    print(round(resE_avg, 3))
+
+    E_average_final  = round(resE_avg)
+    print("Average value of E on finish is ", E_average_final)
+
+    # Выводим значения PID-коэффициентов
+    print("Kp = ", Kp, ", Ki = ", Ki, ", Kd = ", Kd)
+    print("M1Speed statistics : ", M1Stat)
+    print("M2Speed statistics : ", M2Stat)
+    print("E value statistics : ", Estat)
+    # if event.is_set():
     f.close()
     encdata.close()
     ser.flushInput()

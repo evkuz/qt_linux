@@ -1,6 +1,9 @@
 #!/usr/bin/env python
+#
+# Работа в разных режимах - Air, Floor
+# Cоответствующий проект Ардуино называется 2modes.
 # Тут пишем данные в файл в текстовом виде, НО посылка приходит в двоичном.
-# Нужно соответствующая прошивка Ардуино
+#
 # PC => mobPlat
 # rsync -av /home/ubuntu/pyprojects/mobplatform/py_serial/ga_bin_comport.py nvidia@192.168.1.176:/home/nvidia/pyprojects/mobplatform/py_serial/
 #
@@ -69,8 +72,7 @@ def parseData(data):
     encA1 = data[0:2]
     posA1, = struct.unpack('<h', encA1)
     mycsvData.append(posA1)
-    print()
-
+    
     encA2 = data[2:4]
     posA2, = struct.unpack('<h', encA2)
     mycsvData.append(posA2)
@@ -132,13 +134,18 @@ def parseData(data):
     D = Kd * py_dedt
     mycsvData.append(D)
 
+    # from binascii import hexlify
     myStatus = data[40:48]
     lstatus, = struct.unpack('<8s', myStatus)
-    print(lstatus)
-    if (lstatus.startswith(b'stop')) or (status == "stop") or (lstatus.startswith(b'Got')): # После установки ПИД-коэффициентов в ответ приходит "Got-PId"
+    strData = "Status is "
+    strData += lstatus.decode('utf-8')
+    print(strData)
+    if (lstatus.startswith(b'stop')) or (status == "stop") or (status == "calibrating") or (lstatus.startswith(b'Got')): # После установки ПИД-коэффициентов в ответ приходит "Got-PId"
         counter += 1
         status = "stop"
-        print(counter)
+        ardStatus = lstatus
+    #     print("step counter is")
+    mycsvData.append(lstatus)
 
     I = fIntegral
 
@@ -147,8 +154,6 @@ def parseData(data):
         u = 0.0
     else:
         u = round(u)
-    mycsvData.append(u)
-    mycsvData.append(lstatus)
 
     myProp = data[52:56]  # Kp
     fProp, = struct.unpack('<f', myProp)
@@ -166,11 +171,18 @@ def parseData(data):
     mycsvData.append(fDeriv)
     #   print("Float value Kd " + str(fDeriv))
 
-    myText = data[64:107]  # Kd
+    cStatus = data[64:66]  # statusCode
+    codeStatus, = struct.unpack('<H', cStatus)  # unsigned short
+    dstatus = codeStatus
+    mycsvData.append(dstatus)
+    if dstatus == 2:
+        print("status CODE is")
+        print(dstatus)
+
+    myText = data[66:109]  # Notes for user
     myString, = struct.unpack('<43s', myText)
     mycsvData.append(myString)
-
-    print(myString)
+    print("mytext VALUES IS", myString)
 
     csvData.writerow(mycsvData)
     mycsvData.clear()
@@ -180,24 +192,36 @@ def parseData(data):
 
 
 def write_serial():
-    global notFinished
+    # global notFinished
     global event
     global counter
     global status
 
+    print("writeSerial, status", status)
+    # Если статус не менять, то так и будет слать команды, надо один раз послать.
     if status == "stop":
         status = "moving"
         task = "start" # "moveon"   input()
         ser.write(task.encode())
+        print("starting send")
 
     if status == "setPID":
         task = "setPIDabc"
         ser.write(task.encode())
-        # ser.flushInput()
-        # ser.flushOutput()
+        time.sleep(1)
         status = "stop"
+        print("Set-Pid Send")
+
+    if status == "calibrating":
+        print("send calibrating")
+        task = "calibration"
+        ser.write(task.encode())
+        time.sleep(1)
+        status = "stop"
+        print("Calibrating Send")
 
     if status == "close":
+        print("send close")
         read_serial(parcelSize)
         f.close()
         encdata.close()
@@ -262,14 +286,15 @@ if __name__ == "__main__":
     Ki = 0.0123
     Kd = 0.0275
 
-    Num = 2     #   Количество циклов запуска платформы, отсчет с 0
+    Num = 3     #   Количество циклов запуска платформы, отсчет с 0
     Tfull = 6000    # Время работы 1 цикла запуска платформы.
     Tpid = 200  #   Время работы PID в мс. Это интервал, в течение которого действуют текущие ПИД-коэффициенты.
 
    # counter = -1 # счетчик запусков тележки, встаёт в 0 после отправки ПИД-коэффициентов
-    counter = -1
+    counter = -2 # Посылаем 2 команды "setPid", "setMode"
+    statusList = ["start", "moving", "setPID", "calibrating", "close"]
     status = "stop" # running
-    parcelSize = 107 # Количество байт в посылке Ардуино->ПК
+    parcelSize = 109 # Количество байт в посылке Ардуино->ПК
 
     print([comport.device for comport in serial.tools.list_ports.comports()])
     ser = serial.Serial('/dev/ttyACM0', 115200, timeout=None)  # open serial port
@@ -340,31 +365,41 @@ if __name__ == "__main__":
 
     myStr = "Please enter a command for serial"
     print(myStr)
+
+    ser.reset_input_buffer()
+    ser.reset_output_buffer()
     ser.flushInput()
     ser.flushOutput()
 
-    # myStr = "moveon"
-    # ser.write(myStr.encode())
-    # time.sleep(1)
-    # data = ser.read(parcelSize)
+    status = "stop"
+    myStr = "setMode Floor"
+    ser.write(myStr.encode())
+    time.sleep(1)
+    mydata = ser.read(parcelSize)
+    parseData(mydata)
+
+    ser.reset_input_buffer()
+    ser.reset_output_buffer()
+    ser.flushInput()
+    ser.flushOutput()
 
     #print("Sent moveon command")
     #   print(input())
-    status = "stop"
+    counter = 0
+    status = "calibrating"
     event = Event()
-    notFinished = True
-    #   while notFinished:
-    while counter < Num:
-        t1 = threading.Thread(target=write_serial)
-        t2 = threading.Thread(target=read_serial)
-        # start threads
-        t1.start()
-        #   time.sleep(1)
-        t2.start()
-        # wait until threads finish their job
-        t1.join()
-        t2.join()
+    # while counter < Num:
+    #     status = "calibrating"
+    #     print("Calibrating and counter is ", counter)
+    #     perform_transactions()
 
+    status = "stop"
+    counter = 0
+    ardStatus = "before starting"
+    while counter < Num:
+        print("Starting cycle")
+        perform_transactions()
+        print("ardStatis is ", ardStatus)
 
     #if event.is_set():
     f.close()

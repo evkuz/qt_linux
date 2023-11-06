@@ -1,9 +1,10 @@
 #!/bin/bash
 
 # Копируем код для Ардуино в папку с python-кодом для ПК
-rsync -arv /home/ubuntu/Arduino/binary_timer1A_serial /home/ubuntu/pyprojects/mobplatform/arduino/
+ARDUINO_PROJECT="calibrating"
+rsync -arv /home/ubuntu/Arduino/$ARDUINO_PROJECT /home/ubuntu/pyprojects/mobplatform/arduino/
 
-# Копируем вес проект в папку для git
+# Копируем весь проект в папку для git
 rsync -arv /home/ubuntu/pyprojects/mobplatform /home/ubuntu/iqr_lit/
 
 # Удаляем лишнее, на git это не нужно хранить. 

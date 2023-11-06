@@ -1,6 +1,7 @@
 #!/usr/bin/env python
-# Тут пишем данные в файл в отладочном виде
-# Нужно соответствующая прошивка Ардуино
+# Тут пишем отладочнве данные в файл "demofile.txt" в текстовом виде
+# Данные из сом-порта считываем построчно.
+# Нужна соответствующая прошивка Ардуино
 # PC => mobPlat
 # rsync -av /home/ubuntu/pyprojects/mobplatform/py_serial/debugInfo_bin_comport.py nvidia@192.168.1.176:/home/nvidia/pyprojects/mobplatform/py_serial/
 #
