@@ -115,7 +115,7 @@ void reset_All()
 //  m1Speed = speedBottomLimit; //defaultMSpeed;
 //  m2Speed = speedBottomLimit; //defaultMSpeed;
   startFlag = false;
-  pidFlag = false;
+  pid1stTime = false;
 
   Eintegral = 0;
   prevT = 0;
@@ -178,6 +178,8 @@ void pid()
 //  float Kd = 0.0275;
 //  float Ki = 0.0147;
 
+
+
   int* fwdmSpeed; // Скорость опережающего
   int* lagmSpeed; // Скорость отстающего колеса
 
@@ -231,10 +233,19 @@ prevT = currentT;
 int eprev = Eprev;
 
 // Derivative
-int gradE = E - Eprev; // Наблюдаем изменение ошибки
+int gradE = E - Eprev; // dltE Наблюдаем изменение ошибки
+
+bool dltEchangedSign=false;
+
+if ((gradE>0 && dltEprev<0) || (gradE<0 && dltEprev>0)){
+  dltEchangedSign=true;
+  
+  }
+
+
 
 // Вот тут можно добавить, что если gradE < encodersGAP, это значит, что ошибка совсем мала... Но если так, то мы сюда вообще не должны попадать.
-// А вот и нет. Это не сама ошибка, а РАЗНИЦА  с прошлой ошибкой
+// А вот и нет. Это не сама ошибка, а РАЗНИЦА  с прошлой ошибкой. И вот тут должна включаться инт. составляющая
 
 //if (gradE < encodersGAP){
 //  gradE = 0;
@@ -243,26 +254,48 @@ int gradE = E - Eprev; // Наблюдаем изменение ошибки
 float dedt = float((gradE)/deltaT);
 
 // Integral 
-Eintegral = Eintegral + E*deltaT; // Тут время в мкс. Может имеет смысл x1000 ?
+Eintegral = Eintegral + E*deltaT; // Тут время в с.
 
-Eprev = E;
+//Eprev = E; тогда можно сэкономить переменную eprev
 
 float P = (float)Kp*E;
 float I = (float)Ki*Eintegral;
 float D = Kd*dedt;
 
-if (I > 10) {I = 10;}
-if (I < -10) {I = -10;}
+//if (I > 10) {I = 10;}
+//if (I < -10) {I = -10;}
 
-u = abs(Kp*E + I + Kd*dedt);
+ u = (abs(P + I + D))/10000;
+
+// зашли первый раз, значение u будет неадекватное, т.к. prevT==0
+String pidStatus;
+if(pid1stTime){
+  pidStatus = "True";
+  pid1stTime = false;
+  u = 0;
+  }
+else 
+  {
+    pidStatus = "False";
+   
+    }
+
+  if (delta0 < encodersGAP) {
+    u=0;
+    // Скорости не меняем
+    }; //|| dltEchangedSign
+ 
+  
 float calcU = u;
+
+
 
 //u = u/2; // Т.к. "в воздухе", то скорость в 2 раза ниже реальной, поэтому и u сделаем меньше в 2 раза. т.к. на оба колеса, то еще уполовиним.
 
 
-
-if (0<u<1) {u=1.0;}
-if (-1<u<0) {u = -1.0;}
+// Примерно выровнялись, не меняем скорость, ждем боле существенных изменений в траектории.
+if ((-1<u<1) && (abs(gradE))<10) {u=0.0;}
+//if (-1<u<0) {u = 0.0;}
 
 
 int lessSpeed = *lagmSpeed;
@@ -386,9 +419,9 @@ md.setM2Speed(m2Speed);
   data.timestamp = movingTime;
 
   str = "u = ";
-  str += String(u,4); str += "  inside pid() ";
-  str += "Am1 = "; 
-  str += String(A1); 
+  str += String(u,4);
+  str += " pid1stTime is ";
+  str += pidStatus;
   str.toCharArray(data.mytext, sizeof(data.mytext));
   
 //  Serial.println("PID !!!");
@@ -400,6 +433,10 @@ md.setM2Speed(m2Speed);
   Serial.flush();
 //  sei();
   
+  pid1stTime = true;
+  Eprev = E;
+  dltEprev = gradE;
+
   
   
 

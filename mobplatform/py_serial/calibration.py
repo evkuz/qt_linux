@@ -55,6 +55,7 @@ import struct
 import math
 import csv
 
+
 #  String commandList[9] = {"blink","start", "stop", "moveon", "setPID", "reset", "getValues" ,"samplingTime", "calibration"};
 
 def parseData(data):
@@ -76,15 +77,16 @@ def parseData(data):
     global M1Stat
     global M2Stat
     global Estat
+    global E_AverageList
 
-    print("I'm in parseData")
+ #   print("I'm in parseData")
     mycsvData = []
     strData = ''
 
     encA1 = data[0:2]
     posA1, = struct.unpack('<h', encA1)
     mycsvData.append(posA1)
-    print() # Делаем пустую строку вывода
+ #   print()  # Делаем пустую строку вывода
 
     encA2 = data[2:4]
     posA2, = struct.unpack('<h', encA2)
@@ -94,7 +96,6 @@ def parseData(data):
     #   Er = data[24:26]
     E, = struct.unpack('<h', diff)
     mycsvData.append(E)
-
 
     Epr = data[26:28]
     Eprev, = struct.unpack('<h', Epr)
@@ -130,15 +131,15 @@ def parseData(data):
     f_dedt, = struct.unpack('<f', dedt)
     mycsvData.append(f_dedt)
 
-    sp1 = data[28:30] # lagSpeed_ptr
+    sp1 = data[28:30]  # lagSpeed_ptr
     SPD1, = struct.unpack('<h', sp1)
     mycsvData.append(SPD1)
 
-    sp2 = data[30:32]   #   fwdSpeed_ptr
+    sp2 = data[30:32]  # fwdSpeed_ptr
     SPD2, = struct.unpack('<h', sp2)
     mycsvData.append(SPD2)
 
-    lagSpeed = data[32:34] # "M1Speed_start" но мы здесь поставим адрес указателя lagmSpeed
+    lagSpeed = data[32:34]  # "M1Speed_start" но мы здесь поставим адрес указателя lagmSpeed
     lgSpeed, = struct.unpack('<h', lagSpeed)
     mycsvData.append(lgSpeed)
 
@@ -161,17 +162,20 @@ def parseData(data):
 
     myStatus = data[40:48]
     lstatus, = struct.unpack('<8s', myStatus)
-    print(lstatus)
-    if (lstatus.startswith(b'stop')) or (status == "stop") or (lstatus.startswith(b'Got')): # После установки ПИД-коэффициентов в ответ приходит "Got-PId"
+    #   print(lstatus)
+    # После установки ПИД-коэффициентов в ответ приходит "Got-PId"
+    if (lstatus.startswith(b'stopPO')) or (status == "stop") or (lstatus.startswith(b'Got')):
+        Etotal.append(E)
         counter += 1
+
         if status == "moving":
-            print("!!!!!!!!!!!!!!!!!!!!! IAM IN STATISTICS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!1")
-            from statistics import mean
-            print("M1Speed [min, max, average] :", min(M1Speed), max(M1Speed), round(mean(M1Speed)))
-            print("M2Speed [min, max, average] :", min(M2Speed), max(M2Speed), round(mean(M2Speed)))
-            print("M1Speed ", M1Speed)
-            print("M2Speed ", M2Speed)
-            print("Etotal ", Etotal)
+            # print("!!!!!!!!!!!!!!!!!!!!! IAM IN STATISTICS !!!!!!!!!!!!!!!!!!!!!!!!!!!!!1")
+            # from statistics import mean
+            # print("M1Speed [min, max, average] :", min(M1Speed), max(M1Speed), round(mean(M1Speed)))
+            # print("M2Speed [min, max, average] :", min(M2Speed), max(M2Speed), round(mean(M2Speed)))
+            # print("M1Speed ", M1Speed)
+            # print("M2Speed ", M2Speed)
+            # print("Etotal ", Etotal)
 
             M1List = []
             M1List.append(min(M1Speed))
@@ -191,17 +195,19 @@ def parseData(data):
             Elist.append(min(Etotal))
             Elist.append(max(Etotal))
             Elist.append(round(mean(Etotal)))
+            E_AverageList.append(round(mean(Etotal)))
+
             Estat.append(Elist)
             Etotal.clear()
 
+            status = "stop"
+            E_FinList.append(E)
+            print(counter)
+            print("Final E on finish is ", str(E))
+
+        #   if status == "calculate":
         status = "stop"
-        E_FinList.append(E)
-        print(counter)
-        print("Final E on finish is ", str(E))
-
-    # if lstatus.startswith(b'stop') and status == "stop":
-    #       # M1Stat.append(M1List)
-
+    # Записываем значения в течение цикла
     if lstatus.startswith(b'calibra') or lstatus.startswith(b'started') or lstatus.startswith(b'pid'):
         M1Speed.append(m1Speed)
         M2Speed.append(m2Speed)
@@ -209,7 +215,7 @@ def parseData(data):
 
     if lstatus.startswith(b'done'):
         status = "done"
-        print("Now ststus is \"done\"")
+        print("Now status is \"done\"")
 
     I = fIntegral
 
@@ -226,7 +232,7 @@ def parseData(data):
     fProp = "%.4f" % fProp
     mycsvData.append(fProp)
 
-    kIntegral = data[56:60] #  Ki
+    kIntegral = data[56:60]  # Ki
     kkIntegral, = struct.unpack('<f', kIntegral)
     kkIntegral = "%.4f" % kkIntegral
     mycsvData.append(kkIntegral)
@@ -241,8 +247,8 @@ def parseData(data):
     myString, = struct.unpack('<43s', myText)
     mycsvData.append(myString)
 
-    print(myString)
-    print("status value is", status)
+    # print(myString)
+    # print("status value is", status)
 
     csvData.writerow(mycsvData)
     mycsvData.clear()
@@ -261,7 +267,7 @@ def write_serial():
 
     if status == "stop":
         status = "moving"
-        task = "start" # "moveon"   input()
+        task = "start"  # "moveon"   input()
         ser.write(task.encode())
 
     if status == "setPID":
@@ -272,10 +278,11 @@ def write_serial():
         status = "stop"
 
     if status == "calibrating":
+        print()
         print("send calibrating")
         task = "calibration"
         ser.write(task.encode())
-        status = "calculate" # Главное, что не stop и не moving. Начинаем считать среднее значение скорости.
+        status = "calculate"  # Главное, что не stop и не moving. Начинаем считать среднее значение скорости.
         print("Calibrating is  Sent")
 
     if status == "setSpeedInit":
@@ -287,6 +294,7 @@ def write_serial():
         task += str(m2_light)
         ser.write(task.encode())
         status = "waiting"
+        print("Init command for speed : ", task)
         # По завершении команды setSpeedInit В ардуино меняется статус "waiting" --> "done".
 
     if status == "moveon":
@@ -321,7 +329,7 @@ def read_serial():
     global csvData
     global status
     global counter
-#    global E_FinList
+    #    global E_FinList
 
     data = []
     strData = ''
@@ -349,7 +357,7 @@ if __name__ == "__main__":
     # Список используемых статусов. Чтобы в них не запутаться.
     lstatus = ["stop", "setPID", "moving", "calibrating", "calculate", "done", "waiting", "moveon"]
     diff = 0
-    diff_prev = 0   # Значение diff на предыдущем проходе потока
+    diff_prev = 0  # Значение diff на предыдущем проходе потока
     diff_posAm1 = 0
     posAm1_prev = 0
 
@@ -358,18 +366,18 @@ if __name__ == "__main__":
 
     encodersGAP = 10
     Eintegral = 0
-    Kp = 0.0235
-    Ki = 0.0123
-    Kd = 0.0375
+    Kp = 0.0185
+    Ki = 0.0080 # 0.0083  # 0.0123
+    Kd = 0.0175  # 0.0275
 
-    Num = 3     #   Количество циклов запуска платформы, отсчет с 0
-    Tfull = 6000    # Время работы в мс 1 цикла запуска платформы.
-    Tpid = 200  #   Время работы PID в мс. Это интервал, в течение которого действуют текущие ПИД-коэффициенты.
+    Num = 0  # Количество циклов запуска платформы, отсчет с 0
+    Tfull = 6000  # Время работы в мс 1 цикла запуска платформы.
+    Tpid = 300  # Время работы PID в мс. Это интервал, в течение которого действуют текущие ПИД-коэффициенты.
 
-   # counter = -1 # счетчик запусков тележки, встаёт в 0 после отправки ПИД-коэффициентов
+    # counter = -1 # счетчик запусков тележки, встаёт в 0 после отправки ПИД-коэффициентов
     counter = -1
-    status = "stop" # running
-    parcelSize = 107 # Количество байт в посылке Ардуино->ПК
+    status = "stop"  # running
+    parcelSize = 107  # Количество байт в посылке Ардуино->ПК
 
     print([comport.device for comport in serial.tools.list_ports.comports()])
     ser = serial.Serial('/dev/ttyACM0', 115200, timeout=None)  # open serial port
@@ -386,7 +394,7 @@ if __name__ == "__main__":
 
     myStr = "setPID "
     status = "setPID"
-    myStr += str(Kp)     # f'{Kp:.4f}' *10000
+    myStr += str(Kp)  # f'{Kp:.4f}' *10000
     myStr += " "
 
     myStr += str(Ki)
@@ -413,7 +421,7 @@ if __name__ == "__main__":
     # data = ser.read(parcelSize)
     mydata = ser.read(parcelSize)
     print("Got some data from serial !")
-    print(str(mydata))
+    #   print(str(mydata))
 
     # while ser.in_waiting:
     #     data = ser.read(parcelSize)
@@ -425,24 +433,27 @@ if __name__ == "__main__":
     # ser.reset_output_buffer()
     # print(str(data))
 
-#    print("Go on !")
-    f = open("Et.txt", "wt")
+    #    print("Go on !")
+    f = open("Et.txt", "wt")    # Нужно для построения графика
+    statData = open("statData.txt", "at")
     # gr = open("Et.txt", "wt")
     # f.write("Test DATA")
     # gr = open("graph.txt", "wt")
     encdata = open('data.csv', 'w', encoding='UTF8', newline='')
-    csvData = csv.writer(encdata)   #   ,delimiter= ',', quotechar= '|', quoting=csv.QUOTE_MINIMAL)
-    header = ['posA1', 'posA2', 'E', 'Eprev', 'millis', 'movingTime', 'm1Speed', 'm2Speed', 'dltE', 'deltaT', 'de/dt',\
+    csvData = csv.writer(encdata)  # ,delimiter= ',', quotechar= '|', quoting=csv.QUOTE_MINIMAL)
+    header = ['posA1', 'posA2', 'E', 'Eprev', 'millis', 'movingTime', 'm1Speed', 'm2Speed', 'dltE', 'deltaT', 'de/dt', \
               'SPD1', 'SPD2', 'lagSpeed', 'fwdSpeed', 'P', 'I', 'D', 'u', 'Status', 'Kp', 'Ki', 'Kd', 'debugInfo']
     #   mystr = [487, 478, 9, 0, 23544, 54, 54, 9, 0.2479, -40.4897, 5.9499, -1.2529, -3.2391]
     csvData.writerow(header)
 
-    E_FinList = []
-    Etotal = []
+    E_FinList = []      # Массив значений E в конце каждого цикла Num
+    Etotal = []         # Список значений E  в течение одного цикла
+    E_AverageList = []  # Список значений в течение текущего цикла
+
     parseData(mydata)
 
-    myStr = "Please enter a command for serial"
-    print(myStr)
+    # myStr = "Please enter a command for serial"
+    # print(myStr)
     ser.flushInput()
     ser.flushOutput()
 
@@ -451,7 +462,7 @@ if __name__ == "__main__":
     # time.sleep(1)
     # data = ser.read(parcelSize)
 
-    #print("Sent moveon command")
+    # print("Sent moveon command")
     #   print(input())
     status = "stop"
     event = Event()
@@ -467,14 +478,16 @@ if __name__ == "__main__":
     #     # wait until threads finish their job
     #     t1.join()
     #     t2.join()
-########################################### калибровка
+    ########################################### калибровка
     M1Speed = []
     M2Speed = []
 
     status = "calibrating"
     counter = 0
+    Num = 0
     while counter < Num:
-
+        # Пока идет calibrating имеем статус "calculate"
+        # print("counter = ", counter, " status = ", status)
         t1 = threading.Thread(target=write_serial)
         t2 = threading.Thread(target=read_serial)
         # start threads
@@ -487,62 +500,100 @@ if __name__ == "__main__":
         if status == "stop":
             status = "calibrating"
 
-    print(M1Speed)
-    print(M2Speed)
+    # print(M1Speed)
+    # print(M2Speed)
     from statistics import mean
-    m1_avg = mean(M1Speed)
-    m2_avg = mean(M2Speed)
-    print("Average value of the M1, M2 Speed with precision up to 3 decimal value:")
-    print(round(m1_avg, 3), ", ", round(m2_avg, 3))
-    m1_light  = round(m1_avg)
-    m2_light = round(m2_avg)
+    #
+    # m1_avg = mean(M1Speed)
+    # m2_avg = mean(M2Speed)
+    # print("Average value of the M1, M2 Speed with precision up to 3 decimal value:")
+    # print(round(m1_avg, 3), ", ", round(m2_avg, 3))
+    # m1_light = round(m1_avg)
+    # m2_light = round(m2_avg)
+    m1_light = 26
+    m2_light = 23
 
-    print("Init values for speed are ", m1_light, ", ", m2_light )
-###########################################  Отправка вычисленных начальных значений скоростей
+    print("Init values for speed are ", m1_light, ", ", m2_light)
+    ###########################################  Отправка вычисленных начальных значений скоростей
     status = "setSpeedInit"
     while status != "done":
         perform_transactions()
 
-    print("Initial values for wheels speed are settled")
-##########################################  запускаем робота, пид включается по необходимости.
+    #   print("Initial values for wheels speed are settled")
+    ##########################################  запускаем робота, пид включается по необходимости.
     M1Speed = []
     M2Speed = []
     Etotal = []
     M1Stat = []
     M2Stat = []
     Estat = []
-    status = "stop" # По этому статусу запускается "start"
+    status = "stop"  # По этому статусу запускается "start"
     #   status = "moveon"
     counter = 0
-    Num = 3
+    Num = 5
     while counter < Num:
         perform_transactions()
         # if status == "stop":
         #     status = "moveon"
 
+    print(0)
     print("Banch of Start cycles is finished")
     E_FinList = E_FinList[-Num:]
-    print(E_FinList)
+    #   print(E_FinList)
     # abs_func = lambda x: abs(x)
     # resE = list(map(abs_func, E_FinList))
     # Берем абсолютную величину ошибки, чтобы среднее не портилось из-за знака.
     resE = list(map(abs, E_FinList))
-    print(resE)
+    resultE = "E final values "
+    resultE += str(resE)
+    resultE += '\n'
+    print("E final values ", resE)
 
     resE_avg = mean(resE)
-    print("Average of the absolute values E with precision up to 3 decimal value:")
+    print("Average of the absolute values E :") #  with precision up to 3 decimal value
     print(round(resE_avg, 3))
 
-    E_average_final  = round(resE_avg)
+    E_average_final = round(resE_avg)
     print("Average value of E on finish is ", E_average_final)
-
+    print()  # Нужна пустая строка
     # Выводим значения PID-коэффициентов
-    print("Kp = ", Kp, ", Ki = ", Ki, ", Kd = ", Kd)
+    K_values = "Kp = "
+    K_values += str(Kp)
+    K_values += ", Ki = "
+    K_values += str(Ki)
+    K_values += ", Kd = "
+    K_values += str(Kd)
+    K_values += '\n'
+
+    #   print("Kp = ", Kp, ", Ki = ", Ki, ", Kd = ", Kd)
+    print(K_values)
     print("M1Speed statistics : ", M1Stat)
     print("M2Speed statistics : ", M2Stat)
     print("E value statistics : ", Estat)
-    # if event.is_set():
+    print("E average value list : ", E_AverageList)
+
+    strE_Avg_fin = "Average value of E on finish is "
+    strE_Avg_fin += str(E_average_final)
+    strE_Avg_fin += '\n'
+
+    strE_Avg = "E average value list : "
+    strE_Avg += str(E_AverageList)
+    strE_Avg += '\n'
+
+    strEstat = "E value statistics : "
+    strEstat += str(Estat)
+    strEstat += '\n'
+
+    strDelimeter ='==============================================\n'
+    statData.write(strDelimeter)
+    statData.write(K_values)
+    statData.write(resultE)
+    statData.write(strE_Avg_fin)
+    statData.write(strEstat)
+    statData.write(strE_Avg)
+
     f.close()
+    statData.close()
     encdata.close()
     ser.flushInput()
     ser.flushOutput()
@@ -554,7 +605,6 @@ if __name__ == "__main__":
     ser.reset_input_buffer()
     ser.close()
     #    break
-    #pass
+    # pass
     print("Bye...")
     exit()
-

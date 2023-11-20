@@ -188,8 +188,9 @@ boolean isSomeOneLeading; // Флаг смены отстающего колес
 
 volatile long prevT = 0;    // for delta t counting
 volatile int Eprev = 0;     // for delta Error counting
+volatile int dltEprev = 0; 
 
-int E;
+volatile int E;
 
 volatile long myprevT = 0;
 
@@ -208,7 +209,7 @@ volatile float Eintegral = 0;
 
 volatile byte encodersGAP = 50;                               // То включаем ПИД
 
-bool pidFlag = false; // Флаг запуска ПИД    
+volatile bool pid1stTime = true; // Флаг запуска ПИД. самый первый раз, после запуска loop    
 
 long Timer1A_OneSec = 15624;
 
@@ -428,7 +429,7 @@ void loop()
     
             //currCommand == "pid")
             pid();
-            //pidFlag = true;
+            pid1stTime = false;
            
       }
     if (currCommand == "moving"){ // значит moving
@@ -831,7 +832,7 @@ void startNoTimer(){
 void stopPlatform(){
         currCommand = "stopped!";
         startFlag==false; // Готовы к старту.
-        pidFlag = false;  // Останавливаем ПИД
+        pid1stTime = false;  // Останавливаем ПИД
         //reset_All();
         TIMSK1 &= ~(1 << OCIE1A);  // выключение прерываний по совпадению или "сброс по совпадению", бит OCIE1A - Timer/Counter1, Output Compare A Match Interrupt Enable
         md.setM1Speed(0);
@@ -889,7 +890,7 @@ void parse_command()
         Eintegral = 0;            // Чтобы ПИД
         E = posAm1 - posAm2;
         Eprev = 0;
-        lastPidTime = movingTime; // Фиксируем время последнего срабатывания PID
+        lastPidTime = movingTime; // Фиксируем время последнего срабатывания PID, т.е. только что
 
         data.A1_Enc = posAm1;
         data.A2_Enc = posAm2;
@@ -904,8 +905,8 @@ void parse_command()
         data.E = E;
         data.Eprev = Eprev; // Потом при срабатывании PID это используем
         
-        data.lagSpeed_ptr = m1Speed; // Скорость уже после замедления, до порога остановки движения.
-        data.fwdSpeed_ptr = m2Speed;
+        data.lagSpeed_ptr = 0;//m1Speed; // Только стартанули, еще нет отстающих/опережающих
+        data.fwdSpeed_ptr = 0;//m2Speed;
         data.M1Speed_start = &m1Speed;
         data.M2Speed_start = &m2Speed;
         
@@ -929,7 +930,7 @@ void parse_command()
       {
         currCommand = "stop";
         startFlag==false; // Готовы к старту.
-        pidFlag = false;  // Останавливаем ПИД
+        pid1stTime = false;  // Останавливаем ПИД
         //reset_All();
         TIMSK1 &= ~(1 << OCIE1A);  // включение прерываний по совпадению или "сброс по совпадению", бит OCIE1A - Timer/Counter1, Output Compare A Match Interrupt Enable
         md.setM1Speed(0);
@@ -952,19 +953,17 @@ void parse_command()
       int N = separate (str, sPtr, SPTR_SIZE,  &strData);
 
       //внутри цикла данные еще правильные :) после него что-то ломается в массива sPtr. Поэтому цикл не используем.
-         for (int n = 0; n < N; n++){
-            K = sPtr [n];
-              mystr = "K = ";  mystr += K; //String(Kx,4); mystr += " ";
-              Serial.println (mystr); //sPtr [n]
-              Serial.flush();
-              }// for
-            
-         
+//         for (int n = 0; n < N; n++){
+//            K = sPtr [n];
+//              mystr = "K = ";  mystr += K; //String(Kx,4); mystr += " ";
+//              Serial.println (mystr); //sPtr [n]
+//              Serial.flush();
+//              }// for
        
 
 
       K = sPtr[0];
-      Kp = K.toFloat();//*10000;
+      Kp = K.toFloat()*10000;
       //float Kpp = //float(235/10000);  1000 * 0.0235; 
       //float Kpp = 235/1000;
 
@@ -985,8 +984,8 @@ void parse_command()
 
       str += "Kd= ";
       str += String(Kd);
-      Serial.println(str);
-      Serial.flush();    
+//      Serial.println(str);
+//      Serial.flush();    
 
       
 //      Kd /= 10000;
@@ -1017,8 +1016,8 @@ void parse_command()
      str += ", ";
      str += "sPtr[5] = ";
      str += sPtr[5]; 
-     Serial.println(str);
-     Serial.flush();    
+//     Serial.println(str);
+//     Serial.flush();    
 
 //      Kp = 12.3456;
 //      Kd = 34.3456;
@@ -1031,8 +1030,8 @@ void parse_command()
       data.Integral_k = Ki;
       data.Derivative = Kd;
 
-//     Serial.write((byte*)&data, sizeof(data));
-//     Serial.flush();
+     Serial.write((byte*)&data, sizeof(data));
+     Serial.flush();
 
   } // setPID
     
@@ -1298,9 +1297,10 @@ void parse_command()
 //++++++++++++++++++++++++++++++++++++++++++++++
 //++++++++++++++++++++++++++++++++++++++++++++++
     if (message.startsWith("setSpeedInit")){ // Задаем начальные значения скоростей в режиме "на вису"
+      // setSpeedInit 24 27
       currCommand = "setSpeedInit";
       str = message.substring(13); //sizeof(currCommand) + 1
-      int N = separate (str, sPtr, SPTR_SIZE); 
+      int N = separate (str, sPtr, SPTR_SIZE,  &strData); 
       String K;
 
       
@@ -1319,7 +1319,7 @@ void parse_command()
       str += ", ";
       str += String(m2LightSpeed);
       str.toCharArray(data.mytext, sizeof(data.mytext));
-
+      //Serial.println(str);
       str = "done";
       str.toCharArray(data.mystatus, sizeof(data.mystatus));
 
@@ -1433,10 +1433,10 @@ int diff = posAm1 - posAm2 ;
 //
 //  // Пора ли включать ПИД ?
 //  if (delta >=  encodersGAP){
-//    pidFlag = true;
+//    pid1stTime = true;
 // //   Serial.println("START PID !!!");
 //    pid();
-//    pidFlag = false;
+//    pid1stTime = false;
 //    }
 //  else{
 //    getValues(t1, t2);

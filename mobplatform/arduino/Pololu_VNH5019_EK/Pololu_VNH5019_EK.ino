@@ -5,6 +5,8 @@
 
 #include <ros.h>
 #include <std_msgs/String.h>
+#include <std_msgs/Float64.h>
+#include <geometry_msgs/Twist.h>
 
 
 
@@ -65,10 +67,11 @@ int str_len;
 
 ros::NodeHandle  nh;
 std_msgs::String str_msg;
-ros::Publisher chatter("encoders", &str_msg);
+std_msgs::String cmdVel_msg;
+geometry_msgs::Vector3 gmtry;
+geometry_msgs::Twist myVector;
 
-
-//========== data from Serial port
+//========== data from Serial port by USER or script
 void messageCb(std_msgs::String& mobplatCommand){
   
   digitalWrite(LED_BUILTIN, HIGH-digitalRead(LED_BUILTIN));   // blink the led
@@ -76,12 +79,78 @@ void messageCb(std_msgs::String& mobplatCommand){
   currCommand = mobplatCommand.data; // here we are getting currCommand from serial
   str = "The NEXT command is ";
   str.concat(currCommand);
+  //write2chatter(str);
+} 
+
+//===================== Data from serial port by ROS !!!   std_msgs
+//void cmd_vel_Msg(std_msgs::Float64& geometry_msg_lin_x, std_msgs::Float64& geometry_msg_ang_x){
+//  float lin_x = geometry_msg_lin_x.data;
+//  float ang_x = geometry_msg_ang_x.data;
+//  str = "From ROS geometry_msg : ";
+//  str += String(lin_x);
+//  str += ", ";
+//  str += String(ang_x);
+//  write2chatter(str);
+//  }
+//===================== Data from serial port by ROS !!!   geometry_msgs/Vector3
+void gmtry_msgs_Vector3(geometry_msgs::Vector3& vector){
+   float x_lin = vector.x;
+  
+  }
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+void gmtry_msgs(geometry_msgs::Twist& myvector){
+  float x_lin = myvector.linear.x;
+  float y_lin = myvector.linear.y;
+  float z_lin = myvector.linear.z;
+
+  float x_ang = myvector.angular.x;
+  float y_ang = myvector.angular.y;
+  float z_ang = myvector.angular.z;
+
+  str = "From ROS geometry_msg : ";
+  str += "linear_x = ";
+  str += String(x_lin); str += "\n";
+  str += "linear_y = ";
+  str += String(y_lin); str += "\n";
+  str += "linear_z = ";
+  str += String(z_lin); str += "\n";
+
+
+  str += "angular_x = ";
+  str += String(x_ang); str += "\n";
+  str += "angular_y = ";
+  str += String(y_ang); str += "\n";
+  str += "angular_z = ";
+  str += String(z_ang); str += "\n";
+
   write2chatter(str);
-}  
+ 
+ // Запускаем startPlatform()
+ // Или setM1Speed(x_lin);
+// if (x_lin > 25) {
+  m1Speed = round(x_lin);
+  m2Speed = round(x_lin);
+  movingOn(1);
+ //}
+  
+  } // gmtry_msgs
+  
+//++++++++++++++++++++++++++++
 
-ros::Subscriber<std_msgs::String> sub("mobplatform", &messageCb );
+ros::Publisher chatter("encoders", &str_msg);
+ros::Subscriber<std_msgs::String> sub("mobplatform", &messageCb);
+
+//ros::Subscriber<std_msgs::Float64> sub_ros("cmd_vel", &cmd_vel_Msg);
+
+ros::Subscriber<geometry_msgs::Twist>sub_gmtry("cmd_vel", &gmtry_msgs);
 
 
+
+
+ 
+
+//++++++++++++++++++++++++++++++++++++++++++++++++++
+//++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 
@@ -129,6 +198,7 @@ void setup()
 
   nh.initNode();
   nh.subscribe(sub);
+  nh.subscribe(sub_gmtry);
   nh.advertise(chatter);
   mobPlatformInit();
 
